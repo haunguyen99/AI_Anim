@@ -1,0 +1,1923 @@
+<meta charset="utf-8">
+<title>Pose Lab 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: same review-room look as the playblast review page - top bar with pose tools,
+   pose list | 3D viewport with joint handles | adjustments + send-to-AI panel. */
+:root {
+  --bg: #16181c;
+  --panel: #1f2227;
+  --raise: #2a2e35;
+  --line: #343943;
+  --ink: #e4e7ec;
+  --muted: #8b93a1;
+  --accent: #1fa37a;     /* selected joint, active tool */
+  --joint: #f2b134;      /* joint handles */
+  --edit: #ff4b3e;       /* edited joints */
+  --done: #4cc287;
+  --font-ui: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-num: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --tl: 40px;            /* timeline strip */
+  --tr: 38px;            /* transport row */
+  --ln: 0px;             /* contact lanes (keys mode only) */
+  --laneL: #5aa9ff;
+  --laneR: #c38bff;
+  color-scheme: dark;
+}
+body.km { --ln: 18px; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 13px; line-height: 1.45; overflow: hidden; }
+button, select, textarea, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 calc(var(--ln) + var(--tl) + var(--tr) + env(safe-area-inset-bottom, 0px)); }
+
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+.crumb { display: grid; line-height: 1.2; min-width: 0; }
+.crumb small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.crumb b { font-size: 14px; font-weight: 600; }
+.tools { display: flex; align-items: center; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.tool { height: 30px; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; border-radius: 4px; color: var(--muted); white-space: nowrap; }
+.tool:hover { background: var(--raise); color: var(--ink); }
+.tool.on { background: var(--accent); color: #fff; }
+.tool kbd { font-family: var(--font-num); font-size: 10px; opacity: .7; }
+.vsep { width: 1px; height: 22px; background: var(--line); margin: 0 6px; }
+
+.main { display: grid; grid-template-columns: 220px minmax(0, 1fr) 310px; min-height: 0; }
+.pane { min-height: 0; overflow-y: auto; }
+.list { border-right: 1px solid var(--line); }
+h2 { font-size: 13px; font-weight: 600; margin: 0; padding: 10px 10px 8px; display: flex; gap: 6px; align-items: baseline; }
+h2 span { color: var(--muted); font-weight: 400; font-size: 11px; }
+.item { display: grid; gap: 2px; padding: 8px 10px; border: 0; width: 100%; text-align: left; background: none; border-left: 3px solid transparent; }
+.item.on { background: #1fa37a33; border-left-color: var(--accent); }
+.item b { font-weight: 500; font-size: 12px; }
+.item small { color: var(--muted); font-size: 11px; }
+.item .vhead { display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+.item .vname { font-family: var(--font-num); font-size: 12px; font-weight: 700; }
+.item .vnote { font-size: 11.5px; color: var(--ink); opacity: .8; }
+.item .pill { flex: none; }
+.pill.sent { background: #f2b13433; color: var(--joint); }
+.pill.working { background: #1fa37a33; color: var(--accent); }
+
+.viewer { position: relative; min-height: 0; min-width: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #2a2f37 0%, var(--bg) 70%); }
+.viewer canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.hud { position: absolute; left: 10px; top: 10px; display: grid; gap: 4px; pointer-events: none; }
+.tag { font-size: 12px; background: #000a; padding: 3px 9px; border-radius: 4px; width: max-content; max-width: 70cqw; }
+.tag b { font-family: var(--font-num); font-weight: 700; }
+.cams { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 2px; background: #000a; border-radius: 4px; padding: 2px; }
+.cams button { border: 0; background: none; color: var(--ink); height: 26px; padding: 0 8px; border-radius: 3px; font-size: 12px; }
+.cams button:hover { background: #ffffff1f; }
+.cams button.on { background: var(--accent); }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); text-align: center; padding: 20px; }
+
+.side { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; }
+.sel { padding: 0 10px 10px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); }
+.sel .name { font-weight: 600; font-size: 14px; }
+.sel .hint { color: var(--muted); font-size: 12px; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--line); background: var(--raise); border-radius: 4px; padding: 5px 10px; font-size: 12px; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.btn.arm { background: var(--edit); border-color: var(--edit); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+/* Channel Box (Maya): drag a channel name = virtual slider, type a value + Enter */
+.cb { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 2px 6px; font-size: 12px; }
+.cb .hd { grid-column: 1 / -1; color: var(--muted); font-size: 11px; margin-top: 4px; }
+.cb .lbl { cursor: ew-resize; user-select: none; touch-action: none; padding: 3px 6px; background: var(--raise); border-radius: 3px; text-align: right; }
+.cb .lbl:hover, .cb .lbl.drag { background: var(--accent); color: #fff; }
+.cb input { font-family: var(--font-num); font-size: 12px; background: #111317; border: 1px solid var(--line); border-radius: 3px; padding: 2px 6px; text-align: right; width: 100%; }
+.cb input.chg { color: var(--edit); }
+.cb input:focus { border-color: var(--accent); outline: none; }
+.changes { display: grid; gap: 2px; font-size: 12px; }
+.changes div { display: flex; justify-content: space-between; gap: 8px; }
+.changes span:last-child { font-family: var(--font-num); color: var(--edit); }
+.empty { color: var(--muted); font-size: 12px; padding: 4px 10px 12px; }
+.adj { padding: 8px 10px; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.adj .meta { display: flex; justify-content: space-between; gap: 6px; color: var(--muted); font-size: 11px; }
+.adj .bones { font-size: 11px; color: var(--muted); }
+.adj p { margin: 0; font-size: 12.5px; overflow-wrap: anywhere; }
+.adj.done p, .adj.done .bones { opacity: .55; }
+.pill { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border-radius: 9px; background: var(--raise); }
+.pill.done { background: #4cc28733; color: var(--done); }
+.compose { border-top: 1px solid var(--line); padding: 10px; display: grid; gap: 6px; }
+textarea { width: 100%; min-height: 64px; resize: vertical; background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+.marquee { position: absolute; border: 1px dashed var(--accent); background: #1fa37a22; pointer-events: none; z-index: 3; }
+.status { font-size: 12px; color: var(--muted); min-height: 1.4em; }
+.round { padding: 8px; border-radius: 4px; background: var(--raise); display: grid; gap: 2px; font-size: 12px; }
+.round small { color: var(--muted); }
+.round[data-s="sent"] { box-shadow: inset 3px 0 0 var(--joint); }
+.round[data-s="working"] { box-shadow: inset 3px 0 0 var(--accent); }
+.round[data-s="fixed"] { box-shadow: inset 3px 0 0 var(--done); }
+
+/* timeline, fixed to the bottom edge like the playblast review page */
+.timeline { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--panel); border-top: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+.strip { position: relative; height: var(--tl); display: flex; align-items: stretch; cursor: ew-resize; touch-action: none; user-select: none; }
+.cell { flex: 1 1 0; min-width: 0; border-left: 1px solid var(--line); position: relative; display: grid; place-items: end center;
+  font-family: var(--font-num); font-size: 10px; color: var(--muted); padding-bottom: 3px; }
+.cell:last-child { border-right: 1px solid var(--line); }
+.cell.key { background: #f2b13414; }
+.cell.key::before { content: ""; position: absolute; top: 5px; left: 50%; width: 8px; height: 8px; translate: -50% 0; rotate: 45deg; background: var(--joint); }
+.cell.cur { background: #1fa37a40; color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+.cell .dot { position: absolute; top: 17px; width: 6px; height: 6px; border-radius: 50%; }
+.cell .dot.draft { left: calc(50% - 8px); background: var(--edit); }
+.cell .dot.saved { left: calc(50% + 2px); background: var(--joint); box-shadow: 0 0 0 1px #000; }
+.cell.loopend::before { content: ""; position: absolute; top: 5px; left: 50%; width: 6px; height: 6px; translate: -50% 0; rotate: 45deg; border: 1px solid var(--joint); }
+.cell.kdrop { box-shadow: inset 0 0 0 2px var(--joint); }
+/* contact lanes: frames where each foot is planted (keys mode) */
+.lanes { display: none; height: var(--ln); flex-direction: column; justify-content: center; gap: 2px; }
+body.km .lanes { display: flex; }
+.lane { display: flex; height: 7px; cursor: crosshair; touch-action: none; user-select: none; background: #ffffff0a; }
+.lane i { flex: 1 1 0; min-width: 0; }
+.lane[data-s="L"] i.on { background: var(--laneL); }
+.lane[data-s="R"] i.on { background: var(--laneR); }
+.lane i.mirror { opacity: .4; }
+.kgrp { display: contents; }
+/* reference frames beside the model */
+.refbox { position: absolute; right: 10px; top: 10px; z-index: 4; background: #000c; border-radius: 6px; padding: 4px; display: grid; gap: 4px; }
+.rbar { display: flex; gap: 2px; flex-wrap: wrap; }
+.rbar button { border: 0; background: none; color: var(--ink); font-size: 11px; height: 22px; padding: 0 6px; border-radius: 3px; }
+.rbar button:hover { background: #ffffff1f; }
+.rbar button.on { background: var(--accent); }
+.rimg { background-repeat: no-repeat; border-radius: 3px; cursor: zoom-in; }
+.rpair { display: flex; gap: 4px; }
+.ranim { border-radius: 3px; background: #000; }
+.rcap { font-size: 11px; color: var(--muted); font-family: var(--font-num); }
+.transport { height: var(--tr); display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; overflow-x: auto; }
+.transport .btn { padding: 3px 9px; white-space: nowrap; }
+.fcount { font-family: var(--font-num); font-size: 13px; white-space: nowrap; }
+.fcount b { color: var(--accent); }
+.clipinfo { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.legend { margin-left: auto; display: flex; gap: 12px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+
+@media (max-width: 900px) {
+  body { overflow: auto; }
+  .app { height: auto; min-height: 100%; }
+  .main { grid-template-columns: minmax(0, 1fr); }
+  .list { border-right: 0; border-bottom: 1px solid var(--line); }
+  .viewer { height: 62vh; }
+  .side { border-left: 0; }
+  .tools { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="crumb"><small id="projName">Shoot Die Repeat</small><b id="poseName">Pose</b></div>
+    <div class="tools" role="toolbar" aria-label="Công cụ pose">
+      <button class="tool" id="mSel" title="Chỉ chọn khớp, không gizmo (Q)">Chọn <kbd>Q</kbd></button>
+      <button class="tool" id="mMove" title="Dời hông, bàn chân hoặc bàn tay (IK) (W)">Dời <kbd>W</kbd></button>
+      <button class="tool on" id="mRot" title="Xoay khớp (E)">Xoay <kbd>E</kbd></button>
+      <button class="tool" id="mScale" title="Scale (R): rig không cho scale khớp">Scale <kbd>R</kbd></button>
+      <button class="tool" id="mSpace" title="Trục local / world (X)">Trục: local <kbd>X</kbd></button>
+      <span class="vsep"></span>
+      <button class="tool on" id="tLock" title="Khi dời/xoay hông, hai bàn chân giữ nguyên trên sàn (IK)">Khóa chân</button>
+      <button class="tool on" id="tGunR" title="Khi dời/xoay súng, tay phải giữ nguyên chỗ cầm (IK tay)">Tay phải bám súng</button>
+      <button class="tool on" id="tGhost" title="Bóng mờ của pose gốc để so sánh">Bóng pose gốc</button>
+      <button class="tool on" id="tJoints" title="Hiện các điểm khớp (J)">Điểm khớp <kbd>J</kbd></button>
+      <button class="tool on" id="tRef" hidden title="Ảnh ref của frame đang xem, cạnh model (G)">Ref <kbd>G</kbd></button>
+      <span class="vsep"></span>
+      <button class="tool" id="undo" title="Hoàn tác (Ctrl+Z)">Hoàn tác</button>
+      <button class="tool" id="resetAll" title="Trả cả pose về bản gốc">Về pose gốc</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <nav class="pane list" aria-label="Danh sách pose">
+      <h2>Phiên bản <span id="poseCount"></span></h2>
+      <div id="poses"></div>
+      <p class="empty">Điều khiển như Maya: <b>Alt + chuột trái</b> xoay camera, <b>Alt + chuột giữa</b> dời, <b>Alt + chuột phải</b> hoặc cuộn để zoom. <b>F</b> zoom vào khớp đang chọn, <b>A</b> xem cả người.<br><br>
+Bấm điểm khớp để chọn (các điểm khác tạm ẩn), bấm ra chỗ trống hoặc Esc để bỏ chọn. <b>Q</b> chọn · <b>W</b> dời · <b>E</b> xoay · <b>↑ ↓</b> sang khớp cha / con · <b>+ −</b> cỡ gizmo.<br><br>
+Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) hoặc gõ số rồi Enter. <b>, .</b> key trước / sau, <b>← →</b> frame.</p>
+    </nav>
+
+    <section class="viewer" id="viewer" aria-label="Viewport 3D">
+      <canvas id="cv"></canvas>
+      <div class="hud">
+        <div class="tag" id="camTag">Camera: <b>Right (ingame)</b></div>
+        <div class="tag" id="selTag" hidden></div>
+      </div>
+      <div class="cams" role="group" aria-label="Camera">
+        <button data-cam="right" class="on" title="Camera ingame (1)">Right</button>
+        <button data-cam="front" title="2">Front</button>
+        <button data-cam="top" title="3">Top</button>
+        <button data-cam="persp" title="4">3/4</button>
+      </div>
+      <div class="refbox" id="refbox" hidden><div class="rbar" id="rbar" role="group" aria-label="Góc ref"></div><div class="rpair"><div class="rimg" id="rimg" title="Bấm để đổi cỡ ảnh"></div><canvas class="ranim" id="ranim" hidden title="Model qua đúng camera ref"></canvas></div><div class="rcap" id="rcap"></div></div>
+      <div class="loading" id="loading">Đang tải model…</div>
+    </section>
+
+    <aside class="side">
+      <div>
+        <h2>Khớp đang chọn</h2>
+        <div class="sel">
+          <div class="name" id="selName">Chưa chọn khớp</div>
+          <div class="hint" id="selHint">Bấm vào một khớp, hoặc kéo quét một vùng để chọn nhiều. Giữ Shift để chọn thêm.</div>
+          <div class="cb" id="cb" hidden></div>
+          <div class="row">
+            <button class="btn" id="resetJoint" disabled>Trả khớp này về gốc</button>
+          </div>
+          <div class="changes" id="changes"></div>
+        </div>
+      </div>
+      <div class="pane" id="adjList" aria-live="polite">
+        <h2>Điều chỉnh đã gửi <span id="adjCount"></span></h2>
+        <p class="empty" id="adjEmpty">Chưa có điều chỉnh nào cho pose này. Chỉnh khớp trên model, ghi chú lý do rồi bấm "Lưu điều chỉnh".</p>
+        <div id="adjs"></div>
+      </div>
+      <div class="compose">
+        <label for="text" class="hint" style="color:var(--muted);font-size:12px">Ghi chú cho AI (vì sao chỉnh, chỗ nào)</label>
+        <textarea id="text" placeholder="Ví dụ: hạ vai phải, cẳng tay nghiêng ra sau như concept"></textarea>
+        <div class="row">
+          <button class="btn primary" id="save" disabled>Lưu điều chỉnh</button>
+          <button class="btn" id="aiSend" disabled>Gửi cho AI</button>
+        </div>
+        <div class="round" id="round" data-s="none"><span id="roundTxt">Vòng review đang mở.</span><small id="roundSub"></small></div>
+        <div class="status" id="status" role="status"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer class="timeline" aria-label="Timeline">
+  <div class="lanes" aria-label="Chân chạm đất">
+    <div class="lane" data-s="L" id="laneL" title="Chân trái chạm đất: kéo trên dải xanh để tô / xoá frame. Trên các frame này bàn chân bám sàn (IK)"></div>
+    <div class="lane" data-s="R" id="laneR" title="Chân phải chạm đất: kéo trên dải tím để tô / xoá frame"></div>
+  </div>
+  <div class="strip" id="strip" role="slider" tabindex="0" aria-label="Frame" aria-valuemin="1"></div>
+  <div class="transport">
+    <button class="btn" id="prevKey" title="Key trước (Shift+←)">◀◆</button>
+    <button class="btn" id="prevF" title="Frame trước (←)">◀</button>
+    <button class="btn primary" id="play" title="Phát / dừng (Space)">Phát</button>
+    <button class="btn" id="nextF" title="Frame sau (→)">▶</button>
+    <button class="btn" id="nextKey" title="Key sau (Shift+→)">◆▶</button>
+    <span class="fcount" id="fcount">F<b>1</b> / 1</span>
+    <span class="vsep"></span>
+    <button class="btn" id="copyKey" title="Copy pose của frame này: các khớp đang chọn (chọn nhiều bằng Shift hoặc quét), hoặc cả người khi chưa chọn (Ctrl+C). Shift = kèm các khớp con">Copy key</button>
+    <button class="btn" id="pasteKey" disabled title="Paste vào frame này (Ctrl+V). Shift = paste từ frame này đến trước key kế tiếp">Paste</button>
+    <button class="btn" id="pasteHold" disabled title="Paste từ frame này đến trước key kế tiếp (Ctrl+Shift+V)">Paste đến key kế</button>
+    <span class="kgrp" id="kTools" hidden>
+      <span class="vsep"></span>
+      <button class="btn primary" id="kSet" title="Đặt key ở frame này bằng pose đang thấy (S)">◆ Key <kbd>S</kbd></button>
+      <button class="btn" id="kDel" title="Xoá key ở frame này (Delete). Dời key: Shift + kéo key trên timeline (hoặc kéo bằng chuột giữa)">Xoá key</button>
+      <button class="btn" id="kAuto" title="Bật: mỗi lần chỉnh xong một khớp là tự đặt key ở frame đó">Auto key: bật</button>
+      <button class="btn" id="kInterp" title="Đổi giữa spline (mượt) và bậc thang (blocking: giữ pose tới key kế)">Spline</button>
+      <button class="btn" id="kLock" title="Trên các frame chạm đất (dải xanh / tím), bàn chân đi thẳng giữa các vị trí ở key, không trượt, không lún">Bám sàn: bật</button>
+      <button class="btn" id="kFit" title="Tự xoay hông, chân, thân, chùy và tay cho bóng nhân vật trùng bóng ref ở frame này (5 góc), rồi đặt key. Bấm lần nữa để dừng">Khớp ref</button>
+      <button class="btn" id="kFloor" title="Mọi key: chân đang chống (dải chạm đất) đặt đúng lên sàn theo điểm thấp nhất của lưới bàn chân; chân đang nhấc không được xuyên sàn">Chân lên sàn</button>
+      <button class="btn" id="kAutoCt" title="Tô dải chạm đất từ các key: bàn chân thấp (sát sàn) ở hai key liền nhau thì chạm đất suốt đoạn giữa">Dò chạm đất</button>
+      <span class="vsep"></span>
+    </span>
+    <button class="btn" id="expFbx" title="Xuất cả clip thành FBX (chỉ xương + animation, 30 fps) cho Unity. File tải về là .zip chứa .fbx">Xuất FBX</button>
+    <span class="clipinfo" id="clipInfo"></span>
+    <span class="legend"><span><i style="background:var(--joint)"></i>key / đã lưu điều chỉnh</span><span><i style="background:var(--edit)"></i>đang chỉnh, chưa lưu</span><span class="kgrp" id="kLegend" hidden><span><i style="background:var(--laneL)"></i>trái chạm đất</span><span><i style="background:var(--laneR)"></i>phải chạm đất</span></span></span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+<script src="fbxexport.js"></script>
+<script>
+// ---------------------------------------------------------------- data
+// One entry per VERSION, newest first, like CLIPS on the playblast review page. This master keeps every clip;
+// work/pose_lab/split_pages.py writes one page per animation (own artifact + own db), so map2 and map06 never mix.
+// glb = the animation of that version (work/blender/export_pose_glb.py, first key = F1; old models are kept so every
+// version stays viewable); frames = clip length, keys = key-pose frames shown on the timeline; note = what changed.
+// mode "keys" = the animation is made ON the page: keys live in db "keys" (seeded from `keys` sampled out of the glb,
+// or copied from version `seedFrom`), in-betweens are splined here, FBX is exported from that. loop = last frame == F1.
+// contacts = default planted frames per foot ("15-45", cycle frames); ref = sprite sheets of the reference video
+// (work/pose_lab/make_ref_sprites.py), offset = ref frame - anim frame.
+const POSES = [
+  { clip: "Gaygor_Walk", project: "Gaygor (boss)", version: "anim_v1", date: "2026-10-23", frames: 57, fps: 30, keys: [1], mode: "keys", loop: true, camFit: 1.45, label: "Walk - làm trên trang", note: "Clip 57F lặp (F57 = F1). Đặt key, spline, bám sàn, ref 5 góc, xuất FBX ngay trên trang. Bắt đầu từ P0 v2.", glb: "models/gaygor_walk_p0_v2.json", contacts: { L: "15-45", R: "1-28,42-56" }, ref: { dir: "refs/gaygor_walk", offset: 0, cams: { right: "left", front: "front", top: "top" }, views: { front: { file: "front.jpg", cols: 13, w: 302, h: 360, frames: 57, crop: [651, 1, 1522, 1038] }, back: { file: "back.jpg", cols: 13, w: 304, h: 360, frames: 57, crop: [399, 4, 1270, 1036] }, left: { file: "left.jpg", cols: 12, w: 331, h: 360, frames: 57, crop: [479, 4, 1427, 1036] }, right: { file: "right.jpg", cols: 12, w: 334, h: 360, frames: 57, crop: [497, 9, 1442, 1029] }, top: { file: "top.jpg", cols: 12, w: 328, h: 360, frames: 57, crop: [654, 59, 1518, 1007] } }, cal: { front: { dir: [0, 0, -1], up: [0, 1, 0], u0: 1088, v0: 934.5 }, back: { dir: [0, 0, 1], up: [0, 1, 0], u0: 833, v0: 934.5 }, left: { dir: [1, 0, 0], up: [0, 1, 0], u0: 1071.5, v0: 934.5 }, right: { dir: [-1, 0, 0], up: [0, 1, 0], u0: 851, v0: 934.5 }, top: { dir: [0, -1, 0], up: [0, 0, -1], u0: 1087.5, v0: 647 } } }, follow: { prop: "Weapon", to: "Scapula_L", hand: "L" }, fitFeet: { 1: { R: 24 }, 8: { L: 20, R: 9 }, 15: { L: 58, R: 1 }, 22: { L: 42, R: -14 }, 29: { L: 26, R: -28 }, 36: { L: 11, R: 60 }, 42: { L: 1, R: 58 }, 50: { L: -15, R: 39 } } },
+  { clip: "Gaygor_Walk", project: "Gaygor (boss)", version: "p0_v2", date: "2026-10-23", frames: 1, fps: 30, keys: [1], label: "Walk - P0 (frame 1)", note: "Đã áp chỉnh sửa của bạn (vai, khuỷu, cổ tay, chân trái) vào P0. Có nút Xuất FBX.", glb: "models/gaygor_walk_p0_v2.json" },
+  { clip: "Gaygor_Walk", project: "Gaygor (boss)", version: "p0_v1", date: "2026-10-23", frames: 1, fps: 30, keys: [1], label: "Walk - P0 (frame 1)", note: "Tay trái ôm trụ chùy chưa đúng: chỉnh tay trái (và vai) cho khớp ref góc top + front.", glb: "models/gaygor_walk_p0_v1.json" },
+  { clip: "SDR06_Reload", project: "Shoot Die Repeat map06", version: "lhand_b6", date: "2026-10-22", frames: 42, fps: 30, keys: [5, 7, 9, 11, 12, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 28], label: "Reload (thay trống) - tay trái b6", note: "Trống xoay theo trang ở F16, F17, F18, F21, F22. Còn lại như b5.", glb: "models/sdr06_reload_lhand_b6.json", names: { slingshot_0: "Súng", slingshot_1: "Trống", MiddleFinger1_L: "Ngón tay trái", MiddleFinger1_R: "Ngón tay phải" } },
+  { clip: "SDR06_Reload", project: "Shoot Die Repeat map06", version: "lhand_b5", date: "2026-10-22", frames: 42, fps: 30, keys: [5, 7, 9, 11, 12, 14, 16, 19, 21, 23, 25, 26, 28], label: "Reload (thay trống) - tay trái b5", note: "Lọc xoắn vai/tay trái ở F2–F4, F29–F33. F5–F28 như b4.", glb: "models/sdr06_reload_lhand_b5.json", names: { slingshot_0: "Súng", slingshot_1: "Trống", MiddleFinger1_L: "Ngón tay trái", MiddleFinger1_R: "Ngón tay phải" } },
+  { clip: "SDR06_Reload", project: "Shoot Die Repeat map06", version: "lhand_b4", date: "2026-10-22", frames: 42, fps: 30, keys: [5, 7, 9, 11, 12, 14, 16, 19, 21, 23, 25, 26, 28], label: "Reload (thay trống) - tay trái b4", note: "Áp 13 chỉnh sửa tay trái F5–F28 đúng như trang. F21 trống đi theo tay như F16. F1–F4, F29–F42 giữ như b3.", glb: "models/sdr06_reload_lhand_b4.json", names: { slingshot_0: "Súng", slingshot_1: "Trống", MiddleFinger1_L: "Ngón tay trái", MiddleFinger1_R: "Ngón tay phải" } },
+  { clip: "SDR06_Reload", project: "Shoot Die Repeat map06", version: "lhand_b3", date: "2026-10-22", frames: 42, fps: 30, keys: [5, 7, 9, 11, 12, 14, 16, 19, 21, 23, 25, 26, 28], label: "Reload (thay trống) - tay trái b3", note: "Áp 2 chỉnh sửa F1 (tay trái cầm nòng, súng sát người). F1 = P0: chuyển dần tới F5, về lại từ F29, đủ từ F34. Hai tay giữ chỗ cầm mới trên súng.", glb: "models/sdr06_reload_lhand_b3.json", names: { slingshot_0: "Súng", slingshot_1: "Trống", MiddleFinger1_L: "Ngón tay trái", MiddleFinger1_R: "Ngón tay phải" } },
+  { clip: "SDR06_Reload", project: "Shoot Die Repeat map06", version: "lhand_b2", date: "2026-10-22", frames: 42, fps: 30, keys: [5, 7, 9, 11, 12, 14, 16, 19, 21, 23, 25, 26, 28], label: "Reload (thay trống) - tay trái blocking b2", note: "Tay trái giải theo giới hạn khớp, khuỷu không chìm vào người, cổ tay trong giới hạn (12/13 key).", glb: "models/sdr06_reload_lhand_b2.json", names: { slingshot_0: "Súng", slingshot_1: "Trống", MiddleFinger1_L: "Ngón tay trái", MiddleFinger1_R: "Ngón tay phải" } },
+  { clip: "SDR_Idle", project: "Shoot Die Repeat", version: "v12", date: "2026-10-20", frames: 1, fps: 30, keys: [1], label: "Idle - pose ngắm (1 pose)", glb: "models/sdr_idle_v12.json" },
+];
+const NAMES = {
+  Root_M: "Hông (Root)", Spine1_M: "Lưng dưới", Chest_M: "Ngực", Neck_M: "Cổ", Head_M: "Đầu",
+  Scapula_L: "Bả vai trái", Shoulder_L: "Vai trái", Elbow_L: "Khuỷu trái", Wrist_L: "Cổ tay trái",
+  Scapula_R: "Bả vai phải", Shoulder_R: "Vai phải", Elbow_R: "Khuỷu phải", Wrist_R: "Cổ tay phải",
+  Hip_L: "Đùi trái", Knee_L: "Gối trái", Ankle_L: "Cổ chân trái", Hip_R: "Đùi phải", Knee_R: "Gối phải", Ankle_R: "Cổ chân phải",
+  slingshot_0: "Dao",
+};
+const NAMES0 = { ...NAMES };
+let JOINTS = Object.keys(NAMES);
+function useNames(p) {      // per-clip labels / extra joints (SDR06: gun, drum, fingers)
+  for (const k of Object.keys(NAMES)) delete NAMES[k];
+  Object.assign(NAMES, NAMES0, p.names || {}); JOINTS = Object.keys(NAMES);
+}
+const LEGS = { L: ["Hip_L", "Knee_L", "Ankle_L"], R: ["Hip_R", "Knee_R", "Ankle_R"] };
+// Arm IK (user 2026-10-22 "Sao tôi trong dời dk mà chỉ xoay"): W on a wrist drags the hand, shoulder + elbow bend
+// like an IK handle, the hand keeps its world orientation. Saved as rotations, so Blender applies it unchanged.
+const ARMS = { L: ["Shoulder_L", "Elbow_L", "Wrist_L"], R: ["Shoulder_R", "Elbow_R", "Wrist_R"] };
+const MOVABLE = new Set(["Root_M", "Ankle_L", "Ankle_R", "Wrist_L", "Wrist_R", "slingshot_0"]);
+const isWrist = n => !!n && n.startsWith("Wrist_");
+// Gun (user 2026-10-22 "Tôi muốn chỉnh vị trí của súng"): slingshot_0 moves (W) and turns (E) in world space; with
+// "Tay phải bám súng" on, the right hand keeps its grip (arm IK). Blender: pose_lab_apply.py turns it into CTRL_knife keys.
+const GUN = "slingshot_0";
+let gunFollow = true, gunRel = null;
+const wmat4 = o => new THREE.Matrix4().compose(wp(o), wq(o), new V3(1, 1, 1));
+function gunGrab() {        // right wrist in gun space, taken before a gun change
+  gunRel = gunFollow && B[GUN] && B.Wrist_R ? wmat4(B[GUN]).invert().multiply(wmat4(B.Wrist_R)) : null;
+}
+function gunFollowHand() {
+  if (!gunRel) return;
+  const m = wmat4(B[GUN]).multiply(gunRel), p = new V3(), q = new Q(); m.decompose(p, q, new V3());
+  handQ.R = q; solveArm("R", p);
+}
+
+const $ = id => document.getElementById(id);
+const V3 = THREE.Vector3, Q = THREE.Quaternion;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// ---------------------------------------------------------------- three.js scene
+const canvas = $("cv"), viewer = $("viewer");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.autoClear = false;
+const scene = new THREE.Scene(), overlay = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(24, 1, 0.05, 100);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x404650, 1.0));
+const sun = new THREE.DirectionalLight(0xffffff, 0.9); sun.position.set(-3, 5, 4); scene.add(sun);
+const grid = new THREE.GridHelper(4, 16, 0x4a515c, 0x30353d); scene.add(grid);
+const orbit = new THREE.OrbitControls(camera, canvas);
+orbit.target.set(0, 0.95, 0); orbit.enableDamping = true; orbit.dampingFactor = 0.15;
+// Maya navigation: Alt+LMB tumble, Alt+MMB track, Alt+RMB dolly (the wheel zooms without Alt). Without Alt the mouse
+// only selects / drags the gizmo; with Alt the gizmo is ignored.
+orbit.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.DOLLY };
+const gizmo = new THREE.TransformControls(camera, canvas);
+gizmo.setSize(0.85); gizmo.setSpace("local"); overlay.add(gizmo);
+viewer.addEventListener("pointerdown", e => {
+  const a = e.altKey; orbit.enableRotate = orbit.enablePan = orbit.enableZoom = a; gizmo.enabled = !a;
+}, true);
+window.addEventListener("pointerup", () => { orbit.enableZoom = true; gizmo.enabled = true; });
+viewer.addEventListener("contextmenu", e => e.preventDefault());
+const footHandle = { L: new THREE.Object3D(), R: new THREE.Object3D() };
+const handHandle = { L: new THREE.Object3D(), R: new THREE.Object3D() };
+scene.add(footHandle.L, footHandle.R, handHandle.L, handHandle.R);
+let handQ = {};
+
+let model = null, ghost = null, B = {}, base = {}, edited = new Set(), sel = null, mode = "rotate";
+let footT = {}, footQ = {}, lockFeet = true, markers = {}, undoStack = [];
+let frame = 1, drafts = {}, mixers = [], playing = false, playT0 = 0, playF0 = 1, cache = {}, gB = {};
+// Joints as a stick figure (user 2026-10-22 "điểm khớp chồng lên nhau rối mắt, đổi thành dạng que"): a small dot per
+// joint + a thin stick to its parent joint. Opacity 50 % by default, fading with camera distance (near = clearest),
+// 100 % when the mouse comes close or the joint is selected. Several joints can be selected (Shift, marquee drag).
+// sizes in screen pixels (user 2026-10-22 "Kích thước khớp to quá"): dot radius DOT_PX, stick radius STICK_PX
+const DOT_PX = 3.5, STICK_PX = 0.8;
+const markerGeo = new THREE.SphereGeometry(1, 12, 8);
+const stickGeo = new THREE.CylinderGeometry(1, 1, 1, 6, 1); stickGeo.translate(0, 0.5, 0);
+const COL = { joint: new THREE.Color(css("--joint")), edit: new THREE.Color(css("--edit")), sel: new THREE.Color(css("--accent")) };
+const jointMat = () => new THREE.MeshBasicMaterial({ color: COL.joint.clone(), depthTest: false, transparent: true, opacity: .5 });
+let sticks = {}, selSet = new Set(), hoverXY = null, multiQ0 = null;
+
+const CAMS = {   // glTF world: Y up, character faces +Z, its right side is -X
+  right: { pos: [-6.5, 1.0, 0], tgt: [0, 0.9, 0], label: "Right (ingame)" },
+  front: { pos: [0, 1.0, 6.5], tgt: [0, 0.9, 0], label: "Front" },
+  top: { pos: [0, 7.5, 0.001], tgt: [0, 0.5, 0], label: "Top" },
+  persp: { pos: [-4.2, 2.2, 4.2], tgt: [0, 0.9, 0], label: "3/4" },
+};
+// camFit scales the camera presets to the character (CAMS were set for a ~1.75 m soldier; Gaygor is bigger), from the
+// highest joint at load
+let curCam = "right", camFit = 1;
+function setCam(k) {
+  const c = CAMS[k]; curCam = k; if (typeof renderRef === "function") renderRef();
+  const t = new V3(...c.tgt).multiplyScalar(camFit);
+  camera.position.copy(new V3(...c.pos).sub(new V3(...c.tgt)).multiplyScalar(camFit).add(t)); orbit.target.copy(t); orbit.update();
+  document.querySelectorAll(".cams button").forEach(b => b.classList.toggle("on", b.dataset.cam === k));
+  $("camTag").innerHTML = "Camera: <b></b>"; $("camTag").querySelector("b").textContent = c.label;
+}
+document.querySelectorAll(".cams button").forEach(b => b.onclick = () => setCam(b.dataset.cam));
+orbit.addEventListener("start", () => document.querySelectorAll(".cams button").forEach(b => b.classList.remove("on")));
+
+function resize() {
+  const r = viewer.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false); camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(viewer);
+
+// ---------------------------------------------------------------- pose helpers
+const wq = o => o.getWorldQuaternion(new Q());
+const wp = o => o.getWorldPosition(new V3());
+function setWorldQuat(o, q) {
+  const pq = wq(o.parent); o.quaternion.copy(pq.invert().multiply(q)); o.updateMatrixWorld(true);
+}
+function rotateWorld(o, q) { setWorldQuat(o, q.clone().multiply(wq(o))); }
+function swing(o, from, to) {   // rotate bone o (about its head) so that world direction `from` becomes `to`
+  const q = new Q().setFromUnitVectors(from.clone().normalize(), to.clone().normalize()); rotateWorld(o, q);
+}
+function solveLeg(s) { solve2(LEGS[s], footT[s], footQ[s]); }
+function solveArm(s, tgt) { solve2(ARMS[s], tgt, handQ[s]); }
+function solve2(chain, target, endQ) {   // two-bone IK, bend plane kept from the current middle joint
+  const [h, k, a] = chain.map(n => B[n]);
+  const hip = wp(h), knee = wp(k), ank = wp(a), tgt = target.clone();
+  const la = knee.distanceTo(hip), lb = ank.distanceTo(knee);
+  let d = tgt.clone().sub(hip); const dist = Math.min(Math.max(d.length(), 1e-4), la + lb - 1e-4); d.normalize();
+  let pole = knee.clone().sub(hip); pole.sub(d.clone().multiplyScalar(pole.dot(d)));
+  if (pole.lengthSq() < 1e-8) pole.set(0, 0, 1); pole.normalize();
+  const cosA = Math.min(1, Math.max(-1, (la * la + dist * dist - lb * lb) / (2 * la * dist)));
+  const kneeT = hip.clone().add(d.clone().multiplyScalar(la * cosA)).add(pole.multiplyScalar(la * Math.sqrt(1 - cosA * cosA)));
+  swing(h, knee.clone().sub(hip), kneeT.clone().sub(hip));
+  const knee2 = wp(k), ank2 = wp(a);
+  swing(k, ank2.clone().sub(knee2), hip.clone().add(d.multiplyScalar(dist)).sub(knee2));
+  setWorldQuat(a, endQ);
+  chain.forEach(n => edited.add(n));
+}
+function captureFeet() { for (const s of ["L", "R"]) { footT[s] = wp(B[LEGS[s][2]]); footQ[s] = wq(B[LEGS[s][2]]); } }
+function snapshot() {
+  const o = {}; for (const n of Object.keys(B)) o[n] = [B[n].position.clone(), B[n].quaternion.clone()];
+  return { bones: o, edited: new Set(edited), footT: { L: footT.L.clone(), R: footT.R.clone() }, footQ: { L: footQ.L.clone(), R: footQ.R.clone() },
+           base, keys: keysMode() ? new Map(KEYS) : null };
+}
+function restore(sn) {
+  for (const n of Object.keys(sn.bones)) { B[n].position.copy(sn.bones[n][0]); B[n].quaternion.copy(sn.bones[n][1]); }
+  model.updateMatrixWorld(true); edited = new Set(sn.edited); footT = sn.footT; footQ = sn.footQ;
+  if (sn.base) base = sn.base;
+  if (sn.keys && keysMode()) {     // key changes are undone too (and written back to the db)
+    for (const f of new Set([...KEYS.keys(), ...sn.keys.keys()])) if (KEYS.get(f) !== sn.keys.get(f)) dirtyKeys.add(f);
+    KEYS = new Map(sn.keys); keysChanged();
+  }
+  attachGizmo(); refresh();
+}
+const pushUndo = () => { undoStack.push(snapshot()); if (undoStack.length > 60) undoStack.shift(); };
+
+// ---------------------------------------------------------------- load
+const loader = new THREE.GLTFLoader();
+let P = POSES[0];
+function loadGlb(url) { return new Promise((res, rej) => loader.load(url, res, undefined, rej)); }
+async function openPose(p) {
+  if (keysMode() && (dirtyKeys.size || animDirty)) { clearTimeout(flushT); await flush(); }   // keys of the old version first
+  P = p; useNames(p);
+  document.body.classList.toggle("km", keysMode()); $("kTools").hidden = $("kLegend").hidden = !keysMode();
+  ready = false; BN = []; TR = null; $("loading").hidden = false; $("loading").textContent = "Đang tải model…";
+  $("poseName").textContent = p.label + " · " + p.version; $("projName").textContent = p.project;
+  if (model) { scene.remove(model); scene.remove(ghost); }
+  gizmo.detach(); sel = null; selSet = new Set(); edited.clear(); undoStack = []; drafts = {}; mixers = []; frame = 1; stopPlay();
+  try {
+    const [g1, g2] = await Promise.all([loadGlb(p.glb), loadGlb(p.glb)]);
+    model = posed(g1); ghost = posed(g2);
+    ghost.traverse(o => { if (o.isMesh) { o.material = new THREE.MeshBasicMaterial({ color: 0x8fd3ff, transparent: true, opacity: .18, depthWrite: false }); o.renderOrder = 2; } });
+    ghost.visible = $("tGhost").classList.contains("on");
+    scene.add(model, ghost);
+    B = {}; model.traverse(o => { if (o.isBone) B[o.name] = o; });
+    gB = {}; ghost.traverse(o => { if (o.isBone) gB[o.name] = o; });
+    buildCache(g1.animations[0]);
+    if (keysMode()) initKeys();
+    setupRef();
+    buildMarkers(); $("loading").hidden = true; buildStrip(); goto(1, true); renderAdjs(); renderRound();
+    const top = Math.max(...Object.values(B).map(b => wp(b).y));
+    camFit = P.camFit || Math.max(0.6, Math.min(4, top / 1.75)); setCam(curCam);   // POSES camFit when a prop sticks out above the joints
+    ready = true; if (keysMode()) applyRemote();
+  } catch (e) {
+    $("loading").textContent = "Không tải được model (" + (e && e.message ? e.message : "lỗi mạng") + "). Tải lại trang để thử lại.";
+  }
+}
+function posed(g) {
+  const root = g.scene;
+  if (g.animations.length) { const mx = new THREE.AnimationMixer(root); mx.clipAction(g.animations[0]).play(); mx.setTime(0); mixers.push(mx); }
+  root.traverse(o => { if (o.isMesh) { o.frustumCulled = false; } });
+  return root;
+}
+// ---------------------------------------------------------------- frames
+// The original pose of every frame is sampled once at load; frame changes restore from this cache
+// (a mixer does not re-apply a zero-length clip, which made edits leak into the base pose).
+function buildCache(clip) {
+  cache = {};
+  const n = P.frames || 1, fps = P.fps || 30, dur = clip ? clip.duration : 0;
+  const mx = mixers[0];
+  // Blender's exporter starts the clip at frame/fps (F1 = 1/30 s), not 0: offset from the first key (was 1 frame late)
+  const t0 = clip && clip.tracks.length ? clip.tracks[0].times[0] : 0;
+  for (let f = 1; f <= n; f++) {
+    if (mx) mx.setTime(Math.min(t0 + (f - 1) / fps, Math.max(0, dur - 1e-6)));
+    cache[f] = Object.fromEntries(Object.keys(B).map(k => [k, [B[k].position.clone(), B[k].quaternion.clone()]]));
+  }
+  mixers.forEach(m => m.stopAllAction());
+}
+function sampleAt(f) {
+  if (keysMode() && evalPose(f)) {        // page keys: spline + foot lock; the ghost shows the same evaluated pose
+    for (const k of Object.keys(gB)) if (B[k]) { gB[k].position.copy(B[k].position); gB[k].quaternion.copy(B[k].quaternion); }
+    return;
+  }
+  const c = cache[f] || cache[1]; if (!c) return;
+  for (const [k, [p, q]] of Object.entries(c)) {
+    if (B[k]) { B[k].position.copy(p); B[k].quaternion.copy(q); }
+    if (gB[k]) { gB[k].position.copy(p); gB[k].quaternion.copy(q); }
+  }
+  // saved, not yet applied adjustments of this frame show on the model (the ghost keeps the original): a new edit is
+  // then a delta on top of them, which is how Blender applies them (pose_lab_apply.py: frame, then createdAt order)
+  for (const [k, v] of Object.entries(savedOverlay(f))) if (B[k]) { B[k].quaternion.fromArray(v.q); B[k].position.fromArray(v.p); }
+}
+function savedOverlay(f) {
+  const o = {};
+  for (const a of mine().filter(a => a.status !== "done" && (a.frame || 1) === f).sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || "")))
+    Object.assign(o, a.local || {});
+  return o;
+}
+function stashDraft() {   // keep this frame's unsaved edits (local transforms of the edited bones)
+  if (!model) return;
+  const list = editedList();
+  if (list.length) drafts[frame] = Object.fromEntries(list.map(n => [n, { q: B[n].quaternion.clone(), p: B[n].position.clone() }]));
+  else delete drafts[frame];
+}
+function goto(f, first) {
+  if (!model) return;
+  f = Math.max(1, Math.min(P.frames || 1, Math.round(f)));
+  if (!first) stashDraft();
+  frame = f; sampleAt(f); model.updateMatrixWorld(true); if (ghost) ghost.updateMatrixWorld(true);
+  rebase();
+  edited = new Set();
+  if (drafts[f]) { for (const [n, v] of Object.entries(drafts[f])) { B[n].quaternion.copy(v.q); B[n].position.copy(v.p); edited.add(n); } model.updateMatrixWorld(true); }
+  undoStack = []; captureFeet(); attachGizmo(); refresh();
+}
+function rebase() {   // the pose on screen becomes the reference of the Channel Box / "changed" checks
+  base = {}; for (const n of Object.keys(B)) base[n] = { q: wq(B[n]), p: wp(B[n]), lq: B[n].quaternion.clone(), lp: B[n].position.clone() };
+  followGrab();
+}
+function buildStrip() {
+  const st = $("strip"); st.innerHTML = ""; st.setAttribute("aria-valuemax", P.frames || 1);
+  for (let f = 1; f <= (P.frames || 1); f++) {
+    const c = document.createElement("div"); c.className = "cell" + (!keysMode() && (P.keys || []).includes(f) ? " key" : "");
+    c.dataset.f = f; c.textContent = (P.frames || 1) <= 40 || f % 5 === 0 || f === 1 ? f : ""; st.append(c);
+  }
+  for (const s of ["L", "R"]) {
+    const ln = $("lane" + s); ln.innerHTML = "";
+    for (let f = 1; f <= (P.frames || 1); f++) { const i = document.createElement("i"); i.dataset.f = f; ln.append(i); }
+  }
+}
+function renderLanes() {
+  if (!keysMode()) return;
+  for (const s of ["L", "R"]) for (const i of $("lane" + s).children) {
+    const f = +i.dataset.f; i.classList.toggle("on", CT[s].has(cyc(f))); i.classList.toggle("mirror", cyc(f) !== f);
+  }
+}
+function renderStrip() {
+  if (!model) return;
+  const saved = new Set(mine().filter(a => a.status !== "done").map(a => a.frame || 1));
+  const live = new Set(Object.keys(drafts).map(Number)); if (editedList().length) live.add(frame); else live.delete(frame);
+  const km = keysMode();
+  for (const c of $("strip").children) {
+    const f = +c.dataset.f; c.classList.toggle("cur", f === frame);
+    if (km) { c.classList.toggle("key", f === cyc(f) && KEYS.has(f)); c.classList.toggle("loopend", f !== cyc(f) && KEYS.has(cyc(f)));
+              c.classList.toggle("kdrop", !!keyDrag && keyDrag.to === f); }
+    c.querySelectorAll(".dot").forEach(d => d.remove());
+    if (live.has(f)) { const d = document.createElement("i"); d.className = "dot draft"; c.append(d); }
+    if (saved.has(f)) { const d = document.createElement("i"); d.className = "dot saved"; c.append(d); }
+  }
+  $("fcount").innerHTML = "F<b></b> / " + (P.frames || 1); $("fcount").querySelector("b").textContent = frame;
+  $("strip").setAttribute("aria-valuenow", frame);
+  renderLanes(); renderRef();
+}
+function frameAtX(x) {
+  const r = $("strip").getBoundingClientRect(); return 1 + Math.floor(Math.max(0, Math.min(0.9999, (x - r.left) / r.width)) * (P.frames || 1));
+}
+let scrubbing = false, keyDrag = null;
+$("strip").addEventListener("pointerdown", e => {
+  stopPlay(); try { $("strip").setPointerCapture(e.pointerId); } catch {}
+  const f = frameAtX(e.clientX);
+  if (keysMode() && (e.button === 1 || e.shiftKey) && KEYS.has(cyc(f))) {     // Shift / middle drag = move the key
+    e.preventDefault(); keyDrag = { from: cyc(f), to: f }; renderStrip(); return;
+  }
+  scrubbing = true; goto(f);
+});
+$("strip").addEventListener("pointermove", e => {
+  const f = frameAtX(e.clientX);
+  if (keyDrag) { if (f !== keyDrag.to) { keyDrag.to = f; renderStrip(); } return; }
+  if (scrubbing && f !== frame) goto(f);
+});
+$("strip").addEventListener("pointerup", () => {
+  scrubbing = false;
+  if (!keyDrag) return;
+  const { from } = keyDrag, to = cyc(keyDrag.to); keyDrag = null;
+  if (to !== from) {
+    if (KEYS.has(to)) $("status").textContent = "F" + to + " đã có key: xoá key đó trước rồi dời.";
+    else { const k = KEYS.get(from); KEYS.delete(from); KEYS.set(to, { ...k, at: new Date().toISOString() }); dirtyKeys.add(from); dirtyKeys.add(to);
+           keysChanged(); goto(to, true); $("status").textContent = "Đã dời key F" + from + " → F" + to + "."; }
+  }
+  renderStrip();
+});
+$("strip").addEventListener("auxclick", e => e.preventDefault());
+const keyList = () => keysMode() ? [...new Set([...KEYS.keys(), ...(P.loop ? [P.frames] : [])])].sort((a, b) => a - b)
+  : [...new Set([1, ...(P.keys || []), P.frames || 1])].sort((a, b) => a - b);
+$("prevF").onclick = () => { stopPlay(); goto(frame - 1); };
+$("nextF").onclick = () => { stopPlay(); goto(frame + 1); };
+$("prevKey").onclick = () => { stopPlay(); const k = keyList().filter(f => f < frame).pop(); if (k) goto(k); };
+$("nextKey").onclick = () => { stopPlay(); const k = keyList().find(f => f > frame); if (k) goto(k); };
+function stopPlay() { playing = false; $("play").textContent = "Phát"; }
+$("play").onclick = () => {
+  if (playing) { stopPlay(); return; }
+  if ((P.frames || 1) < 2) { $("status").textContent = "Clip này chỉ có 1 pose nên không có gì để phát."; return; }
+  playing = true; $("play").textContent = "Dừng"; playT0 = performance.now(); playF0 = frame >= (P.frames || 1) ? 1 : frame;
+  gizmo.detach();
+};
+function tickPlay(now) {
+  if (!playing) return;
+  const f = 1 + ((playF0 - 1 + Math.floor((now - playT0) / 1000 * (P.fps || 30))) % (P.frames || 1));
+  if (f !== frame) goto(f);
+}
+
+function buildMarkers() {
+  for (const m of Object.values(markers)) overlay.remove(m);
+  for (const t of Object.values(sticks)) overlay.remove(t);
+  markers = {}; sticks = {};
+  for (const n of JOINTS) if (B[n]) {
+    const m = new THREE.Mesh(markerGeo, jointMat()); m.renderOrder = 11; m.userData.bone = n; overlay.add(m); markers[n] = m;
+  }
+  for (const n of Object.keys(markers)) {          // stick to the nearest ancestor that has a joint dot
+    let pa = null;
+    for (let o = B[n].parent; o; o = o.parent) if (markers[o.name]) { pa = o.name; break; }
+    if (!pa) continue;
+    const t = new THREE.Mesh(stickGeo, jointMat()); t.renderOrder = 10; t.userData = { from: pa, to: n }; overlay.add(t); sticks[n] = t;
+  }
+}
+const jointPos = n => n === "slingshot_0" ? B[n].localToWorld(new V3(0, 0, 0)) : wp(B[n]);
+function toScreen(p) {
+  const r = canvas.getBoundingClientRect(), v = p.clone().project(camera);
+  return { x: (v.x + 1) / 2 * r.width, y: (1 - v.y) / 2 * r.height, front: v.z < 1 };
+}
+const UP = new V3(0, 1, 0);
+function placeMarkers() {
+  const show = $("tJoints").classList.contains("on");
+  const P3 = {}, D = {};
+  let dmin = Infinity, dmax = 0;
+  for (const n of Object.keys(markers)) {
+    P3[n] = jointPos(n); D[n] = camera.position.distanceTo(P3[n]);
+    dmin = Math.min(dmin, D[n]); dmax = Math.max(dmax, D[n]);
+  }
+  const op = {}, SZ = {};
+  const pxW = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) / Math.max(1, canvas.clientHeight);
+  for (const [n, m] of Object.entries(markers)) {
+    const far = dmax > dmin ? (D[n] - dmin) / (dmax - dmin) : 0;          // 0 = nearest joint, 1 = farthest
+    let o = 0.5 * (1 - 0.55 * far);                                        // default 50 %, fading with distance
+    if (hoverXY) {
+      const sp = toScreen(P3[n]), px = Math.hypot(sp.x - hoverXY[0], sp.y - hoverXY[1]);
+      o += (1 - o) * Math.max(0, Math.min(1, 1 - (px - 12) / 60));         // mouse close -> 100 %
+    }
+    const on = selSet.has(n);
+    if (on) o = 1;
+    op[n] = o;
+    m.position.copy(P3[n]); m.visible = show;
+    m.material.color.copy(on ? COL.sel : edited.has(n) ? COL.edit : COL.joint);
+    m.material.opacity = o;
+    SZ[n] = D[n] * pxW;                                                    // world size of 1 screen pixel there
+    m.scale.setScalar(SZ[n] * DOT_PX * (n === sel ? 1.5 : on ? 1.25 : 1));
+  }
+  for (const [n, t] of Object.entries(sticks)) {
+    const a = P3[t.userData.from], b = P3[n], d = b.clone().sub(a), len = d.length();
+    t.visible = show && len > 1e-4;
+    if (!t.visible) continue;
+    const on = selSet.has(n);
+    t.position.copy(a); t.quaternion.setFromUnitVectors(UP, d.divideScalar(len)); const w = (SZ[n] + SZ[t.userData.from]) / 2 * STICK_PX * (on ? 1.6 : 1); t.scale.set(w, len, w);
+    t.material.color.copy(on ? COL.sel : edited.has(n) ? COL.edit : COL.joint);
+    t.material.opacity = Math.min(op[n], op[t.userData.from]) * 0.85;
+  }
+}
+
+// ---------------------------------------------------------------- selection + gizmo
+// Click = pick the joint dot nearest the cursor on screen (within 14 px); Shift+click adds / removes it. Drag on empty
+// space (not on the gizmo, no Alt) = marquee: joints inside the box are selected (Shift adds them). The gizmo works
+// on the last picked joint; in rotate mode the other selected joints turn by the same world rotation.
+let downAt = null, marq = null, marqDiv = null;
+const visJoints = () => $("tJoints").classList.contains("on") ? Object.keys(markers) : [];
+function pickAt(x, y) {
+  let best = null, bd = 14, bz = Infinity;
+  for (const n of visJoints()) {
+    const p = jointPos(n), sp = toScreen(p); if (!sp.front) continue;
+    const d = Math.hypot(sp.x - x, sp.y - y), z = camera.position.distanceTo(p);
+    if (d > 14) continue;
+    if (d < bd - 3 || (Math.abs(d - bd) <= 3 && z < bz)) { best = n; bd = d; bz = z; }   // overlapping: nearer the camera wins
+  }
+  return best;
+}
+const localXY = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+canvas.addEventListener("pointerdown", e => {
+  downAt = localXY(e);
+  marq = e.button === 0 && !e.altKey && !gizmo.axis ? { x0: downAt[0], y0: downAt[1], shift: e.shiftKey, on: false } : null;
+});
+canvas.addEventListener("pointermove", e => {
+  hoverXY = localXY(e);
+  if (!marq || gizmo.dragging || !(e.buttons & 1)) return;
+  const [x, y] = hoverXY;
+  if (!marq.on && Math.hypot(x - marq.x0, y - marq.y0) < 5) return;
+  marq.on = true; marq.x1 = x; marq.y1 = y;
+  if (!marqDiv) { marqDiv = document.createElement("div"); marqDiv.className = "marquee"; viewer.append(marqDiv); }
+  const r = canvas.getBoundingClientRect(), vr = viewer.getBoundingClientRect();
+  Object.assign(marqDiv.style, { left: (r.left - vr.left + Math.min(x, marq.x0)) + "px", top: (r.top - vr.top + Math.min(y, marq.y0)) + "px",
+    width: Math.abs(x - marq.x0) + "px", height: Math.abs(y - marq.y0) + "px", display: "block" });
+});
+canvas.addEventListener("pointerleave", () => { hoverXY = null; });
+canvas.addEventListener("pointerup", e => {
+  const m = marq; marq = null;
+  if (marqDiv) marqDiv.style.display = "none";
+  if (m && m.on) {                                  // marquee select
+    const xa = Math.min(m.x0, m.x1), xb = Math.max(m.x0, m.x1), ya = Math.min(m.y0, m.y1), yb = Math.max(m.y0, m.y1);
+    const inside = visJoints().filter(n => { const sp = toScreen(jointPos(n)); return sp.front && sp.x >= xa && sp.x <= xb && sp.y >= ya && sp.y <= yb; });
+    const names = m.shift ? [...selSet, ...inside.filter(n => !selSet.has(n))] : inside;
+    setSelection(names, inside.length ? inside[inside.length - 1] : sel);
+    return;
+  }
+  if (!downAt || e.altKey || gizmo.dragging) return;
+  const [x, y] = localXY(e);
+  if (Math.hypot(x - downAt[0], y - downAt[1]) > 4) return;
+  const n = pickAt(x, y);
+  if (n && e.shiftKey) {                            // Shift+click: add / remove
+    if (selSet.has(n)) { const rest = [...selSet].filter(k => k !== n); setSelection(rest, n === sel ? rest[rest.length - 1] : sel); }
+    else setSelection([...selSet, n], n);
+  } else if (n) setSelection([n], n);
+  else if (!gizmo.axis && !e.shiftKey) select(null);
+});
+function setSelection(names, primary) {
+  if (playing) stopPlay();
+  selSet = new Set(names.filter(n => markers[n]));
+  sel = primary && selSet.has(primary) ? primary : [...selSet].pop() || null;
+  if (!sel) { gizmo.detach(); refresh(); return; }
+  attachGizmo(); refresh();
+}
+function select(n) { setSelection(n ? [n] : [], n); }
+function attachGizmo() {
+  if (!sel) return;
+  const isAnkle = sel.startsWith("Ankle_");
+  if (mode === "select") { gizmo.detach(); return; }
+  if (mode === "translate" && !MOVABLE.has(sel)) {
+    $("status").textContent = (NAMES[sel] || sel) + " chỉ xoay được (E). Dời (W) dùng cho hông, bàn chân và cổ tay (IK tay).";
+    setMode("rotate"); return;
+  }
+  gizmo.setMode(mode);
+  if (mode === "translate" && isAnkle) {
+    const s = sel.slice(-1); footHandle[s].position.copy(footT[s]); footHandle[s].quaternion.set(0, 0, 0, 1); footHandle[s].updateMatrixWorld(true);
+    gizmo.attach(footHandle[s]);
+  } else if (mode === "translate" && isWrist(sel)) {
+    const s = sel.slice(-1); handQ[s] = wq(B[sel]);
+    handHandle[s].position.copy(wp(B[sel])); handHandle[s].quaternion.set(0, 0, 0, 1); handHandle[s].updateMatrixWorld(true);
+    gizmo.attach(handHandle[s]);
+  } else gizmo.attach(B[sel]);
+}
+function setMode(m) {
+  mode = m; $("mRot").classList.toggle("on", m === "rotate"); $("mMove").classList.toggle("on", m === "translate");
+  $("mSel").classList.toggle("on", m === "select");
+  attachGizmo(); refresh();
+}
+$("mRot").onclick = () => setMode("rotate");
+$("mSel").onclick = () => setMode("select");
+$("mScale").onclick = () => { $("status").textContent = "Rig không cho scale khớp: dùng W (dời) hoặc E (xoay)."; };
+$("mMove").onclick = () => setMode("translate");
+$("mSpace").onclick = () => { const s = gizmo.space === "local" ? "world" : "local"; gizmo.setSpace(s); $("mSpace").firstChild.textContent = "Trục: " + s + " "; };
+gizmo.addEventListener("dragging-changed", e => {
+  orbit.enabled = !e.value;
+  if (e.value) {
+    stopPlay(); pushUndo(); if (sel === GUN) gunGrab();
+    multiQ0 = mode === "rotate" && selSet.size > 1 ? { p: wq(B[sel]), o: Object.fromEntries([...selSet].filter(n => n !== sel).map(n => [n, wq(B[n])])) } : null;
+  } else { multiQ0 = null; commitEdit(); }
+});
+const depth = n => { let d = 0; for (let o = B[n]; o; o = o.parent) d++; return d; };
+function rotateOthers() {        // same world rotation as the gizmo joint, applied parent -> child
+  if (!multiQ0) return;
+  const dq = wq(B[sel]).multiply(multiQ0.p.clone().invert());
+  for (const n of Object.keys(multiQ0.o).sort((a, b) => depth(a) - depth(b))) {
+    setWorldQuat(B[n], dq.clone().multiply(multiQ0.o[n])); edited.add(n);
+  }
+  model.updateMatrixWorld(true);
+}
+gizmo.addEventListener("objectChange", () => {
+  if (!sel || !model) return;
+  model.updateMatrixWorld(true);
+  const isAnkle = sel.startsWith("Ankle_"), s = sel.slice(-1);
+  if (isAnkle && mode === "translate") { footT[s] = footHandle[s].position.clone(); solveLeg(s); refresh(); }
+  else if (isWrist(sel) && mode === "translate") { solveArm(s, handHandle[s].position); followEdit(); refresh(); }
+  else { rotateOthers(); afterEdit(); }
+});
+let FREL = null;            // prop / grip relation taken at rebase (each frame change, each key)
+function followGrab() {
+  if (!hasFollow()) { FREL = null; return; }
+  model.updateMatrixWorld(true);
+  const c = P.follow, Wp = B[c.prop].matrixWorld;
+  FREL = { w: B[c.to].matrixWorld.clone().invert().multiply(Wp), h: Wp.clone().invert().multiply(B[ARMS[c.hand][2]].matrixWorld) };
+}
+function followEdit() {     // after an edit: the prop rides its bone; editing the prop moves the hand; editing the arm moves the grip
+  if (!FREL || !hasFollow()) return;
+  const c = P.follow, arm = ARMS[c.hand];
+  if (sel === c.prop) { FREL.w = B[c.to].matrixWorld.clone().invert().multiply(B[c.prop].matrixWorld); propHandTo(B[c.prop].matrixWorld.clone(), FREL.h); }
+  else if (arm.includes(sel)) FREL.h = B[c.prop].matrixWorld.clone().invert().multiply(B[arm[2]].matrixWorld);
+  else propHandTo(B[c.to].matrixWorld.clone().multiply(FREL.w), FREL.h);
+  edited.add(c.prop); arm.forEach(n => edited.add(n));
+}
+function afterEdit() {      // a joint was rotated / the hip moved (gizmo or Channel Box)
+  {
+    edited.add(sel);
+    if (sel === GUN) gunFollowHand();
+    if (sel === "Root_M" && lockFeet) { solveLeg("L"); solveLeg("R"); }
+    else if (LEGS.L.includes(sel) || LEGS.R.includes(sel)) captureFeet();   // FK edit on a leg moves its foot target
+    else if (lockFeet && sel === "Spine1_M") {}                              // upper body: feet untouched
+    followEdit();
+  }
+  refresh();
+}
+$("tLock").onclick = () => { lockFeet = !lockFeet; $("tLock").classList.toggle("on", lockFeet); };
+$("tGunR").onclick = () => { gunFollow = !gunFollow; $("tGunR").classList.toggle("on", gunFollow); };
+$("tGhost").onclick = () => { const on = !$("tGhost").classList.contains("on"); $("tGhost").classList.toggle("on", on); if (ghost) ghost.visible = on; };
+$("tJoints").onclick = () => $("tJoints").classList.toggle("on");
+$("undo").onclick = () => { const sn = undoStack.pop(); if (sn) restore(sn); };
+$("resetAll").onclick = () => { if (!model) return; pushUndo(); for (const n of Object.keys(B)) { B[n].quaternion.copy(base[n].lq); B[n].position.copy(base[n].lp); } model.updateMatrixWorld(true); edited.clear(); delete drafts[frame]; captureFeet(); attachGizmo(); refresh(); };
+$("resetJoint").onclick = () => {
+  if (!sel) return; pushUndo();
+  for (const n of selSet) { B[n].quaternion.copy(base[n].lq); B[n].position.copy(base[n].lp); edited.delete(n); }
+  model.updateMatrixWorld(true);
+  if (selSet.has("Root_M") && lockFeet) { solveLeg("L"); solveLeg("R"); }
+  attachGizmo(); refresh(); commitEdit();
+};
+document.addEventListener("keydown", e => {
+  if (e.target.matches("textarea, input")) return;
+  const k = e.key.toLowerCase();
+  if (e.key === "Alt") { e.preventDefault(); return; }        // keep the browser menu bar from taking the focus
+  if (e.ctrlKey || e.metaKey) {
+    if (k === "z") { e.preventDefault(); $("undo").click(); }
+    else if (k === "c") { e.preventDefault(); copyKey(e.shiftKey); }
+    else if (k === "v") { e.preventDefault(); e.shiftKey ? pasteHold() : pasteKey(); }
+    return;
+  }
+  if (k === "s" && keysMode()) { $("kSet").click(); return; }
+  if (e.key === "Delete" && keysMode()) { $("kDel").click(); return; }
+  if (k === "g" && P && P.ref) { $("tRef").click(); return; }
+  if (k === "q") setMode("select"); else if (k === "w") setMode("translate"); else if (k === "e") setMode("rotate");
+  else if (k === "r") $("mScale").click();
+  else if (k === "f") frameSel(); else if (k === "a") frameAll();
+  else if (k === "+" || k === "=") gizmo.setSize(Math.min(3, gizmo.size * 1.2));
+  else if (k === "-" || k === "_") gizmo.setSize(Math.max(0.3, gizmo.size / 1.2));
+  else if (e.key === "ArrowUp" && sel) { e.preventDefault(); pickwalk(-1); }
+  else if (e.key === "ArrowDown" && sel) { e.preventDefault(); pickwalk(1); }
+  else if (k === "," || k === ".") { stopPlay(); (e.altKey ? (k === "," ? $("prevF") : $("nextF")) : (k === "," ? $("prevKey") : $("nextKey"))).click(); }
+  else if (k === "x") $("mSpace").click(); else if (k === "j") $("tJoints").click();
+  else if (k === "escape") select(null);
+  else if ((e.ctrlKey || e.metaKey) && k === "z") { e.preventDefault(); $("undo").click(); }
+  else if ("1234".includes(k)) setCam(["right", "front", "top", "persp"][+k - 1]);
+  else if (e.key === "ArrowLeft") { e.preventDefault(); (e.shiftKey ? $("prevKey") : $("prevF")).click(); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); (e.shiftKey ? $("nextKey") : $("nextF")).click(); }
+  else if (e.key === " ") { e.preventDefault(); $("play").click(); }
+});
+
+// ---------------------------------------------------------------- Maya: framing, pickwalk
+function frameAt(t, dist) {
+  const dir = camera.position.clone().sub(orbit.target).normalize();
+  orbit.target.copy(t); camera.position.copy(t.clone().add(dir.multiplyScalar(dist))); orbit.update();
+}
+function frameSel() { if (model && sel) frameAt(wp(B[sel]), 1.6); }
+function frameAll() { if (model) frameAt(new V3(0, 0.9 * camFit, 0), 6.5 * camFit); }
+function pickwalk(dir) {     // up = parent joint, down = first child joint (joints with a marker only)
+  let n = null;
+  if (dir < 0) { for (let o = B[sel].parent; o; o = o.parent) if (markers[o.name]) { n = o.name; break; } }
+  else { const q = [...B[sel].children]; while (q.length && !n) { const o = q.shift(); if (markers[o.name]) n = o.name; else q.push(...o.children); } }
+  if (n) select(n);
+}
+
+// ---------------------------------------------------------------- copy / paste key
+// Copy = the local pose (as now on screen, edits included) of the selected joint (Shift: + its child joints), or of
+// every joint when nothing is selected. Paste = onto the current frame as an edit (red dot), saved like any edit.
+// Only the joints with a handle are copied: those are the ones the Blender side applies.
+let keyClip = null;
+function copyKey(withChildren) {
+  if (!model) return;
+  const picked = [...selSet];
+  let names = picked.length ? [...picked] : JOINTS.filter(n => B[n]);
+  if (picked.length && withChildren) for (const n0 of picked) B[n0].traverse(o => { if (o !== B[n0] && markers[o.name] && !names.includes(o.name)) names.push(o.name); });
+  keyClip = { from: frame, sel, withChildren: !!(picked.length && withChildren),
+              bones: Object.fromEntries(names.map(n => [n, [B[n].position.clone(), B[n].quaternion.clone()]])) };
+  const what = !picked.length ? "cả người" : (picked.length > 1 ? picked.length + " khớp" : (NAMES[sel] || sel)) + (withChildren ? " + khớp con" : "");
+  $("clipInfo").textContent = "Đã copy F" + frame + ": " + what;
+  $("status").textContent = "Đã copy pose " + what + " ở F" + frame + ". Sang frame khác rồi bấm Paste (Ctrl+V).";
+  refresh();
+}
+function pasteHere() {
+  const names = Object.keys(keyClip.bones);
+  for (const n of names) { B[n].position.copy(keyClip.bones[n][0]); B[n].quaternion.copy(keyClip.bones[n][1]); edited.add(n); }
+  model.updateMatrixWorld(true);
+  const legs = names.some(n => LEGS.L.includes(n) || LEGS.R.includes(n));
+  if (legs) captureFeet();
+  else if (names.includes("Root_M") && lockFeet) { solveLeg("L"); solveLeg("R"); }   // hip pasted, feet stay planted
+  return names.length;
+}
+function pasteKey() {
+  if (!model || !keyClip) return;
+  stopPlay(); pushUndo(); const n = pasteHere(); attachGizmo(); refresh();
+  $("status").textContent = "Đã paste " + n + " khớp từ F" + keyClip.from + " vào F" + frame + ". " +
+    (keysMode() ? (autoKey ? "Đã đặt key." : "Bấm ◆ Key (S) để giữ.") : "Bấm \"Lưu điều chỉnh\" để giữ.");
+  commitEdit();
+}
+function pasteHold() {    // hold the copied pose from here up to the frame before the next key (stepped blocking)
+  if (!model || !keyClip) return;
+  if (keysMode()) { pasteKey(); return; }     // page keys: a key holds by itself in stepped mode
+  stopPlay();
+  const f0 = frame, nk = (P.keys || []).find(f => f > f0) || (P.frames || 1) + 1, last = Math.max(f0, nk - 1);
+  for (let f = f0; f <= last; f++) { if (f !== frame) goto(f); pasteHere(); }
+  goto(f0); attachGizmo(); refresh();
+  $("status").textContent = "Đã paste pose F" + keyClip.from + " vào F" + f0 + (last > f0 ? "–F" + last : "") + ". Bấm \"Lưu điều chỉnh\" để lưu cả các frame này.";
+}
+$("copyKey").onclick = e => copyKey(e.shiftKey);
+$("pasteKey").onclick = e => (e.shiftKey ? pasteHold() : pasteKey());
+$("pasteHold").onclick = () => pasteHold();
+
+// ---------------------------------------------------------------- Channel Box
+// Rotate X/Y/Z = degrees about the joint's own local axes, relative to the original pose of this frame (0 = untouched).
+// Translate X/Y/Z (hip, feet) = cm in Blender world axes (X, Y, Z up) from the original position.
+const CH_R = ["Rotate X", "Rotate Y", "Rotate Z"], CH_T = ["Translate X", "Translate Y", "Translate Z"];
+let cbFor = null, cbDrag = null;
+function chanRot(n) {
+  const e = new THREE.Euler().setFromQuaternion(base[n].lq.clone().invert().multiply(B[n].quaternion), "XYZ");
+  return [e.x, e.y, e.z].map(THREE.MathUtils.radToDeg);
+}
+function setRot(n, v) {
+  const d = new Q().setFromEuler(new THREE.Euler(...v.map(THREE.MathUtils.degToRad), "XYZ"));
+  B[n].quaternion.copy(base[n].lq.clone().multiply(d)); model.updateMatrixWorld(true);
+}
+const posNow = n => n.startsWith("Ankle_") ? footT[n.slice(-1)].clone() : wp(B[n]);
+function chanPos(n) { const d = posNow(n).sub(base[n].p); return [d.x * 100, -d.z * 100, d.y * 100]; }
+function setPos(n, v) {
+  const t = base[n].p.clone().add(new V3(v[0], v[2], -v[1]).multiplyScalar(0.01));
+  if (n.startsWith("Ankle_")) { footT[n.slice(-1)] = t; solveLeg(n.slice(-1)); return; }
+  if (isWrist(n)) { const s = n.slice(-1); handQ[s] = wq(B[n]); solveArm(s, t); return; }
+  if (n === GUN) gunGrab();
+  B[n].parent.updateMatrixWorld(true); B[n].position.copy(B[n].parent.worldToLocal(t)); model.updateMatrixWorld(true);
+}
+function cbSet(kind, i, val) {
+  if (!sel || !Number.isFinite(val)) return;
+  if (kind === "r") { const v = chanRot(sel); v[i] = val; if (sel === GUN) gunGrab(); setRot(sel, v); afterEdit(); }
+  else { const v = chanPos(sel); v[i] = val; setPos(sel, v); if (sel.startsWith("Ankle_") || isWrist(sel)) refresh(); else afterEdit(); }
+  attachGizmo();
+}
+function buildCB() {
+  const cb = $("cb"); cb.innerHTML = ""; cbFor = sel; cb.hidden = !sel || !model;
+  if (cb.hidden) return;
+  const rows = [["r", CH_R, "Xoay (độ, trục local của khớp, so với pose gốc)"]];
+  if (MOVABLE.has(sel)) rows.push(["t", CH_T, "Dời (cm, trục Blender, so với pose gốc)"]);
+  for (const [kind, names, hd] of rows) {
+    const h = document.createElement("div"); h.className = "hd"; h.textContent = hd; cb.append(h);
+    names.forEach((nm, i) => {
+      const l = document.createElement("div"); l.className = "lbl"; l.textContent = nm; l.title = "Kéo ngang để chỉnh (Shift chậm, Ctrl nhanh)";
+      const inp = document.createElement("input"); inp.type = "text"; inp.inputMode = "decimal"; inp.dataset.k = kind; inp.dataset.i = i;
+      inp.setAttribute("aria-label", nm);
+      inp.addEventListener("keydown", e => {
+        if (e.key === "Enter") { pushUndo(); cbSet(kind, i, parseFloat(inp.value.replace(",", "."))); commitEdit(); inp.select(); }
+        else if (e.key === "Escape") { inp.blur(); }
+        else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+          e.preventDefault(); pushUndo();
+          const nv = (parseFloat(inp.value.replace(",", ".")) || 0) + (e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 0.1 : e.ctrlKey ? 10 : 1);
+          cbSet(kind, i, nv); commitEdit(); inp.value = nv.toFixed(2);
+        }
+      });
+      inp.addEventListener("blur", () => refresh());
+      l.addEventListener("pointerdown", e => {
+        if (!sel) return; e.preventDefault(); l.setPointerCapture(e.pointerId); l.classList.add("drag"); stopPlay(); pushUndo();
+        cbDrag = { kind, i, x0: e.clientX, v0: (kind === "r" ? chanRot(sel) : chanPos(sel))[i] };
+      });
+      l.addEventListener("pointermove", e => {
+        if (!cbDrag || cbDrag.kind !== kind || cbDrag.i !== i) return;
+        const step = (kind === "r" ? 0.5 : 0.1) * (e.shiftKey ? 0.2 : e.ctrlKey ? 5 : 1);
+        cbSet(kind, i, cbDrag.v0 + (e.clientX - cbDrag.x0) * step);
+      });
+      const end = () => { if (cbDrag) commitEdit(); cbDrag = null; l.classList.remove("drag"); };
+      l.addEventListener("pointerup", end); l.addEventListener("pointercancel", end);
+      cb.append(l, inp);
+    });
+  }
+}
+function renderCB() {
+  if (cbFor !== sel || $("cb").hidden !== !(sel && model)) buildCB();
+  if (!sel || !model) return;
+  const vals = { r: chanRot(sel), t: MOVABLE.has(sel) ? chanPos(sel) : null };
+  for (const inp of $("cb").querySelectorAll("input")) {
+    if (inp === document.activeElement) continue;
+    const v = vals[inp.dataset.k][+inp.dataset.i];
+    inp.value = (Math.abs(v) < 0.005 ? 0 : v).toFixed(2);
+    inp.classList.toggle("chg", Math.abs(v) >= 0.005);
+  }
+}
+
+// ---------------------------------------------------------------- what changed
+function deltaDeg(n) { return THREE.MathUtils.radToDeg(2 * Math.acos(Math.min(1, Math.abs(wq(B[n]).multiply(base[n].q.clone().invert()).w)))); }
+function localDeg(n) { return THREE.MathUtils.radToDeg(B[n].quaternion.angleTo(base[n].lq)); }
+function changed(n) { return localDeg(n) > 0.2 || B[n].position.distanceTo(base[n].lp) > 1e-4; }
+function editedList() { return [...edited].filter(n => B[n] && changed(n)); }
+function refresh() {
+  placeMarkers();
+  const list = editedList();
+  $("changes").innerHTML = "";
+  for (const n of list) {
+    const d = document.createElement("div"), a = document.createElement("span"), b = document.createElement("span");
+    a.textContent = NAMES[n] || n;
+    b.textContent = n === "Root_M" && B[n].position.distanceTo(base[n].lp) > 1e-4
+      ? localDeg(n).toFixed(1) + "° · " + (wp(B[n]).distanceTo(base[n].p) * 100).toFixed(1) + " cm" : localDeg(n).toFixed(1) + "°";
+    d.append(a, b); $("changes").append(d);
+  }
+  $("selName").textContent = !sel ? "Chưa chọn khớp" : selSet.size > 1 ? selSet.size + " khớp · gizmo: " + (NAMES[sel] || sel) : (NAMES[sel] || sel);
+  renderCB();
+  $("selHint").textContent = !sel ? "Bấm vào một khớp, hoặc kéo quét một vùng để chọn nhiều. Giữ Shift để chọn thêm." :
+    selSet.size > 1 ? "Đang chọn " + [...selSet].map(n => NAMES[n] || n).join(", ") + ". Xoay (E): các khớp cùng xoay theo gizmo. Ctrl+C copy tất cả." :
+    MOVABLE.has(sel) ? (sel === "Root_M" ? "Xoay (E) hoặc dời hông (W). Khóa chân giữ hai bàn chân trên sàn."
+      : sel === GUN ? "Dời (W) / xoay (E) súng. Bật \"Tay phải bám súng\" để tay phải giữ chỗ cầm."
+      : isWrist(sel) ? "Dời (W) để kéo bàn tay, vai và khuỷu tự gập theo IK, hướng bàn tay giữ nguyên. Xoay (E) để xoay cổ tay."
+      : "Dời (W) để kéo bàn chân, gối tự gập theo IK. Xoay (E) để đổi hướng bàn chân.")
+    : "Kéo vòng gizmo (E) hoặc chỉnh trong Channel Box. X đổi trục local/world, ↑ ↓ sang khớp cha / con.";
+  $("resetJoint").disabled = !sel || ![...selSet].some(changed);
+  $("resetJoint").textContent = selSet.size > 1 ? "Trả " + selSet.size + " khớp về gốc" : "Trả khớp này về gốc";
+  const tag = $("selTag"); tag.hidden = !sel;
+  if (sel) tag.textContent = (NAMES[sel] || sel) + (changed(sel) ? " · " + localDeg(sel).toFixed(1) + "°" : "");
+  renderStrip();
+  const nf = draftFrames().length;
+  // outside claude.ai (local preview) there is no db: the button downloads the adjustments as a .json file instead
+  // (user 2026-10-22 "Sao ko lưu được pose đã chỉnh": edited on localhost, the button stayed disabled)
+  if (keysMode()) {          // page keys: the button keys every edited frame and keeps the note for the AI
+    const txt = $("text").value.trim();
+    $("save").textContent = nf ? "Đặt key " + nf + " frame" + (txt ? " + lưu ghi chú" : "") : "Lưu ghi chú";
+    $("save").disabled = (db && !canWrite) || (!nf && !(txt && db));
+    $("save").title = "Key lưu thẳng trên trang. Ghi chú gửi kèm cho AI ở frame đang xem.";
+  } else {
+  $("save").textContent = (db ? "Lưu điều chỉnh" : "Tải file điều chỉnh") + (nf > 1 ? " (" + nf + " frame)" : "");
+  $("save").disabled = (db && !canWrite) || !nf;
+  $("save").title = !nf ? "Chưa chỉnh khớp nào" : !db ? "Trang đang mở ngoài claude.ai: tải file .json rồi gửi cho AI" : "";
+  }
+  if (keysMode()) {
+    $("kDel").disabled = !KEYS.has(cyc(frame)) || KEYS.size <= 1;
+    $("kAuto").textContent = "Auto key: " + (autoKey ? "bật" : "tắt"); $("kAuto").classList.toggle("on", autoKey);
+    $("kInterp").textContent = ANIM.interp === "step" ? "Bậc thang" : "Spline";
+    $("kLock").textContent = "Bám sàn: " + (ANIM.lock ? "bật" : "tắt");
+  }
+  $("pasteKey").disabled = $("pasteHold").disabled = !keyClip || !model;
+}
+
+// ---------------------------------------------------------------- export for Blender
+// glTF world (Y up) -> Blender world (Z up): (x, y, z) -> (x, -z, y); quaternions keep w, axis maps the same way.
+const toBl = v => [+v.x.toFixed(5), +(-v.z).toFixed(5), +v.y.toFixed(5)];
+const qToBl = q => [+q.w.toFixed(6), +q.x.toFixed(6), +(-q.z).toFixed(6), +q.y.toFixed(6)];
+function buildAdjust() {
+  const bones = {}, local = {};
+  const list = editedList();
+  if (B[GUN] && !list.includes(GUN) && list.length && (deltaDeg(GUN) > 0.2 || wp(B[GUN]).distanceTo(base[GUN].p) > 1e-4)) list.push(GUN);
+  for (const n of list) {
+    const dq = wq(B[n]).multiply(base[n].q.clone().invert());
+    bones[n] = { dq: qToBl(dq), deg: +deltaDeg(n).toFixed(2) };
+    local[n] = { q: B[n].quaternion.toArray().map(x => +x.toFixed(6)), p: B[n].position.toArray().map(x => +x.toFixed(4)) };
+  }
+  const root = { dp: toBl(wp(B.Root_M).sub(base.Root_M.p)) };
+  if (bones[GUN]) bones[GUN].dp = toBl(wp(B[GUN]).sub(base[GUN].p));     // gun head moved (world, Blender axes)
+  const legs = {};
+  for (const s of ["L", "R"]) legs[s] = { ankle: toBl(wp(B[LEGS[s][2]])), knee: toBl(wp(B[LEGS[s][1]])),
+    ankleDq: qToBl(wq(B[LEGS[s][2]]).multiply(base[LEGS[s][2]].q.clone().invert())) };
+  return { bones, local, root, legs };
+}
+
+// ---------------------------------------------------------------- db: adjusts + rounds
+let db = null, user = null, comments = null, myId = null, canWrite = true, adjs = [], rounds = {}, armed = false;
+const mine = () => adjs.filter(a => a.clip === P.clip && a.version === P.version);
+function fmtTime(s) { try { return new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }); } catch { return s; } }
+function fail(e) {
+  const c = e && e.code;
+  if (c === "invalid_argument" || c === "permission_denied") { canWrite = false; $("status").textContent = "Bạn đang ở quyền chỉ xem nên không lưu được. Nhờ chủ trang cấp quyền Contributor."; }
+  else if (c === "quota_exceeded") $("status").textContent = "Kho điều chỉnh đã đầy. Xoá bớt điều chỉnh đã sửa.";
+  else $("status").textContent = "Chưa lưu được, thử lại sau ít giây.";
+  refresh();
+}
+function draftFrames() {    // frames with unsaved edits: the stashed ones + this frame
+  const fs = new Set(Object.keys(drafts).map(Number));
+  if (model && editedList().length) fs.add(frame); else fs.delete(frame);
+  return [...fs].sort((a, b) => a - b);
+}
+$("text").addEventListener("input", () => { if (keysMode()) refresh(); });
+$("save").onclick = async () => {
+  if (!model) return;
+  if (keysMode()) { saveKeysMode(); return; }
+  const fs = draftFrames(); if (!fs.length) return;
+  $("save").disabled = true; $("status").textContent = "Đang lưu…";
+  stashDraft();
+  const cur = frame, text = $("text").value.trim(), saved = [], offline = [];
+  for (const f of fs) {          // one adjust doc per frame, each against that frame's original pose
+    goto(f, true);
+    const body = { clip: P.clip, version: P.version, frame: f, ...buildAdjust(), text, status: "open", createdAt: new Date().toISOString() };
+    if (myId) body.author = myId;
+    if (!db) { offline.push(body); saved.push(f); continue; }
+    try { await db.collection("adjusts").add(body); delete drafts[f]; saved.push(f); adjs.push({ ...body }); }   // shown at once, the snapshot replaces it
+    catch (e) { fail(e); break; }
+  }
+  goto(cur, true);                 // the saved edits now show as this frame's pose (savedOverlay)
+  if (!db) {                       // keep the edits on screen (drafts stay) and hand the file over
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(offline, null, 1)], { type: "application/json" }));
+    a.download = P.clip + "_" + P.version + "_adjusts_" + saved.map(f => "F" + f).join("-") + ".json"; a.click();
+    $("status").textContent = "Đã tải file điều chỉnh " + saved.map(f => "F" + f).join(", ") + ". Gửi file cho AI, hoặc mở trang trên claude.ai để lưu thẳng.";
+    refresh(); return;
+  }
+  if (saved.length) { $("text").value = "";
+    $("status").textContent = "Đã lưu điều chỉnh ở " + saved.map(f => "F" + f).join(", ") + ". Bấm \"Gửi cho AI\" khi review xong."; }
+  refresh();
+};
+async function renderAdjs() {
+  renderStrip();
+  const list = mine().sort((a, b) => ((a.frame || 1) - (b.frame || 1)) || (a.createdAt || "").localeCompare(b.createdAt || ""));
+  $("adjCount").textContent = list.length ? list.length + "" : "";
+  $("adjEmpty").hidden = list.length > 0;
+  const ids = [...new Set(list.map(a => a.author).filter(Boolean))];
+  const ps = user && ids.length ? await user.profiles(ids).catch(() => ({})) : {};
+  const box = $("adjs"); box.innerHTML = "";
+  for (const a of list) {
+    const el = document.createElement("div"); el.className = "adj" + (a.status === "done" ? " done" : "");
+    const meta = document.createElement("div"); meta.className = "meta";
+    const who = document.createElement("span"); who.textContent = "F" + (a.frame || 1) + " · " + ((a.author && ps[a.author] && ps[a.author].name) || "Ai đó") + " · " + fmtTime(a.createdAt);
+    const pill = document.createElement("span"); pill.className = "pill" + (a.status === "done" ? " done" : ""); pill.textContent = a.status === "done" ? "AI đã áp" : "chờ AI";
+    meta.append(who, pill);
+    const bones = document.createElement("div"); bones.className = "bones";
+    bones.textContent = Object.entries(a.bones || {}).map(([n, v]) => (NAMES[n] || n) + " " + (v.deg ?? 0).toFixed(1) + "°").join(" · ");
+    el.append(meta, bones);
+    if (a.text) { const p = document.createElement("p"); p.textContent = a.text; el.append(p); }
+    const row = document.createElement("div"); row.className = "row";
+    const view = document.createElement("button"); view.className = "btn"; view.textContent = "Xem trên model";
+    view.onclick = () => applyLocal(a);
+    row.append(view);
+    if (a.id && db && canWrite && (a.author === myId || (user && user.canEdit && user.canEdit()))) {
+      const del = document.createElement("button"); del.className = "btn"; del.textContent = "Xoá";
+      del.onclick = () => { if (del.dataset.arm) db.doc("adjusts/" + a.id).delete().catch(fail); else { del.dataset.arm = 1; del.textContent = "Bấm lần nữa để xoá"; } };
+      row.append(del);
+    }
+    el.append(row); box.append(el);
+  }
+}
+function applyLocal(a) {
+  if (!model) return; stopPlay(); goto(a.frame || 1); pushUndo();
+  for (const n of Object.keys(B)) { B[n].quaternion.copy(base[n].lq); B[n].position.copy(base[n].lp); }
+  edited.clear();
+  for (const [n, v] of Object.entries(a.local || {})) if (B[n]) { B[n].quaternion.fromArray(v.q); B[n].position.fromArray(v.p); edited.add(n); }
+  model.updateMatrixWorld(true); captureFeet(); attachGizmo(); refresh();
+  $("status").textContent = "Đang xem điều chỉnh này ở F" + (a.frame || 1) + ". Bấm \"Về pose gốc\" để bỏ.";
+}
+
+const roundId = () => (P.clip + "-" + P.version).replace(/[^A-Za-z0-9_\-.]/g, "_");
+async function renderRound() {
+  const r = rounds[roundId()], open = mine().filter(a => a.status !== "done"), btn = $("aiSend");
+  $("round").dataset.s = r ? r.status : "none";
+  let who = "";
+  if (r && r.sentBy && user) { const ps = await user.profiles([r.sentBy]).catch(() => ({})); who = (ps[r.sentBy] && ps[r.sentBy].name) || ""; }
+  if (!r) { $("roundTxt").textContent = "Vòng review đang mở: lưu điều chỉnh xong thì gửi cho AI."; $("roundSub").textContent = open.length + " điều chỉnh chờ AI"; }
+  else if (r.status === "sent") { $("roundTxt").textContent = "Đã gửi cho AI, đang chờ nhận việc"; $("roundSub").textContent = (who ? who + " · " : "") + fmtTime(r.sentAt) + " · " + (r.adjustCount || 0) + " điều chỉnh"; }
+  else if (r.status === "working") { $("roundTxt").textContent = "AI đang áp điều chỉnh vào Blender"; $("roundSub").textContent = r.aiNote || ""; }
+  else { $("roundTxt").textContent = "AI đã áp xong vòng này"; $("roundSub").textContent = r.aiNote || ""; }
+  btn.textContent = armed ? "Xác nhận gửi " + open.length + " điều chỉnh" : (r && r.status !== "fixed" ? "Gửi lại cho AI" : "Gửi cho AI");
+  btn.classList.toggle("arm", armed);
+  btn.disabled = !db || !canWrite || !open.length;
+}
+$("aiSend").onclick = async () => {
+  const open = mine().filter(a => a.status !== "done");
+  if (!armed) { armed = true; renderRound(); setTimeout(() => { armed = false; renderRound(); }, 6000); return; }
+  armed = false; $("aiSend").disabled = true; $("status").textContent = "Đang gửi cho AI…";
+  let toClaude = false;
+  try {
+    if (comments && (await comments.canSendToClaude().catch(() => "off")) === "available") {
+      const anchor = await comments.anchorFor($("aiSend"));
+      const fr = [...new Set(open.map(a => a.frame || 1))].sort((a, b) => a - b).join(", ");
+      await comments.sendToClaude({ anchor, text: `Pose Lab: ${open.length} điều chỉnh pose cho ${P.clip} ${P.version} (frame ${fr}). ` +
+        `Đọc collection "adjusts" (clip ${P.clip}, version ${P.version}) rồi áp vào Blender.` });
+      toClaude = true;
+    }
+  } catch (e) {}
+  const body = { clip: P.clip, version: P.version, kind: "pose", status: "sent", sentAt: new Date().toISOString(), adjustCount: open.length, toClaude };
+  if (myId) body.sentBy = myId;
+  try { await db.doc("rounds/" + roundId()).set(body);
+        $("status").textContent = toClaude ? "Đã gửi cho AI. Trạng thái sẽ cập nhật ở đây." : "Đã đánh dấu gửi. AI sẽ nhận ở lần kiểm tra trang kế tiếp."; }
+  catch (e) { fail(e); }
+  renderRound();
+};
+
+function renderPoses() {     // version list (newest first): status of its review round + its adjustments
+  const box = $("poses"); box.innerHTML = ""; $("poseCount").textContent = POSES.length;
+  const ST = { sent: "đã gửi AI", working: "AI đang sửa", fixed: "AI đã sửa" };
+  POSES.forEach((p, i) => {
+    const b = document.createElement("button"); b.className = "item" + (p === P ? " on" : "");
+    const head = document.createElement("div"); head.className = "vhead";
+    const v = document.createElement("span"); v.className = "vname"; v.textContent = p.version + (i === 0 ? " · mới nhất" : "");
+    head.append(v);
+    const r = rounds[(p.clip + "-" + p.version).replace(/[^A-Za-z0-9_\-.]/g, "_")];
+    if (r) { const pl = document.createElement("span"); pl.className = "pill " + (r.status === "fixed" ? "done" : r.status); pl.textContent = ST[r.status] || r.status; head.append(pl); }
+    const t = document.createElement("b"); t.textContent = p.label;
+    b.append(head, t);
+    if (p.note) { const n = document.createElement("span"); n.className = "vnote"; n.textContent = p.note; b.append(n); }
+    const na = adjs.filter(a => a.clip === p.clip && a.version === p.version), open = na.filter(a => a.status !== "done").length;
+    const s = document.createElement("small");
+    s.textContent = [p.date, (p.frames || 1) + " frame", na.length ? na.length + " điều chỉnh" + (open ? " (" + open + " chờ AI)" : "") : ""].filter(Boolean).join(" · ");
+    b.append(s); b.onclick = () => { if (p !== P) { openPose(p); renderPoses(); } }; box.append(b);
+  });
+}
+
+// ---------------------------------------------------------------- keys on the page (POSES mode "keys")
+// The page is the animation: a key = the local pose of every bone at one frame (db "keys", one doc per key, id
+// "<clip>-<version>-F<f>"). In-betweens: per channel (quaternion xyzw aligned to one hemisphere, position xyz) cubic
+// Hermite, tangents like Blender's auto-clamped handles (flat on a peak, Fritsch-Carlson limited so nothing overshoots)
+// or stepped for blocking. Loop clips: the last frame == F1 and the curves wrap. "Bám sàn": on the frames painted in
+// the contact lanes the ankle moves on straight lines through its positions at the span ends and at the keys inside the
+// span (two-bone IK on the spline pose), so a planted foot neither floats, sinks nor wobbles between keys.
+let KEYS = new Map(), TR = null, ANK = {}, BN = [], REST = {}, CT = { L: new Set(), R: new Set() }, ready = false;
+let ANIM = { interp: "spline", lock: true }, animAt = "", autoKey = true, keysInDb = false, dirtyKeys = new Set(), animDirty = false, flushT = 0;
+let remoteKeys = {}, remoteAnims = {}, keySig = "";
+function keysMode() { return !!P && P.mode === "keys"; }
+const NFR = () => P.frames || 1;
+const PER = () => P.loop ? Math.max(1, NFR() - 1) : NFR();
+function cyc(f) { if (!P.loop) return Math.max(1, Math.min(NFR(), f)); const N = PER(); return ((f - 1) % N + N) % N + 1; }
+const idOf = (clip, ver) => (clip + "-" + ver).replace(/[^A-Za-z0-9_\-.]/g, "_");
+function parseSet(s) {
+  const o = new Set();
+  for (const part of String(s || "").split(",")) {
+    const m = part.trim().match(/^(\d+)(?:-(\d+))?$/); if (!m) continue;
+    const a = +m[1], b = +(m[2] || m[1]); for (let f = Math.min(a, b); f <= Math.max(a, b); f++) o.add(f);
+  }
+  return o;
+}
+function fmtSet(set) {
+  const fs = [...set].sort((a, b) => a - b), out = [];
+  for (let i = 0; i < fs.length; i++) { let j = i; while (j + 1 < fs.length && fs[j + 1] === fs[j] + 1) j++; out.push(i === j ? "" + fs[i] : fs[i] + "-" + fs[j]); i = j; }
+  return out.join(",");
+}
+const packBone = (q, p) => [...q.toArray().map(x => +x.toFixed(6)), ...p.toArray().map(x => +x.toFixed(5))];
+function poseNow() { const o = {}; for (const n of BN) o[n] = packBone(B[n].quaternion, B[n].position); return o; }
+function poseFromCache(f) { const c = cache[f] || cache[1], o = {}; for (const n of BN) if (c && c[n]) o[n] = packBone(c[n][1], c[n][0]); return o; }
+const sigOf = m => [...m.entries()].sort((a, b) => a[0] - b[0]).map(([f, k]) => f + "@" + k.at).join("|");
+
+function initKeys() {
+  BN = Object.keys(B); REST = poseFromCache(1);
+  KEYS = new Map(); keysInDb = false; dirtyKeys = new Set(); animDirty = false; animAt = "";
+  ANIM = { interp: P.interp || "spline", lock: true };
+  CT = { L: parseSet((P.contacts || {}).L), R: parseSet((P.contacts || {}).R) };
+  const local = !window.claude ? loadLocal() : null;            // local preview: keys kept in this browser
+  if (local) {
+    KEYS = new Map(Object.entries(local.keys || {}).map(([f, k]) => [+f, k]));
+    if (local.anim) { ANIM.interp = local.anim.interp || ANIM.interp; ANIM.lock = local.anim.lock !== false; CT = { L: parseSet(local.anim.contacts.L), R: parseSet(local.anim.contacts.R) }; }
+  }
+  if (!KEYS.size) for (const f of P.keys || [1]) if (f <= PER() || !P.loop) KEYS.set(cyc(f), { pose: poseFromCache(f), at: "seed" });
+  keySig = sigOf(KEYS); buildTracks();
+}
+function loadLocal() { try { return JSON.parse(localStorage.getItem("poselab:" + idOf(P.clip, P.version)) || "null"); } catch { return null; } }
+function saveLocal() {
+  try { localStorage.setItem("poselab:" + idOf(P.clip, P.version), JSON.stringify({ keys: Object.fromEntries(KEYS),
+    anim: { interp: ANIM.interp, lock: ANIM.lock, contacts: { L: fmtSet(CT.L), R: fmtSet(CT.R) } } })); } catch {}
+}
+
+function buildTracks() {
+  ANK = {}; RELK = {};
+  const ks = [...KEYS.keys()].sort((a, b) => a - b), m = ks.length;
+  TR = { ks, t: [], idx: [], bones: {} };
+  if (!m) return;
+  const idx = [];
+  if (P.loop) { const N = PER(); for (let j = -2; j < m + 2; j++) { const i = ((j % m) + m) % m; idx.push(i); TR.t.push(ks[i] + Math.floor(j / m) * N); } }
+  else ks.forEach((k, i) => { idx.push(i); TR.t.push(k); });
+  const t = TR.t; TR.idx = idx;
+  for (const n of BN) {
+    const V = idx.map(i => ((KEYS.get(ks[i]).pose || {})[n] || REST[n]).slice());
+    for (let j = 1; j < V.length; j++) {          // shortest way round between neighbouring keys
+      const a = V[j - 1], b = V[j];
+      if (a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3] < 0) for (let c = 0; c < 4; c++) b[c] = -b[c];
+    }
+    const M = V.map((v, j) => v.map((x, c) => {
+      if (j === 0 || j === V.length - 1) return 0;
+      const h0 = t[j] - t[j - 1], h1 = t[j + 1] - t[j], d0 = (x - V[j - 1][c]) / h0, d1 = (V[j + 1][c] - x) / h1;
+      if (d0 * d1 <= 0) return 0;                                   // peak / flat: flat tangent (auto-clamped)
+      const s = (V[j + 1][c] - V[j - 1][c]) / (t[j + 1] - t[j - 1]);
+      return Math.sign(s) * Math.min(Math.abs(s), 3 * Math.abs(d0), 3 * Math.abs(d1));   // no overshoot
+    }));
+    TR.bones[n] = { V, M };
+  }
+}
+function evalFK(f) {      // spline / stepped pose of the keys at frame f -> bone locals
+  if (!TR || !TR.ks.length) return false;
+  const x = cyc(f), t = TR.t, L = t.length;
+  let j = 0; while (j < L - 1 && t[j + 1] <= x) j++;
+  const hold = ANIM.interp === "step" || x <= t[0] || j >= L - 1, h = hold ? 1 : t[j + 1] - t[j], s = hold ? 0 : (x - t[j]) / h;
+  const s2 = s * s, s3 = s2 * s, h00 = 2 * s3 - 3 * s2 + 1, h10 = s3 - 2 * s2 + s, h01 = -2 * s3 + 3 * s2, h11 = s3 - s2;
+  for (const n of BN) {
+    const tr = TR.bones[n]; if (!tr) continue;
+    const a = tr.V[j];
+    let v = a;
+    if (!hold) { const b = tr.V[j + 1], ma = tr.M[j], mb = tr.M[j + 1]; v = a.map((y, c) => h00 * y + h10 * h * ma[c] + h01 * b[c] + h11 * h * mb[c]); }
+    B[n].quaternion.set(v[0], v[1], v[2], v[3]).normalize(); B[n].position.set(v[4], v[5], v[6]);
+  }
+  return true;
+}
+function ankW(f) {        // ankle world transforms of the pure spline pose (cached until keys / contacts change)
+  f = cyc(f); if (ANK[f]) return ANK[f];
+  evalFK(f); model.updateMatrixWorld(true);
+  const o = {}; for (const s of ["L", "R"]) { const a = B[LEGS[s][2]]; o[s] = { p: wp(a), q: wq(a) }; }
+  return (ANK[f] = o);
+}
+function contactRun(s, c) {    // planted span around cycle frame c as unwrapped [a, b], or null
+  const S = CT[s]; if (!S.has(c)) return null;
+  const N = PER(), has = u => S.has(cyc(u));
+  let a = c, b = c, g = 0;
+  if (!P.loop) { while (a > 1 && has(a - 1)) a--; while (b < N && has(b + 1)) b++; return [a, b]; }
+  while (has(a - 1) && g++ < N) a--; g = 0; while (has(b + 1) && g++ < N) b++;
+  return b - a + 1 >= N ? null : [a, b];
+}
+function lockTarget(s, f) {
+  const c = cyc(f), r = contactRun(s, c); if (!r || !B[LEGS[s][2]]) return null;
+  const [a, b] = r, N = PER(), pts = new Set([a, b]);
+  for (const k of TR.ks) for (const u of P.loop ? [k - N, k, k + N] : [k]) if (u > a && u < b) pts.add(u);
+  const us = [...pts].sort((x, y) => x - y);
+  let i = 0; while (i < us.length - 1 && us[i + 1] <= c) i++;
+  const A = ankW(us[i])[s];
+  if (i >= us.length - 1 || us[i] === c) return { p: A.p.clone(), q: A.q.clone() };
+  const Bn = ankW(us[i + 1])[s], w = (c - us[i]) / (us[i + 1] - us[i]);
+  return { p: A.p.clone().lerp(Bn.p, w), q: A.q.clone().slerp(Bn.q, w) };
+}
+// Prop lock (POSES follow {prop, to, hand}): the prop's transform relative to its bone and the hand's grip on the prop
+// are read at every key and blended between keys, then applied after the spline: the mace stays on the shoulder and
+// the hand on the mace on every in-between (the prop bone itself is a child of the root in this rig).
+let RELK = {};
+function relAtKey(k) {
+  if (RELK[k]) return RELK[k];
+  evalFK(k); model.updateMatrixWorld(true);
+  const c = P.follow, Wp = B[c.prop].matrixWorld, d = (M) => { const p = new V3(), q = new Q(), s = new V3(); M.decompose(p, q, s); return { p, q }; };
+  return (RELK[k] = { w: d(B[c.to].matrixWorld.clone().invert().multiply(Wp)), h: d(Wp.clone().invert().multiply(B[ARMS[c.hand][2]].matrixWorld)) });
+}
+function relAt(f) {
+  const x = cyc(f), t = TR.t, L = t.length; let j = 0; while (j < L - 1 && t[j + 1] <= x) j++;
+  const A = relAtKey(TR.ks[TR.idx[j]]);
+  if (ANIM.interp === "step" || x <= t[0] || j >= L - 1 || t[j] === x) return A;
+  const Bk = relAtKey(TR.ks[TR.idx[j + 1]]), w = (x - t[j]) / (t[j + 1] - t[j]);
+  const mix = (a, b) => ({ p: a.p.clone().lerp(b.p, w), q: a.q.clone().slerp(b.q, w) });
+  return { w: mix(A.w, Bk.w), h: mix(A.h, Bk.h) };
+}
+const relM = r => new THREE.Matrix4().compose(r.p, r.q, new V3(1, 1, 1));
+function setWorldMat(o, M) {
+  o.parent.updateMatrixWorld(true);
+  new THREE.Matrix4().copy(o.parent.matrixWorld).invert().multiply(M).decompose(o.position, o.quaternion, new V3());
+  o.updateMatrixWorld(true);
+}
+function propHandTo(Mprop, relH) {   // prop world matrix, then the hand IK onto its grip
+  const c = P.follow; setWorldMat(B[c.prop], Mprop); model.updateMatrixWorld(true);
+  const p = new V3(), q = new Q(); B[c.prop].matrixWorld.clone().multiply(relH).decompose(p, q, new V3());
+  handQ[c.hand] = q; solveArm(c.hand, p); model.updateMatrixWorld(true);
+}
+const hasFollow = () => !!(P && P.follow && B[P.follow.prop] && B[P.follow.to]);
+function evalPose(f) {
+  if (!TR || !TR.ks.length || !BN.length) return false;
+  const tg = {};
+  // stepped blocking holds the WHOLE key pose, feet included (user 2026-10-23 "Phần chân đang chưa để Step by Step":
+  // the foot lock kept sliding the planted feet between keys); the lock works on spline only
+  if (ANIM.lock && ANIM.interp !== "step") for (const s of ["L", "R"]) tg[s] = lockTarget(s, f);
+  const rel = hasFollow() ? relAt(f) : null;
+  evalFK(f); model.updateMatrixWorld(true);
+  const ed = edited;
+  for (const s of ["L", "R"]) if (tg[s]) { edited = new Set(); solve2(LEGS[s], tg[s].p, tg[s].q); }
+  // floor: no foot mesh below the floor on any frame (spline arcs of hip/knee rotations dipped the swinging right
+  // foot 14 cm under the floor at F33); the foot is lifted straight up by leg IK
+  if (ANIM.interp !== "step" && !fitRun) for (const s of ["L", "R"]) {
+    const lo = footLowY(s);
+    if (lo < -0.002) { model.updateMatrixWorld(true); const a = B[LEGS[s][2]]; edited = new Set(); solve2(LEGS[s], wp(a).add(new V3(0, -lo, 0)), wq(a)); model.updateMatrixWorld(true); }
+  }
+  if (rel) { edited = new Set(); propHandTo(B[P.follow.to].matrixWorld.clone().multiply(relM(rel.w)), relM(rel.h)); }
+  edited = ed; model.updateMatrixWorld(true);
+  return true;
+}
+
+function setKey(f, pose) { f = cyc(f); KEYS.set(f, { pose, at: new Date().toISOString() }); dirtyKeys.add(f); keysChanged(); }
+function keysChanged() { buildTracks(); keySig = sigOf(KEYS); scheduleFlush(); renderStrip(); }
+function reEval() {       // show the new evaluation of this frame (keeps the undo history)
+  if (!model || editedList().length) { renderStrip(); return; }
+  sampleAt(frame); model.updateMatrixWorld(true); if (ghost) ghost.updateMatrixWorld(true);
+  rebase(); captureFeet(); attachGizmo(); refresh();
+}
+function commitEdit() {   // Auto key: an edit that ended becomes the key of this frame
+  if (!keysMode() || !autoKey || !model || !editedList().length) return;
+  setKey(frame, poseNow()); delete drafts[frame]; edited = new Set(); rebase(); captureFeet(); refresh();
+  $("status").textContent = "Đã đặt key F" + cyc(frame) + ".";
+}
+function setAnim(patch) {
+  Object.assign(ANIM, patch); animAt = new Date().toISOString(); animDirty = true; ANK = {};
+  scheduleFlush(); reEval();
+}
+$("kSet").onclick = () => {
+  if (!model || !keysMode()) return;
+  stopPlay(); pushUndo(); setKey(frame, poseNow()); delete drafts[frame]; edited = new Set(); rebase(); captureFeet(); refresh();
+  $("status").textContent = "Đã đặt key F" + cyc(frame) + (cyc(frame) !== frame ? " (frame cuối = F1 của vòng lặp)" : "") + ".";
+};
+$("kDel").onclick = () => {
+  const f = cyc(frame);
+  if (!model || !keysMode() || !KEYS.has(f)) return;
+  if (KEYS.size <= 1) { $("status").textContent = "Clip cần ít nhất 1 key."; return; }
+  stopPlay(); pushUndo(); KEYS.delete(f); dirtyKeys.add(f); delete drafts[frame]; edited = new Set(); keysChanged(); reEval();
+  $("status").textContent = "Đã xoá key F" + f + " (Ctrl+Z để lấy lại).";
+};
+$("kAuto").onclick = () => { autoKey = !autoKey; refresh(); };
+$("kInterp").onclick = () => { setAnim({ interp: ANIM.interp === "step" ? "spline" : "step" }); refresh(); };
+$("kLock").onclick = () => { setAnim({ lock: !ANIM.lock }); refresh(); };
+$("kAutoCt").onclick = () => {
+  if (!TR || TR.ks.length < 2) { $("status").textContent = "Cần ít nhất 2 key để dò chạm đất."; return; }
+  const ks = TR.ks, m = ks.length, N = PER();
+  for (const s of ["L", "R"]) {
+    const hs = ks.map(k => ankW(k)[s].p.y), lo = Math.min(...hs), on = hs.map(h => h < lo + 0.03);   // within 3 cm of the lowest
+    const S = new Set();
+    for (let i = 0; i < m; i++) {
+      if (!on[i]) continue;
+      S.add(ks[i]);
+      const nx = i + 1 < m ? i + 1 : (P.loop ? 0 : -1);
+      if (nx < 0 || !on[nx]) continue;
+      const end = nx > i ? ks[nx] : ks[nx] + N;
+      for (let u = ks[i]; u <= end; u++) S.add(cyc(u));
+    }
+    CT[s] = S;
+  }
+  setAnim({}); refresh();
+  $("status").textContent = "Đã dò chạm đất từ " + m + " key: trái " + (fmtSet(CT.L) || "không") + " · phải " + (fmtSet(CT.R) || "không") + ". Kéo trên dải màu để sửa.";
+};
+let paint = null;
+for (const s of ["L", "R"]) {
+  const el = $("lane" + s);
+  el.addEventListener("pointerdown", e => {
+    if (!keysMode() || !model) return;
+    e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch {}
+    const f = frameAtX(e.clientX); paint = { s, on: !CT[s].has(cyc(f)) }; paintAt(f);
+  });
+  el.addEventListener("pointermove", e => { if (paint && paint.s === s) paintAt(frameAtX(e.clientX)); });
+  const end = () => { if (!paint) return; paint = null; setAnim({}); };
+  el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+}
+function paintAt(f) {      // fills every frame between the last painted one and f (a fast drag skips cells)
+  const a = paint.last ?? f; paint.last = f;
+  for (let u = Math.min(a, f); u <= Math.max(a, f); u++) paint.on ? CT[paint.s].add(cyc(u)) : CT[paint.s].delete(cyc(u));
+  renderLanes();
+}
+
+function scheduleFlush() { clearTimeout(flushT); flushT = setTimeout(flush, 700); }
+async function flush() {
+  if (!P || !keysMode()) return;
+  const id = idOf(P.clip, P.version), clip = P.clip, version = P.version;
+  if (!db) { saveLocal(); dirtyKeys = new Set(); animDirty = false; return; }
+  if (!canWrite) { $("status").textContent = "Bạn đang ở quyền chỉ xem: key chỉ đổi trên máy bạn, không lưu được."; return; }
+  if (!keysInDb) for (const f of KEYS.keys()) dirtyKeys.add(f);       // first save of this version: write every key
+  const fs = [...dirtyKeys]; dirtyKeys = new Set();
+  const wasAnim = animDirty; animDirty = false;
+  try {
+    for (const f of fs) {
+      const ref = db.doc("keys/" + id + "-F" + f), k = KEYS.get(f);
+      if (k) await ref.set({ clip, version, frame: f, pose: k.pose, at: k.at, ...(myId ? { by: myId } : {}) });
+      else await ref.delete();
+    }
+    keysInDb = true;
+    if (wasAnim || !remoteAnims[id]) await db.doc("anims/" + id).set({ clip, version, interp: ANIM.interp, lock: ANIM.lock,
+      contacts: { L: fmtSet(CT.L), R: fmtSet(CT.R) }, at: animAt || new Date().toISOString(), ...(myId ? { by: myId } : {}) });
+    $("status").textContent = "Đã lưu " + KEYS.size + " key (" + fmtTime(new Date().toISOString()) + ").";
+  } catch (e) { fs.forEach(f => dirtyKeys.add(f)); if (wasAnim) animDirty = true; fail(e); }
+}
+function applyRemote() {    // keys / settings from the db (another viewer, or Claude) replace the local ones
+  if (!ready || !keysMode() || !model || dirtyKeys.size || animDirty || gizmo.dragging || paint) return;
+  const id = idOf(P.clip, P.version);
+  let src = remoteKeys[id], seeded = false;
+  if (!src && P.seedFrom) { src = remoteKeys[idOf(P.clip, P.seedFrom)]; seeded = !!src; }
+  let changed = false;
+  if (src) {
+    const m = new Map(Object.values(src).map(d => [d.frame, { pose: d.pose, at: d.at }]));
+    keysInDb = !seeded;
+    if (sigOf(m) !== keySig) { KEYS = m; keySig = sigOf(m); changed = true; }
+  }
+  const an = remoteAnims[id];
+  if (an && an.at !== animAt) {
+    ANIM.interp = an.interp || "spline"; ANIM.lock = an.lock !== false; animAt = an.at;
+    CT = { L: parseSet((an.contacts || {}).L), R: parseSet((an.contacts || {}).R) }; changed = true;
+  }
+  if (changed) { buildTracks(); reEval(); }
+}
+
+// ---------------------------------------------------------------- fit to ref ("Khớp ref", no Blender)
+// The ref videos are orthographic playblasts: 305.3 px per metre, floor at y 934.5 (1920x1080). POSES ref.cal holds per
+// view the look direction, up vector and the pixel (u0, v0) where the world origin lands, calibrated on P0 vs ref F1
+// (calibrateRef). The model is rendered white-on-black through that camera at half the sprite-cell size and compared
+// with the ref silhouette (sprite cell, grey > 90, 3x3 open) by IoU. Stage "legs": hip move/turn, both feet (IK), knee
+// twist, low region (below 0.96 m) of the 4 side views. Stage "body": spine / chest / head bends, mace on the shoulder,
+// right hand, high region + top view. Coordinate search with a line search per parameter, step x0.55 per sweep.
+const PPM = 305.3, FIT_K = 1, HIP_H = 0.96;
+const CR = new V3(-1, 0, 0), CF = new V3(0, 0, 1), CU = new V3(0, 1, 0);       // character right / forward / up (glTF)
+const rad = THREE.MathUtils.degToRad;
+const cvec = (x, y, z) => CR.clone().multiplyScalar(x).add(CF.clone().multiplyScalar(y)).add(CU.clone().multiplyScalar(z));
+const qAx = (ax, d) => new Q().setFromAxisAngle(ax, rad(d));
+const fitCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 80);
+const fitMat = new THREE.MeshBasicMaterial({ color: 0xffffff, skinning: true, side: THREE.DoubleSide });
+const greyMat = new THREE.MeshLambertMaterial({ color: 0xb4b4b4, skinning: true });    // compare view: grey like the playblast
+let fitRT = null, fitRun = null;
+const refImgs = {}, refMasks = {}, fitCv = document.createElement("canvas");
+const SIDE_VIEWS = ["front", "back", "left", "right"];
+function cellOf(v) {
+  const m = P.ref.views[v], c = m.crop, s = m.h / (c[3] - c[1]);
+  return { m, c, s, w: Math.round(m.w * FIT_K), h: Math.round(m.h * FIT_K) };
+}
+function loadRefImg(v) {
+  return refImgs[v] || (refImgs[v] = new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = P.ref.dir + "/" + P.ref.views[v].file; }));
+}
+function open3(a, w, h) {
+  const er = new Uint8Array(w * h), out = new Uint8Array(w * h);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    let k = 1; for (let dy = -1; dy <= 1 && k; dy++) for (let dx = -1; dx <= 1; dx++) if (!a[(y + dy) * w + x + dx]) { k = 0; break; }
+    er[y * w + x] = k;
+  }
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    let k = 0; for (let dy = -1; dy <= 1 && !k; dy++) for (let dx = -1; dx <= 1; dx++) if (er[(y + dy) * w + x + dx]) { k = 1; break; }
+    out[y * w + x] = k;
+  }
+  return out;
+}
+async function refMask(v, f) {
+  const key = v + "|" + cyc(f); if (refMasks[key]) return refMasks[key];
+  const { m, w, h } = cellOf(v), im = await loadRefImg(v);
+  const nf = m.frames, i = (((f - 1 + (P.ref.offset || 0)) % nf) + nf) % nf, col = i % m.cols, row = Math.floor(i / m.cols);
+  fitCv.width = w; fitCv.height = h; const cx = fitCv.getContext("2d", { willReadFrequently: true });
+  cx.clearRect(0, 0, w, h); cx.drawImage(im, col * m.w, row * m.h, m.w, m.h, 0, 0, w, h);
+  const d = cx.getImageData(0, 0, w, h).data, a = new Uint8Array(w * h);
+  for (let k = 0; k < w * h; k++) a[k] = d[k * 4] * 0.299 + d[k * 4 + 1] * 0.587 + d[k * 4 + 2] * 0.114 > 90 ? 1 : 0;
+  return (refMasks[key] = open3(a, w, h));
+}
+function setFitCam(v, cal) {
+  const { m, c, s } = cellOf(v); cal = cal || P.ref.cal[v];
+  const u0 = (cal.u0 - c[0]) * s, v0 = (cal.v0 - c[1]) * s, ppm = PPM * s;
+  fitCam.left = -u0 / ppm; fitCam.right = (m.w - u0) / ppm; fitCam.top = v0 / ppm; fitCam.bottom = -(m.h - v0) / ppm;
+  const dir = new V3(...cal.dir).normalize();
+  fitCam.position.copy(dir.clone().multiplyScalar(-30)); fitCam.up.set(...cal.up); fitCam.lookAt(0, 0, 0);
+  fitCam.updateProjectionMatrix(); fitCam.updateMatrixWorld(true);
+}
+function renderView(v, shaded, cal) {    // -> {w, h, px: RGBA rows top-down} through the ref camera of view v
+  const { w, h } = cellOf(v), W = shaded ? P.ref.views[v].w : w, H = shaded ? P.ref.views[v].h : h;
+  if (!fitRT || fitRT.width !== W || fitRT.height !== H) { if (fitRT) fitRT.dispose(); fitRT = new THREE.WebGLRenderTarget(W, H); }
+  setFitCam(v, cal);
+  const vis = [ghost.visible, grid.visible]; ghost.visible = false; grid.visible = false;
+  scene.overrideMaterial = shaded ? greyMat : fitMat;
+  const cc = renderer.getClearColor(new THREE.Color()), ca = renderer.getClearAlpha();
+  renderer.setRenderTarget(fitRT); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.render(scene, fitCam);
+  const buf = new Uint8Array(W * H * 4); renderer.readRenderTargetPixels(fitRT, 0, 0, W, H, buf);
+  renderer.setRenderTarget(null); renderer.setClearColor(cc, ca); scene.overrideMaterial = null;
+  ghost.visible = vis[0]; grid.visible = vis[1];
+  const px = new Uint8ClampedArray(W * H * 4);
+  for (let y = 0; y < H; y++) px.set(buf.subarray((H - 1 - y) * W * 4, (H - y) * W * 4), y * W * 4);
+  return { w: W, h: H, px };
+}
+function renderMask(v, cal) {
+  const r = renderView(v, false, cal), a = new Uint8Array(r.w * r.h);
+  for (let k = 0; k < a.length; k++) a[k] = r.px[k * 4] > 127 ? 1 : 0;
+  return a;
+}
+function floorRow(v) { const { c, s } = cellOf(v); return Math.round((P.ref.cal[v].v0 - c[1]) * s * FIT_K); }
+function hipRow(v) { const { c, s } = cellOf(v), cal = P.ref.cal[v]; return Math.max(0, Math.round((cal.v0 - HIP_H * PPM - c[1]) * s * FIT_K)); }
+// Each foot's lowest point in the front / back views (columns split at the projected hip): IoU alone cannot tell which
+// foot is lifted a few cm (first Walk fit lifted the wrong one), so the legs stage also matches these two rows to the ref.
+function splitCol(v) { setFitCam(v); const { w } = cellOf(v), p = wp(B.Root_M).project(fitCam); return Math.round((p.x + 1) / 2 * w); }
+function footLows(a, w, h, r0, sc) {
+  const low = (c0, c1) => { for (let y = h - 1; y >= r0; y--) for (let x = c0; x < c1; x++) if (a[y * w + x]) return y; return r0; };
+  return [low(0, sc), low(sc, w)];
+}
+function iouRows(a, b, w, r0, r1) {
+  let i = 0, u = 0; for (let k = r0 * w; k < r1 * w; k++) { const x = a[k], y = b[k]; i += x & y; u += x | y; }
+  return u ? i / u : 1;
+}
+
+const FIT_LEGS = { names: ["rt_x", "rt_y", "rt_z", "rt_yaw", "rt_pitch", "rt_roll", "R_x", "R_y", "R_z", "R_yaw", "R_pitch",
+  "L_x", "L_y", "L_z", "L_yaw", "L_pitch", "kR", "kL", "R_heel", "L_heel"],
+  step: [.03, .03, .03, 4, 4, 4, .04, .04, .02, 6, 6, .04, .04, .02, 6, 6, 8, 8, 6, 6],
+  reg: { rt_yaw: .0025, rt_pitch: .0012, rt_roll: .0012, R_yaw: .002, L_yaw: .002, R_pitch: .0005, L_pitch: .0005, kR: .0004, kL: .0004,
+         rt_x: .3, rt_y: .3,     // Walk F29 first fit: hip 20 cm forward + foot turned 28 deg to force the silhouette
+         R_x: 1.5, L_x: 1.5, R_heel: .0003, L_heel: .0003 } };   // feet do not drift sideways (Walk F22/F29: right foot 26-35 cm out)
+const FIT_BODY = { names: ["sp_fwd", "sp_side", "sp_twist", "ch_fwd", "ch_side", "ch_twist", "hd_fwd", "hd_side", "hd_twist",
+  "wp_x", "wp_y", "wp_z", "wp_pitch", "wp_yaw", "hR_x", "hR_y", "hR_z"],
+  step: [3, 3, 3, 3, 3, 3, 5, 5, 5, .03, .03, .03, 5, 5, .04, .04, .04],
+  reg: { sp_fwd: .0008, sp_side: .0008, sp_twist: .0008, ch_fwd: .0008, ch_side: .0008, ch_twist: .0008, hd_fwd: .0005,
+         hd_side: .0005, hd_twist: .0005, wp_pitch: .0006, wp_yaw: .0006, hR_x: .3, hR_y: .3, hR_z: .3 } };
+const bendQ = (fwd, side, twist) => qAx(CU, twist).multiply(qAx(CF, side)).multiply(qAx(CR, -fwd));   // fwd + = toward the facing
+function fitApply(S, legs, body) {     // start locals S + params -> pose on B (prop + grip follow)
+  for (const [n, [p, q]] of Object.entries(S.loc)) { B[n].position.copy(p); B[n].quaternion.copy(q); }
+  model.updateMatrixWorld(true);
+  const ed = edited; edited = new Set();
+  if (legs) {
+    const L = legs, r = B.Root_M;
+    setWorldPosB(r, wp(r).add(cvec(L.rt_x, L.rt_y, L.rt_z)));
+    if (L.rt_yaw || L.rt_pitch || L.rt_roll) rotateWorld(r, qAx(CU, L.rt_yaw).multiply(qAx(CF, L.rt_roll)).multiply(qAx(CR, L.rt_pitch)));
+    model.updateMatrixWorld(true);
+    for (const s of ["L", "R"]) {
+      const d = cvec(L[s + "_x"], L[s + "_y"], L[s + "_z"]);
+      let t = S.ank[s].p.clone().add(d);
+      let q = qAx(CU, L[s + "_yaw"]).multiply(qAx(CR, L[s + "_pitch"])).multiply(S.ank[s].q);
+      if (L[s + "_heel"] && S.toe[s]) {      // heel roll: the foot turns about its toe tip (heel up +, down -), toe stays put
+        const pv = S.toe[s].clone().add(d), fd = S.toe[s].clone().sub(S.ank[s].p); fd.y = 0; fd.normalize();
+        const R = new Q().setFromAxisAngle(new V3().crossVectors(fd, CU).normalize(), rad(L[s + "_heel"]));
+        t = t.sub(pv).applyQuaternion(R).add(pv); q = R.multiply(q);
+      }
+      solve2(LEGS[s], t, q);
+      if (L["k" + s]) {
+        const hip = B[LEGS[s][0]], ax = wp(B[LEGS[s][2]]).sub(wp(hip)).normalize();
+        rotateWorld(hip, new Q().setFromAxisAngle(ax, rad(L["k" + s]))); setWorldQuat(B[LEGS[s][2]], q);
+      }
+    }
+  }
+  if (body) {
+    const U = body;
+    for (const [n, pre] of [["Spine1_M", "sp"], ["Chest_M", "ch"], ["Head_M", "hd"]])
+      if (B[n] && (U[pre + "_fwd"] || U[pre + "_side"] || U[pre + "_twist"])) rotateWorld(B[n], bendQ(U[pre + "_fwd"], U[pre + "_side"], U[pre + "_twist"]));
+    model.updateMatrixWorld(true);
+    if (U.hR_x || U.hR_y || U.hR_z) { handQ.R = wq(B.Wrist_R); solveArm("R", wp(B.Wrist_R).add(cvec(U.hR_x, U.hR_y, U.hR_z))); }
+  }
+  if (S.rel) {
+    let M = B[P.follow.to].matrixWorld.clone().multiply(S.rel.w);
+    if (body && (body.wp_x || body.wp_y || body.wp_z || body.wp_pitch || body.wp_yaw)) {
+      const p = new V3(), q = new Q(), sc = new V3(); M.decompose(p, q, sc);
+      q.premultiply(qAx(CU, body.wp_yaw).multiply(qAx(CR, body.wp_pitch))); p.add(cvec(body.wp_x, body.wp_y, body.wp_z));
+      M = new THREE.Matrix4().compose(p, q, sc);
+    }
+    propHandTo(M, S.rel.h);
+  }
+  edited = ed; model.updateMatrixWorld(true);
+}
+function setWorldPosB(o, p) { o.parent.updateMatrixWorld(true); o.position.copy(o.parent.worldToLocal(p.clone())); o.updateMatrixWorld(true); }
+function fitStart() {
+  model.updateMatrixWorld(true);
+  const S = { loc: Object.fromEntries(Object.keys(B).map(n => [n, [B[n].position.clone(), B[n].quaternion.clone()]])), ank: {} };
+  S.toe = {};
+  for (const s of ["L", "R"]) { S.ank[s] = { p: wp(B[LEGS[s][2]]), q: wq(B[LEGS[s][2]]) }; if (B["ToesEnd_" + s]) S.toe[s] = wp(B["ToesEnd_" + s]); }
+  if (hasFollow()) { const c = P.follow, Wp = B[c.prop].matrixWorld;
+    S.rel = { w: B[c.to].matrixWorld.clone().invert().multiply(Wp), h: Wp.clone().invert().multiply(B[ARMS[c.hand][2]].matrixWorld) }; }
+  return S;
+}
+async function fitStage(stage, S, legsP, onStep) {
+  const D = stage === "legs" ? FIT_LEGS : FIT_BODY, f = frame;
+  const views = stage === "legs" ? SIDE_VIEWS : [...SIDE_VIEWS, "top"];
+  const refs = {}; for (const v of views) refs[v] = await refMask(v, f);
+  const toObj = p => Object.fromEntries(D.names.map((n, i) => [n, p[i]]));
+  let evals = 0;
+  const FOOT_W = 0.006 / FIT_K;                       // IoU points per mask pixel of foot-height error
+  const score = p => {
+    const o = toObj(p);
+    fitApply(S, stage === "legs" ? o : legsP, stage === "legs" ? null : o);
+    let sum = 0, foot = 0, band = 0;
+    for (const v of views) {
+      const { w, h } = cellOf(v), a = renderMask(v), r = hipRow(v);
+      if (stage === "legs" && (v === "left" || v === "right")) {   // floor band 0-6 cm: which part of each foot touches
+        const fl = floorRow(v); band += iouRows(a, refs[v], w, fl - Math.round(0.06 * PPM * cellOf(v).s * FIT_K), fl + 2);
+      }
+      sum += v === "top" ? iouRows(a, refs[v], w, 0, h) : stage === "legs" ? iouRows(a, refs[v], w, r, h) : iouRows(a, refs[v], w, 0, Math.min(h, r + 20));
+      if (stage === "legs" && (v === "front" || v === "back")) {
+        const sc = splitCol(v), m = footLows(a, w, h, r, sc), f0 = footLows(refs[v], w, h, r, sc);
+        foot += Math.abs(m[0] - f0[0]) + Math.abs(m[1] - f0[1]);
+      }
+    }
+    // which foot is in front cannot be read from the silhouettes (side views overlap the feet): POSES fitFeet gives the
+    // toe joint's forward position per key (world cm = front edge of that foot's 0-6 cm floor band in the side ref + 2;
+    // planted feet slide back 2.1 cm/F), 0.003 per cm off
+    const hint = stage === "legs" && P.fitFeet && P.fitFeet[cyc(f)];
+    if (hint) for (const s of ["L", "R"]) if (hint[s] != null && B["ToesEnd_" + s]) foot += Math.abs(wp(B["ToesEnd_" + s]).z * 100 - hint[s]) * 0.003 / FOOT_W;
+    evals++;
+    return sum / views.length + 0.1 * band - FOOT_W * foot - D.names.reduce((acc, n, i) => acc + (D.reg[n] || 0) * Math.abs(p[i]), 0);
+  };
+  let p = new Array(D.names.length).fill(0);
+  const hint0 = stage === "legs" && P.fitFeet && P.fitFeet[cyc(f)];
+  if (hint0) for (const s of ["L", "R"]) if (hint0[s] != null && B["ToesEnd_" + s]) {   // start with the toe where the ref puts it
+    fitApply(S, null, null); p[D.names.indexOf(s + "_y")] = (hint0[s] - wp(B["ToesEnd_" + s]).z * 100) / 100;
+  }
+  let best = score(p), step = D.step.slice();
+  const start = best;
+  for (let sw = 0; sw < (fitRun.sweeps || 4); sw++) {
+    for (let i = 0; i < p.length; i++) {
+      if (fitRun.stop) break;
+      for (const sg of [1, -1]) {
+        let moved = false;
+        for (let k = 0; k < 8; k++) {
+          const q = p.slice(); q[i] += sg * step[i];
+          const sc = score(q);
+          if (sc > best + 1e-4) { best = sc; p = q; moved = true; } else break;
+        }
+        if (moved) break;
+      }
+      if (evals % 6 === 0) { onStep(stage, sw, best); await new Promise(r => setTimeout(r)); }
+    }
+    step = step.map(x => x * 0.55);
+  }
+  return { params: toObj(p), score: best, start, evals };
+}
+async function fitRef() {
+  if (!model || !keysMode() || !P.ref || !P.ref.cal) return;
+  if (fitRun) { fitRun.stop = true; return; }
+  stopPlay(); pushUndo();
+  fitRun = { stop: false, sweeps: 4 }; $("kFit").textContent = "Dừng khớp";
+  const t0 = performance.now(), f = frame;
+  const say = (st, sw, sc) => { $("status").textContent = "Khớp ref F" + f + ": " + (st === "legs" ? "hông + chân" : "thân, đầu, chùy, tay") + " · lượt " + (sw + 1) + "/" + fitRun.sweeps + " · khớp " + (sc * 100).toFixed(1) + "%"; };
+  try {
+    const S = fitStart();
+    const a = await fitStage("legs", S, null, say);
+    let b = null; if (!fitRun.stop) b = await fitStage("body", S, a.params, say);
+    fitApply(S, a.params, b ? b.params : null);
+    FIT_LOG[cyc(f)] = { legs: a, body: b };
+    if (!fitRun.stop) {
+      for (const n of Object.keys(B)) edited.add(n);
+      setKey(f, poseNow()); delete drafts[f]; edited = new Set(); rebase(); captureFeet();
+    }
+    $("status").textContent = (fitRun.stop ? "Đã dừng khớp ref F" : "Đã khớp ref và đặt key F") + f + ": hông/chân " + (a.start * 100).toFixed(0) + "→" + (a.score * 100).toFixed(0) +
+      "%" + (b ? ", thân/tay " + (b.start * 100).toFixed(0) + "→" + (b.score * 100).toFixed(0) + "%" : "") + " (" + ((performance.now() - t0) / 1000).toFixed(0) + " s). Soi lại bằng mắt trước khi duyệt.";
+  } catch (e) { $("status").textContent = "Khớp ref lỗi: " + (e && e.message || e); }
+  finally { fitRun = null; $("kFit").textContent = "Khớp ref"; refresh(); renderRef(); }
+}
+const FIT_LOG = {};
+async function calibrateRef(views, f = 1) {   // dev: search u0 (and v0 / up for top) so P0 at F1 matches the ref
+  const out = {};
+  for (const v of views) {
+    const ref = await refMask(v, f), { w, h, c } = cellOf(v), base = P.ref.cal[v];
+    const ups = v === "top" ? [[0, 0, 1], [0, 0, -1], [1, 0, 0], [-1, 0, 0]] : [base.up];
+    let best = { s: -1 };
+    for (const up of ups) {
+      const tryCal = (u0, v0) => { const cal = { ...base, up, u0, v0 }; return { s: iouRows(renderMask(v, cal), ref, w, 0, h), cal }; };
+      let cur = tryCal(base.u0, base.v0);
+      for (const st of [80, 40, 20, 10, 5, 2, 1, 0.5]) {
+        let moved = true;
+        while (moved) {
+          moved = false;
+          for (const [du, dv] of v === "top" ? [[st, 0], [-st, 0], [0, st], [0, -st]] : [[st, 0], [-st, 0]]) {
+            const t = tryCal(cur.cal.u0 + du, cur.cal.v0 + dv);
+            if (t.s > cur.s + 1e-5) { cur = t; moved = true; }
+          }
+        }
+      }
+      if (cur.s > best.s) best = cur;
+    }
+    out[v] = { ...best.cal, iou: +best.s.toFixed(4) };
+  }
+  return out;
+}
+$("kFit").onclick = fitRef;
+
+// ---------------------------------------------------------------- feet on the floor (mesh, not joints)
+// The lowest skinned vertex of each foot (vertices whose main weight is on Ankle / Toes / ToesEnd) must sit on the floor
+// when that foot is planted (contact lanes) and never below it (user 2026-10-23 screenshots: right foot sunk 4 cm at F22,
+// planted left foot 2 cm in the air at F36 / F42). The foot moves straight up / down (leg IK, orientation kept).
+let FOOTV = null;
+function footVerts() {
+  if (FOOTV && FOOTV.model === model) return FOOTV;
+  FOOTV = { model, L: [], R: [] };
+  model.traverse(m => {
+    if (!m.isSkinnedMesh) return;
+    const sk = m.skeleton, si = m.geometry.attributes.skinIndex.array, sw = m.geometry.attributes.skinWeight.array, n = m.geometry.attributes.position.count;
+    const idx = Object.fromEntries(["L", "R"].map(s => [s, ["Ankle_", "Toes_", "ToesEnd_"].map(b => sk.bones.findIndex(x => x.name === b + s))]));
+    for (let v = 0; v < n; v++) {
+      let bi = -1, bw = 0; for (let k = 0; k < 4; k++) if (sw[v * 4 + k] > bw) { bw = sw[v * 4 + k]; bi = si[v * 4 + k]; }
+      for (const s of ["L", "R"]) if (bi >= 0 && idx[s].includes(bi)) FOOTV[s].push([m, v]);
+    }
+  });
+  return FOOTV;
+}
+function footLowY(s) {
+  const t = new V3(); let lo = Infinity;
+  for (const [m, v] of footVerts()[s]) { m.boneTransform(v, t); t.applyMatrix4(m.matrixWorld); if (t.y < lo) lo = t.y; }
+  return lo;
+}
+function floorKey(f) {     // -> {L, R}: cm moved
+  goto(f, true); model.updateMatrixWorld(true);
+  const moved = {}, rel = hasFollow() ? fitStart().rel : null;
+  for (const s of ["L", "R"]) {
+    const lo = footLowY(s), planted = CT[s].has(cyc(f)), dy = planted ? -lo : Math.max(0, -lo);
+    if (Math.abs(dy) < 0.003) continue;
+    const a = B[LEGS[s][2]], q = wq(a), ed = edited; solve2(LEGS[s], wp(a).add(new V3(0, dy, 0)), q); edited = ed;
+    moved[s] = +(dy * 100).toFixed(1);
+  }
+  if (Object.keys(moved).length) {
+    if (rel) propHandTo(B[P.follow.to].matrixWorld.clone().multiply(rel.w), rel.h);
+    for (const n of Object.keys(B)) edited.add(n); setKey(f, poseNow()); edited = new Set(); rebase();
+  }
+  return moved;
+}
+$("kFloor").onclick = () => {
+  if (!model || !keysMode()) return;
+  stopPlay(); pushUndo(); const cur = frame, out = [];
+  for (const f of [...KEYS.keys()].sort((a, b) => a - b)) { const m = floorKey(f); if (Object.keys(m).length) out.push("F" + f + " " + Object.entries(m).map(([s, d]) => (s === "L" ? "trái " : "phải ") + (d > 0 ? "+" : "") + d + " cm").join(", ")); }
+  goto(cur, true);
+  $("status").textContent = out.length ? "Đã đặt chân lên sàn: " + out.join(" · ") + "." : "Mọi key đã chạm sàn đúng (chân chống ở 0 cm, không xuyên sàn).";
+};
+
+// ---------------------------------------------------------------- reference frames beside the model
+// One sprite sheet per view (work/pose_lab/make_ref_sprites.py), the cell of the current frame is shown top-right.
+// "Theo camera": Right / Front / Top camera -> the same ref view (3/4 keeps the last one).
+let refOn = true, refView = "auto", refSize = 1, refLast = "right", refCmp = false;
+const REF_H = [190, 290, 440], REF_LBL = { front: "Trước", back: "Sau", left: "Trái", right: "Phải", top: "Trên" };
+function setupRef() {
+  const r = P.ref; $("tRef").hidden = !r;
+  if (!r) { $("refbox").hidden = true; return; }
+  for (const v of Object.values(r.views)) { const im = new Image(); im.src = r.dir + "/" + v.file; }
+  const bar = $("rbar"); bar.innerHTML = "";
+  for (const v of ["auto", ...Object.keys(r.views)]) {
+    const b = document.createElement("button"); b.dataset.v = v; b.textContent = v === "auto" ? "Theo camera" : REF_LBL[v] || v;
+    b.onclick = () => { refView = v; renderRef(); }; bar.append(b);
+  }
+  if (r.cal) {              // REF | ANIM: the model rendered through the same calibrated ref camera, next to the ref
+    const b = document.createElement("button"); b.id = "rCmp"; b.textContent = "So cạnh nhau";
+    b.title = "Hiện model qua đúng camera của video ref, đặt cạnh ảnh ref (không chồng lên nhau)";
+    b.onclick = () => { refCmp = !refCmp; renderRef(); }; bar.append(b);
+  }
+  renderRef();
+}
+function renderRef() {
+  const r = P && P.ref, box = $("refbox");
+  box.hidden = !r || !refOn; $("tRef").classList.toggle("on", !!r && refOn);
+  if (box.hidden) return;
+  const cm = (r.cams || { right: "right", front: "front", top: "top" })[curCam];   // page camera -> ref view seen from the same side
+  if (refView === "auto" && cm && r.views[cm]) refLast = cm;
+  const v = refView === "auto" ? refLast : refView, m = r.views[v]; if (!m) return;
+  for (const b of $("rbar").children) b.classList.toggle("on", b.dataset.v === refView);
+  const nf = m.frames, i = (((frame - 1 + (r.offset || 0)) % nf) + nf) % nf, col = i % m.cols, row = Math.floor(i / m.cols);
+  const h = REF_H[refSize], w = Math.round(h * m.w / m.h), rows = Math.ceil(nf / m.cols);
+  Object.assign($("rimg").style, { width: w + "px", height: h + "px", backgroundImage: 'url("' + r.dir + "/" + m.file + '")',
+    backgroundSize: m.cols * w + "px " + rows * h + "px", backgroundPosition: -col * w + "px " + -row * h + "px" });
+  $("rcap").textContent = "Ref " + (REF_LBL[v] || v) + " · F" + (i + 1) + (refCmp && r.cal ? "  |  model F" + frame : "");
+  const cv = $("ranim"); cv.hidden = !(refCmp && r.cal && r.cal[v] && model && !playing);
+  if ($("rCmp")) $("rCmp").classList.toggle("on", refCmp);
+  if (!cv.hidden) {
+    const im = renderView(v, true); cv.width = im.w; cv.height = im.h; cv.style.width = w + "px"; cv.style.height = h + "px";
+    cv.getContext("2d").putImageData(new ImageData(im.px, im.w, im.h), 0, 0);
+  }
+}
+$("rimg").onclick = () => { refSize = (refSize + 1) % REF_H.length; renderRef(); };
+$("tRef").onclick = () => { refOn = !refOn; renderRef(); };
+
+async function saveKeysMode() {
+  const fs = draftFrames(), text = $("text").value.trim(), cur = frame;
+  stashDraft();
+  if (fs.length) pushUndo();
+  for (const f of fs) { goto(f, true); setKey(f, poseNow()); delete drafts[f]; }
+  goto(cur, true);
+  let msg = fs.length ? "Đã đặt key " + fs.map(f => "F" + f).join(", ") + "." : "";
+  if (text && db) {
+    const body = { clip: P.clip, version: P.version, frame: cur, kind: "note", bones: {}, local: {}, text, status: "open", createdAt: new Date().toISOString() };
+    if (myId) body.author = myId;
+    try { await db.collection("adjusts").add(body); adjs.push({ ...body }); $("text").value = ""; msg += " Đã lưu ghi chú ở F" + cur + "."; }
+    catch (e) { fail(e); return; }
+  }
+  $("status").textContent = msg.trim(); renderAdjs(); refresh();
+}
+
+// ---------------------------------------------------------------- boot
+// ---------------------------------------------------------------- FBX export (animation-only FBX: skeleton + every frame, edits included)
+// Every frame = original pose + saved adjustments + unsaved drafts, exactly what the viewport shows. The FBX world rule was
+// calibrated against Blender's own FBX of the same rig (work/pose_lab/fbx/fbxexport.js, verified 0.00 cm on all bones).
+async function exportFBX() {
+  if (!model) return;
+  const btn = $("expFbx"), say = t => $("status").textContent = t;
+  stashDraft(); const cur = frame; stopPlay();
+  const root = B["root"]; if (!root) { say("Model không có xương 'root', không xuất được FBX."); return; }
+  const bones = [], list = [];
+  (function walk(o, parent) { const i = bones.length; bones.push({ name: o.name, parent }); list.push(o); o.children.forEach(c => { if (c.isBone) walk(c, i); }); })(root, -1);
+  const worlds = [];
+  btn.disabled = true; say("Đang dựng FBX…");
+  try {
+    for (let f = 1; f <= (P.frames || 1); f++) {
+      sampleAt(f);
+      if (drafts[f]) for (const [n, v] of Object.entries(drafts[f])) { B[n].quaternion.copy(v.q); B[n].position.copy(v.p); }
+      model.updateMatrixWorld(true);
+      const w = new Float64Array(list.length * 16); list.forEach((o, i) => w.set(o.matrixWorld.elements, i * 16)); worlds.push(w);
+    }
+    const take = (P.clip + "_" + P.version).replace(/[^A-Za-z0-9_\-]/g, "_");
+    const bytes = PoseLabFBX.build({ take, bones, worlds });
+    const dl = await claude.use("downloads").catch(() => null);
+    if (!dl) { say("Trang này không cho tải file (mở trên claude.ai)."); return; }
+    await dl.save({ filename: take + "_FBX.zip", data: PoseLabFBX.zip(take + ".fbx", bytes) });
+    say("Đã xuất " + worlds.length + " frame → " + take + "_FBX.zip (giải nén ra .fbx).");
+  } catch (e) {
+    say(e && e.code === "declined" ? "Đã huỷ tải." : "Không xuất được FBX: " + (e && (e.message || e.code) || e));
+  } finally { btn.disabled = false; goto(cur, true); }
+}
+$("expFbx").onclick = exportFBX;
+function loop(now) {
+  requestAnimationFrame(loop); orbit.update(); tickPlay(now || performance.now());
+  if (model) placeMarkers();
+  renderer.clear(); renderer.render(scene, camera); renderer.clearDepth(); renderer.render(overlay, camera);
+}
+setCam("right"); resize(); loop(); renderPoses(); openPose(POSES[0]);
+
+(async () => {
+  if (!window.claude || !window.claude.use) { $("status").textContent = "Đây là bản chạy thử trên máy: nút Lưu sẽ tải file .json. Mở trang trên claude.ai để lưu thẳng cho AI."; return; }
+  const [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  db = d; user = u; comments = cm;
+  if (!db) { $("status").textContent = "Đăng nhập claude.ai để lưu điều chỉnh. Bạn vẫn chỉnh thử được trên model."; refresh(); return; }
+  if (user) { myId = await user.id().catch(() => null); if ((await user.can("data.write").catch(() => null)) === false) canWrite = false; }
+  if (!canWrite) $("status").textContent = "Bạn đang ở quyền chỉ xem: chỉnh thử được nhưng không lưu được.";
+  db.collection("adjusts").onSnapshot(snap => { adjs = snap.docs.filter(s => s.exists).map(s => ({ id: s.id, ...s.data() })); renderAdjs(); renderRound(); renderPoses(); refresh(); });
+  db.collection("rounds").onSnapshot(snap => { rounds = {}; snap.docs.filter(s => s.exists).forEach(s => rounds[s.id] = s.data()); renderRound(); renderPoses(); });
+  db.collection("keys").onSnapshot(snap => {
+    remoteKeys = {};
+    snap.docs.filter(s => s.exists).forEach(s => { const d = s.data(); if (d && d.clip && d.frame) (remoteKeys[idOf(d.clip, d.version)] ||= {})[d.frame] = d; });
+    applyRemote();
+  });
+  db.collection("anims").onSnapshot(snap => {
+    remoteAnims = {}; snap.docs.filter(s => s.exists).forEach(s => { const d = s.data(); if (d && d.clip) remoteAnims[idOf(d.clip, d.version)] = d; });
+    applyRemote();
+  });
+  refresh();
+})();
+</script>

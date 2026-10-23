@@ -1,0 +1,33 @@
+<!doctype html><meta charset=utf8><body><pre id=o>idle</pre>
+<script src="fbxexport.js"></script>
+<script>
+function qmat(q, t, s) { const [x, y, z, w] = q;
+  const r = [1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w), 2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w), 2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y)];
+  return [r[0]*s[0], r[1]*s[1], r[2]*s[2], t[0], r[3]*s[0], r[4]*s[1], r[5]*s[2], t[1], r[6]*s[0], r[7]*s[1], r[8]*s[2], t[2], 0, 0, 0, 1]; }
+function mul(a, b) { const o = new Array(16).fill(0); for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) { let s = 0; for (let k = 0; k < 4; k++) s += a[i*4+k]*b[k*4+j]; o[i*4+j] = s; } return o; }
+async function run(modelUrl, take, outName) {
+  const j = await (await fetch(modelUrl)).json();
+  const bin = Uint8Array.from(atob(j.buffers[0].uri.split(",")[1]), c => c.charCodeAt(0)).buffer;
+  const acc = i => { const a = j.accessors[i], bv = j.bufferViews[a.bufferView], nc = { SCALAR: 1, VEC3: 3, VEC4: 4 }[a.type];
+    return new Float32Array(bin, (bv.byteOffset || 0) + (a.byteOffset || 0), a.count * nc); };
+  const N = j.nodes, par = {}; N.forEach((n, i) => (n.children || []).forEach(c => par[c] = i));
+  const anim = j.animations[0]; const nk = j.accessors[anim.samplers[0].input].count;
+  const order = []; const walk = i => { order.push(i); (N[i].children || []).forEach(walk); }; walk(N.findIndex(n => n.name === "root"));
+  const idx = {}; order.forEach((n, k) => idx[n] = k);
+  const bones = order.map(i => ({ name: N[i].name, parent: (par[i] in idx) ? idx[par[i]] : -1 }));
+  const worlds = [];
+  for (let k = 0; k < nk; k++) {
+    const T = N.map(n => (n.translation || [0, 0, 0]).slice()), R = N.map(n => (n.rotation || [0, 0, 0, 1]).slice()), S = N.map(n => (n.scale || [1, 1, 1]).slice());
+    for (const ch of anim.channels) { const s = anim.samplers[ch.sampler], v = acc(s.output), i = ch.target.node, p = ch.target.path;
+      if (p === "translation") for (let a = 0; a < 3; a++) T[i][a] = v[k*3+a]; else if (p === "rotation") for (let a = 0; a < 4; a++) R[i][a] = v[k*4+a]; else if (p === "scale") for (let a = 0; a < 3; a++) S[i][a] = v[k*3+a]; }
+    const W = {}; const w = i => W[i] || (W[i] = (i in par) ? mul(w(par[i]), qmat(R[i], T[i], S[i])) : qmat(R[i], T[i], S[i]));
+    const f = new Float64Array(order.length * 16);
+    order.forEach((i, b) => { const m = w(i); for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) f[b*16 + c*4 + r] = m[r*4+c]; });  // column-major
+    worlds.push(f);
+  }
+  const t0 = performance.now(); const bytes = PoseLabFBX.build({ take, bones, worlds }); const ms = performance.now() - t0;
+  const r = await fetch("/save?name=" + outName, { method: "POST", body: bytes });
+  return `${outName}: ${bytes.length} bytes, ${nk} frames, build ${ms.toFixed(0)} ms, ${await r.text()}`;
+}
+window.run = run;
+</script>
