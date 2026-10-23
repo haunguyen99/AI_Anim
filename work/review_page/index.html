@@ -1,0 +1,931 @@
+<title>Review Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: review-room app in one dark look - top bar with draw tools, playlist | viewer | notes,
+   and a timeline bar fixed to the bottom edge (play, frame cells with note markers, frame counter, transport). */
+:root {
+  --bg: #16181c;         /* room */
+  --panel: #1f2227;
+  --raise: #2a2e35;
+  --line: #343943;
+  --ink: #e4e7ec;
+  --muted: #8b93a1;
+  --accent: #1fa37a;     /* selection / play-head */
+  --pencil: #ff4b3e;     /* note markers, default ink */
+  --done: #4cc287;
+  --font-ui: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-num: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --tl: 46px;            /* timeline strip height */
+  --tr: 40px;            /* transport row height */
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 13px; line-height: 1.45; overflow: hidden; }
+button, select, textarea, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 calc(var(--tl) + var(--tr) + env(safe-area-inset-bottom, 0px)); }
+
+/* top bar */
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+.crumb { display: grid; line-height: 1.2; min-width: 0; }
+.crumb small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.proj { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 3px 6px; font-weight: 600; font-size: 13px; }
+.crumb b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file { font-weight: 600; font-size: 14px; padding: 4px 10px; background: var(--raise); border-radius: 4px; white-space: nowrap; }
+.tools { display: flex; align-items: center; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.tool { width: 32px; height: 30px; display: grid; place-items: center; border: 0; background: none; border-radius: 4px; color: var(--muted); }
+.tool:hover { background: var(--raise); color: var(--ink); }
+.tool.on { background: var(--accent); color: #fff; }
+.tool svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sw { width: 18px; height: 18px; border-radius: 3px; border: 2px solid transparent; }
+.tool.color.on { background: var(--raise); }
+.tool.color.on .sw { border-color: #fff; }
+.vsep { width: 1px; height: 22px; background: var(--line); margin: 0 6px; }
+
+/* three panes */
+.main { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; min-height: 0; }
+.pane { min-height: 0; overflow-y: auto; }
+.list { border-right: 1px solid var(--line); }
+.list h2, .side h2 { font-size: 13px; font-weight: 600; margin: 0; padding: 10px 10px 8px; display: flex; gap: 6px; align-items: baseline; }
+.list h2 span, .side h2 span { color: var(--muted); font-weight: 400; font-size: 11px; }
+.item { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px; padding: 6px 10px 6px 6px; border: 0; width: 100%; text-align: left; background: none; border-left: 3px solid transparent; }
+.item.on { background: #1fa37a33; border-left-color: var(--accent); }
+.item img { width: 96px; aspect-ratio: 768 / 720; object-fit: contain; border-radius: 2px; background: #464b52; }
+.item b { display: block; font-weight: 500; font-size: 12px; overflow-wrap: anywhere; }
+.item small { color: var(--muted); font-size: 11px; }
+
+.viewer { position: relative; display: grid; place-items: center; min-height: 0; min-width: 0; padding: 12px; container-type: size; overflow: hidden; }
+.viewer.hand, .viewer.hand #ink { cursor: grab; }
+.viewer.panning, .viewer.panning #ink { cursor: grabbing; }
+.stage { --arw: 768; --arh: 720; position: relative; width: min(100cqw, 100cqh * var(--arw) / var(--arh)); aspect-ratio: var(--arw) / var(--arh); max-width: 100%; touch-action: none;
+  transform-origin: 0 0; will-change: transform; }
+.zoombox { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 2px; background: #000a; border-radius: 4px; padding: 2px; z-index: 2; }
+.zoombox button { border: 0; background: none; color: var(--ink); min-width: 28px; height: 26px; border-radius: 3px; font-family: var(--font-num); font-size: 12px; }
+.zoombox button:hover { background: #ffffff1f; }
+[hidden] { display: none !important; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#ink { cursor: default; }
+#ink.draw { cursor: crosshair; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+.zoomtag { position: absolute; top: 10px; left: 50%; translate: -50% 0; font-size: 12px; background: #000a; padding: 3px 10px; border-radius: 4px; color: var(--ink); pointer-events: none; white-space: nowrap; z-index: 2; }
+
+.side { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; }
+.side .head { display: flex; align-items: center; justify-content: space-between; padding-right: 8px; }
+.filter { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; font-size: 12px; }
+.notes { overflow-y: auto; padding: 0 10px 10px; display: grid; gap: 8px; align-content: start; }
+.note { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: grid; gap: 4px; }
+.note.sel { border-color: var(--accent); }
+.note.done { opacity: .6; }
+.note .top2 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.note img { width: 20px; height: 20px; border-radius: 50%; }
+.note .who { font-weight: 600; }
+.note .part { color: var(--muted); font-size: 11px; }
+.fbtn { font-family: var(--font-num); font-weight: 700; font-size: 11px; background: var(--pencil); color: #fff; border: 0; border-radius: 3px; padding: 1px 6px; }
+.note p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.note .acts { display: flex; gap: 6px; }
+.mini { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 1px 8px; font-size: 11px; }
+.empty { color: var(--muted); text-align: center; padding: 24px 10px; margin: 0; }
+.compose { border-top: 1px solid var(--line); padding: 10px; display: grid; gap: 6px; background: var(--panel); }
+.compose textarea { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; min-height: 56px; resize: vertical; width: 100%; }
+.compose select { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; width: 100%; }
+.compose .row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.fchk { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--accent); font-weight: 600; }
+.submit { background: var(--accent); border: 0; color: #fff; font-weight: 600; border-radius: 4px; padding: 5px 14px; }
+.submit[disabled] { opacity: .45; cursor: not-allowed; }
+.status { font-size: 11px; color: var(--muted); min-height: 1.4em; }
+.round { margin: 0 10px 8px; padding: 8px 10px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 6px; }
+.round .st { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.round .st i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.round[data-s="sent"] .st i { background: #f2b33d; }
+.round[data-s="working"] .st i { background: #4aa8ff; }
+.round[data-s="fixed"] .st i { background: var(--done); }
+.round small { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+.aibtn { background: #f2b33d; color: #1b1405; border: 0; border-radius: 4px; padding: 6px 10px; font-weight: 700; }
+.aibtn.arm { background: #ff8a3d; }
+.aibtn[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* bottom timeline, fixed */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 1px solid var(--line); z-index: 5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+.strip { height: var(--tl); display: grid; grid-template-columns: 52px minmax(0, 1fr) 64px; align-items: stretch; border-bottom: 1px solid var(--line); }
+.playbig { border: 0; background: none; display: grid; place-items: center; color: var(--ink); border-right: 1px solid var(--line); }
+.playbig svg { width: 22px; height: 22px; fill: currentColor; }
+.cells { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); touch-action: none; cursor: ew-resize; user-select: none; }
+.cell { position: relative; border-right: 1px solid #ffffff10; background: #ffffff06; }
+.cell:nth-child(2n) { background: #ffffff0b; }
+.cell .n { position: absolute; top: 2px; left: 3px; font-family: var(--font-num); font-size: 9px; color: var(--muted); }
+.cell .mk { position: absolute; bottom: 5px; left: 50%; translate: -50% 0; width: 9px; height: 9px; border-radius: 2px; background: var(--pencil); }
+.cell .mk.done { background: var(--done); }
+.head-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent); pointer-events: none; }
+.head-line::before { content: ""; position: absolute; top: 0; left: -5px; width: 12px; height: 8px; background: var(--accent); border-radius: 0 0 3px 3px; }
+.curf { display: grid; place-items: center; font-family: var(--font-num); font-weight: 700; font-size: 20px; color: var(--accent); background: #1fa37a1f; font-variant-numeric: tabular-nums; }
+.transport { height: var(--tr); display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: nowrap; overflow-x: auto; }
+.transport .tool { width: 34px; }
+.fps { font-family: var(--font-num); font-size: 11px; color: var(--muted); padding: 0 6px; display: flex; align-items: center; gap: 4px; }
+.fps select { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; font-size: 11px; }
+.keys { font-size: 11px; color: var(--muted); margin-left: 12px; white-space: nowrap; }
+
+@media (max-width: 1000px) { .main { grid-template-columns: minmax(0, 1fr) 280px; } .list { display: none; } }
+@media (max-width: 700px) {
+  body { overflow: auto; }
+  .app { height: auto; }
+  .main { grid-template-columns: minmax(0, 1fr); }
+  .viewer { height: 62vh; }
+  .side { border-left: 0; border-top: 1px solid var(--line); overflow: visible; }
+  .notes { overflow: visible; }
+  .keys { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <div class="top">
+    <label class="crumb"><small>Boss Gaygor · project</small><select class="proj" id="proj" aria-label="Chọn project"></select></label>
+    <div class="file" id="fileName">EN_M11_Boss_Gaygor_Attack · blocking v1 (stepped)</div>
+    <div class="tools" role="toolbar" aria-label="Công cụ vẽ">
+      <button class="tool" id="tHand" title="Kéo khung hình (H) - hoặc giữ chuột giữa" aria-label="Kéo khung hình"><svg viewBox="0 0 24 24"><path d="M8 13V5a1.5 1.5 0 013 0v6M11 11V4a1.5 1.5 0 013 0v7M14 11V5.5a1.5 1.5 0 013 0V14a7 7 0 01-7 7h-.5a6 6 0 01-4.6-2.2L3 15.5a1.5 1.5 0 012.3-1.9L8 16"/></svg></button>
+      <button class="tool" id="tPen" title="Bút vẽ (D)" aria-label="Bút vẽ"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></button>
+      <button class="tool" id="tUndo" title="Hoàn tác nét (Ctrl+Z)" aria-label="Hoàn tác nét"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg></button>
+      <button class="tool" id="tClear" title="Xoá nét chưa gửi" aria-label="Xoá nét chưa gửi"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+      <span class="vsep"></span>
+      <span id="colors" style="display:flex;gap:2px"></span>
+      <span class="vsep"></span>
+      <span id="sizes" style="display:flex;gap:2px" role="group" aria-label="Cỡ bút"></span>
+      <span class="vsep"></span>
+      <button class="tool" id="tOnion" title="Hiện nét vẽ của frame lân cận" aria-label="Onion skin"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg></button>
+    </div>
+  </div>
+
+  <div class="main">
+    <nav class="pane list" aria-label="Danh sách clip">
+      <h2><span id="projName" style="color:var(--ink);font-size:13px;font-weight:600">Boss_Gaygor</span> <span id="clipCount"></span></h2>
+      <div id="clips"></div>
+    </nav>
+
+    <section class="viewer" aria-label="Khung xem">
+      <div class="stage" id="stage">
+        <video id="vid" muted playsinline preload="auto" hidden></video>
+        <canvas id="img" width="768" height="720"></canvas>
+        <canvas id="ink" width="768" height="720" aria-label="Vùng vẽ ghi chú"></canvas>
+        <div class="loading" id="loading">Đang tải frame…</div>
+      </div>
+      <div class="zoomtag" id="zoomTag">front · left / back · top</div>
+      <div class="zoombox" role="group" aria-label="Thu phóng">
+        <button id="zOut" title="Thu nhỏ (-)" aria-label="Thu nhỏ">−</button>
+        <button id="zFit" title="Vừa khung (A)" aria-label="Vừa khung">100%</button>
+        <button id="zIn" title="Phóng to (+)" aria-label="Phóng to">+</button>
+      </div>
+    </section>
+
+    <aside class="side" aria-label="Ghi chú">
+      <div class="head"><h2>Ghi chú <span id="count">0</span></h2>
+        <select class="filter" id="flt" aria-label="Lọc ghi chú"><option value="all">Tất cả</option><option value="open">Chưa sửa</option><option value="done">Đã sửa</option></select></div>
+      <div class="round" id="round" data-s="none">
+        <div class="st"><i></i><span id="roundTxt">Vòng review đang mở: xem hết clip, ghi mọi lỗi rồi mới gửi một lần.</span></div>
+        <small id="roundSub"></small>
+        <button class="aibtn" id="aiSend">Gửi feedback cho AI</button>
+      </div>
+      <div class="notes" id="notes"><p class="empty">Chưa có ghi chú.<br>Hãy để lại ghi chú đầu tiên…</p></div>
+      <div class="compose">
+        <select id="part" aria-label="Bộ phận">
+          <option>Toàn thân / timing</option><option>Đầu</option><option>Cổ · ngực</option><option>Hông</option>
+          <option>Vai</option><option>Tay phải · khiên</option><option>Tay trái</option><option>Chùy</option><option>Chân</option>
+        </select>
+        <textarea id="text" placeholder="Ghi chú cho frame này…"></textarea>
+        <div class="row">
+          <span class="fchk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg><span id="newF">Frame 1</span></span>
+          <button class="submit" id="send">Gửi</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="strip">
+    <button class="playbig" id="play" aria-label="Phát / dừng"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4l13 8-13 8z"/></svg></button>
+    <div class="cells" id="cells" role="slider" aria-label="Timeline" aria-valuemin="1" tabindex="0"><div class="head-line" id="headLine"></div></div>
+    <div class="curf" id="curf">1</div>
+  </div>
+  <div class="transport">
+    <button class="tool" id="first" title="Về frame đầu (Home)" aria-label="Về frame đầu"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6z"/></svg></button>
+    <button class="tool" id="prev" title="Frame trước (←)" aria-label="Frame trước"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button class="tool" id="next" title="Frame sau (→)" aria-label="Frame sau"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="tool" id="prevN" title="Ghi chú trước (,)" aria-label="Ghi chú trước"><svg viewBox="0 0 24 24"><path d="M11 6l-6 6 6 6M19 6l-6 6 6 6"/></svg></button>
+    <button class="tool" id="nextN" title="Ghi chú sau (.)" aria-label="Ghi chú sau"><svg viewBox="0 0 24 24"><path d="M13 6l6 6-6 6M5 6l6 6-6 6"/></svg></button>
+    <button class="tool on" id="loop" title="Lặp" aria-label="Lặp"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 014-4h12M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 01-4 4H4"/></svg></button>
+    <span class="fps"><select id="speed" aria-label="Tốc độ phát"><option value="1">30fps</option><option value="0.5">15fps</option><option value="0.25">8fps</option></select></span>
+    <span class="keys">← → frame · Space phát · , . ghi chú · D bút · [ ] cỡ bút · lăn chuột zoom · H / chuột giữa kéo · A vừa khung</span>
+  </div>
+</div>
+
+<script>
+// Each entry is one reviewable clip version; frames live in <dir>f001.jpg.. (add new versions here when republishing).
+// Optional per clip: w/h = frame size of the WebM (default 768x720), views = what the grid shows (zoom tag).
+const CLIPS = [
+  { clip: "SDR06_Shoot", version: "polish_v1", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · polish v1 (P0 = Reload F1)", src: "clips/sdr06_shoot_polish_v1.webm",
+    thumb: "clips/sdr06_shoot_polish_v1.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "P0 lấy từ F1 của Reload đã duyệt (súng lùi sát người 5,2 cm, tay trái cầm nòng như Reload) để 2 anim nối nhau khớp · độ giật giữ nguyên như spline v1 · da vai trái 0,17 → 0,48 · quét mọi frame: không xoắn, tay bám súng ≤ 0,1 mm · vòng lặp F13 = F1 liền mạch" },
+  { clip: "SDR06_Shoot", version: "spline_v1", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · spline v1", src: "clips/sdr06_shoot_spline_v1.webm",
+    thumb: "clips/sdr06_shoot_spline_v1.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "spline từ blocking b12 đã duyệt: mỗi phát là một đường giật liền (lên gắt 1F, về có chút quá đà rồi lắng); vai phải trễ 0,4F, ngực 0,8F, đầu 1,6F theo súng nên rung chạy dọc người thay vì nhảy bậc · độ mạnh giữ như b12 (100/80/110/90 %) · 2 tay giải lại trên súng từng frame (lệch ≤ 1 mm cả giữa 2 frame) · vòng lặp F13 = F1 liền mạch" },
+  { clip: "SDR06_Reload", version: "lspline_v1", label: "Shoot Die Repeat map06 · Reload (thay trống) · spline tay trái v1 (từ b6 đã duyệt, 42F)", src: "clips/sdr06_reload_lspline_v1.webm",
+    thumb: "clips/sdr06_reload_lspline_v1.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "tay trái b6 từ stepped → spline: giữ đúng các key đã duyệt (F5–F28), bỏ các frame hold · F17, F18, F22 chỉ xoay trống nên tay đi thẳng từ key trước tới key sau, trống vẫn xoay như Pose Lab · khi trống đang di chuyển thì trống đi theo tay (không trượt khỏi tay), khi trống nằm trong súng thì tay bám trống · bước nhảy lớn nhất của cổ tay 35 → 19 cm/frame (rút trống F15–F16, nhấc trống F22–F23) · quét mọi frame: không xoắn, không gai · F28 → F31 tay về súng mượt" },
+  { clip: "SDR06_Reload", version: "lhand_b6", label: "Shoot Die Repeat map06 · Reload (thay trống) · tay trái b6 (Pose Lab: trống F16–F22, stepped, 42F)", src: "clips/sdr06_reload_lhand_b6.webm",
+    thumb: "clips/sdr06_reload_lhand_b6.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "áp 5 chỉnh sửa Pose Lab: xoay trống 5–8° ở F16, F17, F18, F21, F22 (trống khớp trang 0°); F17, F18, F22 thành hold mới · quét xoắn/nhảy mọi frame: không có khớp xoắn · còn lại giữ như b5 (đã duyệt)" },
+  { clip: "SDR06_Reload", version: "lhand_b5", label: "Shoot Die Repeat map06 · Reload (thay trống) · tay trái b5 (lọc xoắn vai/tay, stepped, 42F)", src: "clips/sdr06_reload_lhand_b5.webm",
+    thumb: "clips/sdr06_reload_lhand_b5.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "sửa inbetween bị xoắn: F2–F4 và F29–F33 (tay giữ nòng) IK đi từ pose tay F1 thay vì tay base cũ đang vung → khuỷu hết xoắn (−70° → +7..19°), cổ tay hết gập 120–170° (giờ ≤31°), mỗi frame đổi ≤8° · lọc quaternion (Euler Filter cho quaternion) trên vai/khuỷu/cổ tay trái: dấu liên tục · F5–F28 giữ nguyên b4" },
+  { clip: "SDR06_Reload", version: "lhand_b4", label: "Shoot Die Repeat map06 · Reload (thay trống) · tay trái b4 (Pose Lab 13 key, stepped, 42F)", src: "clips/sdr06_reload_lhand_b4.webm",
+    thumb: "clips/sdr06_reload_lhand_b4.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "áp 13 chỉnh sửa tay trái từ Pose Lab (F5–F28): pose đúng như trên trang ở mọi key · F5 vai/cánh tay chỉnh theo giải phẫu, F7–F11 tay cầm vào băng đạn · F21/F23/F25/F28 copy từ F16/F14/F11/F7 · F21 trống đi theo tay như F16 (trước đó trống ở chỗ cũ, tay trượt khỏi mép trống) · kiểm tra giải phẫu: hết căng da vai trái ở mọi key · F1–F4, F29–F42 giữ như b3" },
+  { clip: "SDR06_Reload", version: "lhand_b3", label: "Shoot Die Repeat map06 · Reload (thay trống) · tay trái b3 (Pose Lab F1, stepped, 42F)", src: "clips/sdr06_reload_lhand_b3.webm",
+    thumb: "clips/sdr06_reload_lhand_b3.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "áp 2 chỉnh sửa Pose Lab ở F1 (tay trái cầm nòng lại, đẩy súng sát người 5 cm) · F1 là P0 nên dáng mới chuyển dần ra tới F5 và quay về từ F29, giữ đủ từ F34–F42 (F42 = F1) · chỗ cầm mới của 2 tay giữ nguyên trên súng: tay phải mọi frame, tay trái F1–F4 và F29–F42 (lệch 0,0 cm) · F5–F28 tay trái giữ các key b2" },
+  { clip: "SDR06_Reload", version: "lhand_b2", label: "Shoot Die Repeat map06 · Reload (thay trống) · tay trái blocking lại b2 (stepped, 42F)", src: "clips/sdr06_reload_lhand_b2.webm",
+    thumb: "clips/sdr06_reload_lhand_b2.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "sửa góp ý F23 (tay thay băng đạn chưa tốt): chỉ blocking lại tay trái + trống, 13 key STEPPED (F5–F28), thân/súng/tay phải giữ như spline v3 · solver có giới hạn khớp giải phẫu: cổ tay không còn gập 120–178° như trước, trong giới hạn ở mọi key (F19 còn lệch 10°) · khuỷu không chìm vào thân (cách áo 4–9 cm) · F23 khuỷu gập 53° (trước gần thẳng 21°) · F28 vỗ cạnh dưới trống (đáy trống không với tới) · pole khuỷu theo bàn tay · chưa spline: xem từng key" },
+  { clip: "SDR06_Reload", version: "spline_v3", label: "Shoot Die Repeat map06 · Reload (thay trống) · spline v3 FK (42F)", src: "clips/sdr06_reload_spline_v3.webm",
+    thumb: "clips/sdr06_reload_spline_v3.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "sửa lỗi thấy ở góc left: key ôm/xách trống (F9, F12, F14, F16, F19, F23, F26) đặt khuỷu thấp hơn vai 12–21 cm (trước đó F9 chỉ 9 cm, F16 4 cm, F26 7 cm, khuỷu vung lên ngang vai) · F14 nâng trống 5 cm để tay không duỗi thẳng · tay trái F5–F28 diễn FK thuần giữa các key, trống đi theo bàn tay trong lúc di chuyển · F19–F23 bắp tay dang ra tối đa 21° để trống không xuyên vạt áo · tay phải và đoạn tay trên ốp lót tay vẫn bám bằng IK" },
+  { clip: "SDR06_Reload", version: "spline_v2", label: "Shoot Die Repeat map06 · Reload (thay trống) · spline v2 (42F)", src: "clips/sdr06_reload_spline_v2.webm",
+    thumb: "clips/sdr06_reload_spline_v2.jpg", n: 42, fps: 30, w: 1800, h: 600, views: "right (ingame) | left (tay thay đạn) | front · top · 3/4",
+    note: "sửa góp ý F1 (tay thay đạn xoay loạn xạ): tay trái giải lại bằng IK hai đoạn, khuỷu đi mượt theo hướng nội suy giữa các key, bắp tay không tự xoay dọc trục (key F12 cũ bị vặn 270°), cẳng tay xoay chia đôi với cổ tay và nội suy giữa key · tay bám đúng chỗ cầm 0 cm · vị trí khuỷu/bàn tay ở các key giữ như b23" },
+  { clip: "SDR06_Reload", version: "spline_v1", label: "Shoot Die Repeat map06 · Reload (thay trống) · spline v1 (42F)", src: "clips/sdr06_reload_spline_v1.webm",
+    thumb: "clips/sdr06_reload_spline_v1.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "từ blocking b23 đã duyệt: thân, đầu, súng, chân, trống nội suy Bezier (ease) giữa các key · mỗi frame giải lại hai tay để bám đúng chỗ cầm: tay phải trên cán súng, tay trái trên trống trong lúc cầm trống, còn lại trên ốp lót tay · tay bám lệch ≤ 0,6 cm (riêng F11 lệch 2,5 cm)" },
+  { clip: "SDR06_Reload", version: "blocking_b23", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b23 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b23.webm",
+    thumb: "clips/sdr06_reload_blocking_b23.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F9/F15/F25 (vai xoắn): tay trái chọn hướng khuỷu để da vai không gập (đo ≥ 0,30, b22 chỉ 0,14–0,20) · F18/F22: khuỷu đưa ngang ra 20 cm, cẳng tay thả xuống trống (trống ở F19 nâng 8 cm) · lưu ý: F9–F11 và F26 khuỷu phải khép vào để vai không xoắn" },
+  { clip: "SDR06_Reload", version: "blocking_b22", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b22 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b22.webm",
+    thumb: "clips/sdr06_reload_blocking_b22.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F16: trống cũ xoay mặt áp dọc hông trái khi đưa ra sau (F16, F19) thay vì cắm cạnh vào vạt áo; dời ra ngoài 6–8 cm · F16 không còn xuyên, F19 còn mép túi áo chạm 0,5 cm (khuất ở góc game) · còn lại như b21" },
+  { clip: "SDR06_Reload", version: "blocking_b21", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b21 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b21.webm",
+    thumb: "clips/sdr06_reload_blocking_b21.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F11: tay trái áp lòng bàn tay vào cạnh trái trống đạn (giữa mặt trống, ngón ôm ra trước) thay vì đỡ dưới đáy; khuỷu đẩy ra ngoài vai ~10 cm, gập ~95° (F9–F11, cả lúc lắp trống F23–F26) · còn lại như b20" },
+  { clip: "SDR06_Reload", version: "blocking_b20", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b20 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b20.webm",
+    thumb: "clips/sdr06_reload_blocking_b20.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F20: trống cũ đưa hẳn ra sau, sát ngoài hông trái (F16 đang đưa ra, F19 khuất sau thân ở góc game) thay vì treo trước đùi · còn lại như b19" },
+  { clip: "SDR06_Reload", version: "blocking_b19", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b19 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b19.webm",
+    thumb: "clips/sdr06_reload_blocking_b19.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "làm lại theo góp ý 'chỉ cần nhấc tay lên như F5': bỏ pha dựng súng cao; tay phải giữ súng gần P0, chỉ nhấc 3–5 cm, ngóc 8–12° suốt clip · tay trái tháo trống (F9–F14), thả cạnh đùi trái (F16–F19), lắp trống mới (F23–F26), về P0 (F28–F42)" },
+  { clip: "SDR06_Reload", version: "blocking_b18", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b18 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b18.webm",
+    thumb: "clips/sdr06_reload_blocking_b18.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F7: key F5 giữ nguyên pose P0 (2 tay vẫn trên súng), súng chỉ nhấp lên 3 cm, ngóc 8° (b17 dựng 32°, tay trái đã sang trống) · từ F9 như b17" },
+  { clip: "SDR06_Shoot", version: "blocking_b12", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b12 (stepped)", src: "clips/sdr06_shoot_blocking_b12.webm",
+    thumb: "clips/sdr06_shoot_blocking_b12.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F1: hông bớt nghiêng về trước 10° (xoay quanh gốc cột sống) · thân trên, súng, tay, bàn chân giữ nguyên như b11" },
+  { clip: "SDR06_Reload", version: "blocking_b17", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b17 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b17.webm",
+    thumb: "clips/sdr06_reload_blocking_b17.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo góp ý Shoot b11 F1 (P0 chung): hông bớt nghiêng về trước 10°, thân trên giữ nguyên · còn lại như b16" },
+  { clip: "SDR06_Shoot", version: "blocking_b11", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b11 (stepped)", src: "clips/sdr06_shoot_blocking_b11.webm",
+    thumb: "clips/sdr06_shoot_blocking_b11.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F1: khuỷu tay phải đẩy ra ngoài ~5 cm, nâng 3 cm (áp vào P0 nên đúng cả clip) · khuỷu trái giữ như b10" },
+  { clip: "SDR06_Reload", version: "blocking_b16", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b16 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b16.webm",
+    thumb: "clips/sdr06_reload_blocking_b16.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo góp ý Shoot b10 F1 (P0 chung): khuỷu tay phải đẩy ra ngoài ở các key tư thế bắn (F1, F42) · pha dựng súng giữ như b15" },
+  { clip: "SDR06_Shoot", version: "blocking_b10", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b10 (stepped)", src: "clips/sdr06_shoot_blocking_b10.webm",
+    thumb: "clips/sdr06_shoot_blocking_b10.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F12: khuỷu tay trái đẩy ra ngoài ~4 cm (áp vào P0 nên đúng cả clip) · còn lại như b9" },
+  { clip: "SDR06_Reload", version: "blocking_b15", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b15 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b15.webm",
+    thumb: "clips/sdr06_reload_blocking_b15.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo góp ý Shoot b9 F12 (P0 chung): khuỷu tay trái đẩy ra ngoài ~4 cm ở các key tay trái cầm ốp nòng · còn lại như b14" },
+  { clip: "SDR06_Shoot", version: "blocking_b9", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b9 (stepped)", src: "clips/sdr06_shoot_blocking_b9.webm",
+    thumb: "clips/sdr06_shoot_blocking_b9.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "P0 v8: ngực mở về cam 54° (thay vì 80°) theo góp ý 'khoảng 55 là đẹp' · vai cân, súng chĩa thẳng · nhịp bắn như b8" },
+  { clip: "SDR06_Reload", version: "blocking_b14", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b14 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b14.webm",
+    thumb: "clips/sdr06_reload_blocking_b14.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "P0 v8: ngực mở về cam 54° (thay vì 80°) · các key thay trống giữ như b13" },
+  { clip: "SDR06_Shoot", version: "blocking_b8", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b8 (stepped)", src: "clips/sdr06_shoot_blocking_b8.webm",
+    thumb: "clips/sdr06_shoot_blocking_b8.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo góp ý Reload F42 (P0 chung): đầu xoay ra cam thêm 20° (tổng 45°) · còn lại như b7" },
+  { clip: "SDR06_Reload", version: "blocking_b13", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b13 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b13.webm",
+    thumb: "clips/sdr06_reload_blocking_b13.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F14: súng dựng lên kéo về gần người 8 cm (khuỷu phải ~60°, không xuyên bắp tay) · sửa góp ý F42: đầu xoay ra cam thêm 20° (tổng 45°) · bỏ key F32 (F28 về thẳng F36) · có sẵn sửa vai trái của b12" },
+  { clip: "SDR06_Shoot", version: "blocking_b7", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b7 (stepped)", src: "clips/sdr06_shoot_blocking_b7.webm",
+    thumb: "clips/sdr06_shoot_blocking_b7.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý (check trong Blender): vai trái bị gấp lõm phía trước → khuỷu trái chĩa xuống-ra sau, cánh tay trên đưa ra trước gần ngang, tay trái nắm xa hơn 7 cm trên ốp nòng; da vai trái nén 0,25 → 0,37 · còn lại như b6" },
+  { clip: "SDR06_Reload", version: "blocking_b12", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b12 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b12.webm",
+    thumb: "clips/sdr06_reload_blocking_b12.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "cùng sửa vai trái: P0 mới của Shoot b7 + lúc cầm trống (F9–F28) khuỷu trái chĩa xuống-ra sau; da vai trái nén tối thiểu 0,06 → 0,25 · động tác như b11" },
+  { clip: "SDR06_Shoot", version: "blocking_b6", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b6 (stepped)", src: "clips/sdr06_shoot_blocking_b6.webm",
+    thumb: "clips/sdr06_shoot_blocking_b6.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "mở người theo ảnh demo của anh Hải: người xoay thêm 25° (ngực ~80° ra cam, áo gile nhìn thẳng), chân đứng rộng hơn; giữ dáng cầm súng ở hông, súng chĩa thẳng; vai nghiêng theo hướng ngực (vai phải thấp 1,4 cm); súng đặt lại (khuỷu phải ~60°, trái ~85°) · nhịp bắn như b5" },
+  { clip: "SDR06_Reload", version: "blocking_b11", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b11 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b11.webm",
+    thumb: "clips/sdr06_reload_blocking_b11.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo P0 mới của Shoot b6 (mở người như demo) · động tác như b10" },
+  { clip: "SDR06_Shoot", version: "blocking_b5", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b5 (stepped)", src: "clips/sdr06_shoot_blocking_b5.webm",
+    thumb: "clips/sdr06_shoot_blocking_b5.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F12: vai trái không còn sụp (độ nghiêng ngực sau khi xoay người làm vai trái thấp 2,8 cm → chỉnh lại cho 2 vai cân, scapula trái nhô ít hơn); đầu xoay ra cam 25°; súng đặt lại (khuỷu phải ~87°, trái ~70°) · nhịp bắn như b4" },
+  { clip: "SDR06_Reload", version: "blocking_b10", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b10 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b10.webm",
+    thumb: "clips/sdr06_reload_blocking_b10.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo P0 mới của Shoot b5 (2 vai cân, đầu xoay ra cam 25°) · còn lại như b9" },
+  { clip: "SDR06_Shoot", version: "blocking_b4", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b4 (stepped)", src: "clips/sdr06_shoot_blocking_b4.webm",
+    thumb: "clips/sdr06_shoot_blocking_b4.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F5: cả người (hông + chân + thân) xoay thêm 30° về phía camera ingame, ngực mở ~55° ra cam; súng vẫn chĩa thẳng về trước; súng đặt lại theo hông mới (khuỷu phải ~75°, trái ~80°) · nhịp bắn như b3" },
+  { clip: "SDR06_Reload", version: "blocking_b9", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b9 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b9.webm",
+    thumb: "clips/sdr06_reload_blocking_b9.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "theo P0 mới của Shoot b4 (người xoay thêm 30° về cam): pha dựng súng đặt lại cạnh vai phải, khuỷu phải ~68–72° (không duỗi thẳng), bỏ phần xoay thân thêm của b8 · còn lại như b8" },
+  { clip: "SDR06_Reload", version: "blocking_b8", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b8 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b8.webm",
+    thumb: "clips/sdr06_reload_blocking_b8.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F30: súng kéo về gần người (ra trước 13 cm thay vì 26), khuỷu phải gập ~50–57° thay vì gần thẳng; khuỷu mở ra ngoài để súng không xuyên bắp tay; thân xoay phải thêm để tay trái vẫn tới trống; F16–19 tay trái xách trống ở mép trên (trống không chạm tay) · F5–F28 đo 0 đỉnh súng xuyên thân (F32 còn 4 đỉnh chạm bắp tay lúc hạ súng)" },
+  { clip: "SDR06_Reload", version: "blocking_b7", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b7 (stepped, 42F)", src: "clips/sdr06_reload_blocking_b7.webm",
+    thumb: "clips/sdr06_reload_blocking_b7.jpg", n: 42, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F14: khi dựng súng, súng ra trước 26 cm + sang phải 16 cm, nòng chếch ít hơn 8°, khuỷu phải mở ra ngoài → súng không còn xuyên đầu/bắp tay (F5–F32 đo 0 đỉnh xuyên), trống tránh hông trái · sửa góp ý F33: bỏ kéo khóa nòng, lắp trống (F26) xong về P0 luôn → clip còn 42F (ready F42)" },
+  { clip: "SDR06_Shoot", version: "blocking_b3", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b3 (stepped)", src: "clips/sdr06_shoot_blocking_b3.webm",
+    thumb: "clips/sdr06_shoot_blocking_b3.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F8: súng chĩa thẳng về trước (P0 bỏ góc quay 10° vào giữa); để tay trái vẫn với tới ốp nòng: thân xoay thêm 5°, súng vào gần giữa 6 cm, vai trái nhô tới 30° · nhịp bắn như b2" },
+  { clip: "SDR06_Reload", version: "blocking_b5", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b5 (stepped)", src: "clips/sdr06_reload_blocking_b5.webm",
+    thumb: "clips/sdr06_reload_blocking_b5.jpg", n: 54, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "như b4 (tay phải giữ cán, tay trái kéo khóa nòng) + P0 mới của Shoot b3: súng chĩa thẳng về trước ở đầu/cuối clip" },
+  { clip: "SDR06_Reload", version: "blocking_b4", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b4 (stepped)", src: "clips/sdr06_reload_blocking_b4.webm",
+    thumb: "clips/sdr06_reload_blocking_b4.jpg", n: 54, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "sửa góp ý F30: tay phải giữ nguyên trên cán súng suốt clip; kéo khóa nòng đổi sang tay trái (F32 rời ốp nòng, F34 đặt lên nút khóa, F36 kéo, F38 về) · phần còn lại như b3" },
+  { clip: "SDR06_Shoot", version: "blocking_b2", label: "Shoot Die Repeat map06 · Shoot (bắn liên thanh) · blocking b2 (stepped)", src: "clips/sdr06_shoot_blocking_b2.webm",
+    thumb: "clips/sdr06_shoot_blocking_b2.jpg", n: 12, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "loop 12F, 4 phát (giật ở F1/4/7/10): súng lùi 1,5 cm + hếch 3°, ngực trễ 1F, đầu trễ 2F · tay trái đỡ ốp nòng trước trống (súng model to ~1,45 lần, tay cầm trước ngoài tầm với)" },
+  { clip: "SDR06_Reload", version: "blocking_b3", label: "Shoot Die Repeat map06 · Reload (thay trống) · blocking b3 (stepped)", src: "clips/sdr06_reload_blocking_b3.webm",
+    thumb: "clips/sdr06_reload_blocking_b3.jpg", n: 54, fps: 30, w: 1200, h: 600, views: "right (ingame) | front · top · 3/4",
+    note: "54F nén từ ref 3,6 s: F5–9 dựng súng · F12 tháo trống · F16–19 trống xuống hông trái · F23–26 lắp trống · F32–38 kéo khóa nòng (bolt F36) · F42–54 về P0" },
+  { clip: "SDR_Attack", version: "polish_v5", label: "Shoot Die Repeat · Attack (ném dao) · polish v5 (26F)", src: "clips/sdr_attack_polish_v5.webm",
+    thumb: "clips/sdr_attack_polish_v5.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F6: tay ngắm co lại khi ném – cánh tay trên chếch xuống phía trước, khuỷu gập ~95°, nắm tay hướng lên trước ngực (v4 hạ cả cánh tay xuống); tay ngắm không đi trễ tới F6 nên tư thế co hiện đúng ở F6 · phần còn lại như v4" },
+  { clip: "SDR_Attack", version: "polish_v5_inhand", label: "Shoot Die Repeat · Attack (ném dao) · polish v5 – dao theo tay", src: "clips/sdr_attack_polish_v5_inhand.webm",
+    thumb: "clips/sdr_attack_polish_v5_inhand.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng (không bia)",
+    note: "biến thể của polish v5: dao luôn nằm trong tay" },
+  { clip: "SDR_Attack", version: "polish_v4", label: "Shoot Die Repeat · Attack (ném dao) · polish v4 (26F)", src: "clips/sdr_attack_polish_v4.webm",
+    thumb: "clips/sdr_attack_polish_v4.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F11: tay ngắm về mục tiêu chậm hơn – duỗi dần trong ~5 frame (F11 → F16: 3, 10, 16, 16, 6 cm/frame) thay vì 2 frame F11–12, đến chĩa mục tiêu ở F15 · thân và tay ném giữ như v3 · F20–F26 vẫn là Idle" },
+  { clip: "SDR_Attack", version: "polish_v4_inhand", label: "Shoot Die Repeat · Attack (ném dao) · polish v4 – dao theo tay", src: "clips/sdr_attack_polish_v4_inhand.webm",
+    thumb: "clips/sdr_attack_polish_v4_inhand.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng (không bia)",
+    note: "biến thể của polish v4: dao luôn nằm trong tay" },
+  { clip: "SDR_Attack", version: "polish_v3", label: "Shoot Die Repeat · Attack (ném dao) · polish v3 (26F)", src: "clips/sdr_attack_polish_v3.webm",
+    thumb: "clips/sdr_attack_polish_v3.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "3 cải thiện đã duyệt (ảnh tĩnh): lấy đà mạnh hơn – F4 thân ngả sau 14° (v2 5°), ngực xoắn thêm 12°, khuỷu kéo thấp ra sau · F6 thả dao dưới cằm, không che mắt · tay ngắm duỗi về mục tiêu sớm (key F11, thấy rõ từ F12; v2 F16–17), hết cảnh hai tay chồng trước bụng · F20–F26 vẫn là Idle" },
+  { clip: "SDR_Attack", version: "polish_v3_inhand", label: "Shoot Die Repeat · Attack (ném dao) · polish v3 – dao theo tay", src: "clips/sdr_attack_polish_v3_inhand.webm",
+    thumb: "clips/sdr_attack_polish_v3_inhand.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng (không bia)",
+    note: "biến thể của polish v3: dao luôn nằm trong tay (dev tự bắn projectile ở F6)" },
+  { clip: "SDR_Attack", version: "polish_v2_inhand", label: "Shoot Die Repeat · Attack (ném dao) · polish v2 – dao theo tay", src: "clips/sdr_attack_polish_v2_inhand.webm",
+    thumb: "clips/sdr_attack_polish_v2_inhand.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng (không bia)",
+    note: "biến thể của polish v2: dao luôn nằm trong tay suốt clip (không bay, không bia) – để dev tự bắn projectile ở F6 và ẩn/hiện mesh dao bằng code · chuyển động người giữ nguyên polish v2" },
+  { clip: "SDR_Attack", version: "polish_v2", label: "Shoot Die Repeat · Attack (ném dao) · polish v2 (26F)", src: "clips/sdr_attack_polish_v2.webm",
+    thumb: "clips/sdr_attack_polish_v2.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "theo chat: F20 → F26 chỉ là pose Idle (đứng yên, trùng Idle 100%), dao hiện lại trong tay từ F20 · bỏ nhịp nhích quá đà ở F21, tay ném về chậm dần F16–F20 · phần còn lại như polish v1" },
+  { clip: "SDR_Attack", version: "polish_v1", label: "Shoot Die Repeat · Attack (ném dao) · polish v1 (26F)", src: "clips/sdr_attack_polish_v1.webm",
+    thumb: "clips/sdr_attack_polish_v1.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "từ spline v3 (bỏ v4 theo yêu cầu) + polish: overlap theo chuỗi – ngực và cổ trễ 1F, đầu 1,5F sau cột sống; tay trái vai → khuỷu → cổ tay trễ 1 → 2F; tay ném giữ đúng thời điểm thả dao, chỉ kéo trễ ở follow-through và lúc về (vai/khuỷu 0,5F, cổ tay 1F) · dao rời tay đúng vị trí bàn tay F6 · dao cắm bia: chỉ mũi cắm vào (v3 xuyên qua bia), cán rung lên/xuống tắt dần F13–F15 · F1 và F26 trùng Idle" },
+  { clip: "SDR_Attack", version: "spline_v4", label: "Shoot Die Repeat · Attack (ném dao) · spline v4 (28F)", src: "clips/sdr_attack_spline_v4.webm",
+    thumb: "clips/sdr_attack_spline_v4.jpg", n: 28, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F10: tay ném quá đà sâu hơn – bàn tay xuống ngang đùi trước người (cao 0,80 m, v3 0,94 m), giữ ở dưới F9–F15 · tay ngắm về chĩa mục tiêu trước (F14), tay ném mới leo lên sau (F16–F20) và về Idle F24, lắng tới F28 · clip 26F → 28F · phần ném F1–F6 và dao giữ nguyên" },
+  { clip: "SDR_Attack", version: "spline_v3", label: "Shoot Die Repeat · Attack (ném dao) · spline v3 (26F)", src: "clips/sdr_attack_spline_v3.webm",
+    thumb: "clips/sdr_attack_spline_v3.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F4: cổ tay bẻ ra sau ít hơn – lưỡi dao chĩa ra sau, chỉ chếch xuống 25° theo nét vẽ (v2 cắm dốc xuống), cổ tay gập 25° so với cẳng tay · phần còn lại như spline v2" },
+  { clip: "SDR_Attack", version: "spline_v2", label: "Shoot Die Repeat · Attack (ném dao) · spline v2 (26F)", src: "clips/sdr_attack_spline_v2.webm",
+    thumb: "clips/sdr_attack_spline_v2.jpg", n: 26, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F10: giãn nhịp từ lúc phóng dao đến khi về Idle – clip 18F → 26F (0,87 s) · follow-through giữ F9–F11 (moving hold) · tay trái ngắm lại F16 (trước F12), tay ném về sau đầu F21 (trước F16), tay đi tăng tốc rồi chậm dần 5→12→21→27→23→14→7 cm/frame, lắng F21–F26 · phần ném F1–F6 và dao (thả F6, cắm bia F12) giữ nguyên, dao hiện lại trong tay F26" },
+  { clip: "SDR_Attack", version: "spline_v1", label: "Shoot Die Repeat · Attack (ném dao) · spline v1", src: "clips/sdr_attack_spline_v1.webm",
+    thumb: "clips/sdr_attack_spline_v1.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "từ blocking v8 (đã duyệt): đường cong Bezier + 2 breakdown · F5 tay vòng qua đỉnh vai (cú ném chia 2 frame: 55 cm rồi 76 cm, thay vì nhảy 1 m trong 1 frame) · F7 follow-through, tay chậm dần 32 → 19 → 4 cm/frame · dao bay đều 67 cm/frame F6→F12, giữ ở bia đến F17, hiện lại trong tay F18 · chưa có overlap (ngực trễ cột sống, cổ tay búng) – để bước polish" },
+  { clip: "SDR_Attack", version: "blocking_v8", label: "Shoot Die Repeat · Attack (ném dao) · blocking v8 (stepped)", src: "clips/sdr_attack_blocking_v8.webm",
+    thumb: "clips/sdr_attack_blocking_v8.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa 2 góp ý v7 (Idle v20): tay cầm dao hạ xuống (khuỷu thấp hơn, dao thấp ~12 cm) · tay ngắm nhấc lên 5° · chân sau lùi ra 4 cm, hông hạ 0,6 cm để gối sau còn chùng 18° (gối trước 42°)" },
+  { clip: "SDR_Attack", version: "blocking_v7", label: "Shoot Die Repeat · Attack (ném dao) · blocking v7 (stepped)", src: "clips/sdr_attack_blocking_v7.webm",
+    thumb: "clips/sdr_attack_blocking_v7.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "từ v4, chỉ chỉnh hông (phương án 50% A đã chốt): hông xoay đổ trước 7,5°, đẩy trước 3 cm, hạ 1,2 cm; thân trên đổ theo ~7° · gối trước 39°, gối sau 22° · các bộ phận khác như v4" },
+  { clip: "SDR_Attack", version: "blocking_v4", label: "Shoot Die Repeat · Attack (ném dao) · blocking v4 (stepped)", src: "clips/sdr_attack_blocking_v4.webm",
+    thumb: "clips/sdr_attack_blocking_v4.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa 4 góp ý trên Idle (v15): cổ ngả sau 8°, đầu ngẩng 5° (bớt chúi trước) · dao xoay 90° quanh lưỡi, lộ mặt lưỡi ở góc right (cả khi bay) · tay ngắm song song mặt đất · bàn chân sau lên trước 7 cm, gối sau chùng 26° (v3 8°)" },
+  { clip: "SDR_Attack", version: "blocking_v6", label: "Shoot Die Repeat · Attack (ném dao) · blocking v6 (BỎ – quay lại v4)", src: "clips/sdr_attack_blocking_v6.webm",
+    thumb: "clips/sdr_attack_blocking_v6.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F1 v5 + chat (Idle v18): đổ người bằng hông chứ không gù lưng – chậu hông nghiêng trước 9° (thử 16° bị chổng mông), cột sống + ngực thẳng lại, ngực ưỡn nhẹ · bàn chân trước ra trước 4 cm, gối trước 34°, gối sau 32°" },
+  { clip: "SDR_Attack", version: "blocking_v5", label: "Shoot Die Repeat · Attack (ném dao) · blocking v5 (BỎ – quay lại v4)", src: "clips/sdr_attack_blocking_v5.webm",
+    thumb: "clips/sdr_attack_blocking_v5.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "theo ảnh ref trong chat: toàn thân đổ về trước (Idle v16) – hông dồn trước 5 cm, cột sống + ngực nghiêng trước 20°, đầu bù để mặt vẫn nhìn ngang, tay ngắm vẫn song song đất · F6 tay ném hạ thấp để không che mắt" },
+  { clip: "SDR_Attack", version: "blocking_v3", label: "Shoot Die Repeat · Attack (ném dao) · blocking v3 (stepped)", src: "clips/sdr_attack_blocking_v3.webm",
+    thumb: "clips/sdr_attack_blocking_v3.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F1: tấn đứng (Idle v14) hông cao thêm 4 cm (tổng cao hơn v1 11 cm), gối trước gập 22° (v2 45°), gối sau gần thẳng 8° (v2 39°) · thân trên giữ như v2" },
+  { clip: "SDR_Attack", version: "blocking_v2", label: "Shoot Die Repeat · Attack (ném dao) · blocking v2 (stepped)", src: "clips/sdr_attack_blocking_v2.webm",
+    thumb: "clips/sdr_attack_blocking_v2.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "sửa góp ý F16: tấn đứng (Idle v13) hông cao hơn 7 cm, hai bàn chân gần nhau hơn 22 cm (gối trước 45°, gối sau 39°) · mọi key Attack dựng lại trên tấn mới, thân trên giữ như v1" },
+  { clip: "SDR_Attack", version: "blocking_v1", label: "Shoot Die Repeat · Attack (ném dao) · blocking v1 (stepped)", src: "clips/sdr_attack_blocking_v1.webm",
+    thumb: "clips/sdr_attack_blocking_v1.jpg", n: 18, fps: 30, w: 1200, h: 600, views: "right (ingame) | right rộng + bia",
+    note: "18F, thân trên (chân giữ tấn Idle) · key 1 4 6 9 12 16 18 · F4 lấy đà, F6 thả dao (tay duỗi tới, lộ mặt), F9 follow-through trước thân, F12 tay trái ngắm lại, F16 về Idle; dao bay thẳng 20 m/s, cắm bia F12, hiện lại trong tay F18" },
+  { clip: "Attack", version: "casc_blocking_v4", label: "EN_M11_Boss_Gaygor_Attack · Cascadeur blocking v4 (stepped, view left: tay, chùy, chân)", src: "clips/attack_casc_blocking_v4.webm",
+    thumb: "clips/attack_casc_blocking_v4.jpg", n: 68, fps: 30, w: 2200, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "tiếp view left: cổ tay luôn ở ngoài mặt cán (trước đó chìm trong chùy nên không thấy tay) · f13 tay phải ôm trên đầu tròn, tay trái đỡ ngửa dưới cán như ref · f17 đuôi cán lên sát đầu, cán dốc xuống · f21 chùy ở trước thân · nằm sấp f33–46 gối trái hạ, chân sau co lại · IoU view left TB 0,688 (nằm sấp 0,70–0,76)" },
+  { clip: "Attack", version: "casc_blocking_v3", label: "EN_M11_Boss_Gaygor_Attack · Cascadeur blocking v3 (stepped, view left sửa từng phần)", src: "clips/attack_casc_blocking_v3.webm",
+    thumb: "clips/attack_casc_blocking_v3.jpg", n: 68, fps: 30, w: 2200, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "góp ý 'góc left chưa đúng, sửa từng chi tiết từng phần': so ảnh có shading (không chỉ silhouette) theo cấp · cấp 1 chân/hông: mọi bàn chân chạm đất (trước đó lún/hở 3–10 cm), f13 hông xoay thêm 20°, f28 chân phải nâng 25 cm · cấp 2 thân/đầu: nằm sấp f33–46 lưng gồ cao như ref, đầu cúi khuất dưới lưng · cấp 3 chùy: f4 f8 f10 f61 · cấp 4 tay: nắm đấm phải f4 f8 f10 f61 đúng chỗ · còn lại: f13–21 tay trái đỡ dưới cán + tay phải đè đuôi cán, f17/f21 chùy phải ở trước thân, chân sau f33–46 co lại, bàn tay/ngón" },
+  { clip: "Attack", version: "casc_blocking_v2", label: "EN_M11_Boss_Gaygor_Attack · Cascadeur blocking v2 (stepped, sửa theo view left)", src: "clips/attack_casc_blocking_v2.webm",
+    thumb: "clips/attack_casc_blocking_v2.jpg", n: 68, fps: 30, w: 2200, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "ghi chú F1 v1 (sửa từng view, bắt đầu view left): đo đường viền trên/dưới theo từng cột Z ở view left rồi sửa 13 key · nằm sấp f33–46 hạ hông, chân trái chạm đất (trước đó lơ lửng 26 cm), lưng gồ đúng chỗ · chùy đặt lại f8 f10 f28 f31 f52 f58 · IoU view left trung bình 0,661 → 0,688 (f10 0,57→0,71, f28 0,61→0,68, f58 0,61→0,68) · f21 chưa đạt (0,56), cần xem lại hướng thân" },
+  { clip: "Attack", version: "casc_blocking_v1", label: "EN_M11_Boss_Gaygor_Attack · Cascadeur blocking v1 (stepped, làm lại từ đầu)", src: "clips/attack_casc_blocking_v1.webm",
+    thumb: "clips/attack_casc_blocking_v1.jpg", n: 68, fps: 30, w: 2200, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "làm lại trong Cascadeur từ P0 đã duyệt: blocking nhanh toàn thân 21 key (1 4 8 10 13 17 21 25 28 31 33 37 42 46 49 52 54 58 61 64 68), mỗi key dựng 1 lượt rồi chỉnh theo mép silhouette; IoU front/left 0,56–0,78. Chưa sửa chi tiết tay/ngón, đầu, vạt khố" },
+  { clip: "Attack", version: "blocking_v10", label: "EN_M11_Boss_Gaygor_Attack · blocking v10 (stepped, sửa lỗi tự rà v9)", src: "clips/attack_blocking_v10.webm",
+    thumb: "clips/attack_blocking_v10.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "sửa theo danh sách lỗi v9: f8 chùy dựng đứng hơn (IoU left .62→.73) · f17 hạ hông, ngực đổ trước, chùy dốc từ vai xuống đất (left .65→.73) · f21 đầu/ngực/chùy theo ref · f28 chân PHẢI nhấc ra sau như ref (back .72→.75) · f49 hai bàn chân đặt phẳng, đẩy hông, khuỷu mở rộng (left .62→.69) · f52/53 gót trái chạm đất · f58 tay PHẢI buông chùy, nắm tay trước ngực. Chưa làm: f25 chỉnh nhẹ; f33/f42 giữ như v9 (ref cũng co gối trái)" },
+  { clip: "Attack", version: "blocking_v9", label: "EN_M11_Boss_Gaygor_Attack · blocking v9 (stepped, tay áp lên chùy)", src: "clips/attack_blocking_v9.webm",
+    thumb: "clips/attack_blocking_v9.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "tay với chùy (f8–f60): bỏ nắm đấm chìm trong cán (50–90% mesh tay nằm trong chùy) → mở bàn tay, đặt lòng bàn tay lên mặt chùy, quặp ngón tới khi chạm như ref; f1/4/61/64/68 giữ dáng vác vai" },
+  { clip: "Attack", version: "blocking_v8", label: "EN_M11_Boss_Gaygor_Attack · blocking v8 (stepped, tự rà lại bằng mắt)", src: "clips/attack_blocking_v8.webm",
+    thumb: "clips/attack_blocking_v8.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "rà lại cả clip REF|ANIM 4 view: nằm sấp f33–46 hết lăn nghiêng (hông/vai ngang, cột sống thẳng theo cán), f49 f52–54 thân đứng vuông như ref, chùy đo lại f21 f32 f49 + tay nắm theo ref; anatomy sạch" },
+  { clip: "Attack", version: "blocking_v7", label: "EN_M11_Boss_Gaygor_Attack · blocking v7 (stepped, sửa đoạn nằm sấp)", src: "clips/attack_blocking_v7.webm",
+    thumb: "clips/attack_blocking_v7.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "f38 'sai pose': cả đoạn nằm sấp f33–46 (key 33 37 42 44 46) thân lùi sau 0,3 m, hai tay duỗi thẳng nắm hai bên đầu cán như ref; anatomy sạch" },
+  { clip: "Attack", version: "blocking_v6", label: "EN_M11_Boss_Gaygor_Attack · blocking v6 (stepped, sửa 8 ghi chú v5)", src: "clips/attack_blocking_v6.webm",
+    thumb: "clips/attack_blocking_v6.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "chùy đặt lại theo số đo 2 view ref (f8 f10 f26 f30 f53 f60) + điểm nắm tay theo ref · key mới f26 f44 f53 f60 (trước là hold) · f13 ngẩng đầu · f44 thân lùi, 2 tay nắm 2 bên đầu cán · f60 nắm đấm phải trước ngực" },
+  { clip: "Attack", version: "blocking_v5", label: "EN_M11_Boss_Gaygor_Attack · blocking v5 (stepped, rà giải phẫu)", src: "clips/attack_blocking_v5.webm",
+    thumb: "clips/attack_blocking_v5.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "rà giải phẫu 23 key: sửa bàn chân đứt khỏi ống chân (f8 f17 f21 f25 f32–46), hướng gối theo mũi chân (f13 f17 f21 f28 f30), nâng khỏi đất (f33–54); cổ tay, khuỷu, cột sống, cổ, xuyên mesh đã kiểm" },
+  { clip: "Attack", version: "blocking_v4", label: "EN_M11_Boss_Gaygor_Attack · blocking v4 (stepped, đủ 23 key)", src: "clips/attack_blocking_v4.webm",
+    thumb: "clips/attack_blocking_v4.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "đủ 23 key blocking (f1 4 8 10 13 17 21 25 28 30 31 32 33 37 42 46 49 52 54 58 61 64 68) · f1/13/25/31 như v3 · key mới dựng theo khối: chân ghim theo lịch tiếp đất, chùy, thân, đầu, rồi giải tay" },
+  { clip: "Attack", version: "blocking_v3", label: "EN_M11_Boss_Gaygor_Attack · blocking v3 (stepped)", src: "clips/attack_blocking_v3.webm",
+    thumb: "clips/attack_blocking_v3.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "thêm key f31 (chùy qua đầu): chân bước tới, thân ngả sau, đầu ngửa nhìn lên, vai nhún, hai tay nắm cán · f1/f13/f25 giữ như v2" },
+  { clip: "Attack", version: "blocking_v2", label: "EN_M11_Boss_Gaygor_Attack · blocking v2 (stepped)", src: "clips/attack_blocking_v2.webm",
+    thumb: "clips/attack_blocking_v2.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "sửa f13 theo từng phần: hông + chân (hạ hông, gối mở ra) → thân/đầu (đầu nhìn ngang +X, không ngửa) → chùy + hai tay" },
+  { clip: "Attack", version: "blocking_v1", label: "EN_M11_Boss_Gaygor_Attack · blocking v1 (stepped)", src: "clips/attack_blocking_v1.webm",
+    thumb: "clips/attack_blocking_v1.jpg", n: 68, fps: 30, w: 1454, h: 660, views: "REF | ANIM · front · back · top / left",
+    note: "blocking stepped, mới key f1 · f13 · f25 (frame khác giữ pose key trước) - so với ref" },
+  { clip: "Idle_Front", version: "v14", label: "EN_M11_Boss_Gaygor_Idle_Front · v14", src: "clips/idle_front_v14.webm",
+    thumb: "clips/idle_front_v14.jpg", n: 59, fps: 30, note: "vạt khố bay trong gió: dao động lớn hơn, đợt gió + lắc ngang" },
+  { clip: "Idle_Front", version: "v13", label: "EN_M11_Boss_Gaygor_Idle_Front · v13", src: "clips/idle_front_v13.webm",
+    thumb: "clips/idle_front_v13.jpg", n: 59, fps: 30, note: "vạt khố trước/sau đung đưa theo hông (chuyển động thứ cấp)" },
+  { clip: "Idle_Front", version: "v12", label: "EN_M11_Boss_Gaygor_Idle_Front · v12", src: "clips/idle_front_v12.webm",
+    thumb: "clips/idle_front_v12.jpg", n: 59, fps: 30, note: "đầu nặng của chùy overlap trễ sau vai" },
+  { clip: "Idle_Front", version: "v11", label: "EN_M11_Boss_Gaygor_Idle_Front · v11", src: "clips/idle_front_v11.webm",
+    thumb: "clips/idle_front_v11.jpg", n: 59, fps: 30, note: "lưng cúi/ngẩng rõ hơn, hông đi lên chậm dần không khựng" },
+  { clip: "Idle_Front", version: "v10", label: "EN_M11_Boss_Gaygor_Idle_Front · v10", src: "clips/idle_front_v10.webm",
+    thumb: "clips/idle_front_v10.jpg", n: 59, fps: 30, note: "overlap: hông → lưng → ngực → vai → cổ → đầu; vai → khuỷu → tay; chùy trễ sau vai" },
+  { clip: "Idle_Front", version: "v9", label: "EN_M11_Boss_Gaygor_Idle_Front · v9", src: "clips/idle_front_v9.webm",
+    thumb: "clips/idle_front_v9.jpg", n: 59, fps: 30, note: "một đường cong nhịp thở chung: hít 26F, thở ra 33F, mọi bộ phận cùng nhịp" },
+  { clip: "Idle_Front", version: "v8", label: "EN_M11_Boss_Gaygor_Idle_Front · v8", src: "clips/idle_front_v8.webm",
+    thumb: "clips/idle_front_v8.jpg", n: 59, fps: 30, note: "bắt đầu ở đáy hơi thở, thở ra dài và chậm dần, tay khiên hạ mềm" },
+  { clip: "Idle_Front", version: "v7", label: "EN_M11_Boss_Gaygor_Idle_Front · v7", src: "clips/idle_front_v7.webm",
+    thumb: "clips/idle_front_v7.jpg", n: 59, fps: 30, note: "1 nhịp thở chậm/60F, lưng ưỡn theo nhịp thở" },
+  { clip: "Idle_Front", version: "v6", label: "EN_M11_Boss_Gaygor_Idle_Front · v6", src: "clips/idle_front_v6.webm",
+    thumb: "clips/idle_front_v6.jpg", n: 59, fps: 30, note: "60F loop, đầu nhìn thẳng" },
+  { clip: "Idle", version: "polish_v5", label: "EN_M11_Boss_Gaygor_Idle · polish v5", src: "clips/idle_polish_v5.webm",
+    thumb: "clips/idle_polish_v5.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "ĐÃ DUYỆT (2026-10-20) · tay phải xoắn về sau 40° · đã xuất FBX" },
+  { clip: "Idle", version: "polish_v4", label: "EN_M11_Boss_Gaygor_Idle · polish v4", src: "clips/idle_polish_v4.webm",
+    thumb: "clips/idle_polish_v4.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v4" },
+  { clip: "Idle", version: "polish_v3", label: "EN_M11_Boss_Gaygor_Idle · polish v3", src: "clips/idle_polish_v3.webm",
+    thumb: "clips/idle_polish_v3.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v3" },
+  { clip: "Idle", version: "polish_v2", label: "EN_M11_Boss_Gaygor_Idle · polish v2", src: "clips/idle_polish_v2.webm",
+    thumb: "clips/idle_polish_v2.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v2" },
+  { clip: "Idle", version: "polish_v1", label: "EN_M11_Boss_Gaygor_Idle · polish v1", src: "clips/idle_polish_v1.webm",
+    thumb: "clips/idle_polish_v1.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v1 (từ spline v1)" }
+];
+const COLORS = ["#ff4b3e", "#ffd23f", "#3fd17a", "#4aa8ff", "#ffffff"];
+const $ = id => document.getElementById(id);
+const imgC = $("img"), inkC = $("ink"), ictx = imgC.getContext("2d"), kctx = inkC.getContext("2d");
+let W = imgC.width, H = imgC.height;
+const DEF_VIEWS = "front · left / back · top";
+function setFrameSize(c) {               // each clip may have its own frame size (REF|ANIM grids are wide)
+  const w = c.w || 768, h = c.h || 720;
+  if (w !== W || h !== H) { W = w; H = h; imgC.width = inkC.width = w; imgC.height = inkC.height = h; }
+  $("stage").style.setProperty("--arw", w); $("stage").style.setProperty("--arh", h);
+}
+// Projects = one animation each (CLIPS[].clip); the playlist, notes and review round only show the chosen project.
+const PROJ_NAMES = { Attack: "Attack", Idle: "Idle (xoay trái phải)", Idle_Front: "Idle_Front", SDR_Attack: "Shoot Die Repeat · Attack", SDR06_Shoot: "SDR map06 · Shoot", SDR06_Reload: "SDR map06 · Reload" };
+const PROJECTS = [...new Set(CLIPS.map(c => c.clip))];
+function savedProj() { let h = decodeURIComponent((location.hash || "").slice(1)); if (PROJECTS.includes(h)) return h;
+  try { const v = localStorage.getItem("review.project"); if (PROJECTS.includes(v)) return v; } catch {} return PROJECTS[0]; }
+let PRJ = savedProj();
+let C = CLIPS.find(c => c.clip === PRJ) || CLIPS[0], N = C.n, frame = 1, playing = false, loop = true, speed = 1, last = 0, acc = 0;
+let pen = false, color = COLORS[0], onion = true, draft = [], cur = null;
+let notes = [], selected = null, db = null, user = null, myId = null, canWrite = true;
+const vid = $("vid");
+// Every frame is decoded once into an ImageBitmap cache (a second, hidden video seeks through the clip), so
+// scrubbing and playback just draw a ready image - seeking a compressed video per mouse move stutters.
+let cache = [], cacheN = 0, cacheJob = 0;
+const cached = () => cacheN === N;
+// frame f shows during [(f-1)/fps, f/fps): seek to the middle of it
+function seek(f) { if (!cached() && vid.readyState >= 1) vid.currentTime = (f - 0.5) / C.fps; }
+async function buildCache(url) {
+  const job = ++cacheJob; cache = []; cacheN = 0;
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+  await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; }).catch(() => null);
+  if (job !== cacheJob || v.readyState < 2) return;
+  for (let f = 1; f <= N; f++) {
+    await new Promise(ok => { v.onseeked = ok; v.currentTime = (f - 0.5) / C.fps; });
+    if (job !== cacheJob) return;
+    try { cache[f] = await createImageBitmap(v); }
+    catch { const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(v, 0, 0, W, H); cache[f] = c; }
+    cacheN = f;
+    $("loading").hidden = false; $("loading").textContent = `Đang chuẩn bị frame ${f}/${N}… (đã tua được)`;
+  }
+  $("loading").hidden = true;
+  if (playing && !vid.paused) { vid.pause(); acc = 0; last = 0; }   // hand playback over to the cache
+  draw();
+}
+function loadFrames() {
+  cacheJob++; cache = []; cacheN = 0; setFrameSize(C); applyZoom();
+  $("loading").hidden = false; $("loading").textContent = "Đang tải video…";
+  // load the whole (small) WebM into memory: a blob is always seekable, whatever the server does with Range requests
+  const want = C.src;
+  fetch(want).then(r => { if (!r.ok) throw 0; return r.blob(); })
+    .then(b => { if (C.src !== want) return; if (vid.dataset.blob) URL.revokeObjectURL(vid.dataset.blob);
+                 vid.dataset.blob = URL.createObjectURL(b); vid.src = vid.dataset.blob; vid.load(); buildCache(vid.dataset.blob); })
+    .catch(() => { vid.src = want; vid.load(); buildCache(want); });
+}
+vid.addEventListener("loadeddata", () => { if (!cacheN) $("loading").hidden = true; seek(frame); });
+vid.addEventListener("seeked", draw);
+vid.addEventListener("error", () => { $("loading").hidden = false; $("loading").textContent = "Không tải được video WebM."; });
+vid.addEventListener("ended", () => { stop(); go(N); });
+
+function path(ctx, s) { ctx.beginPath(); s.forEach(([x, y], k) => k ? ctx.lineTo(x * W, y * H) : ctx.moveTo(x * W, y * H)); ctx.stroke(); }
+function mine() { return notes.filter(n => n.clip === C.clip && n.version === C.version); }
+function draw() {
+  ictx.fillStyle = "#464b52"; ictx.fillRect(0, 0, W, H);
+  if (cache[frame]) ictx.drawImage(cache[frame], 0, 0, W, H);
+  else if (vid.readyState >= 2) ictx.drawImage(vid, 0, 0, W, H);
+  kctx.clearRect(0, 0, W, H); kctx.lineCap = kctx.lineJoin = "round";
+  for (const n of mine()) {
+    const d = Math.abs(n.frame - frame);
+    if (!n.strokes || d > (onion ? 2 : 0)) continue;
+    kctx.globalAlpha = d ? 0.22 : (n.status === "done" ? 0.4 : 1);
+    for (const s of n.strokes) {
+      kctx.lineWidth = ((s && s.w) || 4) + (n.id === selected ? 2 : 0);
+      kctx.strokeStyle = (s && s.c) || "#ff4b3e"; path(kctx, s.p || s);
+    }
+  }
+  kctx.globalAlpha = 1;
+  for (const s of draft) { kctx.lineWidth = s.w || 4; kctx.strokeStyle = s.c; path(kctx, s.p); }
+  $("curf").textContent = frame; $("newF").textContent = "Frame " + frame;
+  const hl = $("headLine"); hl.style.left = "calc(" + ((frame - 0.5) / N * 100) + "% - 1px)";
+  $("cells").setAttribute("aria-valuenow", frame);
+}
+function go(f) { frame = ((f - 1 + N) % N) + 1; if (!playing) seek(frame); draw(); }
+
+function buildCells() {
+  const box = $("cells"); [...box.querySelectorAll(".cell")].forEach(c => c.remove());
+  $("cells").setAttribute("aria-valuemax", N);
+  const by = {}; for (const n of mine()) (by[n.frame] = by[n.frame] || []).push(n);
+  for (let f = 1; f <= N; f++) {
+    const c = document.createElement("div"); c.className = "cell";
+    if (f === 1 || f % 5 === 0) { const s = document.createElement("span"); s.className = "n"; s.textContent = f; c.append(s); }
+    if (by[f]) { const m = document.createElement("span"); m.className = "mk" + (by[f].every(n => n.status === "done") ? " done" : ""); c.append(m); }
+    box.insertBefore(c, $("headLine"));
+  }
+  draw();
+}
+
+// scrub
+(() => {
+  const box = $("cells"); let on = false;
+  const at = e => { const r = box.getBoundingClientRect(); return Math.min(N, Math.max(1, Math.floor((e.clientX - r.left) / r.width * N) + 1)); };
+  box.addEventListener("pointerdown", e => { on = true; box.setPointerCapture(e.pointerId); stop(); go(at(e)); e.preventDefault(); });
+  box.addEventListener("pointermove", e => { if (on) { const f = at(e); if (f !== frame) go(f); } });
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(t => box.addEventListener(t, () => { on = false; }));
+})();
+
+// playback
+function tick(t) {
+  if (!playing) return;
+  if (cached()) {                                   // exact frame clock over the cache
+    if (last) acc += (t - last) / 1000 * C.fps * speed;
+    last = t;
+    if (acc >= 1) { const k = Math.floor(acc); acc -= k;
+      if (!loop && frame + k > N) { frame = N; draw(); stop(); return; }
+      frame = ((frame + k - 1) % N) + 1; draw(); }
+  } else {                                          // still decoding: follow the video
+    const f = Math.min(N, Math.floor(vid.currentTime * C.fps) + 1);
+    if (f !== frame) frame = f;
+    draw();
+  }
+  requestAnimationFrame(tick);
+}
+const PLAY = '<path d="M7 4l13 8-13 8z"/>', PAUSE = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+function play() {
+  setPen(false); if (!loop && frame >= N) { frame = 1; seek(1); }
+  playing = true; last = 0; acc = 0; $("playIcon").innerHTML = PAUSE;
+  if (cached()) { requestAnimationFrame(tick); return; }
+  vid.loop = loop; vid.playbackRate = speed;
+  vid.play().then(() => requestAnimationFrame(tick)).catch(() => { playing = false; $("playIcon").innerHTML = PLAY; });
+}
+function stop() { if (!playing) return; playing = false; $("playIcon").innerHTML = PLAY;
+  if (!vid.paused) { vid.pause(); if (!cached()) frame = Math.min(N, Math.floor(vid.currentTime * C.fps) + 1); }
+  seek(frame); draw(); }
+function noteFrames() { return [...new Set(mine().map(n => n.frame))].sort((a, b) => a - b); }
+function jumpNote(dir) { const fs = noteFrames(); if (!fs.length) return; stop();
+  const f = dir > 0 ? (fs.find(x => x > frame) ?? fs[0]) : ([...fs].reverse().find(x => x < frame) ?? fs[fs.length - 1]); go(f); }
+$("play").onclick = () => playing ? stop() : play();
+$("prev").onclick = () => { stop(); go(frame - 1); };
+$("next").onclick = () => { stop(); go(frame + 1); };
+$("first").onclick = () => { stop(); go(1); };
+$("prevN").onclick = () => jumpNote(-1);
+$("nextN").onclick = () => jumpNote(1);
+$("loop").onclick = () => { loop = !loop; vid.loop = loop; $("loop").classList.toggle("on", loop); };
+$("speed").onchange = e => { speed = +e.target.value; vid.playbackRate = speed; };
+document.addEventListener("keydown", e => {
+  if (e.target.closest("textarea, select, input")) return;
+  const k = e.key;
+  if (k === "ArrowLeft") { e.preventDefault(); stop(); go(frame - 1); }
+  else if (k === "ArrowRight") { e.preventDefault(); stop(); go(frame + 1); }
+  else if (k === " ") { e.preventDefault(); playing ? stop() : play(); }
+  else if (k === "Home") { stop(); go(1); }
+  else if (k === ",") jumpNote(-1);
+  else if (k === ".") jumpNote(1);
+  else if (k === "d" || k === "D") setPen(!pen);
+  else if (k === "h" || k === "H") setHand(!hand);
+  else if (k === "[") setSize(sizeI - 1);
+  else if (k === "]") setSize(sizeI + 1);
+  else if (k === "a" || k === "A" || k === "0") resetZoom();
+  else if (k === "+" || k === "=") zoomCenter(1.25);
+  else if (k === "-" || k === "_") zoomCenter(0.8);
+  else if ((e.ctrlKey || e.metaKey) && (k === "z" || k === "Z")) { e.preventDefault(); draft.pop(); draw(); }
+});
+
+// tools
+function setPen(on) { pen = on; $("tPen").classList.toggle("on", pen); inkC.classList.toggle("draw", pen); if (pen) { stop(); if (hand) setHand(false); } updateCursor(); }
+
+// brush size (in frame pixels, so a stroke keeps its look at any zoom) and a round cursor showing size + colour
+const SIZES = [2, 4, 7, 12, 20];
+let sizeI = 1;
+const penW = () => SIZES[sizeI];
+function setSize(i) {
+  sizeI = Math.max(0, Math.min(SIZES.length - 1, i));
+  document.querySelectorAll(".tool.size").forEach((x, j) => x.classList.toggle("on", j === sizeI));
+  updateCursor();
+}
+SIZES.forEach((w, i) => {
+  const b = document.createElement("button"); b.className = "tool size" + (i === sizeI ? " on" : "");
+  b.title = `Cỡ bút ${w}px ( [ nhỏ hơn · ] to hơn )`; b.setAttribute("aria-label", "Cỡ bút " + w);
+  const d = document.createElement("span"); const px = Math.round(4 + i * 3);
+  d.style.cssText = `width:${px}px;height:${px}px;border-radius:50%;background:currentColor;display:block`;
+  b.append(d); b.onclick = () => { setSize(i); setPen(true); };
+  $("sizes").append(b);
+});
+function updateCursor() {
+  if (!pen) { inkC.style.cursor = ""; return; }
+  const scale = inkC.getBoundingClientRect().width / W;                 // includes the viewer zoom
+  const d = Math.max(6, Math.min(120, Math.round(penW() * scale)));
+  const s = d + 6, r = d / 2, c = s / 2;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}">` +
+    `<circle cx="${c}" cy="${c}" r="${r + 1.5}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width="1.5"/>` +
+    `<circle cx="${c}" cy="${c}" r="${r}" fill="${color}" fill-opacity=".85" stroke="#fff" stroke-width="1.5"/></svg>`;
+  inkC.style.cursor = `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${Math.round(c)} ${Math.round(c)}, crosshair`;
+}
+window.addEventListener("resize", updateCursor);
+$("tPen").onclick = () => setPen(!pen);
+$("tUndo").onclick = () => { draft.pop(); draw(); };
+$("tClear").onclick = () => { draft = []; draw(); };
+$("tOnion").onclick = () => { onion = !onion; $("tOnion").classList.toggle("on", onion); draw(); };
+$("tOnion").classList.toggle("on", onion);
+COLORS.forEach((c, i) => {
+  const b = document.createElement("button"); b.className = "tool color" + (i ? "" : " on"); b.setAttribute("aria-label", "Màu " + c); b.title = "Màu nét";
+  const s = document.createElement("span"); s.className = "sw"; s.style.background = c; b.append(s);
+  b.onclick = () => { color = c; document.querySelectorAll(".tool.color").forEach(x => x.classList.toggle("on", x === b)); setPen(true); updateCursor(); };
+  $("colors").append(b);
+});
+function pt(e) { const r = inkC.getBoundingClientRect(); return [+((e.clientX - r.left) / r.width).toFixed(4), +((e.clientY - r.top) / r.height).toFixed(4)]; }
+
+// zoom + pan: wheel zooms at the cursor, hand tool / middle mouse / Alt+drag pans, A resets
+const stage = $("stage"), viewer = stage.parentElement;
+let zoom = 1, tx = 0, ty = 0, hand = false, pan = null;
+function applyZoom() {
+  stage.style.transform = zoom === 1 && !tx && !ty ? "" : `translate(${tx}px, ${ty}px) scale(${zoom})`;
+  $("zFit").textContent = Math.round(zoom * 100) + "%";
+  $("zoomTag").textContent = zoom === 1 && !tx && !ty ? (C.views || DEF_VIEWS) : `Zoom ${Math.round(zoom * 100)}% · bấm A để về vừa khung`;
+  updateCursor();
+}
+function zoomAt(z2, cx, cy) {
+  z2 = Math.min(8, Math.max(0.5, z2));
+  const r = stage.getBoundingClientRect();
+  const lx = (cx - r.left) / zoom, ly = (cy - r.top) / zoom;   // point under the cursor, in unzoomed stage px
+  tx += lx * (zoom - z2); ty += ly * (zoom - z2); zoom = z2; applyZoom();
+}
+function zoomCenter(k) { const r = viewer.getBoundingClientRect(); zoomAt(zoom * k, r.left + r.width / 2, r.top + r.height / 2); }
+function resetZoom() { zoom = 1; tx = ty = 0; applyZoom(); }
+viewer.addEventListener("wheel", e => { e.preventDefault(); zoomAt(zoom * Math.exp(-e.deltaY * 0.0015), e.clientX, e.clientY); }, { passive: false });
+$("zIn").onclick = () => zoomCenter(1.25);
+$("zOut").onclick = () => zoomCenter(0.8);
+$("zFit").onclick = resetZoom;
+function setHand(on) { hand = on; $("tHand").classList.toggle("on", hand); viewer.classList.toggle("hand", hand); if (hand) setPen(false); }
+$("tHand").onclick = () => setHand(!hand);
+viewer.addEventListener("pointerdown", e => {
+  if (!(hand || e.button === 1 || e.altKey)) return;
+  e.preventDefault(); e.stopPropagation();
+  pan = { x: e.clientX, y: e.clientY, tx, ty }; viewer.setPointerCapture(e.pointerId); viewer.classList.add("panning");
+}, true);
+viewer.addEventListener("pointermove", e => { if (!pan) return; tx = pan.tx + e.clientX - pan.x; ty = pan.ty + e.clientY - pan.y; applyZoom(); });
+["pointerup", "pointercancel", "lostpointercapture"].forEach(t => viewer.addEventListener(t, () => { pan = null; viewer.classList.remove("panning"); }));
+viewer.addEventListener("auxclick", e => { if (e.button === 1) e.preventDefault(); });
+
+inkC.addEventListener("pointerdown", e => { if (pan || e.button !== 0) return; if (!pen) setPen(true); inkC.setPointerCapture(e.pointerId); cur = { c: color, w: penW(), p: [pt(e)] }; draft.push(cur); });
+inkC.addEventListener("pointermove", e => { if (!cur) return; const p = pt(e), q = cur.p[cur.p.length - 1];
+  if (Math.hypot(p[0] - q[0], p[1] - q[1]) > 0.004 / zoom) { cur.p.push(p); draw(); } });
+["pointerup", "pointercancel"].forEach(t => inkC.addEventListener(t, () => { if (cur && cur.p.length < 2) draft.pop(); cur = null; draw(); }));
+
+// playlist
+function renderClips() {
+  const box = $("clips"); box.textContent = "";
+  const list = CLIPS.filter(c => c.clip === PRJ);
+  $("clipCount").textContent = "(" + list.length + " version)"; $("projName").textContent = PROJ_NAMES[PRJ] || PRJ;
+  for (const c of list) {
+    const b = document.createElement("button"); b.className = "item" + (c === C ? " on" : "");
+    const im = document.createElement("img"); im.src = c.thumb; im.alt = ""; im.style.aspectRatio = (c.w || 768) + " / " + (c.h || 720);
+    const t = document.createElement("div"); const bb = document.createElement("b"); bb.textContent = c.label;
+    const n = notes.filter(x => x.clip === c.clip && x.version === c.version).length;
+    const sm = document.createElement("small"); sm.textContent = c.n + " frame · " + n + " ghi chú · " + c.note;
+    t.append(bb, sm); b.append(im, t);
+    b.onclick = () => { if (c === C) return; C = c; N = c.n; frame = 1; $("fileName").textContent = c.label; loadFrames(); renderClips(); renderNotes(); renderRound(); };
+    box.append(b);
+  }
+}
+
+// notes
+async function renderNotes() {
+  const box = $("notes"); box.textContent = "";
+  const flt = $("flt").value, list = mine().filter(n => flt === "all" || (flt === "done") === (n.status === "done"));
+  $("count").textContent = mine().length;
+  if (!list.length) {
+    const p = document.createElement("p"); p.className = "empty";
+    p.textContent = !db ? "Chưa xem được ghi chú: hãy đăng nhập claude.ai (nút Sign in) rồi tải lại trang. Khi chưa đăng nhập vẫn tua và vẽ được, nhưng ghi chú không lưu."
+                        : mine().length ? "Không có ghi chú nào khớp bộ lọc." : "Chưa có ghi chú.\nHãy để lại ghi chú đầu tiên…";
+    box.append(p); buildCells(); renderClips(); return;
+  }
+  const ids = [...new Set(list.map(n => n.author).filter(Boolean))];
+  const ps = user && ids.length ? await user.profiles(ids) : {};
+  for (const n of list.sort((a, b) => a.frame - b.frame || (a.createdAt > b.createdAt ? 1 : -1))) {
+    const el = document.createElement("div"); el.className = "note" + (n.status === "done" ? " done" : "") + (n.id === selected ? " sel" : "");
+    const top = document.createElement("div"); top.className = "top2";
+    const p = ps[n.author];
+    if (p) { const im = document.createElement("img"); im.src = p.avatarUrl; im.alt = ""; top.append(im); }
+    const who = document.createElement("span"); who.className = "who"; who.textContent = (p && p.name) || "Người xem";
+    const fb = document.createElement("button"); fb.className = "fbtn"; fb.textContent = "F" + n.frame;
+    fb.onclick = () => { stop(); selected = n.id; go(n.frame); renderNotes(); };
+    const part = document.createElement("span"); part.className = "part"; part.textContent = n.part || "";
+    top.append(who, fb, part);
+    if (n.editedAt) { const ed = document.createElement("span"); ed.className = "part"; ed.textContent = "· đã chỉnh"; top.append(ed); }
+    if (editing && editing.id === n.id) { el.classList.add("sel"); el.append(top, editForm(n)); box.append(el); continue; }
+    const tx = document.createElement("p"); tx.textContent = n.text || "(chỉ có nét vẽ)";
+    el.append(top, tx);
+    el.onclick = e => { if (e.target.closest("button")) return; stop(); selected = n.id; go(n.frame); renderNotes(); };
+    if (db && canWrite) {
+      const acts = document.createElement("div"); acts.className = "acts";
+      const done = document.createElement("button"); done.className = "mini"; done.textContent = n.status === "done" ? "Mở lại" : "Đã sửa";
+      done.onclick = () => db.doc("notes/" + n.id).update({ status: n.status === "done" ? "open" : "done" }).catch(fail);
+      acts.append(done);
+      if (n.author && n.author === myId) {
+        const ed = document.createElement("button"); ed.className = "mini"; ed.textContent = "Sửa";
+        ed.onclick = () => { stop(); selected = n.id; go(n.frame); editing = { id: n.id, text: n.text || "", part: n.part || "" }; renderNotes(); };
+        acts.append(ed);
+        const del = document.createElement("button"); del.className = "mini"; del.textContent = "Xoá";
+        del.onclick = () => { if (del.dataset.arm) db.doc("notes/" + n.id).delete().catch(fail); else { del.dataset.arm = 1; del.textContent = "Bấm lần nữa để xoá"; } };
+        acts.append(del);
+      }
+      el.append(acts);
+    }
+    box.append(el);
+  }
+  buildCells(); renderClips();
+}
+$("flt").onchange = renderNotes;
+
+// edit own note: text, body part, frame (moves to the current frame), and optionally replace the sketch
+let editing = null;   // {id, text, part} - survives live re-renders while typing
+function editForm(n) {
+  const f = document.createElement("div"); f.style.display = "grid"; f.style.gap = "6px";
+  const sel = document.createElement("select"); sel.id = "edPart"; sel.setAttribute("aria-label", "Bộ phận");
+  for (const o of $("part").options) { const op = document.createElement("option"); op.textContent = o.textContent; sel.append(op); }
+  sel.value = editing.part || $("part").options[0].textContent; sel.onchange = () => editing.part = sel.value;
+  sel.style.cssText = "background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px 6px";
+  const ta = document.createElement("textarea"); ta.id = "edText"; ta.value = editing.text;
+  ta.style.cssText = "background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:6px 8px;min-height:64px;resize:vertical;width:100%";
+  ta.oninput = () => editing.text = ta.value;
+  ta.onkeydown = e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) save.click(); if (e.key === "Escape") cancel.click(); };
+  const opts = document.createElement("small"); opts.className = "part";
+  opts.textContent = "Muốn vẽ lại: vẽ nét mới lên hình rồi bấm Lưu, nét mới sẽ thay nét cũ.";
+  const row = document.createElement("div"); row.className = "acts";
+  const save = document.createElement("button"); save.className = "mini"; save.textContent = "Lưu";
+  save.style.cssText = "background:var(--accent);border-color:var(--accent);color:#fff";
+  const cancel = document.createElement("button"); cancel.className = "mini"; cancel.textContent = "Huỷ";
+  save.onclick = async () => {
+    if (frame !== n.frame && draft.length) { $("status").textContent = `Nét vẽ mới phải vẽ ở F${n.frame}, đúng frame của ghi chú.`; return; }
+    const upd = { text: editing.text.trim(), part: editing.part, editedAt: new Date().toISOString() };
+    if (draft.length) upd.strokes = draft.map(s => ({ c: s.c, w: s.w, p: s.p }));
+    if (!upd.text && !(upd.strokes || n.strokes || []).length) { $("status").textContent = "Ghi chú cần có chữ hoặc nét vẽ."; return; }
+    save.disabled = true;
+    try { await db.doc("notes/" + n.id).update(upd); if (upd.strokes) draft = []; editing = null; $("status").textContent = "Đã lưu chỉnh sửa ghi chú F" + n.frame + "."; renderNotes(); draw(); }
+    catch (e) { save.disabled = false; fail(e); }
+  };
+  cancel.onclick = () => { editing = null; renderNotes(); };
+  row.append(save, cancel);
+  f.append(sel, ta, opts, row);
+  setTimeout(() => { if (document.activeElement !== ta && editing) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }, 0);
+  return f;
+}
+function fail(e) {
+  const c = e && e.code;
+  if (c === "invalid_argument") { canWrite = false; $("send").disabled = true; $("status").textContent = "Bạn đang ở quyền chỉ xem nên không gửi được. Nhờ chủ trang cấp quyền Contributor."; renderNotes(); }
+  else if (c === "quota_exceeded") $("status").textContent = "Kho ghi chú đã đầy. Hãy xoá bớt ghi chú đã sửa.";
+  else $("status").textContent = "Chưa lưu được, thử lại sau ít giây.";
+}
+$("send").onclick = async () => {
+  const text = $("text").value.trim();
+  if (!text && !draft.length) { $("status").textContent = "Viết ghi chú hoặc vẽ lên hình trước khi gửi."; return; }
+  if (!db) { $("status").textContent = "Cần đăng nhập claude.ai để lưu ghi chú."; return; }
+  $("send").disabled = true; $("status").textContent = "Đang gửi…";
+  const body = { clip: C.clip, version: C.version, frame, part: $("part").value, text,
+    strokes: draft.map(s => ({ c: s.c, w: s.w, p: s.p })), status: "open", createdAt: new Date().toISOString() };
+  if (myId) body.author = myId;
+  try { await db.collection("notes").add(body); draft = []; $("text").value = ""; $("status").textContent = "Đã gửi ghi chú ở F" + frame + "."; }
+  catch (e) { fail(e); }
+  $("send").disabled = !canWrite;
+};
+$("text").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) $("send").click(); });
+
+// review rounds: rounds/<clip>-<version> = {clip, version, status: sent|working|fixed, sentBy, sentAt, noteCount, frames, aiNote}
+let rounds = {}, comments = null, armed = false;
+const roundId = () => (C.clip + "-" + C.version).replace(/[^A-Za-z0-9_\-.]/g, "_");
+function fmtTime(s) { try { return new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }); } catch { return s; } }
+async function renderRound() {
+  const r = rounds[roundId()], box = $("round"), btn = $("aiSend");
+  const open = mine().filter(n => n.status !== "done");
+  box.dataset.s = r ? r.status : "none";
+  let who = "";
+  if (r && r.sentBy && user) { const ps = await user.profiles([r.sentBy]); who = ps[r.sentBy].name || ""; }
+  const fr = [...new Set(open.map(n => n.frame))].sort((a, b) => a - b);
+  if (!r) { $("roundTxt").textContent = "Vòng review đang mở: xem hết clip, ghi mọi lỗi rồi mới gửi một lần (1 lượt gửi = 1 version sửa).";
+            $("roundSub").textContent = open.length + " ghi chú chưa sửa" + (fr.length ? " · frame " + fr.join(", ") : ""); }
+  else if (r.status === "sent") { $("roundTxt").textContent = "Đã gửi cho AI, đang chờ nhận việc";
+            $("roundSub").textContent = (who ? who + " · " : "") + fmtTime(r.sentAt) + " · " + (r.noteCount || 0) + " ghi chú" + " · gõ /fb trong Claude để AI nhận việc"; }
+  else if (r.status === "working") { $("roundTxt").textContent = "AI đang sửa theo feedback"; $("roundSub").textContent = r.aiNote || ""; }
+  else if (r.status === "fixed") { $("roundTxt").textContent = "AI đã sửa xong vòng này"; $("roundSub").textContent = r.aiNote || ""; }
+  btn.textContent = armed ? `Đã xem hết clip? Gửi ${open.length} ghi chú (frame ${fr.join(", ")})` : (r && r.status !== "fixed" ? "Gửi lại cho AI" : "Gửi feedback cho AI");
+  btn.classList.toggle("arm", armed);
+  btn.disabled = !db || !canWrite || !open.length;
+  btn.title = !db ? "Cần đăng nhập claude.ai" : !open.length ? "Chưa có ghi chú nào chưa sửa" : "";
+}
+$("aiSend").onclick = async () => {
+  const open = mine().filter(n => n.status !== "done");
+  if (!armed) { armed = true; renderRound(); setTimeout(() => { armed = false; renderRound(); }, 6000); return; }
+  armed = false; const btn = $("aiSend"); btn.disabled = true; $("status").textContent = "Đang gửi cho AI…";
+  const frames = [...new Set(open.map(n => n.frame))].sort((a, b) => a - b);
+  let toClaude = false, note = "";
+  try {
+    if (comments && (await comments.canSendToClaude().catch(() => "off")) === "available") {
+      const anchor = await comments.anchorFor(btn);
+      const text = `Feedback xong cho ${C.clip} ${C.version}: ${open.length} ghi chú chưa sửa ở frame ${frames.join(", ")}. ` +
+                   `Đọc collection "notes" (clip ${C.clip}, version ${C.version}) trên trang review rồi sửa trong Blender.`;
+      await comments.sendToClaude({ anchor, text }); toClaude = true;
+    }
+  } catch (e) { note = e && e.code === "consent_required" ? " (bạn chưa cho phép trang gửi comment)" : ""; }
+  const body = { clip: C.clip, version: C.version, status: "sent", sentAt: new Date().toISOString(),
+                 noteCount: open.length, frames, toClaude };
+  if (myId) body.sentBy = myId;
+  try { await db.doc("rounds/" + roundId()).set(body);
+        $("status").textContent = "Đã gửi " + open.length + " ghi chú. Gõ /fb trong Claude để AI nhận việc; AI sửa hết trong một version."; }
+  catch (e) { fail(e); }
+  renderRound();
+};
+
+function setProject(p) {
+  if (!PROJECTS.includes(p)) return;
+  PRJ = p; try { localStorage.setItem("review.project", p); } catch {}
+  if (location.hash.slice(1) !== p) history.replaceState(null, "", "#" + encodeURIComponent(p));
+  $("proj").value = p;
+  const c = CLIPS.find(x => x.clip === p);
+  if (c !== C) { stop(); C = c; N = c.n; frame = 1; selected = null; editing = null; draft = []; $("fileName").textContent = c.label; loadFrames(); }
+  renderClips(); renderNotes(); renderRound();
+}
+for (const p of PROJECTS) { const o = document.createElement("option"); o.value = p; o.textContent = PROJ_NAMES[p] || p; $("proj").append(o); }
+$("proj").value = PRJ; $("proj").onchange = e => setProject(e.target.value);
+window.addEventListener("hashchange", () => setProject(decodeURIComponent(location.hash.slice(1))));
+$("fileName").textContent = C.label;
+loadFrames(); renderClips(); buildCells(); renderRound();
+(async () => {
+  if (!window.claude || !window.claude.use) { renderNotes(); return; }
+  const [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  db = d; user = u; comments = cm;
+  if (user) { myId = await user.id(); if ((await user.can("data.write")) === false) { canWrite = false; $("send").disabled = true;
+    $("status").textContent = "Bạn đang ở quyền chỉ xem: xem được ghi chú nhưng không gửi được."; } }
+  if (!db) { $("send").disabled = true; renderNotes(); return; }
+  db.collection("notes").onSnapshot(snap => {
+    notes = snap.docs.filter(s => s.exists).map(s => ({ id: s.id, ...s.data() }));
+    renderNotes(); renderRound();
+  }, () => { $("status").textContent = "Mất kết nối kho ghi chú. Tải lại trang để kết nối lại."; });
+  db.collection("rounds").onSnapshot(snap => {
+    rounds = {}; snap.docs.filter(s => s.exists).forEach(s => rounds[s.id] = s.data());
+    renderRound();
+  }, () => {});
+})();
+</script>
