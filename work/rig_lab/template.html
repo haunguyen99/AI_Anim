@@ -1,0 +1,1062 @@
+<meta charset="utf-8">
+<title>Gaygor Rig Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Bố cục: thanh bước ở trên, viewport 3D bên trái, bảng điều khiển bên phải; hẹp thì xếp dọc. */
+:root{
+  --bg:#f3f4f6; --panel:#ffffff; --line:#d5d8de; --fg:#1b2230; --mute:#5d6676;
+  --accent:#2f5fd0; --accent-fg:#ffffff; --view:#e6e9ee;
+  --right:#d4483c; --left:#2c8a5a; --mid:#3a4252; --ok:#2c8a5a; --warn:#b9770e; --bad:#c23a30;
+  --ref:#a07a00;
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --panel:#1a202a; --line:#2c3441; --fg:#e4e8ef; --mute:#8d97a8;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#0d1117;
+  --right:#ef6d60; --left:#52c58a; --mid:#c3cad6; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; --ref:#e0be4a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --panel:#1a202a; --line:#2c3441; --fg:#e4e8ef; --mute:#8d97a8;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#0d1117;
+  --right:#ef6d60; --left:#52c58a; --mid:#c3cad6; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; --ref:#e0be4a; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{display:flex;flex-direction:column}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--sans);padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:16px;margin:0;font-weight:600}
+header{flex:none;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sub{color:var(--mute);font-size:12px}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.step{border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:6px 12px;border-radius:6px;font:inherit;cursor:pointer;display:flex;gap:8px;align-items:center}
+.step[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.step .dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.step .dot.ok{background:var(--ok)} .step .dot.fix{background:var(--bad)}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:minmax(0,1fr);gap:12px}
+#vp{position:relative;min-height:320px;background:var(--view);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vbar{position:absolute;left:8px;top:8px;display:flex;gap:4px;flex-wrap:wrap}
+.jbox{position:absolute;right:8px;top:48px;width:270px;max-width:calc(100% - 16px);background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--line);border-radius:8px;padding:8px 10px;z-index:3;font-size:12px}
+.jbox .jhead{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px}
+.jbox .jrow{display:flex;align-items:center;gap:8px}.jbox .jrow label{width:84px}.jbox .jrow input{flex:1;min-width:0}.jbox .jrow span{width:36px;text-align:right;font-family:var(--mono)}
+.vhelp{position:absolute;right:8px;top:44px;z-index:4;font-size:11px;color:var(--mute);background:color-mix(in srgb,var(--panel) 80%,transparent);padding:6px 10px;border-radius:6px;max-width:min(360px,70%);line-height:1.6}
+.vbar2{position:absolute;left:8px;bottom:8px;display:flex;gap:10px;flex-wrap:wrap;font-size:12px;background:color-mix(in srgb,var(--panel) 85%,transparent);padding:4px 8px;border-radius:6px}
+button{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:4px 9px;cursor:pointer}
+button:hover{border-color:var(--accent)} button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.pri{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+button.bad{border-color:var(--bad);color:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:0;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+aside .pbody{flex:1;min-height:0;overflow:auto;padding:12px}
+aside>.pbody:only-child{padding-bottom:12px}
+aside h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px;font-weight:600}
+aside h2:first-child{margin-top:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px}
+.kv span:nth-child(odd){color:var(--mute)} .kv span:nth-child(even){font-family:var(--mono);text-align:right;font-size:12.5px}
+.chk{display:grid;grid-template-columns:18px 1fr;gap:2px 6px;font-size:13px;margin:4px 0}
+.chk i{font-style:normal;font-weight:700} .chk .s-ok{color:var(--ok)} .chk .s-warn{color:var(--warn)} .chk .s-bad{color:var(--bad)}
+.chk small{grid-column:2;color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--mono)}
+td,th{padding:2px 4px;border-bottom:1px solid var(--line);text-align:right} td:first-child,th:first-child{text-align:left}
+th{color:var(--mute);font-weight:500}
+tr.sel td{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+tr.pick{cursor:pointer}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0}
+label.t{display:flex;gap:6px;align-items:center;font-size:13px}
+.num{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.num label{font-size:11px;color:var(--mute);display:block} .num input{width:100%;font:12.5px var(--mono);background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:3px 5px}
+select{font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
+textarea{width:100%;min-height:44px;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:5px}
+.gate{flex:none;margin:0;padding:10px 12px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.gate h2{margin:0 0 4px}
+.big{font-size:15px;font-weight:600;margin:6px 0}.big.ok{color:var(--ok)}.big.warn{color:var(--warn)}
+details.more{margin:10px 0;border-top:1px solid var(--line);padding-top:6px}
+details.more>summary{cursor:pointer;color:var(--mute);font-size:12px;padding:2px 0}
+details.more[open]>summary{margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;border:1px solid var(--line);font-size:11px;color:var(--mute)}
+.chip.ok{color:var(--ok);border-color:var(--ok)}.chip.fix{color:var(--bad);border-color:var(--bad)}
+.ghead{display:flex;align-items:center;gap:8px;margin-bottom:6px}.ghead .msg{margin-left:auto;min-height:0}
+.dd{position:relative}.dd>summary{cursor:pointer;list-style:none;font-size:12px}.dd>summary::-webkit-details-marker{display:none}
+.ddbox{position:absolute;left:0;bottom:calc(100% + 10px);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;min-width:160px;z-index:5}
+.helpbtn{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;padding:0;z-index:4}
+.vhelp[hidden]{display:none}
+.msg{font-size:12px;color:var(--mute);min-height:1.4em}
+.err-hi{color:var(--bad)} .err-mid{color:var(--warn)}
+.ltxt{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+@media (min-width:901px){html,body{overflow:hidden}}
+@media (max-width:900px){html,body{height:auto} main{display:block} aside{height:auto;overflow:visible;margin-top:12px} aside .pbody{overflow:visible} #vp{height:60vh}}
+</style>
+
+<header>
+  <div><h1>Gaygor Rig Lab</h1></div>
+  <div class="steps" role="tablist" id="steps"></div>
+</header>
+<main>
+  <div id="vp">
+    <canvas id="cv"></canvas>
+    <div class="vbar" id="vbar"></div>
+    <div class="vbar2" id="vopts"></div>
+    <div class="jbox" id="jbox" hidden></div>
+    <button class="helpbtn" id="helpBtn" aria-label="Hướng dẫn thao tác" title="Hướng dẫn thao tác">?</button>
+    <div class="vhelp" id="vhelp" hidden>Alt + chuột trái: xoay<br>Alt + chuột giữa: kéo<br>Alt + chuột phải hoặc lăn: zoom<br>Click hoặc kéo khung: chọn (Shift đảo, Ctrl bỏ, Ctrl+Shift thêm)<br>Q chọn · W dời · E xoay · R co giãn<br>F nhìn vùng chọn · A nhìn toàn bộ · Ctrl+Z hoàn tác</div>
+  </div>
+  <aside id="panel"></aside>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+<script>
+const DATA = /*DATA*/null;
+const $ = id => document.getElementById(id);
+const fix = (v, n = 1) => (+v).toFixed(n);
+
+// ---------------------------------------------------------------- mẫu skeleton (tên theo rig khách)
+const SIDE_J = ["Scapula", "Shoulder", "Elbow", "Wrist", "Hip", "Knee", "Ankle", "Toes", "ToesEnd"];
+const LM_LABEL = { Root_M: "Hông (Root)", Spine1_M: "Eo", Chest_M: "Ngực", Neck_M: "Cổ", Head_M: "Đầu", HeadEnd_M: "Đỉnh đầu",
+  DressFront_M: "Váy trước", DressBack_M: "Váy sau", Prop_M: "Điểm cầm prop", Weapon: "Chùy (pivot)", HandTip: "Đầu ngón giữa" };
+const CENTER = ["Root_M", "Spine1_M", "Chest_M", "Neck_M", "Head_M", "HeadEnd_M", "DressFront_M", "DressBack_M", "Prop_M", "Weapon"];
+const FINGERS = ["Middle", "Thumb", "Index", "Ring", "Pinky"];
+const FKEYS = FINGERS.flatMap(f => [1, 2, 3].map(i => f + "Finger" + i));
+const isFinger = k => /Finger\d_/.test(k);
+const LM_ORDER = [...CENTER.slice(0, 6), ...["Scapula", "Shoulder", "Elbow", "Wrist"].map(n => n + "_R"), ...["Hip", "Knee", "Ankle", "Toes", "ToesEnd"].map(n => n + "_R"),
+  ...["Scapula", "Shoulder", "Elbow", "Wrist"].map(n => n + "_L"), ...["Hip", "Knee", "Ankle", "Toes", "ToesEnd"].map(n => n + "_L"), ...CENTER.slice(6),
+  ...FKEYS.map(n => n + "_R"), ...FKEYS.map(n => n + "_L")];
+const sideOf = k => k.endsWith("_R") ? "R" : k.endsWith("_L") ? "L" : "M";
+const mirrorKey = k => k.endsWith("_R") ? k.slice(0, -1) + "L" : k.endsWith("_L") ? k.slice(0, -1) + "R" : null;
+
+function buildSkeleton(L) {
+  const B = [], add = (name, parent, pos) => B.push({ name, parent, pos: pos.slice() });
+  add("root", null, [0, 0, 0]);
+  const P = n => L[n];
+  [["Root_M", "root"], ["Spine1_M", "Root_M"], ["Chest_M", "Spine1_M"], ["Neck_M", "Chest_M"], ["Head_M", "Neck_M"], ["HeadEnd_M", "Head_M"]].forEach(([n, p]) => add(n, p, P(n)));
+  for (const s of ["R", "L"]) {
+    add("Scapula_" + s, "Chest_M", P("Scapula_" + s)); add("Shoulder_" + s, "Scapula_" + s, P("Shoulder_" + s));
+    add("Elbow_" + s, "Shoulder_" + s, P("Elbow_" + s)); add("Wrist_" + s, "Elbow_" + s, P("Wrist_" + s));
+    for (const f of FINGERS) for (const i of [1, 2, 3]) add(f + "Finger" + i + "_" + s, i > 1 ? f + "Finger" + (i - 1) + "_" + s : "Wrist_" + s, P(f + "Finger" + i + "_" + s));
+  }
+  add("Prop_M", "Chest_M", P("Prop_M")); add("DressFront_M", "Root_M", P("DressFront_M")); add("DressBack_M", "Root_M", P("DressBack_M"));
+  for (const s of ["R", "L"]) for (const [i, n] of ["Hip", "Knee", "Ankle", "Toes", "ToesEnd"].entries())
+    add(n + "_" + s, i ? ["Hip", "Knee", "Ankle", "Toes"][i - 1] + "_" + s : "Root_M", P(n + "_" + s));
+  add("Weapon", "root", P("Weapon"));
+  // twist: đoạn đầu (Shoulder/Hip) nhận roll NGƯỢC t lần roll của khớp đầu; đoạn cuối (Elbow/Knee) nhận roll +t lần roll của Wrist/Ankle
+  const byName = {}; B.forEach(b => byName[b.name] = b);
+  for (const s of ["R", "L"]) for (const st in TW_SEG) {
+    const n = TW[st], a = byName[st + "_" + s], z = byName[TW_SEG[st][0] + "_" + s];
+    for (let i = 1; i <= n; i++) {
+      const t = i / (n + 1), proximal = st === "Shoulder" || st === "Hip";
+      B.push({ name: st + "Twist" + i + "_" + s, parent: st + "_" + s, pos: a.pos.map((v, k) => v + (z.pos[k] - v) * t),
+        twist: { source: proximal ? st + "_" + s : z.name, factor: +(proximal ? -t : t).toFixed(4), axis: "segment", segment: [st + "_" + s, z.name] } });
+    }
+  }
+  return B;
+}
+
+// ngón sinh từ mẫu theo cổ tay + đầu ngón giữa; sau đó là khớp tự do
+function initFingers(L, force) {
+  for (const s of ["R", "L"]) {
+    const w = L["Wrist_" + s], t = L["HandTip_" + s] || w, len = Math.abs(t[0] - w[0]) || 1, sg = s === "R" ? -1 : 1;
+    for (const f of FINGERS) DATA.fingers[f].forEach((o, i) => { const k = f + "Finger" + (i + 1) + "_" + s;
+      if (force || !L[k]) L[k] = [w[0] + sg * o[0] * len, w[1] + o[1] * len, w[2] + o[2] * len]; });
+  }
+}
+// ---------------------------------------------------------------- trạng thái
+let LM = JSON.parse(JSON.stringify(DATA.auto.landmarks));        // tên → [x,y,z]
+initFingers(LM, true);
+const S = new Set();
+let undoS = [], redoS = [], cur = null;
+let mode = "translate";
+// twist joint: số lượng theo đoạn (khớp đầu đoạn), áp cho cả R và L. Tên: <Khớp đầu>Twist<i>_<R|L>
+const TW_SEG = { Shoulder: ["Elbow", "Cánh tay trên"], Elbow: ["Wrist", "Cẳng tay"], Hip: ["Knee", "Đùi"], Knee: ["Ankle", "Cẳng chân"] };
+let TW = { Shoulder: 0, Elbow: 0, Hip: 0, Knee: 0 };
+const vis = { body: true, props: DATA.props.map(() => true) };
+let step = 1, sel = null, mirror = true, showRef = false, showWire = false, showSkel = true, showFing = true;
+let gates = { 1: null, 2: null, 3: null, 4: null, 5: null };
+let db = null, saveMsg = "";
+
+// ---------------------------------------------------------------- three.js
+const cv = $("cv"), vp = $("vp");
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(22, 1, 10, 4000);
+const orbit = new THREE.OrbitControls(cam, cv);
+const TARGET = new THREE.Vector3(0, DATA.auto.H * 0.5, 0);
+orbit.target.copy(TARGET); orbit.mouseButtons = { LEFT: -1, MIDDLE: -1, RIGHT: -1 };
+scene.add(new THREE.HemisphereLight(0xffffff, 0x556070, 0.9));
+const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(200, 400, 500); scene.add(dl);
+
+function meshFrom(m, color, opacity) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(m.verts, 3));
+  g.setIndex(m.tris); g.computeVertexNormals();
+  const mat = new THREE.MeshLambertMaterial({ color, transparent: true, opacity, side: THREE.DoubleSide, depthWrite: false });
+  const mesh = new THREE.Mesh(g, mat);
+  const wire = new THREE.LineSegments(new THREE.WireframeGeometry(g), new THREE.LineBasicMaterial({ color: 0x8aa0c0, transparent: true, opacity: .35 }));
+  wire.visible = false; mesh.add(wire); mesh.userData.wire = wire;
+  return mesh;
+}
+const bodyMesh = meshFrom(DATA.body, 0x8a96aa, 0.55); scene.add(bodyMesh);
+const propMeshes = DATA.props.map(p => { const m = meshFrom(p, 0xb59a6a, 0.55); scene.add(m); return m; });
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const lmGroup = new THREE.Group(); scene.add(lmGroup);
+const lmMesh = {};
+const sphereGeo = new THREE.SphereGeometry(2.6, 14, 10);
+for (const k of LM_ORDER) {
+  const m = new THREE.Mesh(sphereGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false, transparent: true }));
+  m.renderOrder = 10; m.userData.key = k; lmGroup.add(m); lmMesh[k] = m;
+}
+const skelLines = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffffff, depthTest: false, transparent: true }));
+skelLines.renderOrder = 8; scene.add(skelLines);
+const twPts = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 7, sizeAttenuation: false, depthTest: false, color: 0xffaa00 }));
+twPts.renderOrder = 9; scene.add(twPts);
+const skelPts = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 4, sizeAttenuation: false, depthTest: false, color: 0xffffff }));
+skelPts.renderOrder = 9; scene.add(skelPts);
+const refLines = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ depthTest: false, transparent: true, opacity: .85 }));
+refLines.renderOrder = 7; scene.add(refLines);
+{
+  const pos = [], idx = {}; DATA.ref.forEach((b, i) => idx[b.name] = b);
+  DATA.ref.forEach(b => { if (b.parent && b.parent !== "root" && idx[b.parent]) pos.push(...idx[b.parent].pos, ...b.pos); });
+  refLines.geometry.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+}
+const grid = new THREE.GridHelper(500, 20, 0x667080, 0x3a4252); grid.material.transparent = true; grid.material.opacity = .35; scene.add(grid);
+
+const tc = new THREE.TransformControls(cam, cv); tc.setSize(0.8); scene.add(tc);
+const pivot = new THREE.Object3D(); scene.add(pivot);
+let start = null, startM = new THREE.Matrix4();
+function centroid() { const c = new THREE.Vector3(); S.forEach(k => c.add(new THREE.Vector3(...LM[k]))); return c.multiplyScalar(1 / Math.max(S.size, 1)); }
+function resetPivot() { pivot.position.copy(centroid()); pivot.quaternion.identity(); pivot.scale.set(1, 1, 1); pivot.updateMatrix(); }
+tc.addEventListener("dragging-changed", e => {
+  orbit.enabled = !e.value;
+  if (e.value) { pivot.updateMatrix(); startM.copy(pivot.matrix).invert(); start = {}; S.forEach(k => start[k] = new THREE.Vector3(...LM[k])); }
+  else { start = null; resetPivot(); commit(); }
+});
+tc.addEventListener("objectChange", () => {
+  if (!start) return;
+  pivot.updateMatrix(); const M = pivot.matrix.clone().multiply(startM);
+  for (const k in start) { const v = start[k].clone().applyMatrix4(M); LM[k] = [v.x, v.y, v.z]; }
+  if (mirror) {
+    for (const k of S) {
+      const m = mirrorKey(k);
+      if (!m) { LM[k][0] = 0; continue; }
+      if (sideOf(k) === "R" || !S.has(m)) LM[m] = [-LM[k][0], LM[k][1], LM[k][2]];
+    }
+  }
+  syncScene(true); dirty();
+});
+
+function setView(v) {
+  const t = TARGET, tf = Math.tan(cam.fov * Math.PI / 360), d = Math.max(115 / tf, (v === 'front' ? 205 : 130) / (tf * cam.aspect));
+  const dirs = { front: [0, 0, 1], side: [1, 0, 0], top: [0, 1, 0.0001], persp: [0.7, 0.35, 1] };
+  const u = new THREE.Vector3(...dirs[v]).normalize();
+  cam.position.copy(t).addScaledVector(u, d); cam.up.set(0, 1, 0);
+  if (v === "top") cam.up.set(0, 0, -1);
+  orbit.target.copy(t); orbit.update();
+}
+function resize() {
+  const w = vp.clientWidth, h = vp.clientHeight;
+  renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(vp);
+
+function lmColor(k) { return css(sideOf(k) === "R" ? "--right" : sideOf(k) === "L" ? "--left" : "--mid"); }
+function syncScene(dragging) {
+  for (const k of LM_ORDER) {
+    const m = lmMesh[k]; m.position.set(...LM[k]);
+    m.material.color.set(lmColor(k));
+    m.scale.setScalar(S.has(k) ? 1.5 : 1);
+    m.visible = step === 2 && (showFing || !isFinger(k));
+    if (isFinger(k)) m.scale.setScalar(S.has(k) ? 1.2 : 0.6);
+    m.material.color.set(S.has(k) ? css("--accent") : lmColor(k));
+  }
+  // skeleton
+  const B = buildSkeleton(LM), idx = {}; B.forEach(b => idx[b.name] = b);
+  const seg = [], pts = [], tpts = [], PB = step >= 4 && SK ? posedBones(B) : null, ps = b => PB ? PB[b.name] : b.pos;
+  B.forEach(b => { if (b.twist) { tpts.push(...ps(b)); return; } pts.push(...ps(b)); if (b.parent && b.parent !== "root") seg.push(...ps(idx[b.parent]), ...ps(b)); });
+  twPts.geometry.setAttribute("position", new THREE.Float32BufferAttribute(tpts, 3)); twPts.material.color.set(css("--warn"));
+  skelLines.geometry.setAttribute("position", new THREE.Float32BufferAttribute(seg, 3));
+  skelPts.geometry.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+  skelLines.material.color.set(css("--fg")); skelPts.material.color.set(css("--accent"));
+  skelLines.visible = skelPts.visible = step >= 3 || (step === 2 && showSkel); twPts.visible = step >= 3;
+  refLines.material.color.set(css("--ref")); refLines.visible = showRef; if (typeof updateSelPt === "function") updateSelPt();
+  bodyMesh.material.opacity = step === 3 ? 0.28 : 0.5;
+  bodyMesh.visible = vis.body && step < 4; skinMesh.visible = vis.body && step >= 4 && !!SK; skinWire.visible = step >= 4 && showWire;
+  if (SK && step >= 4) skinMesh.material.opacity = 1;
+  propMeshes.forEach((m, i) => m.visible = vis.props[i]);
+  bodyMesh.userData.wire.visible = showWire; propMeshes.forEach(m => m.userData.wire.visible = showWire);
+  if (S.size && step === 2 && mode !== 'select') { if (!dragging) resetPivot(); tc.attach(pivot); } else tc.detach();
+}
+function frame() { requestAnimationFrame(frame); orbit.update(); renderer.setClearColor(css("--view")); renderer.render(scene, cam); }
+
+// ---- thao tác kiểu Maya
+// Alt+LMB xoay · Alt+MMB kéo · Alt+RMB / lăn chuột zoom · LMB click hoặc kéo khung để chọn
+// Shift đảo chọn · Ctrl bỏ chọn · Ctrl+Shift thêm · Q chọn, W dời, E xoay, R co giãn · F nhìn vào vùng chọn · A nhìn toàn bộ
+const MAYA = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.DOLLY }, NONE = { LEFT: -1, MIDDLE: -1, RIGHT: -1 };
+const ray = new THREE.Raycaster(); let down = null, boxing = false;
+const boxEl = document.createElement("div");
+boxEl.style.cssText = "position:absolute;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);display:none;pointer-events:none";
+vp.appendChild(boxEl);
+function applySel(keys, e) {   // quy tắc chọn của Maya
+  const ctrl = e.ctrlKey || e.metaKey, sh = e.shiftKey;
+  if (!ctrl && !sh) { setSel(keys, false); return; }
+  const cur = new Set(S);
+  keys.forEach(k => { if (ctrl && sh) cur.add(k); else if (ctrl) cur.delete(k); else (cur.has(k) ? cur.delete(k) : cur.add(k)); });
+  S.clear(); cur.forEach(k => S.add(k)); sel = keys.length && cur.has(keys[keys.length - 1]) ? keys[keys.length - 1] : ([...S].pop() || null);
+  syncScene(); renderPanelLight();
+}
+cv.addEventListener("pointerdown", e => {
+  if (e.pointerType === "mouse") orbit.mouseButtons = e.altKey ? MAYA : NONE;
+  down = [e.clientX, e.clientY]; boxing = false;
+  if (step === 2 && e.pointerType === "mouse" && e.button === 0 && !e.altKey && !tc.axis) boxing = true;
+}, true);
+cv.addEventListener("wheel", () => { orbit.mouseButtons = MAYA; }, true);
+cv.addEventListener("pointermove", e => {
+  if (!boxing || !down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 4) return;
+  const r = vp.getBoundingClientRect(), x0 = down[0] - r.left, y0 = down[1] - r.top, x1 = e.clientX - r.left, y1 = e.clientY - r.top;
+  Object.assign(boxEl.style, { display: "block", left: Math.min(x0, x1) + "px", top: Math.min(y0, y1) + "px", width: Math.abs(x1 - x0) + "px", height: Math.abs(y1 - y0) + "px" });
+});
+window.addEventListener("pointerup", e => {
+  if (!down) return;
+  const moved = Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 4, was = boxing, d0 = down;
+  down = null; boxing = false; boxEl.style.display = "none";
+  if (step !== 2 || !was || (e.target !== cv && !moved)) return;
+  const r = cv.getBoundingClientRect();
+  if (moved) {
+    const xa = Math.min(d0[0], e.clientX), xb = Math.max(d0[0], e.clientX), ya = Math.min(d0[1], e.clientY), yb = Math.max(d0[1], e.clientY), hit = [];
+    for (const k of LM_ORDER) {
+      const m = lmMesh[k]; if (!m.visible) continue;
+      const v = m.position.clone().project(cam), px = r.left + (v.x + 1) / 2 * r.width, py = r.top + (1 - v.y) / 2 * r.height;
+      if (px >= xa && px <= xb && py >= ya && py <= yb) hit.push(k);
+    }
+    applySel(hit, e); return;
+  }
+  ray.setFromCamera({ x: ((e.clientX - r.left) / r.width) * 2 - 1, y: -((e.clientY - r.top) / r.height) * 2 + 1 }, cam);
+  const h = ray.intersectObjects(Object.values(lmMesh).filter(m => m.visible), false)[0];
+  if (h) applySel([h.object.userData.key], e);
+  else if (!(e.shiftKey || e.ctrlKey || e.metaKey)) pick(null);
+});
+function frameView(keys) {   // F / A: đưa tâm nhìn tới điểm, giữ hướng nhìn
+  let c, d;
+  if (keys && keys.length) { c = new THREE.Vector3(); keys.forEach(k => c.add(new THREE.Vector3(...LM[k]))); c.multiplyScalar(1 / keys.length); d = keys.length === 1 ? 140 : Math.max(140, cam.position.distanceTo(orbit.target) * .6); }
+  else { c = TARGET.clone(); d = Math.max(115 / Math.tan(cam.fov * Math.PI / 360), 205 / (Math.tan(cam.fov * Math.PI / 360) * cam.aspect)); }
+  const u = cam.position.clone().sub(orbit.target).normalize();
+  orbit.target.copy(c); cam.position.copy(c).addScaledVector(u, d); orbit.update();
+}
+
+// ---------------------------------------------------------------- lưu / cổng duyệt
+const dirtyFlag = { v: false };
+let lmTimer = null;
+function dirty() { dirtyFlag.v = true; saveMsg = "Đang lưu…"; renderPanelLight(); clearTimeout(lmTimer); lmTimer = setTimeout(saveLM, 1200); }
+async function initDb() {
+  try { if (window.claude && window.claude.use) db = await window.claude.use("db"); } catch (e) { db = null; saveMsg = "db lỗi: " + (e.code || e.message); }
+  if (!db) saveMsg = saveMsg || "Chưa nối được db: chỉ lưu trong trình duyệt này, AI không đọc được.";
+  try {
+    if (db) {
+      const a = await db.doc("rig/landmarks").get(); if (a.exists && a.data().lm) LM = a.data().lm; if (a.exists && a.data().tw) TW = Object.assign(TW, a.data().tw);
+      const g = await db.doc("rig/gates").get(); if (g.exists) gates = Object.assign(gates, g.data().g || {});
+      saveMsg = "Đã nối db: lưu cho AI đọc được.";
+      const sk = await db.doc("rig/skin").get(); if (sk.exists) loadSkinDoc(sk.data());
+    } else {
+      const a = localStorage.getItem("rig_lm"); if (a) LM = JSON.parse(a); try { const k = localStorage.getItem("rig_skin"); if (k) loadSkinDoc(JSON.parse(k)); } catch (e) {} const t = localStorage.getItem("rig_tw"); if (t) TW = Object.assign(TW, JSON.parse(t));
+      const g = localStorage.getItem("rig_gates"); if (g) gates = JSON.parse(g);
+    }
+  } catch (e) {}
+  LM.HandTip_R = LM.HandTip_R || DATA.auto.landmarks.HandTip_R; LM.HandTip_L = LM.HandTip_L || DATA.auto.landmarks.HandTip_L; initFingers(LM);
+  for (const k of LM_ORDER) if (!LM[k]) LM[k] = DATA.auto.landmarks[k];
+  syncScene(); renderAll(); resetHist();
+}
+async function saveLM() {
+  try {
+    if (db) await db.doc("rig/landmarks").set({ lm: LM, tw: TW, at: Date.now() }); else { localStorage.setItem("rig_lm", JSON.stringify(LM)); localStorage.setItem("rig_tw", JSON.stringify(TW)); }
+    dirtyFlag.v = false; saveMsg = db ? "Đã lưu" : "Đã lưu (chỉ trình duyệt này)";
+  } catch (e) { saveMsg = "Không lưu được: " + (e.message || e.code || e); }
+  renderPanelLight();
+}
+async function setGate(n, status) {
+  gates[n] = { status, note: ($("note") || {}).value || "", at: Date.now() };
+  try { if (db) await db.doc("rig/gates").set({ g: gates }); else localStorage.setItem("rig_gates", JSON.stringify(gates)); saveMsg = "Đã ghi kết quả bước " + n + "."; }
+  catch (e) { saveMsg = "Không ghi được: " + (e.message || e.code || e); }
+  renderAll();
+}
+async function exportRig() {
+  const B = buildSkeleton(LM);
+  const out = { character: "Gaygor", template: "biped", unit: "cm", up: "+Y", front: "+Z", landmarks: LM, twist_counts: TW, bones: B.map(b => Object.assign({ name: b.name, parent: b.parent, head: b.pos.map(v => +v.toFixed(3)) }, b.twist ? { twist: b.twist } : {})) };
+  const text = JSON.stringify(out, null, 1);
+  try { const d = await window.claude.use("downloads"); if (d) { await d.save({ filename: "Gaygor_rig_m1.json", data: text }); saveMsg = "Đã xuất rig.json."; return renderPanelLight(); } } catch (e) {}
+  try { await navigator.clipboard.writeText(text); saveMsg = "Đã chép rig.json vào clipboard."; } catch (e) { saveMsg = "Không xuất được rig.json."; }
+  renderPanelLight();
+}
+
+// ---------------------------------------------------------------- phân tích bước 1/3
+const bodyV = (() => { const a = DATA.body.verts, o = []; for (let i = 0; i < a.length; i += 3) o.push([a[i], a[i + 1], a[i + 2]]); return o; })();
+const bb = (() => { const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9]; bodyV.forEach(v => v.forEach((c, i) => { mn[i] = Math.min(mn[i], c); mx[i] = Math.max(mx[i], c); })); return { mn, mx }; })();
+function symmetryDev() {   // trung vị khoảng cách từ mỗi đỉnh tới đỉnh gương gần nhất (lưới 6cm)
+  const cell = 6, g = new Map(), key = (x, y, z) => Math.floor(x / cell) + "," + Math.floor(y / cell) + "," + Math.floor(z / cell);
+  bodyV.forEach(v => { const k = key(...v); (g.get(k) || g.set(k, []).get(k)).push(v); });
+  const ds = [];
+  for (let i = 0; i < bodyV.length; i += 3) {
+    const v = bodyV[i], m = [-v[0], v[1], v[2]]; let best = 99;
+    const cx = Math.floor(m[0] / cell), cy = Math.floor(m[1] / cell), cz = Math.floor(m[2] / cell);
+    for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) for (let c = -1; c <= 1; c++) {
+      const l = g.get((cx + a) + "," + (cy + b) + "," + (cz + c)); if (l) l.forEach(u => best = Math.min(best, Math.hypot(u[0] - m[0], u[1] - m[1], u[2] - m[2])));
+    }
+    ds.push(best);
+  }
+  ds.sort((a, b) => a - b); return { med: ds[ds.length >> 1], p90: ds[Math.floor(ds.length * .9)] };
+}
+const SYM = symmetryDev();
+
+function dist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); }
+function skelChecks() {
+  const B = buildSkeleton(LM), idx = {}; B.forEach(b => idx[b.name] = b);
+  const out = [];
+  const refNames = new Set(DATA.ref.map(b => b.name)), mine = new Set(B.map(b => b.name));
+  const miss = [...refNames].filter(n => !mine.has(n)), extra = [...mine].filter(n => !refNames.has(n) && !/Twist\d/.test(n));
+  out.push([!miss.length && !extra.length ? "ok" : "bad", "Tên xương khớp rig khách", `${B.length} xương` + (miss.length ? ", thiếu " + miss.join(",") : "") + (extra.length ? ", thừa " + extra.join(",") : "")]);
+  let short = 1e9, shortN = ""; B.forEach(b => { if (b.parent && b.parent !== "root") { const l = dist(b.pos, idx[b.parent].pos); if (l < short) { short = l; shortN = b.name; } } });
+  out.push([short > 1 ? "ok" : "bad", "Không có xương quá ngắn", `ngắn nhất ${shortN} ${fix(short)} cm`]);
+  let asym = 0; for (const n of ["Scapula", "Shoulder", "Elbow", "Wrist", "Hip", "Knee", "Ankle", "Toes", "ToesEnd"]) {
+    const r = idx[n + "_R"].pos, l = idx[n + "_L"].pos; asym = Math.max(asym, dist([-r[0], r[1], r[2]], l)); }
+  out.push([asym < 1 ? "ok" : asym < 4 ? "warn" : "bad", "Đối xứng trái/phải", `lệch lớn nhất ${fix(asym)} cm`]);
+  for (const [nm, a, b, c] of [["gối", "Hip", "Knee", "Ankle"], ["khuỷu", "Shoulder", "Elbow", "Wrist"]]) {
+    let w = 1e9; for (const s of ["R", "L"]) {
+      const A = idx[a + "_" + s].pos, Bk = idx[b + "_" + s].pos, C = idx[c + "_" + s].pos;
+      const ac = C.map((v, i) => v - A[i]), ab = Bk.map((v, i) => v - A[i]), al = Math.hypot(...ac), t = (ab[0] * ac[0] + ab[1] * ac[1] + ab[2] * ac[2]) / (al * al);
+      w = Math.min(w, Math.hypot(...ab.map((v, i) => v - t * ac[i])));
+    }
+    out.push([w > 3 ? "ok" : w > 1.5 ? "warn" : "bad", "Độ cong " + nm + " (xác định hướng pole)", `lệch khỏi đường thẳng ${fix(w)} cm`]);
+  }
+  const ul = dist(idx.Hip_R.pos, idx.Knee_R.pos), ll = dist(idx.Knee_R.pos, idx.Ankle_R.pos), r = ul / ll;
+  out.push([r > .6 && r < 1.6 ? "ok" : "warn", "Tỉ lệ đùi / cẳng chân", `${fix(ul)} / ${fix(ll)} cm (tỉ lệ ${fix(r, 2)})`]);
+  const ground = Math.min(idx.ToesEnd_R.pos[1], idx.ToesEnd_L.pos[1]);
+  out.push([Math.abs(ground) < 1.5 ? "ok" : "warn", "Mũi chân chạm sàn (y = 0)", `y = ${fix(ground)} cm`]);
+  return out;
+}
+function refErrors() {
+  const B = buildSkeleton(LM), idx = {}; B.forEach(b => idx[b.name] = b);
+  return DATA.ref.filter(r => r.name !== "root" && idx[r.name]).map(r => [r.name, dist(idx[r.name].pos, r.pos)]);
+}
+
+// ---------------------------------------------------------------- bảng điều khiển
+// ---- undo / redo: ảnh chụp {LM, TW} sau mỗi thao tác hoàn tất (thả chuột, nhập số, đặt lại, đổi twist)
+const snap = () => JSON.stringify({ LM, TW });
+function resetHist() { undoS = []; redoS = []; cur = snap(); renderVbar(); }
+function commit() {
+  const n = snap(); if (n === cur) return;
+  undoS.push(cur); if (undoS.length > 100) undoS.shift(); cur = n; redoS = []; syncHistBtns();
+}
+function applySnap(str) { const o = JSON.parse(str); LM = o.LM; TW = o.TW; cur = str; syncScene(); dirty(); commit(); renderPanel(); syncHistBtns(); }
+function undo() { if (step === 4 && skinUndo.length) return skinUndoStep(); if (!undoS.length) return; redoS.push(cur); applySnap(undoS.pop()); }
+function redo() { if (step === 4 && skinRedo.length) return skinRedoStep(); if (!redoS.length) return; undoS.push(cur); applySnap(redoS.pop()); }
+function syncHistBtns() { const u = $("bUndo"), r = $("bRedo"); if (u) u.disabled = !undoS.length; if (r) r.disabled = !redoS.length; }
+function pick(k, add) {
+  if (add) { if (S.has(k)) { S.delete(k); if (sel === k) sel = [...S].pop() || null; } else { S.add(k); sel = k; } }
+  else { S.clear(); if (k) S.add(k); sel = k; }
+  syncScene(); renderPanelLight();
+}
+function setSel(keys, add) { if (!add) S.clear(); keys.forEach(k => S.add(k)); sel = keys.length ? keys[keys.length - 1] : (S.size ? [...S].pop() : null); syncScene(); renderPanelLight(); }
+const GROUPS = {
+  fingR: () => LM_ORDER.filter(k => isFinger(k) && k.endsWith("_R")), fingL: () => LM_ORDER.filter(k => isFinger(k) && k.endsWith("_L")),
+  armR: () => LM_ORDER.filter(k => /^(Scapula|Shoulder|Elbow|Wrist)_R$/.test(k) || (isFinger(k) && k.endsWith("_R"))),
+  armL: () => LM_ORDER.filter(k => /^(Scapula|Shoulder|Elbow|Wrist)_L$/.test(k) || (isFinger(k) && k.endsWith("_L"))),
+  legR: () => LM_ORDER.filter(k => /^(Hip|Knee|Ankle|Toes|ToesEnd)_R$/.test(k)), legL: () => LM_ORDER.filter(k => /^(Hip|Knee|Ankle|Toes|ToesEnd)_L$/.test(k)),
+  spine: () => CENTER.slice(0, 6), all: () => LM_ORDER.filter(k => showFing || !isFinger(k)) };
+function dims() { const d = i => bb.mx[i] - bb.mn[i]; return [d(0), d(1), d(2)]; }
+const esc = t => String(t).replace(/</g, "&lt;");
+const OPEN = {};
+const more = (id, title, html) => `<details class="more" data-more="${id}" ${OPEN[id] ? "open" : ""}><summary>${title}</summary>${html}</details>`;
+function gateHtml(n) {
+  const g = gates[n];
+  const st = g ? (g.status === "ok" ? '<span class="chip ok">Đã duyệt</span>' : '<span class="chip fix">Cần sửa</span>') : '<span class="chip">Chưa duyệt</span>';
+  return `<div class="gate"><div class="ghead"><b>Bước ${n}</b>${st}<span class="msg" id="smsg">${saveMsg}</span></div>
+    <textarea id="note" rows="2" placeholder="Ghi chú cho AI nếu cần sửa">${g ? esc(g.note) : ""}</textarea>
+    <div class="row"><button class="pri" id="gOk">Duyệt</button><button class="bad" id="gFix">Cần sửa</button></div></div>`;
+}
+function renderPanel() {
+  const p = $("panel");
+  if (step === 1) {
+    const [dx, dy, dz] = dims(), front = LM.ToesEnd_R[2] > LM.Ankle_R[2], tris = DATA.body.tris.length / 3 | 0;
+    const items = [
+      [Math.abs(bb.mn[1]) < 1.5 ? "ok" : "warn", "Chân đứng trên sàn", "y nhỏ nhất " + fix(bb.mn[1]) + " cm"],
+      [Math.abs((bb.mn[0] + bb.mx[0]) / 2) < 2 ? "ok" : "warn", "Thân đối xứng quanh x = 0", "tâm bbox x = " + fix((bb.mn[0] + bb.mx[0]) / 2) + " cm"],
+      ["ok", "Hướng: đầu +Y", "đỉnh đầu y = " + fix(bb.mx[1]) + " cm"],
+      [front ? "ok" : "warn", "Mặt nhìn +Z", "mũi chân ở trước cổ chân theo trục z"],
+      [SYM.med < 1.5 ? "ok" : "warn", "Mesh đối xứng gương", "lệch trung vị " + fix(SYM.med) + " cm"],
+      [DATA.props.length ? "warn" : "ok", "Phần rời (island)", DATA.props.length ? "1 prop rời: gắn vào xương Weapon" : "không có"],
+      [dx > dy * 1.5 ? "warn" : "ok", "Tư thế bind", dx > dy ? "tay dang ngang (T-pose)" : ""]];
+    const warns = items.filter(x => x[0] !== "ok").length;
+    p.innerHTML = `<h2>Kiểm tra mesh</h2>
+      <div class="big ${warns ? "warn" : "ok"}">${warns ? "! " + warns + " mục cần chú ý" : "✓ Mesh ổn"}</div>
+      <div class="sub">${fix(dy, 0)} cm cao · ${bodyV.length} đỉnh${DATA.props.length ? " · " + DATA.props.length + " prop rời" : ""}</div>
+      ${more("m1", "Chi tiết kiểm tra", items.map(x => chk(x[0], x[1], x[2])).join("") + `<div class="kv"><span>Rộng (sải tay)</span><span>${fix(dx)} cm</span><span>Sâu</span><span>${fix(dz)} cm</span><span>Tam giác</span><span>${tris}</span></div>`)}
+      <div class="row"><button class="pri" id="toStep2">Tiếp: đặt khớp</button></div>${gateHtml(1)}`;
+  } else if (step === 2) {
+    const rows = LM_ORDER.filter(k => showFing || !isFinger(k)).map(k => `<tr class="pick ${S.has(k) ? "sel" : ""}" data-k="${k}"><td><span class="ltxt" style="background:${lmColor(k)}"></span>${k}</td><td>${fix(LM[k][0])}</td><td>${fix(LM[k][1])}</td><td>${fix(LM[k][2])}</td></tr>`).join("");
+    p.innerHTML = `<h2>Đặt khớp</h2>
+      <div class="row"><label class="t"><input type="checkbox" id="mir" ${mirror ? "checked" : ""}> Đối xứng R→L</label><button id="resetAuto">Về gợi ý</button></div>
+      <div id="selbox"></div>
+      ${more("m2", "Bảng toạ độ (" + LM_ORDER.filter(k => showFing || !isFinger(k)).length + " khớp)", `<table><thead><tr><th>Khớp</th><th>x</th><th>y</th><th>z</th></tr></thead><tbody id="lmrows">${rows}</tbody></table>`)}
+      ${gateHtml(2)}`;
+    renderSel();
+  } else if (step === 3) {
+    const checks = skelChecks(), errs = refErrors().sort((a, b) => b[1] - a[1]), mean = errs.reduce((s, e) => s + e[1], 0) / errs.length;
+    const bad = checks.filter(c => c[0] !== "ok");
+    p.innerHTML = `<h2>Bộ xương</h2>
+      <div class="big ${bad.length ? "warn" : "ok"}">${bad.length ? "! " + bad.length + " mục cần chú ý" : "✓ " + checks.length + " kiểm tra đạt"} · ${buildSkeleton(LM).length} xương</div>
+      ${bad.map(c => chk(c[0], c[1], c[2])).join("")}
+      <h2>Twist joint</h2>
+      <div class="kv" style="align-items:center">${Object.keys(TW_SEG).map(st => `<span><label for="tw_${st}">${TW_SEG[st][1]}</label></span><span><select id="tw_${st}">${[0, 1, 2, 3].map(n => `<option value="${n}" ${TW[st] === n ? "selected" : ""}>${n}</option>`).join("")}</select></span>`).join("")}</div>
+      <div class="row"><button data-tw="0">Không twist</button><button data-tw="1">1 mỗi đoạn</button><button data-tw="2">2 mỗi đoạn</button></div>
+      ${more("m3a", "Tất cả kiểm tra", checks.map(c => chk(c[0], c[1], c[2])).join(""))}
+      ${more("m3b", "Đối chiếu rig khách", `<div class="kv"><span>Sai lệch trung bình</span><span>${fix(mean)} cm</span><span>Lớn nhất</span><span>${errs[0][0]} ${fix(errs[0][1])} cm</span></div>
+        <div class="row"><label class="t"><input type="checkbox" id="ref" ${showRef ? "checked" : ""}> Vẽ xương khách (vàng)</label></div>
+        <table><thead><tr><th>Xương</th><th>lệch cm</th></tr></thead><tbody>${errs.slice(0, 10).map(e => `<tr><td>${e[0]}</td><td class="${e[1] > 8 ? "err-hi" : e[1] > 4 ? "err-mid" : ""}">${fix(e[1])}</td></tr>`).join("")}</tbody></table>`)}
+      ${more("m3c", "Xuất", `<div class="row"><button id="exportRig">Xuất rig.json</button></div>`)}
+      ${gateHtml(3)}`;
+  } else if (step === 4) { renderSkinPanel(p); } else { renderPosePanel(p); }
+  dockGate(p); wirePanel(); renderJointBox();
+}
+function dockGate(p) {   // cổng duyệt cố định ở đáy panel, phần còn lại cuộn
+  const g = p.querySelector(".gate"), body = document.createElement("div"); body.className = "pbody";
+  while (p.firstChild && p.firstChild !== g) body.appendChild(p.firstChild);
+  p.insertBefore(body, g || null);
+}
+function chk(s, t, d) { return `<div class="chk"><i class="s-${s}">${s === "ok" ? "✓" : s === "warn" ? "!" : "✕"}</i><span>${t}</span>${d ? `<small>${d}</small>` : ""}</div>`; }
+function setMode(m) { mode = m; if (m !== 'select') tc.setMode(m); syncScene(); renderSel(); }
+function renderSel() {
+  const b = $("selbox"); if (!b) return;
+  const modes = [["select", "Chọn (Q)"], ["translate", "Dời (W)"], ["rotate", "Xoay (E)"], ["scale", "Co giãn (R)"]].map(([m, t]) => `<button data-mode="${m}" ${mode === m ? 'class="pri"' : ""}>${t}</button>`).join("");
+  const grp = `<select id="grpSel" aria-label="Chọn nhanh"><option value="">Chọn nhanh…</option>${[["armR", "Tay R"], ["armL", "Tay L"], ["fingR", "Ngón R"], ["fingL", "Ngón L"], ["legR", "Chân R"], ["legL", "Chân L"], ["spine", "Thân"], ["all", "Tất cả"]].map(([g, t]) => `<option value="${g}">${t}</option>`).join("")}</select>`;
+  let body;
+  if (!S.size) body = '<div class="sub">Click một chấm hoặc kéo khung để chọn.</div>';
+  else if (S.size > 1) body = `<div class="msg">Đã chọn ${S.size} khớp.</div>`;
+  else body = `<div class="sub"><b>${sel}</b>${LM_LABEL[sel.replace(/_[RL]$/, "")] ? " · " + LM_LABEL[sel.replace(/_[RL]$/, "")] : ""}</div><div class="num">${["x", "y", "z"].map((a, i) => `<div><label for="n${a}">${a} (cm)</label><input id="n${a}" type="number" step="0.5" value="${fix(LM[sel][i], 2)}"></div>`).join("")}</div>`;
+  b.innerHTML = `<div class="row">${modes}</div><div class="row">${grp}<button id="clr">Bỏ chọn</button></div>` + body;
+  $("clr").addEventListener("click", () => pick(null));
+  $("grpSel").onchange = e => { if (e.target.value) setSel(GROUPS[e.target.value](), false); e.target.value = ""; };
+  b.querySelectorAll("[data-mode]").forEach(x => x.addEventListener("click", () => setMode(x.dataset.mode)));
+  if (S.size === 1) ["x", "y", "z"].forEach((a, i) => $("n" + a).addEventListener("change", e => {
+    LM[sel][i] = +e.target.value; if (mirror && mirrorKey(sel)) { const k = mirrorKey(sel); LM[k] = [-LM[sel][0], LM[sel][1], LM[sel][2]]; }
+    syncScene(); dirty(); commit(); renderPanel();
+  }));
+}
+function renderPanelLight() { const m = $("smsg"); if (m) m.textContent = saveMsg; if (step === 2) { renderSel(); document.querySelectorAll("#lmrows tr").forEach(tr => { tr.classList.toggle("sel", S.has(tr.dataset.k)); const k = tr.dataset.k, c = tr.children; c[1].textContent = fix(LM[k][0]); c[2].textContent = fix(LM[k][1]); c[3].textContent = fix(LM[k][2]); }); } }
+function wirePanel() {
+  document.querySelectorAll("[data-more]").forEach(d => d.addEventListener("toggle", () => OPEN[d.dataset.more] = d.open));
+  const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
+  on("gOk", () => setGate(step, "ok")); on("gFix", () => setGate(step, "fix"));
+  on("toStep2", () => go(2)); on("saveLM", saveLM); on("exportRig", exportRig);
+  on("resetAuto", () => { LM = JSON.parse(JSON.stringify(DATA.auto.landmarks)); initFingers(LM, true); syncScene(); dirty(); commit(); renderPanel(); });
+  Object.keys(TW_SEG).forEach(st => { const e = $("tw_" + st); if (e) e.addEventListener("change", () => { TW[st] = +e.value; syncScene(); dirty(); commit(); renderPanel(); }); });
+  document.querySelectorAll("[data-tw]").forEach(b => b.addEventListener("click", () => { Object.keys(TW).forEach(st => TW[st] = +b.dataset.tw); syncScene(); dirty(); commit(); renderPanel(); }));
+  const m = $("mir"); if (m) m.addEventListener("change", e => { mirror = e.target.checked; if (mirror) { for (const k of LM_ORDER) if (sideOf(k) === "R") LM[mirrorKey(k)] = [-LM[k][0], LM[k][1], LM[k][2]]; syncScene(); dirty(); commit(); } });
+  const r = $("ref"); if (r) r.addEventListener("change", e => { showRef = e.target.checked; syncScene(); renderVopts(); });
+  document.querySelectorAll("#lmrows tr").forEach(tr => tr.addEventListener("click", e => pick(tr.dataset.k, e.shiftKey || e.ctrlKey || e.metaKey)));
+}
+function renderSteps() {
+  const names = ["1 Mesh", "2 Khớp", "3 Xương", "4 Skin", "5 Thử khớp"];
+  $("steps").innerHTML = names.map((n, i) => `<button class="step" role="tab" aria-selected="${step === i + 1}" data-s="${i + 1}"><span class="dot ${gates[i + 1] ? gates[i + 1].status : ""}"></span>${n}</button>`).join("");
+  $("steps").querySelectorAll("button").forEach(b => b.addEventListener("click", () => go(+b.dataset.s)));
+}
+function renderVbar() {
+  $("vbar").innerHTML = [["front", "Trước"], ["side", "Cạnh"], ["top", "Trên"], ["persp", "3D"]].map(([v, t]) => `<button data-v="${v}">${t}</button>`).join("") +
+    `<button id="bUndo" title="Ctrl+Z" ${undoS.length ? "" : "disabled"}>Hoàn tác</button><button id="bRedo" title="Ctrl+Shift+Z" ${redoS.length ? "" : "disabled"}>Làm lại</button>`;
+  $("helpBtn").onclick = () => { $("vhelp").hidden = !$("vhelp").hidden; };
+  $("bUndo").addEventListener("click", undo); $("bRedo").addEventListener("click", redo);
+  $("vbar").querySelectorAll("button").forEach(b => b.addEventListener("click", () => setView(b.dataset.v)));
+}
+function renderVopts() {
+  const lab = (id, txt, on, cls) => `<label class="t"><input type="checkbox" id="${id}" ${cls ? `class="${cls}"` : ""} ${on ? "checked" : ""}> ${txt}</label>`;
+  const open = $("vopts").querySelector("details") && $("vopts").querySelector("details").open;
+  $("vopts").innerHTML = `<details class="dd" ${open ? "open" : ""}><summary>Hiển thị ▾</summary><div class="ddbox">` +
+    lab("ovb", "Thân", vis.body) +
+    DATA.props.map((x, i) => `<label class="t"><input type="checkbox" class="ovp" data-i="${i}" ${vis.props[i] ? "checked" : ""}> ${x.name.replace("EN_M11_Boss_Gaygor_", "Prop ")}</label>`).join("") +
+    lab("owire", "Lưới mesh", showWire) +
+    (step === 2 ? lab("oskel", "Xương", showSkel) + lab("ofing", "Khớp ngón", showFing) : "") +
+    (step >= 2 ? lab("oref", "Xương khách (đối chiếu)", showRef) : "") + `</div></details>`;
+  $("ovb").onchange = e => { vis.body = e.target.checked; syncScene(); };
+  document.querySelectorAll(".ovp").forEach(c => c.onchange = () => { vis.props[+c.dataset.i] = c.checked; syncScene(); });
+  const w = $("owire"); w.onchange = () => { showWire = w.checked; syncScene(); };
+  const s = $("oskel"); if (s) s.onchange = () => { showSkel = s.checked; syncScene(); };
+  const f = $("ofing"); if (f) f.onchange = () => { showFing = f.checked; if (!showFing) { [...S].filter(isFinger).forEach(k => S.delete(k)); sel = [...S].pop() || null; } syncScene(); renderPanel(); };
+  const r = $("oref"); if (r) r.onchange = () => { showRef = r.checked; syncScene(); if (step === 3) renderPanel(); };
+}
+function showSkinFor() {
+  if (!SK) return;
+  if (step === 4) { strainOn = false; poseSkin(); paintSkin(); }
+  if (step === 5) { poseSkin(); paintSkin(); }
+}
+function go(n) { step = n; if (n < 4) jointSel = null; showSkinFor(); if (n !== 2) { sel = null; S.clear(); } syncScene(); renderAll(); }
+function renderAll() { renderSteps(); renderVopts(); renderPanel(); }
+
+window.addEventListener("keydown", e => {
+  if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+    const z = e.key.toLowerCase();
+    if (z === "z" && !e.shiftKey) { e.preventDefault(); undo(); } else if ((z === "z" && e.shiftKey) || z === "y") { e.preventDefault(); redo(); }
+    return;
+  }
+  if (e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === "a") frameView(null);
+  if (step === 4) { if (k === "q") setSkTool("pick"); if (k === "b") setSkTool("brush"); if (k === "i") setSkTool("island"); }
+  if (step !== 2) return;
+  if (k === "q") setMode("select"); if (k === "w") setMode("translate"); if (k === "e") setMode("rotate"); if (k === "r") setMode("scale");
+  if (k === "f") frameView([...S]); if (k === "escape") pick(null);
+});
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => syncScene());
+// ================================================================ M2: skin tự động + thử khớp
+const NV = bodyV.length, TRI = DATA.body.tris, NT = TRI.length / 3;
+const REFW = (() => { const r = Array.from({ length: NV }, () => ({})); for (const b in DATA.refW) { const [ix, wt] = DATA.refW[b]; ix.forEach((v, i) => r[v][b] = wt[i]); } return r; })();
+let SK = null, skinBusy = false, skinStale = false, skinMs = 0;
+let skinView = "dom", skinBone = null, refShown = "tool";
+const noSkin = n => n === "root" || n === "Weapon" || /End_/.test(n) || /Finger3_/.test(n);
+const mergeName = n => n.replace(/Twist\d+/, "");          // trọng số twist gộp về khớp đầu đoạn khi so với rig khách
+
+// ---- skin mesh (màu theo đỉnh)
+const skinGeo = new THREE.BufferGeometry();
+skinGeo.setAttribute("position", new THREE.Float32BufferAttribute(DATA.body.verts.slice(), 3));
+skinGeo.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(NV * 3).fill(0.6), 3));
+skinGeo.setIndex(DATA.body.tris); skinGeo.computeVertexNormals();
+const skinMesh = new THREE.Mesh(skinGeo, new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }));
+skinMesh.visible = false; scene.add(skinMesh);
+const skinWire = new THREE.LineSegments(new THREE.WireframeGeometry(skinGeo), new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: .25 }));
+skinWire.visible = false; scene.add(skinWire);
+
+// ---- đoạn xương dùng cho skin (xương twist chia nhỏ đoạn chi)
+function boneSegments(B) {
+  const byN = {}, kids = {}; B.forEach(b => byN[b.name] = b);
+  B.forEach(b => { if (b.parent) (kids[b.parent] = kids[b.parent] || []).push(b); });
+  const segs = [], lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  for (const b of B) {
+    if (noSkin(b.name) || b.twist) continue;
+    const ks = (kids[b.name] || []).filter(k => !k.twist && k.name !== "Weapon");
+    const end = ks.length ? ks[0].pos : b.pos.slice();   // xương lá (Prop_M, váy): điểm seed, không kéo dài
+    const a0 = /^Hip_/.test(b.name) ? lerp(b.pos, end, 0.35) : /^Scapula_/.test(b.name) ? lerp(b.pos, end, 0.4) : b.pos;   // phần trên đùi thuộc vùng xương hông
+    const st = b.name.replace(/_[RL]$/, ""), sd = b.name.slice(-1), n = TW_SEG[st] ? TW[st] : 0;
+    if (!n) { segs.push({ name: b.name, a: a0, b: end, bias: ks.length ? 1 : (/Finger|End_/.test(b.name) ? 1 : 2.5) }); continue; }
+    segs.push({ name: b.name, a: a0, b: lerp(a0, end, 1 / (n + 1)) });
+    for (let i = 1; i <= n; i++) segs.push({ name: st + "Twist" + i + "_" + sd, a: lerp(a0, end, i / (n + 1)), b: lerp(a0, end, (i + 1) / (n + 1)) });
+  }
+  return segs;
+}
+function distSeg(p, a, b) {
+  const ab0 = b[0] - a[0], ab1 = b[1] - a[1], ab2 = b[2] - a[2], l2 = ab0 * ab0 + ab1 * ab1 + ab2 * ab2;
+  let t = l2 ? ((p[0] - a[0]) * ab0 + (p[1] - a[1]) * ab1 + (p[2] - a[2]) * ab2) / l2 : 0; t = Math.max(0, Math.min(1, t));
+  return Math.hypot(p[0] - a[0] - t * ab0, p[1] - a[1] - t * ab1, p[2] - a[2] - t * ab2);
+}
+
+// ---- cotan Laplacian + diện tích (một lần)
+const LAP = (() => {
+  const wm = new Map(), area = new Float64Array(NV);
+  const add = (i, j, w) => { const a = Math.min(i, j), b = Math.max(i, j), k = a * NV + b; wm.set(k, (wm.get(k) || 0) + w); };
+  for (let t = 0; t < NT; t++) {
+    const id = [TRI[3 * t], TRI[3 * t + 1], TRI[3 * t + 2]], P = id.map(i => bodyV[i]);
+    for (let c = 0; c < 3; c++) {
+      const v = P[c], p = P[(c + 1) % 3], q = P[(c + 2) % 3], u = [p[0] - v[0], p[1] - v[1], p[2] - v[2]], w = [q[0] - v[0], q[1] - v[1], q[2] - v[2]];
+      const cr = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]], cl = Math.hypot(...cr) || 1e-9;
+      add(id[(c + 1) % 3], id[(c + 2) % 3], 0.5 * (u[0] * w[0] + u[1] * w[1] + u[2] * w[2]) / cl);
+      if (c === 0) { const A = cl / 2; id.forEach(i => area[i] += A / 3); }
+    }
+  }
+  const deg = new Int32Array(NV + 1); for (const k of wm.keys()) { const i = Math.floor(k / NV), j = k % NV; deg[i + 1]++; deg[j + 1]++; }
+  for (let i = 0; i < NV; i++) deg[i + 1] += deg[i];
+  const fill = deg.slice(0, NV), nb = new Int32Array(deg[NV]), nw = new Float64Array(deg[NV]);
+  for (const [k, w0] of wm) { const i = Math.floor(k / NV), j = k % NV, w = Math.max(w0, 1e-3); nb[fill[i]] = j; nw[fill[i]++] = w; nb[fill[j]] = i; nw[fill[j]++] = w; }
+  const edges = []; for (const k of wm.keys()) edges.push([Math.floor(k / NV), k % NV]);
+  return { start: deg, nb, nw, area, edges };
+})();
+const EDGE_L0 = LAP.edges.map(([i, j]) => dist(bodyV[i], bodyV[j]) || 1e-6);
+
+async function computeSkin() {
+  if (skinBusy) return; skinBusy = true; const t0 = performance.now(); renderPanel();
+  await new Promise(r => setTimeout(r, 20));
+  const B = buildSkeleton(LM), segs = boneSegments(B), nb = segs.length, C = 1.0;
+  const dmin = new Float64Array(NV), near = new Int16Array(NV);
+  for (let i = 0; i < NV; i++) { let best = 1e9, bj = 0; for (let j = 0; j < nb; j++) { const d = distSeg(bodyV[i], segs[j].a, segs[j].b), db = d * (segs[j].bias || 1); if (db < best) { best = db; bj = j; } } dmin[i] = Math.max(distSeg(bodyV[i], segs[bj].a, segs[bj].b), 0.5); near[i] = bj; }
+  const AH = new Float64Array(NV); for (let i = 0; i < NV; i++) AH[i] = LAP.area[i] / (dmin[i] * dmin[i]) * C;
+  const Wt = new Float32Array(nb * NV), w = new Float64Array(NV), p = new Float64Array(NV);
+  const { start, nb: nbr, nw } = LAP;
+  for (let j = 0; j < nb; j++) {
+    for (let i = 0; i < NV; i++) { p[i] = near[i] === j ? 1 : 0; w[i] = p[i]; }
+    for (let it = 0; it < 200; it++) {
+      let mx = 0;
+      for (let i = 0; i < NV; i++) {
+        let sw = 0, sx = 0; for (let e = start[i]; e < start[i + 1]; e++) { sw += nw[e]; sx += nw[e] * w[nbr[e]]; }
+        const nv = (AH[i] * p[i] + sx) / (AH[i] + sw), d = Math.abs(nv - w[i]); if (d > mx) mx = d; w[i] = nv;
+      }
+      if (mx < 1e-4) break;
+    }
+    for (let i = 0; i < NV; i++) Wt[j * NV + i] = w[i];
+    if (j % 8 === 7) await new Promise(r => setTimeout(r, 0));
+  }
+  const names = segs.map(s => s.name), I = new Uint16Array(NV * 4), W = new Float32Array(NV * 4);
+  for (let i = 0; i < NV; i++) {
+    const a = []; for (let j = 0; j < nb; j++) a.push([j, Wt[j * NV + i]]);
+    a.sort((x, y) => y[1] - x[1]); const top = a.slice(0, 4).filter(x => x[1] > 0.01), s = top.reduce((q, x) => q + x[1], 0) || 1;
+    top.forEach((x, k) => { I[i * 4 + k] = x[0]; W[i * 4 + k] = x[1] / s; });
+  }
+  SK = { names, idx: Object.fromEntries(names.map((n, i) => [n, i])), I, W, full: null, nb, LMsnap: JSON.stringify({ LM, TW }) };
+  SK.full = denseFrom(I, W, nb); skinUndo = []; skinRedo = []; skinStale = false; skinBusy = false; skinMs = performance.now() - t0; if (!skinBone) skinBone = names[0]; setTimeout(scheduleSkinSave, 0);
+  paintSkin(); syncScene(); renderPanel();
+}
+function vw(i) { const o = {}; for (let k = 0; k < 4; k++) { const w = SK.W[i * 4 + k]; if (w > 0) o[SK.names[SK.I[i * 4 + k]]] = w; } return o; }
+function vwMerged(i) { const o = {}; const r = vw(i); for (const n in r) o[mergeName(n)] = (o[mergeName(n)] || 0) + r[n]; return o; }
+function skinStats() {
+  let same = 0, l1 = 0, over = 0, infl = 0, bone = {}, n = 0;
+  for (let i = 0; i < NV; i++) {
+    const a = vwMerged(i), r = REFW[i]; let da = "", dw = -1, dr = "", drw = -1;
+    for (const k in a) if (a[k] > dw) { dw = a[k]; da = k; } for (const k in r) if (r[k] > drw) { drw = r[k]; dr = k; }
+    if (da === dr) same++;
+    let s = 0; const ks = new Set([...Object.keys(a), ...Object.keys(r)]); ks.forEach(k => s += Math.abs((a[k] || 0) - (r[k] || 0)));
+    l1 += s / 2; (bone[dr] = bone[dr] || []).push(s / 2); infl += Object.keys(vw(i)).length; n++;
+  }
+  const worst = Object.entries(bone).map(([k, v]) => [k, v.reduce((a, b) => a + b, 0) / v.length, v.length]).filter(x => x[2] >= 8).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  return { same: same / n, l1: l1 / n, infl: infl / n, worst };
+}
+
+// ---- màu
+const RAMP = [[0, [0.10, 0.17, 0.42]], [0.25, [0.16, 0.5, 0.72]], [0.5, [0.24, 0.7, 0.44]], [0.75, [0.91, 0.79, 0.23]], [1, [0.84, 0.2, 0.17]]];
+function ramp(t) { t = Math.max(0, Math.min(1, t)); for (let k = 1; k < RAMP.length; k++) if (t <= RAMP[k][0]) { const [t0, c0] = RAMP[k - 1], [t1, c1] = RAMP[k], f = (t - t0) / (t1 - t0); return c0.map((v, i) => v + (c1[i] - v) * f); } return RAMP[4][1]; }
+const hueCol = (n, nb) => { const c = new THREE.Color(); c.setHSL(((n * 137.5) % 360) / 360, 0.62, 0.55); return [c.r, c.g, c.b]; };
+let strainOn = false, STR = null;
+function paintSkin() {
+  if (!SK) return; const col = skinGeo.attributes.color.array;
+  const bone = skinBone, bm = n => n === bone;
+  for (let i = 0; i < NV; i++) {
+    let c;
+    if (strainOn && STR) c = ramp(STR[i] / 0.4);
+    else if (step === 5) c = [0.62, 0.66, 0.74];
+    else if (skinView === "dom") { const r = vw(i); let bn = "", bw = -1; for (const k in r) if (r[k] > bw) { bw = r[k]; bn = k; } c = hueCol(SK.idx[bn] || 0); }
+    else {
+      const a = vwMerged(i), r = REFW[i], key = mergeName(bone), tw = bone !== key ? 0 : 1;
+      const wt = skinView === "ref" ? (r[key] || 0) : skinView === "diff" ? Math.abs((a[key] || 0) - (r[key] || 0)) : (vw(i)[bone] || 0);
+      c = ramp(skinView === "diff" ? wt * 2 : wt);
+    }
+    col[i * 3] = c[0]; col[i * 3 + 1] = c[1]; col[i * 3 + 2] = c[2];
+  }
+  skinGeo.attributes.color.needsUpdate = true;
+}
+
+// ---- FK + LBS để thử khớp
+const POSE = {}, poseOpt = { twist: true };
+const ROT = (r, a, b) => new THREE.Matrix4().makeRotationX(r * Math.PI / 180).multiply(new THREE.Matrix4().makeRotationY(a * Math.PI / 180)).multiply(new THREE.Matrix4().makeRotationZ(b * Math.PI / 180));
+function boneFrames(B) {
+  const byN = {}, kids = {}; B.forEach(b => byN[b.name] = b); B.forEach(b => { if (b.parent) (kids[b.parent] = kids[b.parent] || []).push(b); });
+  const F = {};
+  for (const b of B) {
+    let d;
+    if (b.twist) { const [s0, s1] = b.twist.segment; d = byN[s1].pos.map((v, i) => v - byN[s0].pos[i]); }
+    else { const ks = (kids[b.name] || []).filter(k => !k.twist && k.name !== "Weapon"); d = ks.length ? ks[0].pos.map((v, i) => v - b.pos[i]) : (b.parent && byN[b.parent] ? b.pos.map((v, i) => v - byN[b.parent].pos[i]) : [0, 1, 0]); }
+    const x = new THREE.Vector3(...d).normalize(); if (x.lengthSq() < 1e-6) x.set(0, 1, 0);
+    const ref = Math.abs(x.y) > 0.9 ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 1, 0);
+    const z = new THREE.Vector3().crossVectors(x, ref).normalize(), y = new THREE.Vector3().crossVectors(z, x);
+    F[b.name] = new THREE.Matrix4().makeBasis(x, y, z);
+  }
+  return F;
+}
+function poseMats(B) {
+  const F = boneFrames(B), W = {};
+  for (const b of B) {
+    const P = POSE[b.name] || [0, 0, 0]; let r = P[0];
+    if (b.twist && poseOpt.twist) r += b.twist.factor * ((POSE[b.twist.source] || [0, 0, 0])[0]);
+    const p = new THREE.Vector3(...b.pos), Fm = F[b.name], R = ROT(r, P[1], P[2]);
+    const loc = new THREE.Matrix4().makeTranslation(p.x, p.y, p.z).multiply(Fm).multiply(R).multiply(Fm.clone().invert()).multiply(new THREE.Matrix4().makeTranslation(-p.x, -p.y, -p.z));
+    W[b.name] = b.parent && W[b.parent] ? W[b.parent].clone().multiply(loc) : loc;
+  }
+  return W;
+}
+function posedBones(B) { const W = poseMats(B), o = {}; B.forEach(b => o[b.name] = new THREE.Vector3(...b.pos).applyMatrix4(W[b.name]).toArray()); return o; }
+function poseSkin() {
+  if (!SK) return null;
+  const B = buildSkeleton(LM), W = poseMats(B), pos = skinGeo.attributes.position.array, v = new THREE.Vector3(), o = new THREE.Vector3();
+  const M = SK.names.map(n => W[n]);
+  for (let i = 0; i < NV; i++) {
+    o.set(0, 0, 0);
+    for (let k = 0; k < 4; k++) { const w = SK.W[i * 4 + k]; if (w <= 0) continue; v.set(...bodyV[i]).applyMatrix4(M[SK.I[i * 4 + k]]); o.addScaledVector(v, w); }
+    pos[i * 3] = o.x; pos[i * 3 + 1] = o.y; pos[i * 3 + 2] = o.z;
+  }
+  skinGeo.attributes.position.needsUpdate = true; skinGeo.computeVertexNormals(); skinGeo.computeBoundingSphere(); skinGeo.computeBoundingBox(); skinWire.geometry.dispose(); skinWire.geometry = new THREE.WireframeGeometry(skinGeo);
+  const sum = new Float64Array(NV), cnt = new Int32Array(NV);
+  LAP.edges.forEach(([i, j], e) => { const l = Math.hypot(pos[3 * i] - pos[3 * j], pos[3 * i + 1] - pos[3 * j + 1], pos[3 * i + 2] - pos[3 * j + 2]), s = Math.abs(l / EDGE_L0[e] - 1); sum[i] += s; sum[j] += s; cnt[i]++; cnt[j]++; });
+  STR = new Float32Array(NV); for (let i = 0; i < NV; i++) STR[i] = cnt[i] ? sum[i] / cnt[i] : 0;
+  return STR;
+}
+function strainSummary() {
+  if (!STR) return null; let bad = 0; const by = {};
+  for (let i = 0; i < NV; i++) if (STR[i] > 0.25) { bad++; const r = vwMerged(i); let bn = "", bw = -1; for (const k in r) if (r[k] > bw) { bw = r[k]; bn = k; } by[bn] = (by[bn] || 0) + 1; }
+  return { pct: bad / NV * 100, worst: Object.entries(by).sort((a, b) => b[1] - a[1]).slice(0, 4) };
+}
+const PRESETS = {
+  "Giơ tay lên": { Shoulder_R: [0, 0, 100], Shoulder_L: [0, 0, 100] },
+  "Hạ tay": { Shoulder_R: [0, 0, -80], Shoulder_L: [0, 0, -80] },
+  "Gập khuỷu": { Elbow_R: [0, 0, -100], Elbow_L: [0, 0, -100] },
+  "Xoay cẳng tay": { Wrist_R: [120, 0, 0], Wrist_L: [120, 0, 0] },
+  "Xoay cánh tay": { Shoulder_R: [90, 0, 0], Shoulder_L: [90, 0, 0] },
+  "Nắm tay": Object.fromEntries(["R", "L"].flatMap(s => FINGERS.flatMap(f => [1, 2].map(i => [f + "Finger" + i + "_" + s, [0, 0, -70]])))),
+  "Gập hông": { Hip_R: [0, 0, 80], Hip_L: [0, 0, 80] },
+  "Ngồi xổm": { Hip_R: [0, 0, 80], Hip_L: [0, 0, 80], Knee_R: [0, 0, -120], Knee_L: [0, 0, -120], Ankle_R: [0, 0, 40], Ankle_L: [0, 0, 40] },
+  "Xoay đùi": { Hip_R: [60, 0, 0], Hip_L: [60, 0, 0] },
+  "Vặn thân": { Spine1_M: [35, 0, 0], Chest_M: [35, 0, 0] },
+  "Gập thân": { Spine1_M: [0, 0, 40], Chest_M: [0, 0, 30] },
+  "Cúi cổ": { Neck_M: [0, 0, 35] },
+};
+function setPose(o) { for (const k in POSE) delete POSE[k]; for (const k in o) POSE[k] = o[k].slice(); applyPose(); }
+function applyPose() { if (!SK) return; poseSkin(); if (strainOn) paintSkin(); syncScene(); }
+function batteryRun() {
+  const keep = JSON.stringify(POSE), kt = poseOpt.twist, rows = [];
+  for (const [name, p] of Object.entries(PRESETS)) {
+    for (const tw of (name === "Xoay cẳng tay" || name === "Xoay cánh tay" || name === "Xoay đùi") ? [true, false] : [true]) {
+      poseOpt.twist = tw; for (const k in POSE) delete POSE[k]; for (const k in p) POSE[k] = p[k].slice(); poseSkin(); const s = strainSummary();
+      rows.push([name + (tw ? "" : " (twist tắt)"), s.pct, s.worst.map(x => x[0]).join(", ")]);
+    }
+  }
+  poseOpt.twist = kt; for (const k in POSE) delete POSE[k]; Object.assign(POSE, JSON.parse(keep)); poseSkin(); return rows;
+}
+let battery = null;
+
+// ---- bảng điều khiển bước 4, 5
+function poseSection() {
+  const pres = ["Giơ tay lên", "Hạ tay", "Gập khuỷu", "Xoay cẳng tay", "Gập hông", "Ngồi xổm"].map(n => `<button data-spre="${n}">${n}</button>`).join("");
+  return more("m4pose", "Xoay thử để lộ phần khuất", `<div class="chips">${pres}<button id="spReset">Về pose gốc</button></div>
+    <div class="sub">Click một joint trên viewport rồi kéo thanh xoay ở góc phải.</div>
+    <div class="row"><select id="spBone" aria-label="Chọn xương xoay">${buildSkeleton(LM).filter(b => !b.twist && b.name !== "root").map(b => `<option ${b.name === poseBone ? "selected" : ""}>${b.name}</option>`).join("")}</select><button id="spClr">Về 0</button>
+    <label class="t"><input type="checkbox" id="spTw" ${poseOpt.twist ? "checked" : ""}> Dẫn động twist</label></div>`);
+}
+function wirePoseSection() {
+  const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
+  document.querySelectorAll("[data-spre]").forEach(b => b.addEventListener("click", () => { setPose(PRESETS[b.dataset.spre]); renderPanel(); }));
+  on("spReset", () => { setPose({}); renderPanel(); });
+  const bs = $("spBone"); if (!bs) return;
+  bs.onchange = e => { poseBone = e.target.value; jointSel = poseBone; renderPanel(); };
+  on("spClr", () => { delete POSE[poseBone]; applyPose(); renderPanel(); });
+  $("spTw").onchange = e => { poseOpt.twist = e.target.checked; applyPose(); renderPanel(); };
+}
+function setSkTool(t) { skTool = t; if (t === 'island' && skinView === 'dom') skinView = 'one'; if (t === "brush" && skinView === "dom") skinView = "one"; if (t !== "brush") ring.visible = false; paintSkin(); renderPanel(); }
+function boneList() { return SK ? SK.names.slice() : []; }
+function renderSkinPanel(p) {
+  if (!SK) {
+    p.innerHTML = `<h2>Skin</h2><div class="sub">Tính trọng số tự động từ bộ xương, sau đó tô chỉnh.</div>
+      <div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính skin"}</button></div>${gateHtml(4)}`;
+    const b = $("doSkin"); if (b) b.onclick = computeSkin; return;
+  }
+  const stale = SK.LMsnap !== JSON.stringify({ LM, TW });
+  const tools = [["pick", "Chọn joint (Q)"], ["brush", "Cọ tô (B)"], ["island", "Gán khối rời (I)"]].map(([t, n]) => `<button data-skt="${t}" ${skTool === t ? 'class="pri"' : ""}>${n}</button>`).join("");
+  p.innerHTML = `<h2>Skin</h2>
+    ${stale ? `<div class="big warn">! Khớp hoặc twist đã đổi</div><div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính lại skin"}</button></div>` : ""}
+    <div class="row">${tools}</div>
+    ${skTool === "island" ? '<div class="sub">Chọn joint, rồi click một khối rời của mesh để gán cả khối 100% cho joint đó.</div>' : ""}
+    ${skTool === "brush" ? `<div class="row"><select id="brMode" aria-label="Kiểu cọ"><option value="add" ${brush.mode === "add" ? "selected" : ""}>Cộng trọng số</option><option value="sub" ${brush.mode === "sub" ? "selected" : ""}>Trừ trọng số</option><option value="smooth" ${brush.mode === "smooth" ? "selected" : ""}>Làm mượt</option></select>
+      <label class="t"><input type="checkbox" id="brMir" ${brush.mirror ? "checked" : ""}> Đối xứng</label></div>
+      <div class="row" style="flex-wrap:nowrap"><label for="brR" style="width:70px;font-size:12px">Bán kính</label><input id="brR" type="range" min="2" max="40" step="1" value="${brush.r}" style="flex:1"><span id="brRv" class="sub" style="width:44px;text-align:right">${brush.r} cm</span></div>
+      <div class="row" style="flex-wrap:nowrap"><label for="brS" style="width:70px;font-size:12px">Cường độ</label><input id="brS" type="range" min="0.05" max="1" step="0.05" value="${brush.str}" style="flex:1"><span id="brSv" class="sub" style="width:44px;text-align:right">${brush.str}</span></div>` : ""}
+    <h2>Xem trọng số</h2>
+    <div class="row"><select id="skView" aria-label="Kiểu xem"><option value="dom">Xương chính</option><option value="one">Xương đang chọn</option><option value="ref">Skin khách</option><option value="diff">Khác skin khách</option></select></div>
+    <div class="row"><button id="skPrev" aria-label="Xương trước">◀</button><select id="skBone" aria-label="Xương đang chọn">${boneList().map(n => `<option ${n === skinBone ? "selected" : ""}>${n}</option>`).join("")}</select><button id="skNext" aria-label="Xương sau">▶</button></div>
+    <div class="sub">Click một joint trên viewport để chọn nó.</div>
+    ${poseSection()}
+    ${more("m4stats", "Thống kê và xuất", (() => { const q = skinStats(); return `<div class="kv"><span>Xương có skin</span><span>${SK.names.length}</span><span>Xương / đỉnh</span><span>${fix(q.infl, 2)}</span><span>Trùng skin khách</span><span>${fix(q.same * 100)}%</span><span>Lệch TB</span><span>${fix(q.l1 * 100)}%</span></div>
+      <table><thead><tr><th>Lệch nhiều nhất</th><th>lệch</th><th>đỉnh</th></tr></thead><tbody>${q.worst.map(w => `<tr><td>${w[0]}</td><td>${fix(w[1] * 100)}%</td><td>${w[2]}</td></tr>`).join("")}</tbody></table>
+      <div class="row"><button id="doSkin2">Tính lại skin</button><button id="expW">Xuất weights.json</button></div>`; })())}
+    ${gateHtml(4)}`;
+  const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
+  on("doSkin", computeSkin); on("doSkin2", computeSkin); on("expW", exportWeights);
+  const v = $("skView"); if (v) { v.value = skinView; v.onchange = () => { skinView = v.value; paintSkin(); }; }
+  const b = $("skBone"); if (b) b.onchange = () => { skinBone = b.value; paintSkin(); };
+  const step1 = d => { const L = boneList(), i = (L.indexOf(skinBone) + d + L.length) % L.length; skinBone = L[i]; if (skinView === "dom") skinView = "one"; renderPanel(); paintSkin(); };
+  on("skPrev", () => step1(-1)); on("skNext", () => step1(1));
+  document.querySelectorAll("[data-skt]").forEach(x => x.addEventListener("click", () => setSkTool(x.dataset.skt)));
+  const bm = $("brMode"); if (bm) bm.onchange = () => brush.mode = bm.value;
+  const bx = $("brMir"); if (bx) bx.onchange = () => brush.mirror = bx.checked;
+  const br = $("brR"); if (br) br.oninput = () => { brush.r = +br.value; $("brRv").textContent = brush.r + " cm"; };
+  const bs = $("brS"); if (bs) bs.oninput = () => { brush.str = +bs.value; $("brSv").textContent = brush.str; };
+  wirePoseSection();
+}
+async function exportWeights() {
+  if (!SK) return;
+  const out = { bones: SK.names, influences: 4, vertices: NV, indices: Array.from(SK.I), weights: Array.from(SK.W, v => +v.toFixed(4)) };
+  const text = JSON.stringify(out);
+  try { const d = await window.claude.use("downloads"); if (d) { await d.save({ filename: "Gaygor_weights_m2.json", data: text }); saveMsg = "Đã xuất weights.json."; return renderPanelLight(); } } catch (e) {}
+  try { await navigator.clipboard.writeText(text); saveMsg = "Đã chép weights.json vào clipboard."; } catch (e) { saveMsg = "Không xuất được weights.json."; }
+  renderPanelLight();
+}
+let poseBone = "Elbow_R";
+function renderPosePanel(p) {
+  if (!SK) { p.innerHTML = '<h2>Thử khớp</h2><div class="sub">Cần tính skin trước.</div><div class="row"><button class="pri" id="doSkin2">Tính skin</button></div>' + gateHtml(5); const b = $("doSkin2"); if (b) b.onclick = async () => { await computeSkin(); }; return; }
+  const sm = strainSummary();
+  const pr = Object.keys(PRESETS).map(n => `<button data-pre="${n}">${n}</button>`).join("");
+  const bl = (battery || []).map(r => `<tr><td>${r[0]}</td><td class="${r[1] > 5 ? "err-hi" : r[1] > 1.5 ? "err-mid" : ""}">${fix(r[1])}%</td><td>${r[2]}</td></tr>`).join("");
+  const pct = sm ? sm.pct : 0;
+  p.innerHTML = `<h2>Pose thử</h2><div class="chips">${pr}<button id="poseReset">Về pose gốc</button></div>
+    <div class="sub">Click một joint trên viewport rồi kéo thanh xoay ở góc phải.</div>
+    <div class="row"><label class="t"><input type="checkbox" id="pTw" ${poseOpt.twist ? "checked" : ""}> Dẫn động twist</label><label class="t"><input type="checkbox" id="pStr" ${strainOn ? "checked" : ""}> Tô biến dạng</label></div>
+    <div class="big ${pct > 5 ? "warn" : "ok"}">Co/căng quá 25%: ${fix(pct)}%</div>
+    ${sm && sm.worst.length && pct > 1 ? `<div class="sub">Vùng xấu: ${sm.worst.map(w => w[0]).join(", ")}</div>` : ""}
+    ${more("m5bat", "Bộ pose căng", `<div class="row"><button id="pBat">Chạy bộ pose căng</button></div>${bl ? `<table><thead><tr><th>Pose</th><th>quá 25%</th><th>vùng xấu</th></tr></thead><tbody>${bl}</tbody></table>` : ""}`)}
+    ${more("m5bone", "Chọn xương từ danh sách", `<div class="row"><select id="pBone" aria-label="Chọn xương xoay">${buildSkeleton(LM).filter(b => !b.twist && b.name !== "root").map(b => `<option ${b.name === poseBone ? "selected" : ""}>${b.name}</option>`).join("")}</select><button id="pClr">Về 0</button></div>`)}
+    ${gateHtml(5)}`;
+  const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
+  document.querySelectorAll("[data-pre]").forEach(b => b.addEventListener("click", () => { setPose(PRESETS[b.dataset.pre]); renderPanel(); }));
+  on("poseReset", () => { setPose({}); renderPanel(); });
+  $("pBone").onchange = e => { poseBone = e.target.value; jointSel = poseBone; renderPanel(); };
+  on("pClr", () => { delete POSE[poseBone]; applyPose(); renderPanel(); });
+  $("pTw").onchange = e => { poseOpt.twist = e.target.checked; applyPose(); renderPanel(); };
+  $("pStr").onchange = e => { strainOn = e.target.checked; paintSkin(); };
+  on("pBat", () => { battery = batteryRun(); OPEN.m5bat = true; renderPanel(); });
+}
+
+// ================================================================ M3 sớm: chọn joint trong viewport + cọ tô skin
+let skTool = "pick", brush = { mode: "add", r: 10, str: 0.35, mirror: true };
+let skinUndo = [], skinRedo = [], stroke = null, painting = false, pickDown = null, lastDab = 0, mirrorIdx = null;
+const selPt = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 13, sizeAttenuation: false, depthTest: false, color: 0xffffff }));
+selPt.renderOrder = 12; selPt.visible = false; scene.add(selPt);
+const ringPts = []; for (let k = 0; k < 64; k++) { const a = k / 64 * Math.PI * 2; ringPts.push(new THREE.Vector3(Math.cos(a), Math.sin(a), 0)); }
+const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts), ring = new THREE.Group();   // vòng trắng + vòng đen mỏng bên ngoài để thấy trên mọi nền
+const ringIn = new THREE.LineLoop(ringGeo, new THREE.LineBasicMaterial({ color: 0xffffff, depthTest: false })), ringOut = new THREE.LineLoop(ringGeo, new THREE.LineBasicMaterial({ color: 0x000000, depthTest: false }));
+ringOut.scale.setScalar(1.05); ringIn.renderOrder = 11; ringOut.renderOrder = 11; ring.add(ringOut, ringIn);
+ring.visible = false; ring.renderOrder = 11; scene.add(ring);
+
+// ---- island = khối liên thông của mesh
+const COMP = (() => {
+  const par = Array.from({ length: NV }, (_, i) => i), f = a => { while (par[a] !== a) { par[a] = par[par[a]]; a = par[a]; } return a; };
+  for (let t = 0; t < NT; t++) { const a = f(TRI[3 * t]), b = f(TRI[3 * t + 1]), c = f(TRI[3 * t + 2]); par[b] = a; par[c] = a; }
+  const id = new Int32Array(NV), roots = new Map(), size = [];
+  for (let i = 0; i < NV; i++) { const r = f(i); if (!roots.has(r)) { roots.set(r, size.length); size.push(0); } id[i] = roots.get(r); size[id[i]]++; }
+  return { id, size };
+})();
+function assignIsland(e) {
+  if (!SK || !skinBone || SK.idx[skinBone] === undefined) { saveMsg = "Chọn một joint có skin trước (click joint ở chế độ Chọn joint)."; renderPanelLight(); return; }
+  const r = cv.getBoundingClientRect();
+  ray.setFromCamera({ x: ((e.clientX - r.left) / r.width) * 2 - 1, y: -((e.clientY - r.top) / r.height) * 2 + 1 }, cam);
+  const hits = ray.intersectObject(skinMesh, false).filter(x => COMP.size[COMP.id[TRI[x.faceIndex * 3]]] < NV * 0.3);   // bỏ qua thân chính, lấy khối rời gần nhất dưới con trỏ
+  if (!hits.length) { saveMsg = "Không có khối rời dưới con trỏ (thân chính không gán nguyên khối, dùng cọ)."; renderPanelLight(); return; }
+  const h = hits[0], c = COMP.id[TRI[h.faceIndex * 3]], j = SK.idx[skinBone], m = new Map(), v = new Float64Array(SK.nb); v[j] = 1;
+  for (let i = 0; i < NV; i++) if (COMP.id[i] === c) { m.set(i, [Array.from(SK.I.slice(i * 4, i * 4 + 4)), Array.from(SK.W.slice(i * 4, i * 4 + 4))]); setVec(i, Float64Array.from(v)); }
+  skinUndo.push(m); skinRedo = []; dirtySkin = true; paintSkin();
+  saveMsg = "Đã gán khối rời " + m.size + " đỉnh cho " + skinBone + " 100%."; scheduleSkinSave();
+}
+function denseFrom(I, W, nb) { const f = new Float32Array(nb * NV); for (let i = 0; i < NV; i++) for (let k = 0; k < 4; k++) if (W[i * 4 + k] > 0) f[I[i * 4 + k] * NV + i] = W[i * 4 + k]; return f; }
+function updateSelPt() {
+  const name = step === 4 ? skinBone : step === 5 ? poseBone : null;
+  if (!name || step < 4) { selPt.visible = false; return; }
+  const B = buildSkeleton(LM), b = B.find(x => x.name === name); if (!b) { selPt.visible = false; return; }
+  const pos = step >= 4 && SK ? posedBones(B)[name] : b.pos;
+  selPt.geometry.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); selPt.material.color.set(css("--accent")); selPt.visible = true;
+}
+// ---- phép tô trên ma trận dày SK.full
+function getVec(i) { const v = new Float64Array(SK.nb); for (let j = 0; j < SK.nb; j++) v[j] = SK.full[j * NV + i]; return v; }
+function setVec(i, v) {
+  const idx = [...v.keys()].sort((a, b) => v[b] - v[a]).slice(0, 4).filter(j => v[j] > 0.005), s = idx.reduce((q, j) => q + v[j], 0) || 1;
+  for (let j = 0; j < SK.nb; j++) SK.full[j * NV + i] = 0;
+  for (let k = 0; k < 4; k++) { if (k < idx.length) { const j = idx[k]; SK.I[i * 4 + k] = j; SK.W[i * 4 + k] = v[j] / s; SK.full[j * NV + i] = v[j] / s; } else { SK.I[i * 4 + k] = 0; SK.W[i * 4 + k] = 0; } }
+}
+function dab(i, j, a, mode) {
+  const v = getVec(i), wj = v[j]; let nw;
+  if (mode === "add") nw = Math.min(1, wj + a);
+  else if (mode === "sub") nw = Math.max(0, wj - a);
+  else { let sw = 0, sx = 0; for (let e = LAP.start[i]; e < LAP.start[i + 1]; e++) { sw += LAP.nw[e]; sx += LAP.nw[e] * SK.full[j * NV + LAP.nb[e]]; } nw = wj + (sx / (sw || 1) - wj) * Math.min(1, a * 2); }
+  let so = 0; for (let k = 0; k < v.length; k++) if (k !== j) so += v[k];
+  if (so > 1e-9) { const f = (1 - nw) / so; for (let k = 0; k < v.length; k++) if (k !== j) v[k] *= f; v[j] = nw; } else v[j] = mode === "sub" ? wj : 1;
+  setVec(i, v);
+}
+const mirName = n => n.endsWith("_R") ? n.slice(0, -1) + "L" : n.endsWith("_L") ? n.slice(0, -1) + "R" : n;
+function getMirror() {
+  if (mirrorIdx) return mirrorIdx; mirrorIdx = new Int32Array(NV);
+  for (let i = 0; i < NV; i++) { let best = 1e9, bj = i; const a = bodyV[i]; for (let j = 0; j < NV; j++) { const b = bodyV[j], d = (a[0] + b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2; if (d < best) { best = d; bj = j; } } mirrorIdx[i] = bj; }
+  return mirrorIdx;
+}
+function brushHit(e) {
+  const r = cv.getBoundingClientRect();
+  ray.setFromCamera({ x: ((e.clientX - r.left) / r.width) * 2 - 1, y: -((e.clientY - r.top) / r.height) * 2 + 1 }, cam);
+  const h = ray.intersectObject(skinMesh, false)[0]; return h ? h.point : null;
+}
+function brushHitFull(e) {
+  const r = cv.getBoundingClientRect();
+  ray.setFromCamera({ x: ((e.clientX - r.left) / r.width) * 2 - 1, y: -((e.clientY - r.top) / r.height) * 2 + 1 }, cam);
+  return ray.intersectObject(skinMesh, false)[0] || null;
+}
+function paintAt(e) {
+  if (!SK || !skinBone || SK.idx[skinBone] === undefined) return;
+  const pt = brushHit(e); if (!pt) return;
+  const PP = skinGeo.attributes.position.array, j = SK.idx[skinBone], jm = SK.idx[mirName(skinBone)], mi = brush.mirror && jm !== undefined && mirName(skinBone) !== skinBone ? getMirror() : null;
+  for (let i = 0; i < NV; i++) {
+    const d = Math.hypot(PP[3 * i] - pt.x, PP[3 * i + 1] - pt.y, PP[3 * i + 2] - pt.z); if (d > brush.r) continue;
+    const f = (1 - (d / brush.r) ** 2) ** 2, a = brush.str * f * 0.5;
+    const touch = (vi, bj) => { if (!stroke.has(vi)) stroke.set(vi, [Array.from(SK.I.slice(vi * 4, vi * 4 + 4)), Array.from(SK.W.slice(vi * 4, vi * 4 + 4))]); dab(vi, bj, a, brush.mode); };
+    touch(i, j); if (mi) touch(mi[i], jm);
+  }
+  paintSkin(); dirtySkin = true;
+}
+let dirtySkin = false;
+function skinSnapshotOf(map) { const o = new Map(); map.forEach((_, i) => o.set(i, [Array.from(SK.I.slice(i * 4, i * 4 + 4)), Array.from(SK.W.slice(i * 4, i * 4 + 4))])); return o; }
+function restoreSkin(map) { map.forEach(([I4, W4], i) => { for (let k = 0; k < 4; k++) { SK.I[i * 4 + k] = I4[k]; SK.W[i * 4 + k] = W4[k]; } for (let j = 0; j < SK.nb; j++) SK.full[j * NV + i] = 0; for (let k = 0; k < 4; k++) if (W4[k] > 0) SK.full[I4[k] * NV + i] = W4[k]; }); paintSkin(); }
+function skinUndoStep() { const m = skinUndo.pop(); if (!m) return; skinRedo.push(skinSnapshotOf(m)); restoreSkin(m); scheduleSkinSave(); }
+function skinRedoStep() { const m = skinRedo.pop(); if (!m) return; skinUndo.push(skinSnapshotOf(m)); restoreSkin(m); scheduleSkinSave(); }
+
+// ---- chọn joint trực tiếp
+let jointSel = null;
+function renderJointBox() {
+  const el = $("jbox"); if (!el) return;
+  if (step < 4 || !SK || !jointSel) { el.hidden = true; return; }
+  const P = POSE[jointSel] || [0, 0, 0];
+  el.hidden = false;
+  el.innerHTML = `<div class="jhead"><b>${jointSel}</b><span><button id="jClr">Về 0</button> <button id="jX" aria-label="Đóng" title="Đóng">×</button></span></div>` +
+    [["Roll", 0], ["Gập A", 1], ["Gập B", 2]].map(([t, i]) => `<div class="jrow"><label for="jr${i}">${t}</label><input id="jr${i}" type="range" min="-180" max="180" step="1" value="${P[i]}"><span id="jv${i}">${P[i]}°</span></div>`).join("") +
+    `<div class="sub" style="font-size:11px">Roll quanh xương; A và B là hai trục gập vuông góc theo khung xương.</div>`;
+  [0, 1, 2].forEach(i => {
+    const r = $("jr" + i);
+    r.addEventListener("input", e => { const q = (POSE[jointSel] = POSE[jointSel] || [0, 0, 0]); q[i] = +e.target.value; $("jv" + i).textContent = q[i] + "°"; applyPose(); });
+    r.addEventListener("change", () => { if (step === 5) renderPanel(); });
+  });
+  $("jClr").onclick = () => { delete POSE[jointSel]; applyPose(); renderJointBox(); if (step === 5) renderPanel(); };
+  $("jX").onclick = () => { jointSel = null; renderJointBox(); };
+}
+function pickJoint(e) {
+  const r = cv.getBoundingClientRect(), B = buildSkeleton(LM), PB = step >= 4 && SK ? posedBones(B) : null;
+  let best = 16, name = null;
+  for (const b of B) {
+    if (b.name === "root" || b.name === "Weapon" || (step === 4 && (!SK || SK.idx[b.name] === undefined))) continue;
+    if (step === 5 && b.twist) continue;
+    const pp = PB ? PB[b.name] : b.pos, v = new THREE.Vector3(...pp).project(cam), px = r.left + (v.x + 1) / 2 * r.width, py = r.top + (1 - v.y) / 2 * r.height, d = Math.hypot(px - e.clientX, py - e.clientY);
+    if (d < best) { best = d; name = b.name; }
+  }
+  if (!name) { if (jointSel) { jointSel = null; renderJointBox(); } return; }
+  jointSel = /Twist/.test(name) ? null : name; if (jointSel) poseBone = name;
+  if (step === 4) { skinBone = name; if (!/Twist/.test(name)) poseBone = name; if (skinView === "dom") skinView = "one"; paintSkin(); } else poseBone = name;
+  syncScene(); renderPanel();
+}
+cv.addEventListener("pointerdown", e => {
+  if (step < 4 || e.pointerType !== "mouse" || e.button !== 0 || e.altKey) return;
+  if (step === 4 && skTool === "island" && SK) { assignIsland(e); }
+  else if (step === 4 && skTool === "brush" && SK) { painting = true; stroke = new Map(); paintAt(e); lastDab = performance.now(); }
+  else pickDown = [e.clientX, e.clientY];
+});
+cv.addEventListener("pointermove", e => {
+  if (step === 4 && skTool === "brush" && SK && !e.altKey) { const h = brushHitFull(e); ring.visible = !!h; if (h) { ring.position.copy(h.point).addScaledVector(h.face.normal, 0.3); ring.lookAt(h.point.clone().add(h.face.normal)); ring.scale.setScalar(brush.r); ringIn.material.color.set(brush.mode === "sub" ? 0xff5a4d : 0xffffff); } } else ring.visible = false;
+  if (painting && performance.now() - lastDab > 30) { paintAt(e); lastDab = performance.now(); }
+});
+window.addEventListener("pointerup", e => {
+  if (painting) { painting = false; const m = new Map(); stroke.forEach((v, i) => m.set(i, v)); if (m.size) { skinUndo.push(m); if (skinUndo.length > 60) skinUndo.shift(); skinRedo = []; scheduleSkinSave(); } stroke = null; return; }
+  if (pickDown) { const d = pickDown; pickDown = null; if (Math.hypot(e.clientX - d[0], e.clientY - d[1]) < 4 && e.target === cv) pickJoint(e); }
+});
+let skTimer = null;
+function scheduleSkinSave() { saveMsg = "Đang lưu…"; renderPanelLight(); clearTimeout(skTimer); skTimer = setTimeout(saveSkin, 2500); }
+async function saveSkin() {
+  if (!SK) return;
+  const doc = { names: SK.names, I: Array.from(SK.I), W: Array.from(SK.W, v => +v.toFixed(3)), sig: SK.LMsnap, nv: NV, at: Date.now() };
+  try {
+    if (db) await db.doc("rig/skin").set(doc); else localStorage.setItem("rig_skin", JSON.stringify(doc));
+    dirtySkin = false; saveMsg = db ? "Đã lưu" : "Đã lưu (chỉ trình duyệt này)";
+  } catch (e) { saveMsg = "Không lưu được skin: " + (e.message || e.code || e); }
+  renderPanelLight();
+}
+function loadSkinDoc(d) {
+  if (!d || !d.names || d.nv !== NV) return;
+  const nb = d.names.length, I = Uint16Array.from(d.I), W = Float32Array.from(d.W);
+  SK = { names: d.names, idx: Object.fromEntries(d.names.map((n, i) => [n, i])), I, W, nb, full: denseFrom(I, W, nb), LMsnap: d.sig };
+  skinBone = skinBone || d.names[0]; skinMs = 0;
+}
+
+renderVbar(); resize(); setView("front"); syncScene(); renderAll(); frame(); resetHist(); initDb();
+</script>
