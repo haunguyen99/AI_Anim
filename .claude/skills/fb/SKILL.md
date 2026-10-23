@@ -7,17 +7,9 @@ description: The user has left review notes on a playblast review page and types
 
 Người dùng gõ `/fb` khi đã ghi xong note **và** bấm "Gửi feedback cho AI" trên trang review. Không còn polling / CronCreate (người dùng bỏ 2026-10-22). Trả lời bằng tiếng Việt.
 
-## Trang review (mỗi anim một artifact, db collections `rounds` + `notes`)
+## Trang Review Lab (tên cũ: trang review; mỗi anim một artifact, db collections `rounds` + `notes`)
 
-| key (split_pages.py) | clip | URL |
-|---|---|---|
-| sdr06_shoot | SDR06_Shoot | https://claude.ai/artifact/6ejD7yXjMakstHWF8i2n33 |
-| sdr06_reload | SDR06_Reload | https://claude.ai/artifact/9d5PshiRSA71PKi5gquNC9 |
-| sdr_attack | SDR_Attack | https://claude.ai/artifact/GifbYzqPZfPRFG3X9JFXbx |
-| gaygor_attack | Attack | https://claude.ai/artifact/WN7idSA1JwaNimebZgQBHP |
-| gaygor_idle_front | Idle_Front | https://claude.ai/artifact/DyBMx8JhT8mHRKZaXEdqYC |
-
-Thêm dòng vào bảng này mỗi khi tạo trang review mới.
+**Danh sách trang lấy từ sổ clip** (không còn bảng viết tay): chạy `.venv\Scripts\python.exe -I tools\clip_registry.py urls` (cột Review Lab, kèm Pose Lab và Rig Lab) hoặc đọc `work/clips.json`. Trang mới được đăng ký bằng `/new_clip` (`clip_registry.py set-url`).
 
 ## Các bước
 

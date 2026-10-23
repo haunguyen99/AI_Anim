@@ -52,7 +52,8 @@ Cách làm:
 2. **Mesh:** FBX → `python work/rig_lab/extract_fbx.py <fbx> work/rig_lab/ref_<tên>` (dùng `.venv\Scripts\python.exe -I`). GLB/OBJ: viết bộ đọc cùng đầu ra (`verts`, `tris`, nhiều mesh thì mesh nhiều đỉnh nhất = thân, còn lại = prop).
 3. **Gợi ý khớp:** `propose.py` chỉ đúng cho biped giống Gaygor. Tỉ lệ khớp (trong code) tuned trên Gaygor nên nhân vật khác phải đối chiếu bằng mắt ở view Trước và Cạnh; đầu và cổ theo z/y sai nhiều nhất.
 4. **Trang:** nhân bản `build_page.py` thành tham số (tên nhân vật, đường dẫn ref), thêm một mục `rig-lab-<tên>` vào `.claude/launch.json`, `pages/<tên>/index.html`, publish trang MỚI (không đè trang Gaygor; mỗi nhân vật một artifact và một db), thêm dòng vào bảng "Trang hiện có" ở trên và `MAP.md`.
-5. **Giữ cổng duyệt từng bước.** Không sang bước sau khi bước trước chưa duyệt.
+5. **Ghi sổ clip:** `clip_registry.py set-url char:<Tên> rig <url>` (xem skill `/new_clip`); `/fb` và `/new_clip` đọc link từ `work/clips.json`.
+6. **Giữ cổng duyệt từng bước.** Không sang bước sau khi bước trước chưa duyệt.
 
 ## Bẫy đã gặp (đừng lặp lại)
 

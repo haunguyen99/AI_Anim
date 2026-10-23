@@ -1,0 +1,26 @@
+{
+ "characters": {
+  "Gaygor": {"rig_url": "https://claude.ai/artifact/UgRawtmJZW6biJZVbUK4Rs"},
+  "SDR": {"rig_url": ""},
+  "SDR06": {"rig_url": ""}
+ },
+ "clips": [
+  {"id": "gaygor_attack", "character": "Gaygor", "stage": "blocking", "note": "Attack 68F: blocking v10 chờ góp ý",
+   "review": {"key": "gaygor_attack", "clip": "Attack", "title": "Gaygor Attack Review Lab", "crumb": "Boss Gaygor · anim", "name": "Attack", "parts": null, "url": "https://claude.ai/artifact/WN7idSA1JwaNimebZgQBHP"}},
+  {"id": "gaygor_idle", "character": "Gaygor", "stage": "export", "note": "Idle 133F đã duyệt polish v5",
+   "review": {"key": "gaygor_idle", "clip": "Idle", "title": "Gaygor Idle Review Lab", "crumb": "Boss Gaygor · anim", "name": "Idle (xoay trái phải, 133F)", "parts": null, "url": "https://claude.ai/artifact/JK2CCuwPktgUCsD6k5fe6s"}},
+  {"id": "gaygor_idle_front", "character": "Gaygor", "stage": "export", "note": "Idle_Front 60F đã duyệt v14",
+   "review": {"key": "gaygor_idle_front", "clip": "Idle_Front", "title": "Gaygor Idle Front Review Lab", "crumb": "Boss Gaygor · anim", "name": "Idle_Front", "parts": null, "url": "https://claude.ai/artifact/DyBMx8JhT8mHRKZaXEdqYC"}},
+  {"id": "gaygor_walk", "character": "Gaygor", "stage": "blocking", "note": "Walk 57F: làm anim trên Pose Lab",
+   "pose": {"key": "gaygor_walk", "clip": "Gaygor_Walk", "title": "Gaygor Walk Pose Lab", "url": "https://claude.ai/artifact/RRZZBxz7FzPHsv13Bu4Ao6"}},
+  {"id": "sdr_attack", "character": "SDR", "stage": "export", "note": "Attack polish v5 đã duyệt",
+   "review": {"key": "sdr_attack", "clip": "SDR_Attack", "title": "SDR Attack Review Lab", "crumb": "Shoot Die Repeat · anim", "name": "Attack (ném dao)", "parts": "sdr_attack", "url": "https://claude.ai/artifact/GifbYzqPZfPRFG3X9JFXbx"}},
+  {"id": "sdr_idle", "character": "SDR", "stage": "export", "note": "Idle",
+   "pose": {"key": "sdr_idle", "clip": "SDR_Idle", "title": "SDRmap2 Idle Pose Lab", "url": "https://claude.ai/artifact/XvHD2HJ4CA74skzx8mmfdZ"}},
+  {"id": "sdr06_shoot", "character": "SDR06", "stage": "export", "note": "Shoot polish v1 đã duyệt",
+   "review": {"key": "sdr06_shoot", "clip": "SDR06_Shoot", "title": "SDR06 Shoot Review Lab", "crumb": "Shoot Die Repeat map06 · anim", "name": "Shoot (bắn liên thanh)", "parts": "sdr06", "url": "https://claude.ai/artifact/6ejD7yXjMakstHWF8i2n33"}},
+  {"id": "sdr06_reload", "character": "SDR06", "stage": "export", "note": "Reload lspline v1 đã duyệt",
+   "review": {"key": "sdr06_reload", "clip": "SDR06_Reload", "title": "SDR06 Reload Review Lab", "crumb": "Shoot Die Repeat map06 · anim", "name": "Reload (thay trống)", "parts": "sdr06", "url": "https://claude.ai/artifact/9d5PshiRSA71PKi5gquNC9"},
+   "pose": {"key": "sdr06_reload", "clip": "SDR06_Reload", "title": "SDRmap6 Reload Pose Lab", "url": "https://claude.ai/artifact/UKYdqvs5TXEfXJsg9GSJ3y"}}
+ ]
+}

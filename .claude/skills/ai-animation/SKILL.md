@@ -21,6 +21,9 @@ the user's words; a newer lesson replaces an older one in place, noting the date
 section, and add/adjust a one-line rule in `CORE.md` **only if it applies to every clip** - keep `CORE.md` under ~6 KB.
 The user will coach new types; start their file from `details/other_types.md#template`.
 
+## Clip mới / chuỗi công cụ
+Clip hoặc nhân vật mới: dùng skill `/new_clip` (sổ `work/clips.json`, `tools/clip_registry.py`) để đăng ký và nối Rig Lab → Pose Lab → Review Lab; `/rig_ai` cho Rig Lab; `/fb` đọc note từ Review Lab. Xem `list` để biết clip đang ở giai đoạn nào.
+
 ## Ground rules (learned the hard way)
 1. **Eye first.** For any problem or feedback, put REF next to ANIM in every view (top and game views too), name the defect in
    words (which part, which direction), then fix that thing directly on the rig. Numeric solvers only for well-defined
