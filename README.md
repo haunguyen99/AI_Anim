@@ -39,6 +39,7 @@ Trong Claude Code, gõ:
 | `/home` | Mở **Home** (trang quản lý chạy trên máy, http://127.0.0.1:8780): dự án theo game → anim → nút **Tiếp tục** mở đúng trang Lab. Có thể mở Home không cần Claude bằng cách bấm đúp `tools\home\start.bat`. |
 | `/new_clip` | Tạo anim mới và đăng ký vào sổ `work/clips.json`. Claude hỏi một lần những gì còn thiếu (nhân vật, số frame, ref…) rồi chọn quy trình. |
 | `/rig_ai` | Rig Lab: dựng khớp và skin cho nhân vật mới. |
+| `/spine2d` | Rig và làm anim 2D bằng Spine (order của GD → thiết kế → rig → anim → GIF trên UI → export) |
 | `/fb` | Sau khi bạn ghi note trên Review Lab hoặc Pose Lab và bấm gửi, gõ `/fb` (có thể kèm tên clip) để Claude sửa **mọi** note của đợt đó trong một version mới. |
 
 Có thể nói chuyện tự nhiên bằng tiếng Việt, ví dụ "làm anim Gaygor bị đánh 32 frame".
@@ -69,6 +70,8 @@ Tài liệu Pose Lab:
 `tools/spine_mcp/` là MCP server cho Spine 2D (editor 4.2.43), chuyển từ `E:\SpineAI` ngày 2026-10-26. Server cho Claude:
 - gọi Spine CLI: export, import, pack/unpack atlas;
 - đọc và sửa skeleton JSON: xương, slot, animation, keyframe.
+
+Skill **`/spine2d`** biến Claude thành animator Spine: nhận order của GD, thiết kế, rig (xương, mesh có weight), key + curve, xem trước GIF ghép trên ảnh UI game (`tools/spine/render_spine.py`), export đúng setting của bạn.
 
 Cách dùng điển hình: export `.spine` → JSON, sửa JSON, import ra **file `.spine` mới** (không đè project gốc), mở trong Spine để kiểm tra. Chi tiết và danh sách tool ở `tools/spine_mcp/README.md`.
 
@@ -103,9 +106,10 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 
 | Thư mục | Nội dung |
 |---|---|
-| `.claude/skills/` | Skill của Claude: `ai-animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `fb`, `home`, `rig_ai` |
+| `.claude/skills/` | Skill của Claude: `ai-animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `fb`, `home`, `rig_ai`, `spine2d` (rig + anim Spine 2D) |
 | `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, sửa FBX (`fbx_remove_mesh.py`, `fbx_replace_mesh.py`), vật lý `physics_sim.py`; `tools/cascadeur/` chạy trong Cascadeur |
 | `tools/spine_mcp/` | MCP server Spine 2D (Spine CLI + sửa skeleton JSON) |
+| `tools/spine/` | `render_spine.py`: xem trước anim Spine thành GIF + contact sheet (xương, alpha slot, region, mesh có weight; không IK/clipping) |
 | `legacy/` | Tool cũ: Blender (`blender/`, `blender_tools/`) và mediapipe, chỉ để dựng lại clip cũ |
 | `docs/` | Quy trình (`pipeline_v2.md`), thiết kế Rig Lab, vật lý Pose Lab |
 | `work/pose_lab/`, `work/review_page/`, `work/rig_lab/` | Mã các trang Lab (bản gốc + script dựng trang), đọc/ghi FBX (`work/pose_lab/fbx/`) |
