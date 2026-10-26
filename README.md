@@ -36,19 +36,19 @@ Trong Claude Code, gõ:
 
 | Lệnh | Làm gì |
 |---|---|
-| `/home` | Mở **Home** (trang quản lý chạy trên máy, http://127.0.0.1:8780): dự án theo game → anim → nút **Tiếp tục** mở đúng trang Lab. Có thể mở Home không cần Claude bằng cách bấm đúp `tools\home\start.bat`. |
+| `/project` | Mở **Home** (trang quản lý chạy trên máy, http://127.0.0.1:8780): dự án theo game → anim → nút **Tiếp tục** mở đúng trang Lab. Có thể mở Home không cần Claude bằng cách bấm đúp `tools\home\start.bat`. |
 | `/new_clip` | Tạo anim mới và đăng ký vào sổ `work/clips.json`. Claude hỏi một lần những gì còn thiếu (nhân vật, số frame, ref…) rồi chọn quy trình. |
-| `/rig_ai` | Rig Lab: dựng khớp và skin cho nhân vật mới. |
+| `/rig` | Rig Lab: dựng khớp và skin cho nhân vật mới. |
 | `/spine2d` | Rig và làm anim 2D bằng Spine (order của GD → thiết kế → rig → anim → GIF trên UI → export) |
-| `/fb` | Sau khi bạn ghi note trên Review Lab hoặc Pose Lab và bấm gửi, gõ `/fb` (có thể kèm tên clip) để Claude sửa **mọi** note của đợt đó trong một version mới. |
+| `/check_fb` | Sau khi bạn ghi note trên Review Lab hoặc Pose Lab và bấm gửi, gõ `/check_fb` (có thể kèm tên clip) để Claude sửa **mọi** note của đợt đó trong một version mới. |
 
 Có thể nói chuyện tự nhiên bằng tiếng Việt, ví dụ "làm anim Gaygor bị đánh 32 frame".
 
 ### Ba quy trình
 
 - **A. Có video ref nhiều góc:** phân tích ref → P0 → blocking → spline → polish → FBX. Xem `docs/pipeline_v2.md`.
-- **B. Có file blocking FBX của team:** nạp vào Pose Lab → phân tích → pose chuyển tiếp → polish → FBX. Xem `.claude/skills/ai-animation/knowledge/details/user_blocking.md`.
-- **C. Chỉ có yêu cầu bằng lời:** thiết kế và bảng timing (chờ duyệt) → pose kể chuyện → blocking → tiếp như B. Xem `.claude/skills/ai-animation/knowledge/details/text_brief.md`.
+- **B. Có file blocking FBX của team:** nạp vào Pose Lab → phân tích → pose chuyển tiếp → polish → FBX. Xem `.claude/skills/animation/knowledge/details/user_blocking.md`.
+- **C. Chỉ có yêu cầu bằng lời:** thiết kế và bảng timing (chờ duyệt) → pose kể chuyện → blocking → tiếp như B. Xem `.claude/skills/animation/knowledge/details/text_brief.md`.
 
 Mọi quy trình đều có **cổng duyệt**: Claude không sang bước sau khi bạn chưa duyệt bước trước.
 
@@ -106,7 +106,7 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 
 | Thư mục | Nội dung |
 |---|---|
-| `.claude/skills/` | Skill của Claude: `ai-animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `fb`, `home`, `rig_ai`, `spine2d` (rig + anim Spine 2D) |
+| `.claude/skills/` | Skill của Claude: `animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `check_fb`, `project`, `rig`, `spine2d` (rig + anim Spine 2D) |
 | `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, sửa FBX (`fbx_remove_mesh.py`, `fbx_replace_mesh.py`), vật lý `physics_sim.py`; `tools/cascadeur/` chạy trong Cascadeur |
 | `tools/spine_mcp/` | MCP server Spine 2D (Spine CLI + sửa skeleton JSON) |
 | `tools/spine/` | `render_spine.py`: xem trước anim Spine thành GIF + contact sheet (xương, alpha slot, region, mesh có weight; không IK/clipping) |
@@ -121,10 +121,10 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 - Model nhân vật đã xuất cho Pose Lab (`work/pose_lab/models/`), ảnh ref (`work/pose_lab/refs/`), trang đã dựng (`pages/`).
 - Video ref, playblast (`work/review_page/clips/`), FBX đã xuất, file `.blend` / `.casc`.
 
-Muốn làm tiếp clip của người khác thì xin họ thư mục `work/<clip>/` và model tương ứng. Làm nhân vật mới thì bắt đầu bằng `/rig_ai` hoặc `/new_clip` với FBX nhân vật của bạn.
+Muốn làm tiếp clip của người khác thì xin họ thư mục `work/<clip>/` và model tương ứng. Làm nhân vật mới thì bắt đầu bằng `/rig` hoặc `/new_clip` với FBX nhân vật của bạn.
 
 ## Cập nhật và đóng góp
 
 - Lấy bản mới: `git pull`.
 - Sửa tool, skill hoặc tài liệu: tạo nhánh riêng, commit, mở Pull Request vào `main`. Không commit dữ liệu (model, video, FBX, cache).
-- Bài học mới về animation ghi vào `.claude/skills/ai-animation/knowledge/details/*.md`. Chỉ quy tắc áp dụng cho mọi clip mới vào `knowledge/CORE.md`.
+- Bài học mới về animation ghi vào `.claude/skills/animation/knowledge/details/*.md`. Chỉ quy tắc áp dụng cho mọi clip mới vào `knowledge/CORE.md`.

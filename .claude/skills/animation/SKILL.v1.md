@@ -1,5 +1,5 @@
 ---
-name: ai-animation
+name: animation
 description: Animate a user's rigged 3D character by eye to match multi-view reference videos of that same character (front/back/left/right, synchronized, e.g. AI-generated or hand-drawn). Claude reads the reference frames, writes keyframe poses in keys.json, and checks the model overlaid on the reference from every view in headless Blender. Use when the user wants keyframes/an animation of their model copied from reference videos or turnarounds, or wants to refine such a result.
 ---
 

@@ -241,7 +241,7 @@ timing. AI không dựng lại pose mà làm tiếp từ đó:
    ─► 4 Pose chuyển tiếp ─► 5 Trọng lượng ─►[DUYỆT 75%]─► 6 Spline + polish (nướng, QA, playblast) ─►[DUYỆT POLISH]─► 7 FBX
 ```
 
-Chi tiết từng bước, lệnh và các luật rút ra: `.claude/skills/ai-animation/knowledge/details/user_blocking.md`. Clip mẫu:
+Chi tiết từng bước, lệnh và các luật rút ra: `.claude/skills/animation/knowledge/details/user_blocking.md`. Clip mẫu:
 Gaygor Attack 50 Blocking (`work/gaygor_attack_50_blocking/`). Không dùng Blender: Pose Lab là nơi xem và chỉnh pose,
 Review Lab là nơi xem chuyển động, FBX được ghi bằng cách thay đường cong trong chính file của team.
 
@@ -255,7 +255,7 @@ duyệt sớm và rẻ (chữ, ảnh tĩnh) đứng trước chuyển động:
    ─► C4 Blocking 25–50% ─►[DUYỆT BLOCKING]─► nhánh B bước 3–7 (sửa lỗi, pose chuyển tiếp, trọng lượng, polish, FBX)
 ```
 
-Chi tiết, luật thiết kế và các phần còn thiếu: `.claude/skills/ai-animation/knowledge/details/text_brief.md`.
+Chi tiết, luật thiết kế và các phần còn thiếu: `.claude/skills/animation/knowledge/details/text_brief.md`.
 
 ## 3. Phân vai
 

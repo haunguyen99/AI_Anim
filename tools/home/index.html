@@ -167,9 +167,9 @@ function bar(list){
 function statusChip(s){ return `<span class="chip st-${s}"><span class="dot bg-${s}"></span>${STATUS_VI[s]||s}</span>`; }
 function nextCmd(c){
   const key = (c.name||"").split(" ")[0].toLowerCase();
-  if (c.stage==="rig") return `Nhân vật chưa có rig: gõ <code>/rig_ai</code>`;
+  if (c.stage==="rig") return `Nhân vật chưa có rig: gõ <code>/rig</code>`;
   if (!c.pose_url && !c.review_url) return `Gõ <code>/new_clip ${esc(c.id)}</code> để phân tích + dựng P0`;
-  if (c.status==="waiting") return `Góp ý trên Review Lab rồi gõ <code>/fb ${esc(key)}</code>`;
+  if (c.status==="waiting") return `Góp ý trên Review Lab rồi gõ <code>/check_fb ${esc(key)}</code>`;
   if (c.status==="done") return `Đã xuất FBX`;
   if (c.status==="paused") return `Tạm dừng`;
   return "";

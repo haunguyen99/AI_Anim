@@ -889,7 +889,7 @@ async function renderRound() {
   if (!r) { $("roundTxt").textContent = "Vòng review đang mở: xem hết clip, ghi mọi lỗi rồi mới gửi một lần (1 lượt gửi = 1 version sửa).";
             $("roundSub").textContent = open.length + " ghi chú chưa sửa" + (fr.length ? " · frame " + fr.join(", ") : ""); }
   else if (r.status === "sent") { $("roundTxt").textContent = "Đã gửi cho AI, đang chờ nhận việc";
-            $("roundSub").textContent = (who ? who + " · " : "") + fmtTime(r.sentAt) + " · " + (r.noteCount || 0) + " ghi chú" + " · gõ /fb trong Claude để AI nhận việc"; }
+            $("roundSub").textContent = (who ? who + " · " : "") + fmtTime(r.sentAt) + " · " + (r.noteCount || 0) + " ghi chú" + " · gõ /check_fb trong Claude để AI nhận việc"; }
   else if (r.status === "working") { $("roundTxt").textContent = "AI đang sửa theo feedback"; $("roundSub").textContent = r.aiNote || ""; }
   else if (r.status === "fixed") { $("roundTxt").textContent = "AI đã sửa xong vòng này"; $("roundSub").textContent = r.aiNote || ""; }
   btn.textContent = armed ? `Đã xem hết clip? Gửi ${open.length} ghi chú (frame ${fr.join(", ")})` : (r && r.status !== "fixed" ? "Gửi lại cho AI" : "Gửi feedback cho AI");
@@ -915,7 +915,7 @@ $("aiSend").onclick = async () => {
                  noteCount: open.length, frames, toClaude };
   if (myId) body.sentBy = myId;
   try { await db.doc("rounds/" + roundId()).set(body);
-        $("status").textContent = "Đã gửi " + open.length + " ghi chú. Gõ /fb trong Claude để AI nhận việc; AI sửa hết trong một version."; }
+        $("status").textContent = "Đã gửi " + open.length + " ghi chú. Gõ /check_fb trong Claude để AI nhận việc; AI sửa hết trong một version."; }
   catch (e) { fail(e); }
   renderRound();
 };

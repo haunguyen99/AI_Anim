@@ -1,9 +1,9 @@
 """Sổ đăng ký clip: điểm nối giữa Rig Lab, Pose Lab và Review Lab.
 Mọi trang (artifact) của một clip nằm trong work/clips.json; split_pages.py của Review Lab và Pose Lab đọc sổ này,
-skill /new_clip và /fb đọc/ghi qua script này. Chạy bằng .venv\\Scripts\\python.exe -I tools\\clip_registry.py <lệnh>.
+skill /new_clip và /check_fb đọc/ghi qua script này. Chạy bằng .venv\\Scripts\\python.exe -I tools\\clip_registry.py <lệnh>.
 
   list                                    bảng trạng thái mọi clip (giai đoạn, trang nào đã có, link)
-  urls                                    bảng link dạng markdown (skill /fb dùng)
+  urls                                    bảng link dạng markdown (skill /check_fb dùng)
   new <character> <clip> [--parts sdr06|sdr_attack|"A,B,C"] [--stage rig|analysis|p0|blocking|...]
                                           đăng ký clip mới (chưa tạo trang: trang tạo khi có version đầu tiên)
   stage <id> <giai đoạn>                  đổi giai đoạn của clip
@@ -74,7 +74,7 @@ def cmd_new(a):
     save(d)
     print("Đã đăng ký", cid, "| giai đoạn", a.stage)
     if not d["characters"][a.character].get("rig_url"):
-        print(f"Nhân vật {a.character} chưa có Rig Lab: chạy /rig_ai (chế độ 3) trước khi làm P0.")
+        print(f"Nhân vật {a.character} chưa có Rig Lab: chạy /rig (chế độ 3) trước khi làm P0.")
     print("Trang Pose Lab và Review Lab tạo khi có POSES / CLIPS đầu tiên: dùng pose-version / review-version, rồi build, rồi đăng artifact mới và set-url.")
 
 

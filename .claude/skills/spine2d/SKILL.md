@@ -109,7 +109,7 @@ Thêm game hoặc anim mới thì ghi một dòng vào `MAP.md`.
 - **Hiệu ứng chạm:**
   - vòng scale từ 0.3 lên 1.15, alpha từ 1 về 0, trong khoảng F8–22;
   - trước lúc chạm alpha bằng 0 và dùng `"stepped"`.
-- Áp dụng 12 nguyên lý animation như skill `ai-animation` (`knowledge/details/principles.md`). Khi GD góp ý, gọi tên nguyên lý bị vi phạm.
+- Áp dụng 12 nguyên lý animation như skill `animation` (`knowledge/details/principles.md`). Khi GD góp ý, gọi tên nguyên lý bị vi phạm.
 
 ## Luật làm việc
 

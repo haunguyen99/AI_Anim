@@ -1,5 +1,5 @@
 ---
-name: ai-animation
+name: animation
 description: Animate a user's rigged 3D character in Blender (live, via the Blender MCP) to match multi-view reference videos of that same character (front/back/left/right/top, synchronized; AI-generated, hand-drawn or rendered). Claude acts as a senior game animator - analyses the reference part by part, builds a control rig, builds the base pose stage by stage from the feet up, blocks, splines, polishes, QA-checks and exports FBX for Unity. Use when the user wants an animation of their model from reference videos, or wants to refine/export such an animation.
 ---
 
@@ -35,7 +35,7 @@ The user will coach new types; start their file from `details/other_types.md#tem
   pose chuyển tiếp, trọng lượng, polish, FBX). `knowledge/details/text_brief.md` (thêm 2026-10-24, chưa chạy thử trọn vẹn).
 
 ## Clip mới / chuỗi công cụ
-Clip hoặc nhân vật mới: dùng skill `/new_clip` (sổ `work/clips.json`, `tools/clip_registry.py`) để đăng ký và nối Rig Lab → Pose Lab → Review Lab; `/rig_ai` cho Rig Lab; `/fb` đọc note từ Review Lab. Xem `list` để biết clip đang ở giai đoạn nào.
+Clip hoặc nhân vật mới: dùng skill `/new_clip` (sổ `work/clips.json`, `tools/clip_registry.py`) để đăng ký và nối Rig Lab → Pose Lab → Review Lab; `/rig` cho Rig Lab; `/check_fb` đọc note từ Review Lab. Xem `list` để biết clip đang ở giai đoạn nào.
 
 ## Ground rules (learned the hard way)
 1. **Eye first.** For any problem or feedback, put REF next to ANIM in every view (top and game views too), name the defect in
