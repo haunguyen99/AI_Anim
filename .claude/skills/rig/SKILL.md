@@ -14,6 +14,7 @@ Thiết kế: `docs/rig_lab_design.md`. Bản đồ file: mục `work/rig_lab/` 
 | Nhân vật | Artifact | Nguồn |
 |---|---|---|
 | Gaygor | https://claude.ai/artifact/UgRawtmJZW6biJZVbUK4Rs | `work/rig_lab/template.html` → `build_page.py` → `pages/gaygor/index.html` |
+| Zom1 Map1 (EN_zom1_map1, Body + QA) | https://claude.ai/artifact/X6coV21xjfQohDtbVRdK7W | `chars/zom1_map1.json` → `build_char.py zom1_map1` → `pages/zom1_map1/index.html` |
 
 Capabilities đã khai: `db`, `user`, `downloads` (publish lại thì bỏ trống `capabilities`, giữ khai báo cũ). Preview cục bộ: `preview_start` tên `rig-lab` (cổng 8772).
 

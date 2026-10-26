@@ -106,7 +106,13 @@ def geo_data(fbx, geo_id):
     lu = F.child(g, "LayerElementUV")
     UV = np.array(lp(lu, "UV"), float)
     UVI = np.array(lp(lu, "UVIndex"), int)
-    return dict(V=V, P=P, E=E, N=N, UV=UV, UVI=UVI)
+    out = dict(V=V, P=P, E=E, N=N, UV=UV, UVI=UVI)
+    lc = F.child(g, "LayerElementColor")
+    if lc is not None:   # màu đỉnh: mỗi màu 4 số (RGBA), chỉ số theo đỉnh-đa-giác
+        cols = np.array(lp(lc, "Colors"), float).reshape(-1, 4)
+        ci = np.array(lp(lc, "ColorIndex"), int) if F.child(lc, "ColorIndex") else np.arange(len(P))
+        out["C"] = cols[ci]
+    return out
 
 
 def clean_mesh(d, tol=1e-7):
@@ -136,6 +142,7 @@ def clean_mesh(d, tol=1e-7):
             newpos[pos] = len(P2); order.append(pos)
             P2.append(~vi if n == len(k) - 1 else vi)
     d["N"] = d["N"][order]; d["UVI"] = d["UVI"][order]
+    if "C" in d: d["C"] = d["C"][order]
     d["E"] = np.array([newpos[e] for e in d["E"] if e in newpos], int)
     used = sorted({int(~i) if i < 0 else int(i) for i in P2})
     vmap = np.full(len(V), -1, int); vmap[used] = np.arange(len(used))
@@ -153,17 +160,27 @@ def replace_mesh(dst, dst_model_id, new, weights):
     set_arr(g, "PolygonVertexIndex", "i", new["P"])
     if F.child(g, "Edges"): set_arr(g, "Edges", "i", new["E"])
     ln = F.child(g, "LayerElementNormal")
-    assert F.props(F.child(ln, "ReferenceInformationType")[2], 1)[0] == "Direct", "đích cần normal kiểu Direct"
-    set_arr(ln, "Normals", "d", new["N"].flatten())
+    ref = F.props(F.child(ln, "ReferenceInformationType")[2], 1)[0]
+    if ref == "Direct":
+        set_arr(ln, "Normals", "d", new["N"].flatten())
+    else:   # IndexToDirect: ghi các normal khác nhau + chỉ số
+        uq, inv = np.unique(np.round(new["N"], 7), axis=0, return_inverse=True)
+        set_arr(ln, "Normals", "d", uq.flatten()); set_arr(ln, "NormalsIndex", "i", inv.reshape(-1))
     if F.child(ln, "NormalsW"): set_arr(ln, "NormalsW", "d", np.ones(len(new["P"])))
+    lc = F.child(g, "LayerElementColor")
+    if lc is not None:
+        if "C" not in new: raise SystemExit("Đích có màu đỉnh mà mesh nguồn không có")
+        uq, inv = np.unique(np.round(new["C"], 7), axis=0, return_inverse=True)
+        set_arr(lc, "Colors", "d", uq.flatten()); set_arr(lc, "ColorIndex", "i", inv.reshape(-1))
     lu = F.child(g, "LayerElementUV")
     set_arr(lu, "UV", "d", new["UV"]); set_arr(lu, "UVIndex", "i", new["UVI"])
     done = set()
     for cid, bone in dst.clusters(gid):
         c = dst.obj[cid][0]
         if bone not in weights or len(weights[bone][0]) == 0:
-            if F.child(c, "Indexes") is None: continue   # cluster rỗng sẵn (vd. mũi tên chỉ bám một xương)
-            raise SystemExit("Cluster %s của mesh mới không có đỉnh nào" % bone)
+            # xương không còn đỉnh nào: bỏ Indexes/Weights, đúng dạng cluster rỗng của chính file (vd. mũi tên chỉ bám một xương)
+            c[3] = [k for k in c[3] if k[0] not in ("Indexes", "Weights")]
+            continue
         if F.child(c, "Indexes") is None: raise SystemExit("Cluster %s rỗng sẵn nhưng mesh mới cần xương này" % bone)
         set_arr(c, "Indexes", "i", weights[bone][0]); set_arr(c, "Weights", "d", weights[bone][1])
         done.add(bone)

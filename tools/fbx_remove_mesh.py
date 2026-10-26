@@ -73,18 +73,19 @@ def serialize(ver, header, top, footer_tail_from_orig, orig_layout):
         out[start:start + H] = hdr
     for n in top: w(n)
     out.extend(null)
-    # footer: id 16 byte (giữ của file gốc), rồi 0 đệm tới bội 16, version, 120 số 0, magic
-    fid = footer_tail_from_orig["id"]
-    out.extend(fid)
-    pad = (16 - (len(out) % 16)) % 16  # tính trước 4 byte 0, như exporter gốc
-    if pad == 0: pad = 16
-    out.extend(bytes(4 + pad))
+    # footer: id 16 byte (giữ của file gốc), các byte 0, version, 120 số 0, magic.
+    # Số byte 0 = của file gốc + độ dời vị trí cuối node (giữ nguyên độ căn lề của version); file không đổi thì ra đúng byte gốc.
+    # (Không có 1 công thức chung: Maya cũ căn 16 + 4, Blender căn version vào bội 16, nên bám theo file gốc.)
+    out.extend(footer_tail_from_orig["id"])
+    out.extend(bytes(footer_tail_from_orig["z"] + ((footer_tail_from_orig["after"] - (len(out) - 16)) % 16)))
     out.extend(struct.pack("<I", ver)); out.extend(b"\x00" * 120)
     out.extend(bytes.fromhex("f85a8c6adef5d97eece90ce3758f290b"))
     return bytes(out)
 
 def footer_info(b, after_null):
-    return {"id": b[after_null:after_null + 16]}
+    foot = b[after_null:]
+    z = next(i for i in range(16, len(foot)) if foot[i])   # byte khác 0 đầu tiên sau id = version
+    return {"id": foot[:16], "z": z - 16, "after": after_null}
 
 def child(n, name):
     return next((k for k in n[3] if k[0] == name), None)
