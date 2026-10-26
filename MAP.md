@@ -28,6 +28,8 @@ Quy trình chính được mô tả trong [docs/pipeline_v2.md](docs/pipeline_v2
 
 | Đường dẫn | Nội dung |
 |---|---|
+| `tools/spine_mcp/` | MCP server Spine 2D (Spine CLI + sửa skeleton JSON), chuyển từ `E:\SpineAI` 2026-10-26; khai báo `spine` trong `.mcp.json` (uv run --directory tools/spine_mcp). `E:\SpineAI` gốc còn nguyên |
+| `work/spine/<game>/<anim>/` | Project Spine 2D: `work/spine/G-PirateGoldrush/HandTut/` (tay chỉ hướng dẫn chạm: mesh tay + ngón trỏ 3 xương cong khi chạm, xương `dir` xoay cả tay; `build_handtut.py` dựng JSON, `export/` bản xuất, `_v1`/`_v2_-170`/`_v3_0.73s` các bản cũ, `preview/` GIF) |
 | `README.md` | Hướng dẫn team cài và dùng (repo GitHub haunguyen99/AI_Anim, nhánh `main` chỉ mã nguồn, đẩy từ nhánh local `source`). Tool trong Blender/Cascadeur đọc thư mục dự án từ `ROOT` hoặc env `AI_ANIM_ROOT`, không ghi cứng đường dẫn |
 | `MAP.md` | File này |
 | `docs/pipeline_v2.md` | Quy trình chuẩn, bài học từ các hướng đã thử, các cổng duyệt |

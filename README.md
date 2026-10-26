@@ -64,6 +64,21 @@ Tài liệu Pose Lab:
 - `docs/poselab_physics_p1.md` … `p5_impact.md`: vật lý, tác động, ragdoll.
 - `docs/poselab_autophysics.md`: AutoPhysics, motion trail.
 
+## Spine 2D
+
+`tools/spine_mcp/` là MCP server cho Spine 2D (editor 4.2.43), chuyển từ `E:\SpineAI` ngày 2026-10-26. Server cho Claude:
+- gọi Spine CLI: export, import, pack/unpack atlas;
+- đọc và sửa skeleton JSON: xương, slot, animation, keyframe.
+
+Cách dùng điển hình: export `.spine` → JSON, sửa JSON, import ra **file `.spine` mới** (không đè project gốc), mở trong Spine để kiểm tra. Chi tiết và danh sách tool ở `tools/spine_mcp/README.md`.
+
+Cài trên máy bạn:
+1. Cài [uv](https://docs.astral.sh/uv/) và Spine (mặc định `C:\Program Files\Spine\Spine.com`).
+2. Thêm server `spine` vào `.mcp.json` ở thư mục gốc dự án theo mẫu trong `tools/spine_mcp/README.md`, sửa đường dẫn cho đúng máy bạn.
+3. Mở lại session Claude Code.
+
+Project Spine nằm ở `work/spine/<game>/<anim>/`, ví dụ `work/spine/G-PirateGoldrush/HandTut/` (dựng bằng `build_handtut.py`). Phần này không có trong repo GitHub.
+
 ## Tool cũ cho Blender (`legacy/`)
 
 Từ 2026-10-23 clip mới làm hoàn toàn trên Pose Lab, **không cần Blender**. Tool Blender chỉ còn để dựng lại các clip cũ làm bằng Blender (Gaygor Idle, Idle_Front, Attack v10, SDR, SDR map06) và được dời vào `legacy/`:
@@ -90,6 +105,7 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 |---|---|
 | `.claude/skills/` | Skill của Claude: `ai-animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `fb`, `home`, `rig_ai` |
 | `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, sửa FBX (`fbx_remove_mesh.py`, `fbx_replace_mesh.py`), vật lý `physics_sim.py`; `tools/cascadeur/` chạy trong Cascadeur |
+| `tools/spine_mcp/` | MCP server Spine 2D (Spine CLI + sửa skeleton JSON) |
 | `legacy/` | Tool cũ: Blender (`blender/`, `blender_tools/`) và mediapipe, chỉ để dựng lại clip cũ |
 | `docs/` | Quy trình (`pipeline_v2.md`), thiết kế Rig Lab, vật lý Pose Lab |
 | `work/pose_lab/`, `work/review_page/`, `work/rig_lab/` | Mã các trang Lab (bản gốc + script dựng trang), đọc/ghi FBX (`work/pose_lab/fbx/`) |
