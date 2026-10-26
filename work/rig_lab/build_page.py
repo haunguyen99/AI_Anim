@@ -18,7 +18,7 @@ data = dict(body=dict(verts=mesh[0]["verts"], tris=mesh[0]["tris"]),
             auto=auto, fingers=fingers,
             ref=[dict(name=s["name"], parent=s["parent"], pos=r2(s["bind_pos"] or [0, 0, 0])) for s in skel],
             refW={k: [v[0], [round(x, 3) for x in v[1]]] for k, v in mesh[0]["weights"].items()})
-html = open(f"{R}/template.html", encoding="utf8").read().replace("/*DATA*/null", json.dumps(data, separators=(",", ":")))
+html = open(f"{R}/template.html", encoding="utf8").read().replace("/*DATA*/null", json.dumps(data, separators=(",", ":"))).replace("__NAME__", "Gaygor")
 os.makedirs(f"{R}/pages/gaygor", exist_ok=True)
 open(f"{R}/pages/gaygor/index.html", "w", encoding="utf8").write(html)
 print(len(html) // 1024, "KB")

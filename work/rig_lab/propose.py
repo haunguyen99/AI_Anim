@@ -4,7 +4,9 @@ import sys, json
 import numpy as np
 mesh = json.load(open(sys.argv[1]))
 # island: mesh có nhiều đỉnh nhất = thân; còn lại = prop
-mesh.sort(key=lambda m: -len(m["verts"]))
+import os
+mesh.sort(key=lambda m: (m["name"] != os.environ.get("RIG_BODY"), -len(m["verts"])))
+if os.environ.get("RIG_BODY"): mesh = mesh[:1]   # chỉ thân; mesh khác (quần áo) không là prop
 body = np.array(mesh[0]["verts"]).reshape(-1, 3)
 props = [np.array(m["verts"]).reshape(-1, 3) for m in mesh[1:]]
 H = body[:, 1].max(); L = body[:, 0].max()  # chiều cao, nửa sải tay
