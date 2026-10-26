@@ -105,7 +105,7 @@
 
 ## joint-limits-in-solver
 User 2026-10-22: "tạo giới hạn cho các joint để tránh các lỗi bẻ pose quá đà sai Anatomy. AI cũng tránh phải thử quá nhiều lần".
-- `tools/blender/arm_limits.py`: `arm_angles(side)` đo elbow_flex, elevation, humeral_rot, pronation, wrist_flex, wrist_dev TỪ VỊ TRÍ KHỚP + lòng bàn tay (zero giải phẫu, giống nhau mọi rig). Đừng đo bằng Euler local: rig SDR có trục xương Wrist = -X local, tail của Wrist KHÔNG chỉ về ngón tay.
+- `legacy/blender/arm_limits.py`: `arm_angles(side)` đo elbow_flex, elevation, humeral_rot, pronation, wrist_flex, wrist_dev TỪ VỊ TRÍ KHỚP + lòng bàn tay (zero giải phẫu, giống nhau mọi rig). Đừng đo bằng Euler local: rig SDR có trục xương Wrist = -X local, tail của Wrist KHÔNG chỉ về ngón tay.
 - Dấu đã kiểm trên rest: gập về lòng bàn tay +, lệch về ngón út +, sấp (pronation, ngón cái xuống) +; T-pose lòng úp = 0.
 - `hand_on_limited`: mỗi lần thử reset Shoulder/Elbow/Wrist về cùng basis (arm_plane cần khuỷu không xoắn; quên reset → cổ tay lệch 33 cm). Xoay pole quanh trục vai→điểm cầm theo danh sách `swivels`; cổ tay vượt giới hạn thì nắn hướng bàn tay vào vùng cho phép (lòng tay vẫn đặt đúng điểm cầm). Chọn: vi phạm ít nhất → hướng tay đổi ít nhất (`hand_clamped`) → gần pole yêu cầu.
 - `limit_fail` còn lại (thường elbow_flex = với không tới) → sửa spec key (đưa vật lại gần), không ép tay.
@@ -125,7 +125,7 @@ rút kinh nghiệm từ đó"). Nguyên lý: Solid Drawing (khối tay/chân đ�
      trong world: gối phải lệch mũi chân 99–176° ở f25–f28.
   2. **Hướng khuỷu/gối là một phần spec của key**, đọc từ ref như hông hay prop (khuỷu: ra ngoài / xuống / ra sau bao nhiêu cm so
      với vai; gối: theo mũi chân hoặc lệch có chủ đích), không để solver tự chọn.
-  3. **Kiểm mọi ràng buộc CÙNG LÚC, cho mọi key, trước khi render**: `tools/blender/pole_audit.py` (gối lệch mũi chân ≤ 30°,
+  3. **Kiểm mọi ràng buộc CÙNG LÚC, cho mọi key, trước khi render**: `legacy/blender/pole_audit.py` (gối lệch mũi chân ≤ 30°,
      khuỷu thấp hơn vai 12–20 cm với tay tự do hoặc tay cầm vật bên hông, roll bắp tay giữa hai key liền nhau ≤ 60°) cộng thêm
      `elbow_gap` ≥ 6 cm, da vai ≥ 0,30 (`#shoulder-compression`, `#joint-limits-in-solver`). Có xung đột thì báo đánh đổi cho
      người duyệt, đừng để mỗi vòng review sửa một thứ.

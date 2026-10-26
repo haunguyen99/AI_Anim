@@ -76,7 +76,7 @@
 | Chân trái / phải | Hông → đùi → gối → cổ chân → bàn chân và ngón |
 | Prop / phụ kiện | Vũ khí, áo choàng, tóc, đuôi, tai, vạt áo/khố, dây đeo, mặt vòng… |
 
-**Kiểm kê phụ kiện trước khi phân tích** (góp ý người dùng, 2026-10-20): chạy `tools/blender/rig_inventory.py` để liệt kê
+**Kiểm kê phụ kiện trước khi phân tích** (góp ý người dùng, 2026-10-20): chạy `legacy/blender/rig_inventory.py` để liệt kê
 mọi xương ngoài thân/tay/chân (chain tóc, đuôi, tai, áo choàng, vạt vải, đồ treo) và mọi mảnh mesh rời gắn cứng (giáp, trang sức).
 Nhận diện từng cái bằng vùng mesh nó điều khiển và ảnh model, không tin tên xương. Với mỗi cái ghi: số đốt (1 đốt = xoay một khối,
 nhiều đốt = cần overlap theo chuỗi), chuyển động thấy trên ref, độ trễ so với xương cha, tác động trọng lực, chỗ dễ xuyên mesh
@@ -117,7 +117,7 @@ Mỗi bộ phận ghi theo cùng một mẫu:
   - **Trục:** trục dọc xương, trục bản lề, trục phụ. Với rig FBX kiểu Maya này, trục dọc là −X, khuỷu/gối là bản lề quanh **Z** (đo lại ở Attack: phần xoay thêm của khuỷu
     nằm đúng trục Z), ngón cong quanh Y; trục Y của Blender **không** nằm dọc xương. Gập khuỷu trái là −Z, khuỷu phải +Z.
   - **Giới hạn mỗi khớp:** xoắn (twist), gập theo trục bản lề, gập theo trục phụ. Ví dụ: khuỷu là bản lề, xoắn ±50, gập phụ ±10; cổ tay gập ±75, lệch ngang ±45, xoắn ±50; gối là bản lề.
-  - `tools/blender/joint_limits.py` báo mọi khớp vượt giới hạn ở từng key. Lỗi xoắn 169° ở khuỷu trái của Idle là thứ bước này bắt được ngay.
+  - `legacy/blender/joint_limits.py` báo mọi khớp vượt giới hạn ở từng key. Lỗi xoắn 169° ở khuỷu trái của Idle là thứ bước này bắt được ngay.
   - Khi đặt tay hay chân bằng IK, dùng `fk_left_arm` trong `grip_set.py`: độ xoay bắp tay suy từ mặt phẳng gập, khuỷu là bản lề thuần, độ ngửa/sấp chia đều cho khuỷu và cổ tay. Không ép hướng bàn tay bất chấp cẳng tay.
 - **Tự kiểm tra rig:** độ lệch khi dựng < 0.5 cm / 1°; hạ hông 4 cm thì chân trượt 0 cm; cổ tay trượt trên prop 0 cm; không có vertex của thân nằm trong prop ở pose gốc.
 
@@ -126,7 +126,7 @@ Mỗi bộ phận ghi theo cùng một mẫu:
    silhouette P0 trùng ref, sàn lệch ≤ 3 px, và tâm tính ra ở 2 góc đối diện phải trùng nhau (front/back, left/right).
 2. Dựng scene bằng `blender -b` từ file đã duyệt, không mở đè cửa sổ đang làm việc (`work/blender/build_attack_v4.py`):
    copy rig CTRL + P0, đặt lại camera Ref_* theo lưới, gắn ref (cả Ref_top), action mới chỉ chứa P0, CONSTANT.
-3. So P0 với frame 1 của ref (`tools/blender/sil_render.py` + `tools/sil_compare.py`). Nếu cần, so 2 ref với nhau trên cùng lưới
+3. So P0 với frame 1 của ref (`legacy/blender/sil_render.py` + `legacy/blender_tools/sil_compare.py`). Nếu cần, so 2 ref với nhau trên cùng lưới
    để biết frame đầu của clip có đúng là P0 cũ không.
 4. Sửa rig theo nhu cầu clip, trong file của clip: prop bay quanh người hay nằm trên đất → `CTRL_weapon` sang không gian
    world (`rig_attack_v4.py`); tay thứ hai nắm prop → thêm IK (`add_arm_ik_R.py`, influence key 0/1). Chuỗi IK dựng từ tay gần
@@ -147,11 +147,11 @@ Mỗi bộ phận ghi theo cùng một mẫu:
 - Key các *extreme* và *breakdown* theo `analysis.json` (từng bộ phận, từng pha), để **stepped**: người dùng thấy rõ từng pose và timing, chưa bị spline che lỗi.
 - Playblast stepped kèm ref ở bên cạnh → người dùng duyệt pose và timing.
 - **Công cụ đã có (chạy lần đầu trên Idle):**
-  - `tools/blender/solve_keys.py`: giải 19 kênh animator cho mỗi key (hông, cúi/ngả, xoay thân, quay/ngẩng/nghiêng đầu, nghiêng cổ, bả vai, tay phải, xoay và dời chùy), sao cho điểm trên model đi giống vùng tracking trên ref. Dùng damped Gauss-Newton.
-  - `tools/blender/sil_refine.py`: tinh chỉnh bằng silhouette ref, có số hạng riêng cho chùy (đỉnh `_VK` lọt ra ngoài mask).
-  - `tools/blender/head_refine.py`, `tools/blender/photo_refine.py`: thử nghiệm cho đầu, gồm silhouette đầu ở góc nghiêng và so gradient ảnh. Chưa đáng tin.
-  - `tools/playblast_compose.py`: ghép video ref | anim ở 4 góc.
-- **Nhìn bằng mắt trước, tối ưu sau** (góp ý của người dùng): đặt REF cạnh ANIM ở **cả góc top và góc game** nếu có. Góc front và góc nghiêng che mất lỗi theo chiều sâu. Ở Idle, góc top lộ ra ngay rằng chùy nằm sau vai và bàn tay lơ lửng cách cán 11 cm. Công cụ: `tools/blender/eye_pose.py` + `tools/eye_compare.py` (đặt cạnh nhau), `tools/blender/eye_part.py` + `tools/eye_outline.py` (viền riêng một bộ phận lên ref), `tools/eye_blend.py` (chồng cạnh). Đặt tay cầm tường minh bằng `tools/blender/grip_set.py`, theo trục cán đo từ mesh chùy chứ không theo xương.
+  - `legacy/blender/solve_keys.py`: giải 19 kênh animator cho mỗi key (hông, cúi/ngả, xoay thân, quay/ngẩng/nghiêng đầu, nghiêng cổ, bả vai, tay phải, xoay và dời chùy), sao cho điểm trên model đi giống vùng tracking trên ref. Dùng damped Gauss-Newton.
+  - `legacy/blender/sil_refine.py`: tinh chỉnh bằng silhouette ref, có số hạng riêng cho chùy (đỉnh `_VK` lọt ra ngoài mask).
+  - `legacy/blender/head_refine.py`, `legacy/blender/photo_refine.py`: thử nghiệm cho đầu, gồm silhouette đầu ở góc nghiêng và so gradient ảnh. Chưa đáng tin.
+  - `legacy/blender_tools/playblast_compose.py`: ghép video ref | anim ở 4 góc.
+- **Nhìn bằng mắt trước, tối ưu sau** (góp ý của người dùng): đặt REF cạnh ANIM ở **cả góc top và góc game** nếu có. Góc front và góc nghiêng che mất lỗi theo chiều sâu. Ở Idle, góc top lộ ra ngay rằng chùy nằm sau vai và bàn tay lơ lửng cách cán 11 cm. Công cụ: `legacy/blender/eye_pose.py` + `legacy/blender_tools/eye_compare.py` (đặt cạnh nhau), `legacy/blender/eye_part.py` + `legacy/blender_tools/eye_outline.py` (viền riêng một bộ phận lên ref), `legacy/blender_tools/eye_blend.py` (chồng cạnh). Đặt tay cầm tường minh bằng `legacy/blender/grip_set.py`, theo trục cán đo từ mesh chùy chứ không theo xương.
 - **Bài học cũ:** kiểm tra **P0 bằng silhouette trước tiên**. Ở Idle, chùy trong P0 dựng bằng mắt lệch khoảng 15–17 cm, nên mọi key đều kế thừa sai số này.
 - Bước này rẻ: đổi một pose chỉ là key lại một frame.
 
@@ -272,7 +272,7 @@ Chi tiết, luật thiết kế và các phần còn thiếu: `.claude/skills/ai
 ## 4. File và công cụ
 
 ```
-tools/blender/
+legacy/blender/
   setup_scene.py      (có sẵn)     scene + camera Ref_* + background ref
   build_ctrl_rig.py   (tổng quát hóa) control rig theo rig_profile.json
   anim_helpers.py     (có sẵn)     rotate_char / move_char / key
@@ -287,7 +287,7 @@ tools/blender/
   eye_views.py        (Attack)     render 5 góc pose hiện tại (live)
 tools/ref_timing.py   (MỚI, từ motion_compare2)  ref → số đo từng vùng cho analysis.json
 tools/part_strips.py (MỚI)        crop từng bộ phận ở 4 góc thành dải theo thời gian
-tools/sil_compare.py  (Attack)     IoU + overlay silhouette anim/ref
+legacy/blender_tools/sil_compare.py  (Attack)     IoU + overlay silhouette anim/ref
 tools/eye_side.py     (Attack)     REF | ANIM cùng khung, viền anim trên ref, IoU, --band để zoom
 tools/sweep_score.py  (Attack)     chấm các thử nghiệm render thấp phân giải
 work/blender/attack_pose.py (Attack) chế độ dựng pose: goto/key_pose/unkey/done, eye, closeup, body_top, set_weapon,

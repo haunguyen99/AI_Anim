@@ -21,7 +21,7 @@ Biến thể từ clip đã duyệt (Idle_Front: bỏ liếc, 60F, các chu kỳ
 
 ## params
 - **Gaygor Idle 133F** (idle có diễn xuất, theo 100% ref, polish v5, duyệt 2026-10-20): xem `work/idle/`, sai số khớp TB ~7 cm so với FBX gốc.
-- **Gaygor Idle_Front 60F v14** (duyệt 2026-10-20): `tools/blender/idle_front_build.py` -> `IDLE_FRONT` (giá trị ở `#breath-recipe`).
+- **Gaygor Idle_Front 60F v14** (duyệt 2026-10-20): `legacy/blender/idle_front_build.py` -> `IDLE_FRONT` (giá trị ở `#breath-recipe`).
 - **SDR Idle 1 pose**: `#sdr-one-pose`.
 
 ## feedback
@@ -64,8 +64,8 @@ Biến thể từ clip đã duyệt (Idle_Front: bỏ liếc, 60F, các chu kỳ
 - Đạo cụ nặng: đầu nặng đạt đỉnh SAU vai; vải không xuyên đùi ở các frame cực trị.
 
 ## tools
-`tools/blender/idle_front_build.py` (`idle_front_build`, `idle_front_measure`, `mace_delay`, `cloth_flaps`),
-`work/blender/key_idle_breath_curve.py`, `tools/blender/arm_ik_R.py`, `direct.py` (`match_seam`), `qa_report.py`,
+`legacy/blender/idle_front_build.py` (`idle_front_build`, `idle_front_measure`, `mace_delay`, `cloth_flaps`),
+`work/blender/key_idle_breath_curve.py`, `legacy/blender/arm_ik_R.py`, `direct.py` (`match_seam`), `qa_report.py`,
 `playblast_anim.py` (WebM), `export_clip.py`.
 
 ## sdr-one-pose

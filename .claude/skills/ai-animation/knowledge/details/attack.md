@@ -77,9 +77,9 @@ Riêng mỗi pose blocking Attack (checklist chung: `qa_anatomy.md#pre-send-chec
 ## tools
 `work/blender/attack_pose.py` (posing mode `from_p0`/`goto`/`key_pose`/`unkey`/`done`, `eye`, `closeup`, `body_top`, `set_weapon`,
 `solve_grip`/`apply_grip`, `arm_strain`/`p0_strain`, `clean_scales`, `sweep`), `build_attack_v4.py`, `rig_attack_v4.py`,
-`rig_attack_v4_fix.py`, `rig_attack_v4_armR_hinge.py`; `tools/eye_side.py`, `tools/sil_compare.py`, `tools/sweep_score.py`,
-`tools/blender/sil_render.py`, `eye_views.py`, `rig_inventory.py`, `tools/eye_diff.py`, `tools/extent_cmp.py`;
-playblast có ref: `attack_pose.playblast_frames` + `tools/playblast_ref.py` (REF | ANIM, đánh dấu KEY / hold).
+`rig_attack_v4_fix.py`, `rig_attack_v4_armR_hinge.py`; `tools/eye_side.py`, `legacy/blender_tools/sil_compare.py`, `tools/sweep_score.py`,
+`legacy/blender/sil_render.py`, `eye_views.py`, `rig_inventory.py`, `tools/eye_diff.py`, `tools/extent_cmp.py`;
+playblast có ref: `attack_pose.playblast_frames` + `legacy/blender_tools/playblast_ref.py` (REF | ANIM, đánh dấu KEY / hold).
 Fit/sửa: `attack_fit.py` (fit theo bóng 5 view), `anatomy_check.py` + `anatomy_fix.py`, `mace_measure.py` (tam giác hoá điểm
 chùy từ pixel 2 view, cho phép toạ độ None), `mace_refix.py` (`refix` khoá chùy đo được rồi fit thân, `regrip` đặt lại điểm
 nắm), `sym_fix.py` (đường hông/vai/cột sống về đích), `work/attack/v7rev/sheet.py` (bảng rà mỗi key), `work/attack/crop_cmp.py`

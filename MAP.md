@@ -11,10 +11,10 @@ Quy trình chính được mô tả trong [docs/pipeline_v2.md](docs/pipeline_v2
 | Clip | Trạng thái | Scene / script build | Export |
 |---|---|---|---|
 | Gaygor Idle (133F) | Đã duyệt bản polish v5 · trang review https://claude.ai/artifact/JK2CCuwPktgUCsD6k5fe6s | `work/blender/boss_idle.blend`, `key_idle_v2.py` | `work/idle/export/EN_M11_Boss_Gaygor_Idle.fbx` |
-| Gaygor Idle_Front (60F) | Đã duyệt bản v14 | `tools/blender/idle_front_build.py` | `work/idle_front/export/EN_M11_Boss_Gaygor_Idle_Front.fbx` |
+| Gaygor Idle_Front (60F) | Đã duyệt bản v14 | `legacy/blender/idle_front_build.py` | `work/idle_front/export/EN_M11_Boss_Gaygor_Idle_Front.fbx` |
 | Gaygor Attack (68F) | Blender: blocking v9 (tạm dừng). **Làm lại từ đầu trong Cascadeur** (2026-10-21): P0 đã duyệt 2026-10-21 (`gaygor_attack_p0_approved.casc`); blocking nhanh đủ 21 key (`gaygor_attack_blocking.casc`), v1 duyệt làm nền, sửa góc left tới `casc_blocking_v4` (2026-10-21), chờ duyệt; các góc còn lại chưa sửa. **2026-10-22 quay lại Blender v9** (lỗi: `work/attack/v10rev/defects_v9.md`); **blocking v10** lên trang review 2026-10-22 (sửa: `work/attack/v10/fixes.py`), chờ góp ý | `work/blender/boss_attack_v10.blend`; Cascadeur `work/cascadeur/gaygor_attack_p0.casc` | chưa có |
 | SDR (Shoot Die Repeat) Idle + Attack | Đã export | `work/blender/sdr_*.py`, `work/sdr/` | `work/sdr/export/SDR_MC_*.fbx` (kèm `_events.json`) |
-| SDR map06 (gangster + Tommy gun): Attack/Shoot + Reload | **HOÀN THÀNH 2026-10-22** (Base/Idle/Shoot/Reload FBX) · P0 v8 (ngực 54°); Shoot blocking b12 ĐÃ DUYỆT (tag sdr06-shoot-blocking-b12); Reload blocking b23 ĐÃ DUYỆT (tag sdr06-reload-blocking-b23); Reload lhand_b5 ĐÃ DUYỆT (tag sdr06-reload-lhand-b5); lhand_b6 ĐÃ DUYỆT (tag sdr06-reload-lhand-b6; Pose Lab trống F16–F22) → spline tay trái lspline_v1 ĐÃ DUYỆT (tag sdr06-reload-lspline-v1, `work/sdr06/spline_lhand.py`), đã xuất `work/sdr06/export/SDR06_MC_Reload.fbx` F1–F42 + anim_only từ bản này; Shoot polish v1 ĐÃ DUYỆT (tag sdr06-shoot-polish-v1; P0 = Reload F1 qua `p0_reload_f1.json` từ `dump_reload_p0.py`) → `work/sdr06/export/SDR06_MC_Shoot.fbx` (F1–F13) + anim_only; Idle 10F (1 pose = Shoot F1, `work/sdr06/make_idle.py`) → `SDR06_MC_Idle.fbx` + anim_only (2026-10-22) · FBX 2026-10-22: base `SDR06_MC_Base.fbx` (joint + mesh, `tools/blender/export_base.py`); súng `slingshot_0` là con của **Wrist_R** (`tools/blender/reparent_prop.py`, baked *_wristR.blend) | `work/blender/build_sdr06.py` → `sdr06_char.blend`, `work/sdr06/` | chưa có |
+| SDR map06 (gangster + Tommy gun): Attack/Shoot + Reload | **HOÀN THÀNH 2026-10-22** (Base/Idle/Shoot/Reload FBX) · P0 v8 (ngực 54°); Shoot blocking b12 ĐÃ DUYỆT (tag sdr06-shoot-blocking-b12); Reload blocking b23 ĐÃ DUYỆT (tag sdr06-reload-blocking-b23); Reload lhand_b5 ĐÃ DUYỆT (tag sdr06-reload-lhand-b5); lhand_b6 ĐÃ DUYỆT (tag sdr06-reload-lhand-b6; Pose Lab trống F16–F22) → spline tay trái lspline_v1 ĐÃ DUYỆT (tag sdr06-reload-lspline-v1, `work/sdr06/spline_lhand.py`), đã xuất `work/sdr06/export/SDR06_MC_Reload.fbx` F1–F42 + anim_only từ bản này; Shoot polish v1 ĐÃ DUYỆT (tag sdr06-shoot-polish-v1; P0 = Reload F1 qua `p0_reload_f1.json` từ `dump_reload_p0.py`) → `work/sdr06/export/SDR06_MC_Shoot.fbx` (F1–F13) + anim_only; Idle 10F (1 pose = Shoot F1, `work/sdr06/make_idle.py`) → `SDR06_MC_Idle.fbx` + anim_only (2026-10-22) · FBX 2026-10-22: base `SDR06_MC_Base.fbx` (joint + mesh, `legacy/blender/export_base.py`); súng `slingshot_0` là con của **Wrist_R** (`legacy/blender/reparent_prop.py`, baked *_wristR.blend) | `work/blender/build_sdr06.py` → `sdr06_char.blend`, `work/sdr06/` | chưa có |
 | Gaygor Walk (57F, loop in-place) | **spline b16 trên Review Lab (2026-10-26), đang chờ /fb**: user "check lại rotate của đùi phải" → đoạn user chỉnh tay F23–F28 tạo khấc (xoắn tụt 30° trong 4F, dạng đùi chữ V 10–11°/F); b16 trải độ xoắn đùi phải mượt F17–F37 quanh trục hông→cổ chân (`fb_b13/thigh_scan.py`, `fix_rthigh.py`), key `block_b16/`, db trước `db_before_b16/`, khung `pb_b16/`, trợ giúp trang `work/walk/pb_helpers.js`. Trước đó b15: user "anim chủ hông đang lệch nhịp so với bước chân" → nhún dời sớm 3F (thấp F14/F43 = gót chạm), xoay hông cùng pha chân ±8,5° (trước: ngược pha ±15°), thân trên giữ hướng, chân giải lại giữ hướng gối (`work/walk/fb_b13/hip_scan.py`, `fix_hip.py`); gồm chỉnh tay chân phải F23–F28 của user và vật lý TẮT như user đặt; key `block_b15/`, db trước `db_before_b15/`, khung `pb_b15/`. Trước đó phys_v1: user "áp dụng vật lý cho walk" → lớp vật lý Pose Lab cho đầu, cổ, vạt khố trước/sau (thay overlap dựng tay b13; key = overlap b13 dời sớm 1–2F, `work/walk/phys_v1/make_keys.py`, key `phys_v1/keys/`) + tay khiên/chùy user bật; 56 key + doc `anims` ghi db, db trước `db_before_phys_v1/`, khung `pb_phys_v1/`. Trước đó b14: b14 sửa note b13 F43 [Chân] gối trái vặn lúc nhấc chân (F40–F56 + F1–F4: gối ≤ ~35° so hông, bàn chân thẳng theo gối, mũi chân giữ độ cao; chỉ Hip_L/Ankle_L, 21 key ghi db, db trước `db_before_b14/`, key `block_b14/`, script `fb_b13/` (`knee_scan.py`, `fix_b14.py`, `leg_check.py`), playblast `pb_capture.js` → `pb_b14/`, có lớp vật lý tay/chùy user bật 2026-10-26). Trước đó b13: b12 nhịp lên xuống hông đỉnh ~F26–F28 (`work/walk/block_b12/`, db trước `db_before_b12/`); b13 polish mềm: hết giật F21, thân trễ hông 2F + xoay ngược 20%, đầu giữ thăng bằng, khố đung đưa, tay khiên khuỷu/cổ tay đung đưa trễ (`work/walk/block_b13/`, db trước `db_before_b13/`, khung `pb_b13/`); còn yaw hông ±15°. Analysis đã duyệt 2026-10-22 (`work/walk/analysis.md`); blocking b6 đã duyệt (tag walk-blocking-b6). Lịch sử chi tiết: Pose Lab: https://claude.ai/artifact/RRZZBxz7FzPHsv13Bu4Ao6 (p0_v2; **anim_v1 2026-10-23 = làm anim trên trang**: key, spline, bám sàn, ref 5 góc `work/pose_lab/refs/gaygor_walk/`, Xuất FBX, nút Khớp ref (không Blender); **blocking b1: 8 key F1–F50 khớp ref; user OK tổng quan; b2 sửa chân trái (bỏ lật 18–24°, hạ gót F22/F42) đã ghi db (`work/walk/block_b2/`); b3 đặt chân lên sàn theo lưới (F22 phải lún 4 cm, F36/F42 trái lơ lửng 2 cm), `work/walk/block_b3/`**; **2026-10-23 (db, sau b3 user sửa tay F1–F50 + thêm F19): b5 chân phải nhấc đỉnh ~8–9 cm (key F25/F29/F33/F36) + hạ sàn F11–F15 (key F11/F13/F15), `work/walk/block_b5/` (chỉ 7 key đã đổi, db mới nhất là nguồn chuẩn)**; **b6 (polish chân phải F22–F30): key F23–F35 mỗi frame (z cổ chân theo Hermite trơn, độ cao 0→8→5 cm), `work/walk/block_b6/` (chỉ 13 key đổi)**; **2026-10-23 đẩy lên Review Lab: spline b6, 57F, 1800×600 (phải | trái | trước · 3/4 · trên), dựng khung từ Pose Lab (không Blender) → ffmpeg `work/review_page/clips/gaygor_walk_spline_b6.webm`, khung gốc `work/walk/pb_b6/`; **2026-10-23 /fb review spline_b6 (F1 chân giật, F14 tay phải chưa rõ) → spline_b7: 56 key (mỗi frame, nướng), chân chống trượt đều 2,1 cm/F + đường chân mượt, tay phải buông ra ngoài; key mới `work/walk/block_b7/`, bản db trước b7 `work/walk/db_before_b7/`; **/fb spline_b7 (F34: chân tạm ổn, tay khiên chưa được, xóa anim khuỷu + cổ tay, diễn từ vai) → spline_b8: khuỷu, cổ tay, ngón tĩnh (pose F29), chỉ animate vai phải 2 trục khớp ref, key `work/walk/block_b8/`, db trước b8 `work/walk/db_before_b8/`**; **b9 (không có playblast): tay khiên dùng pose khuỷu/cổ tay user chỉnh ở F1 cho cả 56 key (`work/walk/block_b9/`, db trước `db_before_b9/`); b10: chân phải F23–F41 sửa gối gập sâu rồi bật + đường/tốc độ bước (`work/walk/block_b10/`, db trước `db_before_b10/`), playblast spline_b10 trên Review Lab (khung `work/walk/pb_b10/`)**; **/fb spline_b10 F17 [Hông] "check lại chuyển động của hông" → spline_b11: root x ±2,7 cm + z ±4 cm theo silhouette ref (chân giữ nguyên), key `work/walk/block_b11/`, db trước `db_before_b11/`, khung `pb_b11/`; chưa sửa nhịp lên xuống hông (đỉnh sớm ~5F so ref) và yaw hông ±15°**, motion trail `work/walk/fb_b6/`, khung `work/walk/pb_b7/`**; trang https://claude.ai/artifact/4mM5aPH8vKTeLV6wtRwfqJ**; code `work/pose_lab/fbx/`); áp chỉnh sửa Pose Lab: `work/walk/apply_adjust.py` + `work/walk/adjusts/` | Làm trên Pose Lab (không Blender); scene Blender cũ `work/blender/boss_walk.blend` (build `work/blender/build_walk.py`) chỉ còn để tham khảo | chưa có |
 | Gaygor Attack 50 Blocking (68F) | **Blocking 50% của team** (`Assets/Boss_Gaygor/Blocking/Bloking50.fbx`, 20 key bậc thang; còn bản 10/25) nạp vào Pose Lab (2026-10-23): b50_v1 bị từ chối (đọc sai thứ tự xoay FBX) → **b50_v2** đúng file, ĐÃ DUYỆT (tag gaygor-attack50-b50-v2-approved); phân tích nhân vật + đòn `work/gaygor_attack_50_blocking/analysis.md` (số đo `measure.py` → `measure.json`) ĐÃ DUYỆT; **b50_v3** (`fix_v3.py`, kiểm `verify.py`): chùy chạm sàn 0 cm, chân phải F31–32 tiếp đất đúng chỗ; **b75_v1** (`breakdowns_v4.py`, kiểm `check_v4.py`, cung chùy `arc_plot.py` → `arc_b75.png`): 18 pose chuyển tiếp, 38 key; note "vũ khí chưa thể hiện độ nặng" → **b75_v2** (`weight_v5.py`, đồ thị `weight_plot.py` → `weight_b75_v2.png`); user "khá oki", còn "đoạn đặt lên vai lúc trở về đang bị nhẹ" → **b75_v3** (`shoulder_v6.py`: F61 chùy chạm vai đè quá 36°, vai ép, khuỵu; F62 nảy 42°; F64 lắng) ĐÃ DUYỆT ("Polish đi", tag gaygor-attack50-b75-v3-approved); **polish_v1** (`polish_v1.py`: spline PCHIP nướng 68F, chùy cung quanh ngực / nằm đất theo thế giới, tay dính cán, chân khóa, sàn, lò xo vạt khố + mặt vòng ≤ 15°; QA `check_polish.py`; playblast chụp từ Pose Lab qua `save_srv.py` (launch `pb-save`) → `pb_polish_v1/` → `work/review_page/clips/gaygor_attack_50_polish_v1.webm` 2100×600 phải|trước|3/4) trên Review Lab https://claude.ai/artifact/CAn8A5JiGjJXYjTNFbKKwX; note "lỗi ở f21" → **polish_v2** (`polish_v2.py`: F21 chùy nằm yên như F19, F23/F25 bỏ cung nhấc chân; chụp bằng `pb_capture.js`); note "pose 50 nhấc lên rồi nhưng pose 52 lại giật về" → **polish_v3** (`polish_v3.py`: F52/F53 bỏ cung nhấc chân, gối phải duỗi một mạch; QA thêm quét "fold_backs") ĐÃ DUYỆT (tag gaygor-attack50-polish-v3-approved); FBX xuất không Blender bằng `export_fbx.py` (thay đường cong trong Bloking50.fbx, take EN_M11_Boss_Gaygor_Attack, đọc lại lệch 0,00001 cm); làm tiếp trên trang: spline → polish → Xuất FBX (không Blender) · Pose Lab https://claude.ai/artifact/8WqsypJBEfDsbXY4Bc3wdz | `work/gaygor_attack_50_blocking/make_model.py` (FBX → model Pose Lab), `fbxanim.py`, brief `brief.md`; model `work/pose_lab/models/gaygor_attack_50_blocking_v1.json` | `work/gaygor_attack_50_blocking/export/EN_M11_Boss_Gaygor_Attack.fbx` (68F, rig + mesh của file team) + `export/anim_only/EN_M11_Boss_Gaygor_Attack.fbx` (59 xương + anim) |
 | Gaygor Hit (32F) | **Quy trình C** (chỉ có yêu cầu "Gaygor bị đánh", 2026-10-24): user chọn **phương án B** (lùi nửa bước bằng chân trái rồi bước về, 32F); bản thiết kế `work/gaygor_hit/analysis.md` mục D-B ĐÃ DUYỆT ("pass"); **k10_v1**: 6 pose kể chuyện (F1/3/10/16/23/32) dựng bằng `pose_build.py` + `hit_k10.py`, ảnh `stills/hit_k10_v1.jpg` (`stills.js`), Pose Lab https://claude.ai/artifact/Kv8cgWCaXgHMK6UH96xFSd; k10_v1 ĐÃ DUYỆT (tag gaygor-hit-k10-v1-approved); **b50_v1** blocking 50% (16 key, `hit_b50.py`, ảnh `stills/hit_b50_v1_game.jpg` + `_front.jpg`) ĐÃ DUYỆT (tag gaygor-hit-b50-v1-approved); **b75_v1** 13 pose chuyển tiếp (`hit_b75.py`, hàm chung `pose_build.breakdown`, QA `hit_check.py`); note "tay bên có khiên dao động hơi mạnh" → **b75_v2** (`hit_b75v2.py`: tay phải đi theo thân, trễ nhẹ, ≤ 10 cm riêng tay) ĐÃ DUYỆT (tag gaygor-hit-b75-v2-approved); **polish_v1** (`polish_v1.py` trên pose_build, QA `polish_check.py` sạch, playblast `pb_capture.js` → `pb_polish_v1/`) trên Review Lab https://claude.ai/artifact/HB2gXovv1s5nD9LbP8EpEJ; note "đầu giật F13–F15" → **polish_v2** (`polish_v2.py`: lắc đầu một nhịp chậm ≤ 3°/F; QA thêm quét "rung"/"quay gắt"); note "hai tay cùng với vũ khí đang khá cứng" → **polish_v3** (`polish_v3.py`: lớp quán tính vai/khuỷu/cổ tay phải + chùy, khe chùy–vai ≥ lúc nghỉ); note "cổ tay đã mềm, khuỷu và vai vẫn cứng" → **polish_v4** (`polish_v4.py`: lò xo vai/khuỷu phải mềm hơn, bả vai phải, đung đưa khuỷu trái quanh trục vai–cổ tay), user OK tay phải; "áp dụng với tay còn lại và chùy" → **polish_v5** (`polish_v5.py`: bả vai trái, chùy lò xo mềm như vai phải, khuỷu trái mềm hơn; khe chùy–vai theo bản trước lớp quán tính); note "chùy khá giật, nhất là đoạn cuối" → **polish_v6** (`polish_v6.py`: làm mượt quỹ đạo chùy trong không gian thế giới từ F6, giữ F1–F5 và F32, đẩy chùy ra khỏi vai thay vì kéo về bản cũ); note "chùy cần overlap nhiều hơn để thể hiện trọng lượng" → **polish_v7** (`polish_v7.py`: lò xo chu kỳ 15F ít hãm theo chuyển động của thân, vai là đệm mềm trong mô phỏng; văng quá 16° F14–F18, dội 7° F22–F26) ĐÃ DUYỆT ("oki rồi đấy", tag gaygor-hit-polish-v7-approved); FBX xuất không Blender bằng `work/gaygor_hit/export_fbx.py` (dùng lại bộ đọc/ghi của Attack, đặt độ dài 32F, take EN_M11_Boss_Gaygor_Hit, đọc lại lệch 0,00001 cm, F32 = Idle F1) | `work/gaygor_hit/brief.md`, `pose_build.py` (dựng pose từ mô tả, không Blender) | `work/gaygor_hit/export/EN_M11_Boss_Gaygor_Hit.fbx` (32F, rig + mesh của file team) + `export/anim_only/EN_M11_Boss_Gaygor_Hit.fbx` (59 xương + anim) |
@@ -53,15 +53,17 @@ Quy trình chính được mô tả trong [docs/pipeline_v2.md](docs/pipeline_v2
 
 ## tools/ (công cụ dùng chung giữa các clip)
 
-Script Python chạy bên ngoài Blender bằng `.venv`. Script nằm trong `tools/blender/` chạy bên trong Blender, qua MCP `execute_blender_code` hoặc headless với `-b`.
+Script Python chạy bên ngoài Blender bằng `.venv`. Script nằm trong `legacy/blender/` chạy bên trong Blender, qua MCP `execute_blender_code` hoặc headless với `-b`.
+
+**2026-10-26: tool Blender dời vào `legacy/`** (clip mới không dùng Blender): `tools/blender/` → `legacy/blender/`; tool ngoài chỉ dùng với Blender (`keyanim`, `motion_compare*`, `eye_blend/compare/head/iou/legs/legs_iou/outline/part_box/torso/weapon_out`, `playblast_anim/compose/ref`, `sil_compare`, `blender_overlay`) → `legacy/blender_tools/`. Đường dẫn trong mục này và trong bảng trên đã đổi theo.
 
 **Thiết lập scene và rig (bước 3)**
-- `tools/blender/setup_scene.py`: dựng scene cho một job (model, fps, range, camera Ref_*)
-- `tools/blender/build_ctrl_rig.py`: dựng control rig "CTRL" (IK chân/tay, follow space, prop)
-- `tools/blender/arm_ik_R.py`, `add_arm_ik_R.py`: thêm IK tay phải vào CTRL
-- `tools/blender/inspect_rig.py`, `rig_inventory.py`: dump hierarchy, đoán mapping, phân loại xương chính và phụ
-- `tools/blender/joint_limits.py`: kiểm tra giới hạn khớp
-- `tools/blender/bl_common.py`, `anim_helpers.py`, `live_render.py`: helper dùng chung bên trong Blender
+- `legacy/blender/setup_scene.py`: dựng scene cho một job (model, fps, range, camera Ref_*)
+- `legacy/blender/build_ctrl_rig.py`: dựng control rig "CTRL" (IK chân/tay, follow space, prop)
+- `legacy/blender/arm_ik_R.py`, `add_arm_ik_R.py`: thêm IK tay phải vào CTRL
+- `legacy/blender/inspect_rig.py`, `rig_inventory.py`: dump hierarchy, đoán mapping, phân loại xương chính và phụ
+- `legacy/blender/joint_limits.py`: kiểm tra giới hạn khớp
+- `legacy/blender/bl_common.py`, `anim_helpers.py`, `live_render.py`: helper dùng chung bên trong Blender
 
 **Phân tích ref (bước 2)**
 - `tools/ref_timing.py`: đo chuyển động từng bộ phận trên ref
@@ -71,36 +73,36 @@ Script Python chạy bên ngoài Blender bằng `.venv`. Script nằm trong `too
 - `tools/calib_from_anim.py`: hiệu chỉnh camera ref từ một anim đã biết
 
 **Tạo pose và key (bước 4–5)**
-- `tools/blender/solve_keys.py`, `fullbody_solve.py`: giải pose blocking từ chuyển động đo được
-- `tools/blender/grip_set.py`: grip tay trái lên cán vũ khí
-- `tools/blender/direct.py`: chỉnh curve thay vì key lại
-- `tools/blender/idle_front_build.py`: build Idle_Front từ đầu đến cuối (curve thở chung, overlap)
-- `tools/blender/head_refine.py`, `sil_refine.py`, `photo_refine.py`, `weapon_search.py`, `stage_trials.py`, `leg_trial.py`, `armR_trial.py`, `weapon_aim_trial.py`: tinh chỉnh từng phần hoặc thử nghiệm
-- `tools/keyanim.py`, `tools/keyedit.py`, `tools/blender/key_pose.py`, `eye_pose.py`: luồng eye-keying cũ dựa trên keys.json
+- `legacy/blender/solve_keys.py`, `fullbody_solve.py`: giải pose blocking từ chuyển động đo được
+- `legacy/blender/grip_set.py`: grip tay trái lên cán vũ khí
+- `legacy/blender/direct.py`: chỉnh curve thay vì key lại
+- `legacy/blender/idle_front_build.py`: build Idle_Front từ đầu đến cuối (curve thở chung, overlap)
+- `legacy/blender/head_refine.py`, `sil_refine.py`, `photo_refine.py`, `weapon_search.py`, `stage_trials.py`, `leg_trial.py`, `armR_trial.py`, `weapon_aim_trial.py`: tinh chỉnh từng phần hoặc thử nghiệm
+- `legacy/blender_tools/keyanim.py`, `tools/keyedit.py`, `legacy/blender/key_pose.py`, `eye_pose.py`: luồng eye-keying cũ dựa trên keys.json
 
 **So sánh REF|ANIM bằng mắt**
-- `tools/blender/eye_views.py`: render pose hiện tại qua mọi camera Ref_*
+- `legacy/blender/eye_views.py`: render pose hiện tại qua mọi camera Ref_*
 - `tools/eye_side.py`: REF | ANIM đặt cạnh nhau, outline ANIM vẽ chồng lên REF (dùng nhiều nhất)
-- `tools/eye_compare.py`, `eye_blend.py`, `eye_diff.py`, `eye_outline.py`: các kiểu overlay khác
-- `tools/eye_head.py`, `eye_torso.py`, `eye_legs.py`, `eye_part_box.py`, `eye_weapon_out.py`: close-up theo bộ phận
-- `tools/blender/eye_part.py`, `sil_render.py`: render riêng một bộ phận hoặc silhouette
-- `tools/eye_iou.py`, `eye_legs_iou.py`, `sil_compare.py`, `sweep_score.py`, `extent_cmp.py`: số đo IoU và extent. Chỉ dùng để kiểm tra, không dùng để kết luận pose đã khớp
-- `tools/blender_overlay.py`, `tools/part_overlay.py`: overlay render hoặc vertex lên frame ref
+- `legacy/blender_tools/eye_compare.py`, `eye_blend.py`, `eye_diff.py`, `eye_outline.py`: các kiểu overlay khác
+- `legacy/blender_tools/eye_head.py`, `eye_torso.py`, `eye_legs.py`, `eye_part_box.py`, `eye_weapon_out.py`: close-up theo bộ phận
+- `legacy/blender/eye_part.py`, `sil_render.py`: render riêng một bộ phận hoặc silhouette
+- `legacy/blender_tools/eye_iou.py`, `eye_legs_iou.py`, `sil_compare.py`, `sweep_score.py`, `extent_cmp.py`: số đo IoU và extent. Chỉ dùng để kiểm tra, không dùng để kết luận pose đã khớp
+- `legacy/blender_tools/blender_overlay.py`, `tools/part_overlay.py`: overlay render hoặc vertex lên frame ref
 - `tools/lookgrid.py`: ghép nhiều ảnh look_<frame> thành một sheet
 
 **QA và playblast (bước 6)**
-- `tools/blender/qa_report.py`: QA tự động cho action live (trượt chân, xuyên, khựng loop, rung)
+- `legacy/blender/qa_report.py`: QA tự động cho action live (trượt chân, xuyên, khựng loop, rung)
 - `tools/clip_check.py`: kiểm tra prop xuyên vào thân
-- `tools/motion_compare.py`, `motion_compare2.py`: so chuyển động theo vùng giữa anim và ref
+- `legacy/blender_tools/motion_compare.py`, `motion_compare2.py`: so chuyển động theo vùng giữa anim và ref
 - `work/attack/v10/fixes.py`: các hàm sửa key v10 (`fixNN`, `goto_v9`, `plant_p0`, `mace_slope`); `work/attack/v10rev/trial.py`, `diff.py`, `ext.py`: render thử, so silhouette, đo độ cao/bề rộng
-- `tools/playblast_ref.py`: video review REF | ANIM, các góc xếp theo hàng
-- `tools/playblast_compose.py`: video review REF | render cho mọi frame
-- `tools/playblast_anim.py`: playblast cho clip không có ref (lưới 2x2, loop)
+- `legacy/blender_tools/playblast_ref.py`: video review REF | ANIM, các góc xếp theo hàng
+- `legacy/blender_tools/playblast_compose.py`: video review REF | render cho mọi frame
+- `legacy/blender_tools/playblast_anim.py`: playblast cho clip không có ref (lưới 2x2, loop)
 
 **Export (bước 7)**
-- `tools/blender/export_clip.py`: bake CTRL sang xương deform rồi xuất FBX cho Unity
-- `tools/blender/dump_joints.py`, `retarget_world.py`: dump và retarget transform world để so sánh với anim gốc
-- `tools/blender/score_pose.py`: chấm pose so với anim gốc (chỉ dùng làm đáp án, không dùng để đặt pose)
+- `legacy/blender/export_clip.py`: bake CTRL sang xương deform rồi xuất FBX cho Unity
+- `legacy/blender/dump_joints.py`, `retarget_world.py`: dump và retarget transform world để so sánh với anim gốc
+- `legacy/blender/score_pose.py`: chấm pose so với anim gốc (chỉ dùng làm đáp án, không dùng để đặt pose)
 
 **Cascadeur (`tools/cascadeur/`)**
 - `casc_views.py`: chạy **trong Cascadeur** (MCP `run_script`). Camera ortho khớp pixel với ref Attack (1920×1080, 2,313 px/cm, sàn y = 910); mỗi lần gọi chỉ render được một góc (`render_view`), gọi `restore()` ở lần cuối
@@ -144,7 +146,7 @@ Script Python chạy bên ngoài Blender bằng `.venv`. Script nằm trong `too
 **work/blender/: script**
 - Idle: `idle_blocking_setup.py`, `key_idle_blocking.py`, `key_idle_v2.py`, `key_idle_breath*.py`, `key_idle_front.py`, `p0_grid.py`, `p0_refit.py`
 - Attack: `build_attack_v4.py`, `rig_attack_v4*.py`, `attack_load.py` (loader một dòng cho cửa sổ Attack), `attack_pose.py`, `attack_fit.py`, `key_attack_blocking.py`, `mace_measure.py`, `mace_refix.py`, `hand_contact.py`, `sym_fix.py`. `attack_v3_keyer.py` là bản cũ
-- Anatomy: `anatomy_check.py` (chạy trên mọi key trước khi gửi), `anatomy_fix.py`; `tools/blender/pole_audit.py` (gối lệch mũi chân, khuỷu thấp hơn vai, roll bắp tay nhảy giữa key; chạy mọi key trước khi render)
+- Anatomy: `anatomy_check.py` (chạy trên mọi key trước khi gửi), `anatomy_fix.py`; `legacy/blender/pole_audit.py` (gối lệch mũi chân, khuỷu thấp hơn vai, roll bắp tay nhảy giữa key; chạy mọi key trước khi render)
 - SDR: `build_sdr.py`, `sdr_lib.py`, `sdr_attack*.py` (blocking v8, spline v4, polish v2)
 - Khác: `export_pose_glb.py` (GLB cho Pose Lab)
 
@@ -156,7 +158,7 @@ Script Python chạy bên ngoài Blender bằng `.venv`. Script nằm trong `too
 
 ## File mới lưu ở đâu
 
-- Công cụ dùng được cho nhiều clip → `tools/` (chạy trong Blender thì đặt ở `tools/blender/`)
+- Công cụ dùng được cho nhiều clip → `tools/` (chạy trong Blender thì đặt ở `legacy/blender/`)
 - Script riêng cho một clip → `work/blender/<clip>_*.py`, hoặc `work/<job>/` nếu là script so sánh hoặc pose
 - File .blend → `work/blender/`, đánh version bằng hậu tố `_v<N>`
 - Phân tích, brief, ghi chú review → `work/<job>/`

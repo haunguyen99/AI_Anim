@@ -64,13 +64,19 @@ Tài liệu Pose Lab:
 - `docs/poselab_physics_p1.md` … `p5_impact.md`: vật lý, tác động, ragdoll.
 - `docs/poselab_autophysics.md`: AutoPhysics, motion trail.
 
-## Thư mục dự án cho tool Blender / Cascadeur
+## Tool cũ cho Blender (`legacy/`)
 
-Tool Python thường chạy từ thư mục dự án nên không cần làm gì thêm. Riêng script chạy **bên trong Blender** (`tools/blender/*.py`, chạy bằng `exec`) và script Cascadeur cần biết thư mục dự án. Có ba cách, chọn một:
+Từ 2026-10-23 clip mới làm hoàn toàn trên Pose Lab, **không cần Blender**. Tool Blender chỉ còn để dựng lại các clip cũ làm bằng Blender (Gaygor Idle, Idle_Front, Attack v10, SDR, SDR map06) và được dời vào `legacy/`:
+
+- `legacy/blender/`: script chạy **bên trong Blender** (dựng control rig, khớp pose theo ref, render, QA, xuất FBX);
+- `legacy/blender_tools/`: tool chạy ngoài nhưng chỉ dùng với Blender (`keyanim.py` gọi Blender, các `eye_*.py` / `sil_compare.py` so render Blender với ref, `playblast_*.py` ghép video từ render Blender);
+- `legacy/mediapipe/`: thử nghiệm đầu tiên (mediapipe), bỏ.
+
+Tool Python thường chạy từ thư mục dự án nên không cần làm gì thêm. Riêng script chạy bên trong Blender (`legacy/blender/*.py`, chạy bằng `exec`) và script Cascadeur cần biết thư mục dự án. Có ba cách, chọn một:
 
 ```python
 ROOT = r"D:/AI_Anim"          # đặt trước khi exec, ví dụ trong console Blender
-exec(open(ROOT + "/tools/blender/live_render.py").read())
+exec(open(ROOT + "/legacy/blender/live_render.py").read())
 ```
 
 - hoặc đặt biến môi trường `AI_ANIM_ROOT=D:\AI_Anim` (một lần, cho mọi script);
@@ -83,7 +89,8 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 | Thư mục | Nội dung |
 |---|---|
 | `.claude/skills/` | Skill của Claude: `ai-animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `fb`, `home`, `rig_ai` |
-| `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, playblast, FBX, vật lý `physics_sim.py`; `tools/blender/` chạy trong Blender, `tools/cascadeur/` chạy trong Cascadeur |
+| `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, sửa FBX (`fbx_remove_mesh.py`, `fbx_replace_mesh.py`), vật lý `physics_sim.py`; `tools/cascadeur/` chạy trong Cascadeur |
+| `legacy/` | Tool cũ: Blender (`blender/`, `blender_tools/`) và mediapipe, chỉ để dựng lại clip cũ |
 | `docs/` | Quy trình (`pipeline_v2.md`), thiết kế Rig Lab, vật lý Pose Lab |
 | `work/pose_lab/`, `work/review_page/`, `work/rig_lab/` | Mã các trang Lab (bản gốc + script dựng trang), đọc/ghi FBX (`work/pose_lab/fbx/`) |
 | `work/clips.json` | Sổ clip: dự án, nhân vật, clip, giai đoạn, link trang |

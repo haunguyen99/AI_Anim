@@ -18,14 +18,14 @@ No pose-estimation model is used. Claude's eyes are the tracker.
 
 ```bash
 PY=".venv/Scripts/python.exe"   # run from the project root
-$PY tools/keyanim.py prep    --work work/<job> --view front=F.mp4 --view left=L.mp4 [--view back=… --view right=…]
-$PY tools/keyanim.py ref     --work work/<job> --frames 1,40          # reference frames with pixel rulers
-$PY tools/keyanim.py calib   --work work/<job> --view front --top 212 --ground 688 --center 355
-$PY tools/keyanim.py inspect --work work/<job> MODEL                  # rig.json, mapping.json, controls.json, keys.json
-$PY tools/keyanim.py look    --work work/<job> --frames 1,40 [--views front,left] [--stack cols]
-$PY tools/keyanim.py video   --work work/<job>                        # compare.mp4, every frame, all views
-$PY tools/keyanim.py export  --work work/<job> --out work/<job>/result.fbx
-$PY tools/keyanim.py view    --work work/<job>                        # GLB + web refs for the 3D viewer
+$PY legacy/blender_tools/keyanim.py prep    --work work/<job> --view front=F.mp4 --view left=L.mp4 [--view back=… --view right=…]
+$PY legacy/blender_tools/keyanim.py ref     --work work/<job> --frames 1,40          # reference frames with pixel rulers
+$PY legacy/blender_tools/keyanim.py calib   --work work/<job> --view front --top 212 --ground 688 --center 355
+$PY legacy/blender_tools/keyanim.py inspect --work work/<job> MODEL                  # rig.json, mapping.json, controls.json, keys.json
+$PY legacy/blender_tools/keyanim.py look    --work work/<job> --frames 1,40 [--views front,left] [--stack cols]
+$PY legacy/blender_tools/keyanim.py video   --work work/<job>                        # compare.mp4, every frame, all views
+$PY legacy/blender_tools/keyanim.py export  --work work/<job> --out work/<job>/result.fbx
+$PY legacy/blender_tools/keyanim.py view    --work work/<job>                        # GLB + web refs for the 3D viewer
 ```
 
 **3D viewer** (`tools/viewer/index.html`, three.js): after `view`, start the
@@ -109,7 +109,7 @@ bone rotations by pattern search. All of this runs in numpy, outside Blender.
 
 ```bash
 PY=".venv/Scripts/python.exe"
-"$BLENDER" -b --factory-startup -P tools/blender/key_pose.py -- dump --work work/<job>   # rig_np.npz: mesh, weights, cameras, current anim
+"$BLENDER" -b --factory-startup -P legacy/blender/key_pose.py -- dump --work work/<job>   # rig_np.npz: mesh, weights, cameras, current anim
 $PY -c "import sys; sys.path.insert(0,'tools/fit'); import refmask; refmask.build('work/<job>'); refmask.build_labels('work/<job>')"
 $PY tools/fit/check.py     work/<job> [basis.npy] --frames 1,52    # silhouette diff image + IoU
 $PY tools/fit/labcheck.py  work/<job> [basis.npy] --frames 1       # colour-part maps, ref | model
@@ -124,7 +124,7 @@ $PY tools/fit/fit_grip.py work/<job>                                 # one prop-
 $PY tools/fit/fit_all.py  work/<job> --jobs 14 --scale 0.3 --extra "--reg 0.00005 --temporal 0.0002 --fixed-grip --warmup 3"
 $PY tools/fit/smooth.py   work/<job> --in fit_basis.npy --loop
 $PY tools/fit/glb_bake.py work/<job> --basis fit_smooth.npy --out anim.glb   # straight into the GLB, ~1 s, no Blender
-$PY tools/keyanim.py view --work work/<job> --fast                   # refresh viewer.json (+ calibrated cameras)
+$PY legacy/blender_tools/keyanim.py view --work work/<job> --fast                   # refresh viewer.json (+ calibrated cameras)
 ```
 Check the result in the viewer's **Overlay** mode (V). It renders the model
 through the calibrated reference camera, with the reference video as the
@@ -166,7 +166,7 @@ This is what worked on the boss idle (Idle_Breath): key like an animator, then c
    - `rot` is degrees about the character axes in the bone's rest frame (FK); `loc` is metres;
    - interpolation is Catmull-Rom, and `"cyclic": true` makes loops seamless.
 3. **Foot lock**: `"foot_lock": [["Hip_L","Knee_L","Ankle_L"], ...]` runs two-bone IK every frame, so the feet stay where they are at frame 1 and the knees absorb root motion.
-4. **Measure motion, don't eyeball centimetres**: `tools/motion_compare2.py W --regions regions.json`
+4. **Measure motion, don't eyeball centimetres**: `legacy/blender_tools/motion_compare2.py W --regions regions.json`
    tracks each body region in the reference with optical flow and the same region on the model
    with exact mesh vertices. It reports the peak (cm and frame) and the RMS for up/down and side
    motion, and plots `look/motion_compare.png`. Do not measure the model with flow on its renders:

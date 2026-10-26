@@ -1,5 +1,5 @@
 # blender -b work/blender/boss_walk.blend --python work/pose_lab/fbx/make_template.py
-# Template: anim-only FBX of the Walk armature (frames 1..3 baked) exported exactly like tools/blender/export_skeleton_only.py
+# Template: anim-only FBX of the Walk armature (frames 1..3 baked) exported exactly like legacy/blender/export_skeleton_only.py
 import os
 ROOT = os.environ.get("AI_ANIM_ROOT") or os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")).replace("\\", "/")
 import bpy, os

@@ -1,4 +1,4 @@
-"""Per-row / per-column silhouette extents, reference vs a render (tools/blender/eye_views.py), in metres on the grid.
+"""Per-row / per-column silhouette extents, reference vs a render (legacy/blender/eye_views.py), in metres on the grid.
 python tools/extent_cmp.py WORK FRAME TAG [--dir work/attack/look_v4]
 Side view Ref_left (+X camera): per column Y -> z range; top: per row Y -> X range; front: per row z -> X range.
 Calibration from WORK/analysis.json "calibration". Tells WHERE a part is off (the IoU only tells how much)."""

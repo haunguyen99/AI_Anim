@@ -22,6 +22,9 @@ section, and add/adjust a one-line rule in `CORE.md` **only if it applies to eve
 The user will coach new types; start their file from `details/other_types.md#template`.
 
 ## Ba quy trình: chọn theo nguồn vào
+> Từ 2026-10-23 clip mới làm trên Pose Lab, không Blender (B, C, và A dựng trên Pose Lab). Tool Blender đã dời vào
+> `legacy/blender/` (chạy trong Blender) và `legacy/blender_tools/` (keyanim, eye_*, playblast_*, sil_compare): chỉ dùng khi
+> dựng lại clip cũ làm bằng Blender. Các mục Blender bên dưới giữ để tham khảo.
 - **A — từ video ref** (mặc định): phân tích ref → rig/scene → P0 → blocking → spline → polish (các mục dưới, `docs/pipeline_v2.md` §2).
 - **B — từ blocking của người dùng** (FBX đã có key của chính rig, vd `Bloking50.fbx`): nạp vào Pose Lab, khớp file → phân
   tích nhân vật + đòn từ blocking → sửa lỗi blocking → AI thêm pose chuyển tiếp → trọng lượng → spline + polish nướng từng
@@ -81,15 +84,15 @@ changes first, never open another file over them.
 | Step | What | Tools |
 |---|---|---|
 | 1 Intake | rig FBX, refs (check which file is the character's left/right!), fps, target engine, clips | - |
-| 2 Analysis (approval 1) | overview of the action + per-part breakdown (P0, motion per phase, role, timing/lag, quality, constraints) **including secondary parts**: run `rig_inventory.py` first (extra chains = hair/tail/ears/cape/cloth flaps/pendants, mesh islands = rigid armour), identify each by its mesh region (bone names lie: `Prop_M` here is a chest pendant, not the weapon), then read their motion and collision risks on the ref | `tools/blender/rig_inventory.py`, `tools/part_strips.py`, `tools/ref_timing.py` -> `work/<job>/analysis.md/.json` |
-| 3 Rig + scene | ortho Ref_* cameras grid-calibrated **per clip** (opposite views must agree), refs as backgrounds (incl. top), CTRL rig (IK legs, prop space, hand IK on prop), joint limits + rest flexion direction per limb, rig self-test. New clip of an approved character: build headless from the approved file, P0 only, then rig fixes the clip needs (prop -> world space, second-hand IK, hinge-aligned IK) | `tools/blender/setup_scene.py`, `build_ctrl_rig.py`, `joint_limits.py`; Attack: `work/blender/build_attack_v4.py`, `rig_attack_v4.py`, `rig_attack_v4_armR_hinge.py`, `tools/blender/sil_render.py` + `tools/sil_compare.py` |
+| 2 Analysis (approval 1) | overview of the action + per-part breakdown (P0, motion per phase, role, timing/lag, quality, constraints) **including secondary parts**: run `rig_inventory.py` first (extra chains = hair/tail/ears/cape/cloth flaps/pendants, mesh islands = rigid armour), identify each by its mesh region (bone names lie: `Prop_M` here is a chest pendant, not the weapon), then read their motion and collision risks on the ref | `legacy/blender/rig_inventory.py`, `tools/part_strips.py`, `tools/ref_timing.py` -> `work/<job>/analysis.md/.json` |
+| 3 Rig + scene | ortho Ref_* cameras grid-calibrated **per clip** (opposite views must agree), refs as backgrounds (incl. top), CTRL rig (IK legs, prop space, hand IK on prop), joint limits + rest flexion direction per limb, rig self-test. New clip of an approved character: build headless from the approved file, P0 only, then rig fixes the clip needs (prop -> world space, second-hand IK, hinge-aligned IK) | `legacy/blender/setup_scene.py`, `build_ctrl_rig.py`, `joint_limits.py`; Attack: `work/blender/build_attack_v4.py`, `rig_attack_v4.py`, `rig_attack_v4_armR_hinge.py`, `legacy/blender/sil_render.py` + `legacy/blender_tools/sil_compare.py` |
 | 4 P0 + blocking (approval 2) | P0 stage by stage; then one key pose at a time, each approved: feet+hips (measured contacts) -> prop (measured axis) -> torso/head (height measured, twist by eye) -> arms (`solve_grip` + skin strain + close-ups); CONSTANT; REF\|ANIM 5 views; playblast | Idle: `leg_trial.py`, `stage_trials.py`, `grip_set.py`, `solve_keys.py`, `key_idle_v2.py`; Attack: `work/blender/attack_pose.py` (posing mode, `eye`, `closeup`, `body_top`, `set_weapon`, `solve_grip`, `arm_strain`), `tools/eye_side.py`, `sweep_score.py`, poses in `work/attack/pose_fNN.py`; `playblast_compose.py` |
 | 5 Spline + polish | Bezier + Cycles modifier; overlap by shifting keys along chains (lags from the analysis) | `direct.py` (`offset_bone`, `scale_amp`, `match_seam`) |
 | 6 QA + review (approval 3) | foot slide, hand drift on prop, joint limits, loop seam, acceleration/jerk; playblast REF\|ANIM | `qa_report.py`, `live_render.py`, `playblast_compose.py` |
-| 7 Export | bake visual pose to deform bones, FBX (armature + meshes), re-import and compare per frame; also save `<scene>_baked.blend` (baked action on the joints, CTRL constraints and rig removed) - users expect keys on the original joints in Blender too. A review-approved round ("oki rồi" on the latest version) = export it | `tools/blender/export_clip.py` (bake, FBX, baked .blend, re-import check allowing the importer's 1-frame time offset, reopens the work file) |
+| 7 Export | bake visual pose to deform bones, FBX (armature + meshes), re-import and compare per frame; also save `<scene>_baked.blend` (baked action on the joints, CTRL constraints and rig removed) - users expect keys on the original joints in Blender too. A review-approved round ("oki rồi" on the latest version) = export it | `legacy/blender/export_clip.py` (bake, FBX, baked .blend, re-import check allowing the importer's 1-frame time offset, reopens the work file) |
 
 Eye-check helpers (render trials, then compare): `eye_pose.py` / `leg_trial.py` / `stage_trials.py` / `armR_trial.py` /
-`weapon_aim_trial.py` (Blender side) and `tools/eye_compare.py`, `eye_legs.py`, `eye_head.py`, `eye_part_box.py`,
+`weapon_aim_trial.py` (Blender side) and `legacy/blender_tools/eye_compare.py`, `eye_legs.py`, `eye_head.py`, `eye_part_box.py`,
 `eye_outline.py` (part outline on the ref), `eye_blend.py` (edge overlay), `eye_iou.py`, `eye_legs_iou.py`, `eye_weapon_out.py`.
 Scoring against an original: `retarget_world.py` (world-space retarget; rests differ), `score_pose.py`, `dump_joints.py`.
 
@@ -101,9 +104,9 @@ animation = a new `clip` name (+ a display name in `PROJ_NAMES`). Laid out
 like SyncSketch (playlist | viewer | notes, timeline fixed at the bottom, drag to scrub): frame-accurate WebM (loaded
 as a blob so it always seeks), grease-pencil draw-over, notes per frame in its `db`. Playblasts are WebM (VP9 via
 ffmpeg, ~5x lighter than mp4). Clips WITH a reference (blocking/review against ref): render the keyed animation
-(`attack_pose.playblast_frames`, own folder per clip) and compose REF | ANIM per view with `tools/playblast_ref.py
+(`attack_pose.playblast_frames`, own folder per clip) and compose REF | ANIM per view with `legacy/blender_tools/playblast_ref.py
 --views "front,back,top/left" --keys ... --page-webm ... --thumb ...`; the CLIPS entry then needs `w`, `h` (frame size)
-and `views` (zoom-tag text) - the page sizes its canvas per clip. Clips without a ref: render with `live_render.py`, then `tools/playblast_anim.py --out
+and `views` (zoom-tag text) - the page sizes its canvas per clip. Clips without a ref: render with `live_render.py`, then `legacy/blender_tools/playblast_anim.py --out
 <review>.webm --page-webm work/review_page/clips/<clip>_<ver>.webm` (+ a 192 px thumb .jpg), add an entry to `CLIPS`
 in `index.html`, republish the same file with the new clip files in `files`. Read feedback with `ArtifactData` `list` on
 collection `notes` (fields: clip, version, frame, part, text, strokes [normalised x,y in the 2x2 grid:
@@ -145,7 +148,7 @@ Each accepted stage stores `TRIAL_CH(_add)` (channels of `fullbody_solve.py`) an
   post-multiply on the existing keys, keeping quaternion signs consistent between keys.
 - After changing key values always re-run `match_seam`, or the loop seam spikes.
 - Judge smoothness by acceleration/jerk against the original if available (whips are allowed to be fast).
-- Looping playblast: play f1..f(N-1) per loop (fN == f1), else every loop shows a 1-frame hitch (`tools/playblast_anim.py`).
+- Looping playblast: play f1..f(N-1) per loop (fN == f1), else every loop shows a 1-frame hitch (`legacy/blender_tools/playblast_anim.py`).
 - Variants of an approved clip (e.g. Idle_Front: no look-around, 60 F): reuse a glance-free stretch of the approved keys
   (`work/blender/key_idle_front.py`: sample each bone with its lag removed, re-key, re-lag, `match_seam`), lock what the
   brief forbids (head yaw), and make repeated cycles differ clearly (amplitude 1.1 / 0.75, 28 / 31 F) - 12% reads as a copy.
@@ -155,14 +158,14 @@ Each accepted stage stores `TRIAL_CH(_add)` (channels of `fullbody_solve.py`) an
   A long prop amplifies its parent's rotation (scapula 1.45 deg/F -> mace tip 4.5 cm/F flick). Find the source bone first
   (scaling the prop's own keys did nothing), then damp the flick in world space on the prop keys (slerp toward the
   neighbour-interpolated orientation, K 0.4-0.5), so the shrug itself stays. Measure the tip speed, not the bone head.
-- Free arm feels stiff in a breath: switch it to IK (`tools/blender/arm_ik_R.py`: rebuild from the FK keys, H_Shoulder keyed
+- Free arm feels stiff in a breath: switch it to IK (`legacy/blender/arm_ik_R.py`: rebuild from the FK keys, H_Shoulder keyed
   for the upper-arm roll/shield), then lift the hand more than the shoulder on the inhale (`ik_R_breath(5, 1.5, lag=2)`):
   the elbow folds out/back ~15 deg. Re-centre the elbow helper so the hinge stays inside its twist/bendY limits.
 
 ## Results on the boss Idle (for calibration of expectations)
 Mean joint error vs. the original: old P0 21 cm -> new P0 7 cm; silhouette IoU 0.67 -> 0.89; foot slide 0, hand drift 0,
 joint-limit violations 0. Previous approaches (MediaPipe, per-frame silhouette fitting, custom keys.json + three.js viewer)
-are kept in `tools/keyanim.py`, `tools/fit/`, `tools/viewer/` and `SKILL.v1.md` for reference only.
+are kept in `legacy/blender_tools/keyanim.py`, `tools/fit/`, `tools/viewer/` and `SKILL.v1.md` for reference only.
 
 
 ## Batch blocking (many keys)

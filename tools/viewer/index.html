@@ -293,7 +293,7 @@ async function loadJob(path) {
   try {
     job = await (await fetch(new URL("viewer.json", base))).json();
   } catch {
-    $("msg").textContent = `Không đọc được ${path}/viewer.json. Chạy: python tools/keyanim.py view --work ${path}`;
+    $("msg").textContent = `Không đọc được ${path}/viewer.json. Chạy: python legacy/blender_tools/keyanim.py view --work ${path}`;
     return;
   }
   fps = job.fps; frames = job.frame_count; keyFrames = job.keys || [];
@@ -354,7 +354,7 @@ async function loadIndex() {
   if (start && !jobs.includes(start)) jobs.unshift(start);
   $("job").innerHTML = jobs.map((j) => `<option value="${j}">${j.replace(/^work\//, "")}</option>`).join("");
   const first = start || jobs[0];
-  if (!first) { $("msg").textContent = "Chưa có clip nào. Chạy: python tools/keyanim.py view --work work/<job>"; return; }
+  if (!first) { $("msg").textContent = "Chưa có clip nào. Chạy: python legacy/blender_tools/keyanim.py view --work work/<job>"; return; }
   $("job").value = first;
   loadJob(first);
 }

@@ -1,7 +1,7 @@
 """REF | ANIM side by side for every view, same crop, plus the ANIM outline drawn on the REF (green) and per-view IoU.
 
 python tools/eye_side.py WORK FRAME TAG [TAG2 ...] [--dir work/attack/look_v4] [--out file.png] [--h 420]
-Renders come from tools/blender/eye_views.py (<dir>/<TAG>_<view>.png, RGBA). WORK/refs.json lists the reference videos.
+Renders come from legacy/blender/eye_views.py (<dir>/<TAG>_<view>.png, RGBA). WORK/refs.json lists the reference videos.
 Rows = views; columns = REF+outline, then each TAG. The IoU uses the filled reference mask (shading lines closed).
 """
 import argparse

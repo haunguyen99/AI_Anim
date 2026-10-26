@@ -28,7 +28,7 @@
 - Kiểm tầm với vai→điểm cầm ≤ dài tay trước khi đặt tay; thiếu thì dời scapula/vai → arms_hands.md#reach
 - Chọn hướng lòng bàn tay trước; cổ tay lệch ≤ ~25° → arms_hands.md#palm-dir
 - Da vai ≥ 0,30 (vai lõm/xoắn); dò pole quanh trục vai→tay; mốc căng da = pose tự nhiên của mesh → arms_hands.md#shoulder-compression
-- Giải tay bằng `hand_on_limited` (tools/blender/arm_limits.py + <clip>/joint_limits.json): góc giải phẫu đo từ vị trí khớp, xoay pole tới khi hợp lệ, cổ tay vượt thì nắn hướng bàn tay; pole theo bàn tay, gối theo bàn chân → arms_hands.md#joint-limits-in-solver
+- Giải tay bằng `hand_on_limited` (legacy/blender/arm_limits.py + <clip>/joint_limits.json): góc giải phẫu đo từ vị trí khớp, xoay pole tới khi hợp lệ, cổ tay vượt thì nắn hướng bàn tay; pole theo bàn tay, gối theo bàn chân → arms_hands.md#joint-limits-in-solver
 - Tay tự do khuỷu luôn gập > 40°; khuỷu thấp hơn vai 12–20 cm; cầm vật bên hông thì khuỷu ra ngoài → arms_hands.md#elbow-pole
 - Tay di chuyển prop: FK giữa key; review + playblast thêm góc phía tay đó → arms_hands.md#prop-hand-side-fk
 - Prop dày: áp lòng bàn tay lên mặt, cổ tay ngoài bán kính, không chìm trong cán → props_weapons.md#grip-big-shaft

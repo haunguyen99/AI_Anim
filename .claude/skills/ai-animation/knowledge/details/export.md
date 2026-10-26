@@ -1,8 +1,8 @@
 # Xuất FBX (mọi loại anim)
-Quy trình chuẩn: SKILL.md bước 7 (`tools/blender/export_clip.py`). Duyệt ("oki rồi" trên version mới nhất) = xuất.
+Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệt ("oki rồi" trên version mới nhất) = xuất.
 
 ## export-clip
-- Xuất SDR (2026-10-20): `tools/blender/export_clip.py` chạy headless trên sdr_attack.blend / sdr_p0.blend → work/sdr/export/
+- Xuất SDR (2026-10-20): `legacy/blender/export_clip.py` chạy headless trên sdr_attack.blend / sdr_p0.blend → work/sdr/export/
   SDR_MC_Attack.fbx (26F) + SDR_MC_Idle.fbx (1 pose, 2F) + SDR_MC_Attack_events.json. Đọc lại lệch ≤ 0,02 cm. Dao bay được
   nướng vào xương slingshot_0 (con của Wrist_R).
 - Exporter đặt tên take theo **tên scene** → export_clip.py giờ đặt sc.name = take trước khi xuất (trước đó take ra "Scene").
@@ -18,7 +18,7 @@ Quy trình chuẩn: SKILL.md bước 7 (`tools/blender/export_clip.py`). Duyệt
   đếm lại Definitions (giống mẫu work/sdr/export/anim_only) → export/anim_only/; kiểm: 59 xương, 0 liên kết hỏng, lệch 0,00001 cm.
 
 ## anim-only
-- Xuất "chỉ joint + anim" (dev đã có model): `tools/blender/export_skeleton_only.py` chạy trên file *_baked.blend
+- Xuất "chỉ joint + anim" (dev đã có model): `legacy/blender/export_skeleton_only.py` chạy trên file *_baked.blend
   (object_types={"ARMATURE"}, take = tên scene). SDR: work/sdr/export/anim_only/*.fbx, 23 xương, khớp bản có mesh 0,0006 cm.
   Mặc định hỏi/đoán: team Unity thường chỉ cần anim-only khi model đã import từ trước.
 
@@ -36,16 +36,16 @@ Quy trình chuẩn: SKILL.md bước 7 (`tools/blender/export_clip.py`). Duyệt
 - **Hỏi lúc intake prop treo vào joint nào** (dev cần gì). SDR06 dựng cả clip với súng là con của Chest_M, tới lúc xuất user
   mới yêu cầu chuyển sang Wrist_R, nên phải bake lại cả 3 clip và kiểm lại (2026-10-22).
 - Đổi cha của joint prop sau khi bake (SDR06 2026-10-22, "chuyển nó sang joint cổ tay phải": slingshot_0 Chest_M → Wrist_R):
-  `tools/blender/reparent_prop.py -- <take> <prop> <parent> <fbx> <anim_only_fbx> <out.blend>` chạy trên *_baked.blend:
+  `legacy/blender/reparent_prop.py -- <take> <prop> <parent> <fbx> <anim_only_fbx> <out.blend>` chạy trên *_baked.blend:
   ghi world matrix prop mọi frame → edit-mode đổi parent (rest giữ) → key lại prop mọi frame; con của prop (trống) giữ local.
   Kiểm: world mọi joint lệch < 1e-6, FBX đọc lại lệch 0,0008 cm, parent trong FBX = Wrist_R.
 
 ## base
-- File base "chỉ joint + mesh" (SDR06 2026-10-22): `tools/blender/export_base.py -- <out.fbx>` trên baked blend có hierarchy cuối
+- File base "chỉ joint + mesh" (SDR06 2026-10-22): `legacy/blender/export_base.py -- <out.fbx>` trên baked blend có hierarchy cuối
   (*_wristR.blend): bỏ action, đưa pose về rest (bind), FBX bake_anim=False. Kiểm khi đọc lại: đủ xương, parent prop đúng, 0 action.
 
 ## FBX straight from Pose Lab (2026-10-23, Gaygor Walk; user: "làm hoàn toàn trên Pose Lab")
-- Page button "Xuất FBX" writes an animation-only binary FBX 7.4 (Armature null + 59 limb nodes, Lcl T/R(XYZ Euler)/S curves, 30 fps, keys at frame*1539538600 ticks, no meshes) = same thing as `tools/blender/export_skeleton_only.py`. Code: `work/pose_lab/fbx/fbxexport.js` (JS, used by the page) = `fbxbin.py` + `fbxwrite.py` (Python reference); `cmp_blender.py` imports two FBX in Blender and compares every bone per frame.
+- Page button "Xuất FBX" writes an animation-only binary FBX 7.4 (Armature null + 59 limb nodes, Lcl T/R(XYZ Euler)/S curves, 30 fps, keys at frame*1539538600 ticks, no meshes) = same thing as `legacy/blender/export_skeleton_only.py`. Code: `work/pose_lab/fbx/fbxexport.js` (JS, used by the page) = `fbxbin.py` + `fbxwrite.py` (Python reference); `cmp_blender.py` imports two FBX in Blender and compares every bone per frame.
 - Conversion rule (found by calibrating on 60 bones): FBX bone world = [unit-scale rotation of the glTF world | 100 x glTF world position], bone-axis correction is identity, FBX local = inverse(parent world) x world. Checked: Walk P0 and Idle_Front 60F vs Blender's own FBX -> 0.00 cm position, <= 0.1 deg (rotation error only from scale drift in the old baked Idle_Front hand bones).
 - Blender cannot import ASCII FBX: write binary (array encoding 0 = uncompressed is valid; sentinel/footer as encode_bin.py).
 - Artifact `downloads` capability does not allow `.fbx`: the page saves `<take>_FBX.zip` (store-only zip written in JS) -> unzip.
