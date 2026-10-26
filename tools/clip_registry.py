@@ -135,7 +135,7 @@ def cmd_pose_version(a):
 def cmd_build(a):
     py = sys.executable
     for rel in ("work/review_page/split_pages.py", "work/pose_lab/split_pages.py"):
-        print("→", rel); subprocess.run([py, "-I", os.path.join(ROOT, rel)], check=True)
+        print("→", rel); subprocess.run([py, "-I", "-X", "utf8", os.path.join(ROOT, rel)], check=True)
 
 
 def main():

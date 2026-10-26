@@ -50,6 +50,30 @@ for bid, o in bones.items():
                      bind_mat=(bind[bid].flatten().tolist() if bid in bind else None)))
 for s in skel: s.pop("id")
 
+def _rot(e):  # FBX mặc định thứ tự XYZ (R = Rz·Ry·Rx), độ
+    x, y, z = np.radians(e)
+    Rx = np.array([[1, 0, 0], [0, np.cos(x), -np.sin(x)], [0, np.sin(x), np.cos(x)]])
+    Ry = np.array([[np.cos(y), 0, np.sin(y)], [0, 1, 0], [-np.sin(y), 0, np.cos(y)]])
+    Rz = np.array([[np.cos(z), -np.sin(z), 0], [np.sin(z), np.cos(z), 0], [0, 0, 1]])
+    M = np.eye(4); M[:3, :3] = Rz @ Ry @ Rx; return M
+def _tr(v):
+    M = np.eye(4); M[:3, 3] = v; return M
+def _sc(v):
+    return np.diag([v[0], v[1], v[2], 1.0])
+def model_matrix(o):
+    """World matrix của node mesh (gộp cả cha là Model), theo công thức transform FBX."""
+    pr = {p[1][0]: list(p[1][4:]) for p in (sub(o, "Properties70") or (0, 0, []))[2]}
+    g = lambda k, d: np.array(pr.get(k, d), float)
+    z, one = [0, 0, 0], [1, 1, 1]
+    Rp, Sp = g("RotationPivot", z), g("ScalingPivot", z)
+    L = (_tr(g("Lcl Translation", z)) @ _tr(g("RotationOffset", z)) @ _tr(Rp) @ _rot(g("PreRotation", z))
+         @ _rot(g("Lcl Rotation", z)) @ np.linalg.inv(_rot(g("PostRotation", z))) @ _tr(-Rp)
+         @ _tr(g("ScalingOffset", z)) @ _tr(Sp) @ _sc(g("Lcl Scaling", one)) @ _tr(-Sp))
+    G = _tr(g("GeometricTranslation", z)) @ _rot(g("GeometricRotation", z)) @ _sc(g("GeometricScaling", one))
+    par = [p for p in child_of.get(o[1][0], []) if p in models]
+    W = model_matrix(models[par[0]]) if par else np.eye(4)
+    return W @ L @ G
+
 # mesh model -> geometry
 meshout = []
 for mid, mo in meshes.items():
@@ -58,6 +82,8 @@ for mid, mo in meshes.items():
         g = next((byid[a] for t, a, b in conns if b == mid and a in byid and byid[a][0] == "Geometry"), None)
     gid = g[1][0]
     V = np.array(sub(g, "Vertices")[1][0]).reshape(-1, 3)
+    # áp transform của node mesh (Lcl T/R/S + pivot + Geometric*); trước đây bỏ qua → zom1 Items/Bloods lệch 3,58 cm
+    V = (model_matrix(mo) @ np.c_[V, np.ones(len(V))].T).T[:, :3]
     P = sub(g, "PolygonVertexIndex")[1][0]
     tris, poly = [], []
     for i in P:

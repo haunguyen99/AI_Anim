@@ -11,13 +11,16 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | Loại | File | Trạng thái |
 |---|---|---|
 | Idle | `idle.md` | Gaygor Idle 133F (duyệt), Idle_Front 60F (duyệt v14), SDR Idle 1 pose (v19) |
-| Attack | `attack.md` | Gaygor Attack: Cascadeur casc_blocking_v1 chờ góp ý; SDR Attack chốt polish v5 (xuất) |
+| Attack | `attack.md` | Gaygor Attack: Cascadeur casc_blocking_v1 chờ góp ý; **Gaygor Attack 50 Blocking (quy trình B) polish v3 duyệt, xuất FBX 2026-10-23**; SDR Attack chốt polish v5 (xuất) |
 | Shoot / Reload | `shoot_reload.md` | SDR map06 đang làm (Reload spline v3) |
 | Walk/Run, Hit, Death, Skill, Jump/khác | `other_types.md` | chưa làm - khung trống + mẫu file |
 
 ## Mục lục
 | Mục | Đọc khi … |
 |---|---|
+| **text_brief.md** | chỉ có yêu cầu bằng lời (không ref, không blocking): quy trình C, intake, bản thiết kế + bảng timing, pose 10%, phần còn thiếu (pose_build, đọc key Pose Lab, FBX nguồn) |
+| **user_blocking.md** | user/team đưa FBX blocking (không ref): quy trình B, cổng duyệt, script mẫu, luật (RotationOrder, mũi chân, cung nhấc chân, QA fold_backs) |
+| **review_process.md** `#home-app` | Home (quản lý dự án/anim), clip tạo từ Home, trạng thái hiện trên Home |
 | **arms_hands.md** | |
 | `#no-overbend` | tay/chân bị chê xoắn, bẻ quá; đặt tay lên prop; sau khi rig (joint_limits) |
 | `#twist-split` | chia xoắn vai/cổ tay; khiên/giáp trên cẳng tay |

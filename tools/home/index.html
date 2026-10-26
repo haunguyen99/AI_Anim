@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Animation Home</title>
+<style>
+:root{
+  --bg:#f5f4f0; --panel:#ffffff; --ink:#1d1d1b; --muted:#6b6a65; --line:#e3e1da; --soft:#efeee9;
+  --accent:#c2541b; --accent-ink:#fff;
+  --s-working:#2563a8; --s-waiting:#b7791f; --s-done:#2f7d4f; --s-paused:#8a8880;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#17171a; --panel:#212125; --ink:#ecebe6; --muted:#9b9a94; --line:#33333a; --soft:#2a2a2f;
+    --accent:#e0743a; --s-working:#6aa3e0; --s-waiting:#e0b04f; --s-done:#5fbf86; --s-paused:#7f7e78; --shadow:none; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:inherit}
+header{display:flex;align-items:center;gap:14px;padding:14px 28px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+.logo{font-weight:700;letter-spacing:.2px;cursor:pointer}
+.logo span{color:var(--accent)}
+.crumb{color:var(--muted);font-size:14px}
+.crumb a{text-decoration:none;color:var(--muted)} .crumb a:hover{color:var(--ink)}
+header .sp{flex:1}
+main{max-width:1180px;margin:0 auto;padding:26px 28px 60px}
+h1{font-size:24px;margin:0 0 4px} h2{font-size:16px;margin:28px 0 12px}
+.sub{color:var(--muted);margin:0 0 20px}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:8px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:26px;line-height:1.1} .stat span{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column}
+.card:hover{border-color:var(--muted)}
+.cover{aspect-ratio:3/1;background:var(--soft) center/cover no-repeat;border-bottom:1px solid var(--line)}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{margin:0;font-size:17px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.bar{display:flex;height:6px;border-radius:4px;overflow:hidden;background:var(--soft)}
+.bar i{display:block}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.st-working{color:var(--s-working)} .st-waiting{color:var(--s-waiting)} .st-done{color:var(--s-done)} .st-paused{color:var(--s-paused)}
+.bg-working{background:var(--s-working)} .bg-waiting{background:var(--s-waiting)} .bg-done{background:var(--s-done)} .bg-paused{background:var(--s-paused)}
+.new{border:2px dashed var(--line);background:transparent;box-shadow:none;align-items:center;justify-content:center;min-height:200px;color:var(--muted);font-weight:600}
+.new:hover{color:var(--ink)}
+/* danh sách anim */
+.char{margin-top:24px}
+.char-h{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.char-h h2{margin:0}
+.anim{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;box-shadow:var(--shadow)}
+.thumb{width:150px;aspect-ratio:3/1;border-radius:8px;background:var(--soft) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+.anim h3{margin:0 0 3px;font-size:16px}
+.pipe{display:flex;gap:3px;margin:6px 0 4px}
+.pipe span{font-size:11px;padding:2px 7px;border-radius:4px;background:var(--soft);color:var(--muted)}
+.pipe span.done{background:color-mix(in srgb,var(--s-done) 18%,transparent);color:var(--s-done)}
+.pipe span.cur{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.note{font-size:13px;color:var(--muted);max-height:2.9em;overflow:hidden}
+.acts{display:flex;flex-direction:column;gap:6px;align-items:stretch;min-width:150px}
+.links{display:flex;gap:4px;justify-content:flex-end}
+.links a{font-size:12px;color:var(--muted);text-decoration:none;padding:2px 6px;border-radius:4px;border:1px solid var(--line)}
+.links a:hover{color:var(--ink)} .links a.off{opacity:.35;pointer-events:none}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
+.filters button{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:20px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer}
+.filters button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cols{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);position:sticky;top:76px}
+.side h2{margin:0 0 10px}
+.log{list-style:none;margin:0;padding:0;font-size:13px}
+.log li{padding:7px 0;border-top:1px solid var(--line)} .log li:first-child{border-top:0}
+.log .d{color:var(--muted);font-size:12px}
+.todo li{cursor:pointer}
+code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:12.5px}
+/* hộp thoại */
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);padding:0;width:min(520px,calc(100vw - 32px));box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+dialog form{padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+dialog h3{margin:0 0 4px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+input,select,textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+textarea{min-height:70px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.err{color:#c0392b;font-size:13px;min-height:1em}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;pointer-events:none;z-index:50;max-width:90vw}
+.toast.on{opacity:1}
+.empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+@media (max-width:860px){
+  .cols{grid-template-columns:1fr} .side{position:static}
+  .anim{grid-template-columns:1fr} .thumb{width:100%} .acts{min-width:0} .links{justify-content:flex-start}
+  header,main{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" onclick="go('#/')">AI <span>Animation</span></div>
+  <div class="crumb" id="crumb"></div>
+  <div class="sp"></div>
+  <button class="btn small" onclick="refresh(true)" title="Đọc lại sổ work/clips.json">↻ Làm mới</button>
+</header>
+<main id="app"><div class="empty">Đang đọc dữ liệu…</div></main>
+
+<dialog id="dlgProject"><form method="dialog" onsubmit="return submitProject(event)">
+  <input type="hidden" name="pid">
+  <h3 id="projTitle">Dự án mới</h3>
+  <label>Tên dự án (theo game)<input name="name" required placeholder="vd: Shoot Die Repeat"></label>
+  <label>Mô tả<input name="desc" placeholder="thể loại, style, ghi chú"></label>
+  <label id="projChars">Nhân vật (mỗi dòng một nhân vật, có thể thêm sau)<textarea name="chars" placeholder="SDR&#10;SDR06"></textarea></label>
+  <div class="err" id="errProject"></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Hủy</button><button class="btn primary" id="projSubmit">Tạo dự án</button></div>
+</form></dialog>
+
+<dialog id="dlgClip"><form method="dialog" onsubmit="return submitClip(event)">
+  <h3>Animation mới</h3>
+  <label>Nhân vật<select name="character" onchange="this.form.newchar.parentElement.style.display=this.value==='__new'?'':'none'"></select></label>
+  <label style="display:none">Tên nhân vật mới<input name="newchar" placeholder="vd: SDR07"></label>
+  <label>Tên anim<input name="clip" required placeholder="vd: Walk, Attack_02"></label>
+  <div class="two">
+    <label>Số frame<input name="frames" type="number" min="1" placeholder="vd: 60"></label>
+    <label>FPS<input name="fps" type="number" min="1" value="30"></label>
+  </div>
+  <label>Thư mục video ref (nếu có)<input name="ref" placeholder="vd: E:\ref\walk"></label>
+  <label>Mô tả chuyển động<textarea name="desc" placeholder="nhân vật làm gì, nhịp, cảm xúc, prop…"></textarea></label>
+  <div class="err" id="errClip"></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Hủy</button><button class="btn primary">Tạo anim</button></div>
+</form></dialog>
+
+<dialog id="dlgEdit"><form method="dialog" onsubmit="return submitEdit(event)">
+  <h3 id="editTitle">Sửa anim</h3>
+  <input type="hidden" name="id">
+  <label>Tên anim (chỉ đổi tên hiện trên Home; để trống = tên gốc)<input name="title"></label>
+  <div class="two">
+    <label>Giai đoạn<select name="stage"></select></label>
+    <label>Trạng thái<select name="status">
+      <option value="">Tự đoán từ ghi chú</option><option value="working">Đang làm</option>
+      <option value="waiting">Chờ góp ý</option><option value="done">Đã xong</option><option value="paused">Tạm dừng</option></select></label>
+  </div>
+  <label>Ghi chú<textarea name="note"></textarea></label>
+  <div class="err" id="errEdit"></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Hủy</button><button class="btn primary">Lưu</button></div>
+</form></dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STAGE_VI = {rig:"Rig", analysis:"Phân tích", p0:"Base pose", blocking:"Blocking", spline:"Spline", polish:"Polish", export:"Export"};
+const STATUS_VI = {working:"Đang làm", waiting:"Chờ góp ý", done:"Đã xong", paused:"Tạm dừng"};
+let S = null, curProject = null, filter = "all";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(t){ const e=$("#toast"); e.textContent=t; e.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove("on"),3200); }
+function go(h){ location.hash=h; }
+function clipsOf(p){ return S.clips.filter(c => p.characters.includes(c.character)); }
+function countBy(list){ const r={working:0,waiting:0,done:0,paused:0}; list.forEach(c=>r[c.status]=(r[c.status]||0)+1); return r; }
+function bar(list){
+  const n=list.length||1, k=countBy(list);
+  return `<div class="bar">${["done","waiting","working","paused"].map(s=>`<i class="bg-${s}" style="width:${k[s]/n*100}%"></i>`).join("")}</div>`;
+}
+function statusChip(s){ return `<span class="chip st-${s}"><span class="dot bg-${s}"></span>${STATUS_VI[s]||s}</span>`; }
+function nextCmd(c){
+  const key = (c.name||"").split(" ")[0].toLowerCase();
+  if (c.stage==="rig") return `Nhân vật chưa có rig: gõ <code>/rig_ai</code>`;
+  if (!c.pose_url && !c.review_url) return `Gõ <code>/new_clip ${esc(c.id)}</code> để phân tích + dựng P0`;
+  if (c.status==="waiting") return `Góp ý trên Review Lab rồi gõ <code>/fb ${esc(key)}</code>`;
+  if (c.status==="done") return `Đã xuất FBX`;
+  if (c.status==="paused") return `Tạm dừng`;
+  return "";
+}
+
+async function refresh(say){
+  try{
+    const r = await fetch("/api/state", {cache:"no-store"}); S = await r.json();
+    if (S.error) throw new Error(S.error);
+    render(); if (say) toast("Đã đọc lại sổ clip");
+  }catch(e){ $("#app").innerHTML = `<div class="empty">Không đọc được dữ liệu: ${esc(e.message)}<br>Server Home có đang chạy không? <code>tools\\home\\server.py</code></div>`; }
+}
+async function post(url, body){
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const j = await r.json(); if (!j.ok) throw new Error(j.error||"Lỗi"); return j;
+}
+
+function render(){
+  const m = location.hash.match(/^#\/p\/([^/]+)/);
+  curProject = m ? S.projects.find(p=>p.id===decodeURIComponent(m[1])) : null;
+  if (m && !curProject) return go("#/");
+  curProject ? renderProject(curProject) : renderHome();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Home ---------- */
+function renderHome(){
+  $("#crumb").innerHTML = "";
+  document.title = "AI Animation Home";
+  const all = S.clips, k = countBy(all);
+  const waiting = all.filter(c=>c.status==="waiting"), working = all.filter(c=>c.status==="working");
+  const projOf = c => S.projects.find(p=>p.characters.includes(c.character));
+  const todo = [...waiting, ...working];
+  $("#app").innerHTML = `
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><h1>Dự án</h1><p class="sub">Chọn dự án để xem animation, hoặc tạo dự án mới.</p></div>
+      <button class="btn primary" onclick="openProject()">+ Dự án mới</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${S.projects.length}</b><span>dự án</span></div>
+      <div class="stat"><b>${all.length}</b><span>animation</span></div>
+      <div class="stat"><b class="st-working">${k.working}</b><span>đang làm</span></div>
+      <div class="stat"><b class="st-waiting">${k.waiting}</b><span>chờ góp ý</span></div>
+      <div class="stat"><b class="st-done">${k.done}</b><span>đã xong</span></div>
+      ${k.paused?`<div class="stat"><b class="st-paused">${k.paused}</b><span>tạm dừng</span></div>`:""}
+    </div>
+    <div class="cols" style="margin-top:22px">
+      <div class="grid">
+        ${S.projects.map(p=>{ const cl=clipsOf(p), kk=countBy(cl); return `
+          <div class="card" onclick="go('#/p/${encodeURIComponent(p.id)}')">
+            <div class="cover" style="${p.cover?`background-image:url('${esc(p.cover)}')`:""}"></div>
+            <div class="body">
+              <h3>${esc(p.name)}</h3>
+              <div class="small muted">${esc(p.desc||"")}</div>
+              <div class="row small muted">${p.characters.map(c=>`<span class="chip">${esc(c)}${p.labels&&p.labels[c]?` · ${esc(p.labels[c])}`:""}</span>`).join("")}</div>
+              <div style="flex:1"></div>
+              ${bar(cl)}
+              <div class="row small muted" style="justify-content:space-between">
+                <span>${cl.length} anim · <span class="st-done">${kk.done} xong</span>${kk.waiting?` · <span class="st-waiting">${kk.waiting} chờ</span>`:""}${kk.working?` · <span class="st-working">${kk.working} đang làm</span>`:""}${kk.paused?` · <span class="st-paused">${kk.paused} tạm dừng</span>`:""}</span>
+                <span>${esc(p.updated||"")}</span>
+              </div>
+            </div>
+          </div>`}).join("")}
+        <div class="card new" onclick="openProject()">+ Dự án mới</div>
+      </div>
+      <aside class="side">
+        <h2>Tiếp tục làm</h2>
+        ${todo.length ? `<ul class="log todo">${todo.map(c=>{const p=projOf(c);return `
+          <li onclick="go('#/p/${encodeURIComponent(p?p.id:"")}')"><b>${esc(c.character)} · ${esc(c.name)}</b> ${statusChip(c.status)}
+          <div class="d">${esc(p?p.name:"")} · ${STAGE_VI[c.stage]||c.stage}${c.review_latest?` · ${esc(c.review_latest.version)}`:""}</div></li>`}).join("")}</ul>`
+          : `<div class="small muted">Không có anim nào đang dở.</div>`}
+        <h2 style="margin-top:18px">Hoạt động gần đây</h2>
+        <ul class="log">${S.activity.slice(0,8).map(g=>`<li>${esc(g.msg)}<div class="d">${esc(g.date)} · ${esc(g.hash)}</div></li>`).join("")}</ul>
+      </aside>
+    </div>`;
+}
+
+/* ---------- Dự án ---------- */
+function renderProject(p){
+  $("#crumb").innerHTML = `<a href="#/">Home</a> / ${esc(p.name)}`;
+  document.title = p.name + " · AI Animation";
+  const cl = clipsOf(p), k = countBy(cl);
+  const shown = c => filter==="all" || c.status===filter;
+  const chars = [...new Set([...p.characters, ...cl.map(c=>c.character)])];
+  $("#app").innerHTML = `
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><h1>${esc(p.name)}</h1><p class="sub" style="margin-bottom:8px">${esc(p.desc||"")}</p></div>
+      <div class="row" style="gap:8px"><button class="btn" onclick="openProject(true)">Sửa dự án</button><button class="btn primary" onclick="openClip()">+ Animation mới</button></div>
+    </div>
+    <div class="filters">
+      ${[["all",`Tất cả (${cl.length})`],["working",`Đang làm (${k.working})`],["waiting",`Chờ góp ý (${k.waiting})`],["done",`Đã xong (${k.done})`],...(k.paused?[["paused",`Tạm dừng (${k.paused})`]]:[])]
+        .map(([v,t])=>`<button class="${filter===v?"on":""}" onclick="filter='${v}';render()">${t}</button>`).join("")}
+    </div>
+    <div class="cols" style="margin-top:6px">
+      <div>
+        ${chars.map(ch=>{ const list=cl.filter(c=>c.character===ch&&shown(c)); const rig=(S.characters[ch]||{}).rig_url;
+          return `<section class="char">
+            <div class="char-h"><h2>${esc(ch)}</h2><span class="muted small">${esc((p.labels||{})[ch]||"")}</span>
+              ${rig?`<a class="chip" href="${esc(rig)}" target="_blank">Rig Lab ↗</a>`:`<span class="chip">chưa có rig</span>`}</div>
+            ${list.length? list.map(animRow).join("") : `<div class="empty small">Chưa có anim${filter!=="all"?" ở mục này":""}.</div>`}
+          </section>`}).join("")}
+        ${chars.length?"":`<div class="empty">Dự án chưa có nhân vật. Bấm <b>+ Animation mới</b> để thêm nhân vật và anim đầu tiên.</div>`}
+      </div>
+      <aside class="side">
+        <h2>Hoạt động</h2>
+        ${p.activity.length?`<ul class="log">${p.activity.map(g=>`<li>${esc(g.msg)}<div class="d">${esc(g.date)} · ${esc(g.hash)}</div></li>`).join("")}</ul>`:`<div class="small muted">Chưa có commit nào.</div>`}
+      </aside>
+    </div>`;
+}
+function animRow(c){
+  const si = S.stages.indexOf(c.stage);
+  const latest = c.review_latest || c.pose_latest;
+  const hint = nextCmd(c);
+  return `<div class="anim">
+    <div class="thumb" style="${c.thumb?`background-image:url('${esc(c.thumb)}')`:""}">${c.thumb?"":"chưa có playblast"}</div>
+    <div>
+      <div class="row" style="gap:8px"><h3>${esc(c.name)}</h3>${statusChip(c.status)}
+        <span class="small muted">${c.frames?c.frames+"F":""}${latest?` · bản ${esc(latest.version)}`:""}${c.updated?` · ${esc(c.updated)}`:""}</span></div>
+      <div class="pipe">${S.stages.map((s,i)=>`<span class="${i<si?"done":i===si?"cur":""}">${STAGE_VI[s]}</span>`).join("")}</div>
+      <div class="note" title="${esc(c.note)}">${esc(c.note||"")}</div>
+      ${hint?`<div class="small" style="margin-top:4px">→ ${hint}</div>`:""}
+    </div>
+    <div class="acts">
+      ${c.continue?`<a class="btn primary" href="${esc(c.continue[1])}" target="_blank">Tiếp tục · ${esc(c.continue[0])}</a>`
+        :`<button class="btn primary" onclick="copyCmd('/new_clip ${esc(c.id)}')">Chép lệnh /new_clip</button>`}
+      <div class="links">
+        <a class="${c.rig_url?"":"off"}" href="${esc(c.rig_url)}" target="_blank">Rig</a>
+        <a class="${c.pose_url?"":"off"}" href="${esc(c.pose_url)}" target="_blank">Pose</a>
+        <a class="${c.review_url?"":"off"}" href="${esc(c.review_url)}" target="_blank">Review</a>
+      </div>
+      <button class="btn small" onclick="openEdit('${esc(c.id)}')">Sửa / đổi tên</button>
+    </div>
+  </div>`;
+}
+function copyCmd(t){ navigator.clipboard?.writeText(t).then(()=>toast(`Đã chép "${t}": dán vào chat với Claude`), ()=>toast(t)); }
+
+/* ---------- hộp thoại ---------- */
+function openProject(edit){
+  const d=$("#dlgProject"), f=d.querySelector("form"); f.reset(); $("#errProject").textContent="";
+  const p = edit ? curProject : null;
+  f.pid.value = p ? p.id : ""; f.name.value = p ? p.name : ""; f.desc.value = p ? (p.desc||"") : "";
+  $("#projTitle").textContent = p ? "Sửa dự án" : "Dự án mới";
+  $("#projSubmit").textContent = p ? "Lưu" : "Tạo dự án";
+  $("#projChars").style.display = p ? "none" : "";
+  d.showModal();
+}
+async function submitProject(e){
+  e.preventDefault(); const f=e.target;
+  if (e.submitter && e.submitter.value==="cancel") return f.closest("dialog").close(), false;
+  if (f.pid.value) {
+    try{ await post("/api/project/update", {id:f.pid.value, name:f.name.value.trim(), desc:f.desc.value});
+      f.closest("dialog").close(); await refresh(); toast("Đã đổi tên / mô tả dự án"); }
+    catch(err){ $("#errProject").textContent = err.message; }
+    return false;
+  }
+  try{
+    const j = await post("/api/project", {name:f.name.value, desc:f.desc.value, characters:f.chars.value.split(/\n|,/)});
+    f.closest("dialog").close(); await refresh(); go("#/p/"+encodeURIComponent(j.id)); toast("Đã tạo dự án");
+  }catch(err){ $("#errProject").textContent = err.message; }
+  return false;
+}
+function openClip(){
+  const d=$("#dlgClip"), f=d.querySelector("form"); f.reset(); $("#errClip").textContent="";
+  const chars=[...new Set([...curProject.characters, ...clipsOf(curProject).map(c=>c.character)])];
+  f.character.innerHTML = chars.map(c=>`<option>${esc(c)}</option>`).join("") + `<option value="__new">+ Nhân vật mới…</option>`;
+  f.newchar.parentElement.style.display = chars.length ? "none" : "";
+  if (!chars.length) f.character.value="__new";
+  d.showModal();
+}
+async function submitClip(e){
+  e.preventDefault(); const f=e.target;
+  if (e.submitter && e.submitter.value==="cancel") return f.closest("dialog").close(), false;
+  const ch = f.character.value==="__new" ? f.newchar.value.trim() : f.character.value;
+  try{
+    const j = await post("/api/clip", {project:curProject.id, character:ch, clip:f.clip.value, frames:f.frames.value, fps:f.fps.value, ref:f.ref.value, desc:f.desc.value});
+    f.closest("dialog").close(); filter="all"; await refresh();
+    copyCmd("/new_clip "+j.id);
+  }catch(err){ $("#errClip").textContent = err.message; }
+  return false;
+}
+function openEdit(id){
+  const c=S.clips.find(x=>x.id===id), d=$("#dlgEdit"), f=d.querySelector("form"); $("#errEdit").textContent="";
+  $("#editTitle").textContent = `${c.character} · ${c.name}`;
+  f.id.value=id; f.stage.innerHTML=S.stages.map(s=>`<option value="${s}">${STAGE_VI[s]}</option>`).join("");
+  f.stage.value=c.stage; f.note.value=c.note||""; f.title.value=c.title||""; f.title.placeholder=c.base_name||c.name;
+  f.status.value = c.status_manual||""; d.showModal();
+}
+async function submitEdit(e){
+  e.preventDefault(); const f=e.target;
+  if (e.submitter && e.submitter.value==="cancel") return f.closest("dialog").close(), false;
+  try{ await post("/api/clip/update", {id:f.id.value, title:f.title.value, stage:f.stage.value, note:f.note.value, status:f.status.value});
+    f.closest("dialog").close(); await refresh(); toast("Đã lưu vào work/clips.json"); }
+  catch(err){ $("#errEdit").textContent = err.message; }
+  return false;
+}
+
+addEventListener("hashchange", ()=>{ filter="all"; refresh(); });
+addEventListener("focus", ()=>refresh());   // quay lại tab Home thì đọc lại sổ (Claude có thể vừa cập nhật)
+refresh();
+</script>
+</body>
+</html>

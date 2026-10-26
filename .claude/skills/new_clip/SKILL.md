@@ -19,6 +19,10 @@ Mọi clip nằm trong **sổ clip** `work/clips.json` (đọc/ghi bằng `tools
 
 Rig Lab chưa xuất FBX có skin và Pose Lab chưa đọc `rig.json` hay xương twist của Rig Lab (xem `/rig_ai`, phần "Chưa làm"). Chuỗi hiện nối ở mức đăng ký, trang và link, chưa nối dữ liệu rig tự động.
 
+## Home
+
+Người dùng bắt đầu từ Home (`tools/home/start.bat`, http://127.0.0.1:8780): dự án theo game (khóa `projects` trong sổ), nút **+ Animation mới** đã đăng ký clip và ghi `work/<id>/brief.md` (frame, fps, ref, mô tả). Gõ `/new_clip <id>` sau khi tạo trên Home: đọc brief, bỏ qua bước 2 và 4 cho phần đã có, làm tiếp từ bước 3/5. Clip mới tạo bằng lệnh thì thêm nhân vật vào đúng dự án trong `projects` nếu chưa có. Giữ `note` ngắn, có chữ "chờ" khi đợi góp ý, để Home hiện đúng trạng thái.
+
 ## Khi gõ /new_clip
 
 1. **Xem sổ:** `clip_registry.py list`. Nếu người dùng chỉ hỏi trạng thái thì trả lời từ đây rồi dừng.
@@ -26,6 +30,8 @@ Rig Lab chưa xuất FBX có skin và Pose Lab chưa đọc `rig.json` hay xươ
 3. **Nhân vật mới (chưa có `rig_url`):** làm `/rig_ai` chế độ 3 trước, ghi link Rig Lab vào sổ rồi mới làm P0.
 4. **Đăng ký:** `clip_registry.py new <Nhân vật> <Clip> [--parts "A,B,C"] [--stage analysis]`. Lệnh in id (vd `testchar_walk`).
 5. **Phân tích rồi P0** theo skill `ai-animation` (viết phân tích chi tiết, chờ duyệt; P0 theo mức). Mỗi khi qua giai đoạn: `clip_registry.py stage <id> <giai đoạn>`.
+   **Không có ref, không có blocking, chỉ có yêu cầu bằng lời** (brief ghi "Ref: không" hoặc chỉ có mô tả): đi **quy trình C** (`knowledge/details/text_brief.md`): ở bước 2 hỏi gộp thêm độ dài, loop/một lần, camera game, sự kiện gameplay, pose đầu/cuối (mặc định Idle F1); rồi bản thiết kế + bảng timing (chờ duyệt) → pose 10% trên Pose Lab → blocking → như quy trình B.
+   **Ref là FBX blocking của chính rig** (vd brief ghi `Assets/<Nv>/Blocking/*.fbx`): đi **quy trình B** (`ai-animation` → `knowledge/details/user_blocking.md`): hỏi mục đích một lần (nạp vào Pose Lab làm tiếp / chỉ làm ref / review trước), nạp file thành version Pose Lab (`make_model.py`, mode keys, interp step), chờ "khớp file", rồi phân tích → sửa lỗi → pose chuyển tiếp → polish → FBX. Giai đoạn trong sổ: `blocking` → `polish` → `export`.
 6. **Trang Pose Lab (khi có P0 hoặc anim đầu tiên):** xuất model (`models/<id>_p0_v1.json`) và ảnh ref (`make_ref_sprites.py`), rồi
    `clip_registry.py pose-version <id> --version p0_v1 --label "..." --glb models/<file>.json --frames N [--keys 1 --mode keys --note "..."]`
    → `clip_registry.py build` → `Artifact` đăng `work/pose_lab/pages/<id>/index.html` (**không** truyền `url`; trang mới) → `clip_registry.py set-url <id> pose <url>`.

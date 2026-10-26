@@ -231,6 +231,32 @@ Mỗi bộ phận ghi theo cùng một mẫu:
 - Bake NLA thành một action cho mỗi clip, chỉ giữ xương deform, rồi xuất FBX (mỗi clip một take, hoặc chung một file kèm danh sách clip).
 - Kiểm tra lại: import lại FBX và so từng frame với bản trong Blender (lệch < 0.1 cm).
 
+## 2B. Quy trình B — từ blocking của người dùng (duyệt 2026-10-23)
+
+Khi người dùng hoặc team đưa FBX đã có blocking của chính rig đó (không có video ref), file blocking là chuẩn về pose và
+timing. AI không dựng lại pose mà làm tiếp từ đó:
+
+```
+ 1 Nạp FBX → Pose Lab ─►[KHỚP FILE]─► 2 Phân tích nhân vật + đòn ─►[DUYỆT PHÂN TÍCH]─► 3 Sửa lỗi blocking
+   ─► 4 Pose chuyển tiếp ─► 5 Trọng lượng ─►[DUYỆT 75%]─► 6 Spline + polish (nướng, QA, playblast) ─►[DUYỆT POLISH]─► 7 FBX
+```
+
+Chi tiết từng bước, lệnh và các luật rút ra: `.claude/skills/ai-animation/knowledge/details/user_blocking.md`. Clip mẫu:
+Gaygor Attack 50 Blocking (`work/gaygor_attack_50_blocking/`). Không dùng Blender: Pose Lab là nơi xem và chỉnh pose,
+Review Lab là nơi xem chuyển động, FBX được ghi bằng cách thay đường cong trong chính file của team.
+
+## 2C. Quy trình C — chỉ có yêu cầu bằng lời (thêm 2026-10-24)
+
+Không có ref, không có blocking, chỉ có yêu cầu kiểu "Gaygor bị đánh trúng". Mọi pose và nhịp đều là thiết kế, nên các cổng
+duyệt sớm và rẻ (chữ, ảnh tĩnh) đứng trước chuyển động:
+
+```
+ C1 Intake gộp ─► C2 Bản thiết kế + bảng timing ─►[DUYỆT THIẾT KẾ]─► C3 Pose kể chuyện 10% (Pose Lab) ─►[DUYỆT POSE]
+   ─► C4 Blocking 25–50% ─►[DUYỆT BLOCKING]─► nhánh B bước 3–7 (sửa lỗi, pose chuyển tiếp, trọng lượng, polish, FBX)
+```
+
+Chi tiết, luật thiết kế và các phần còn thiếu: `.claude/skills/ai-animation/knowledge/details/text_brief.md`.
+
 ## 3. Phân vai
 
 | Việc | Ai làm |

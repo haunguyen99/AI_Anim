@@ -43,6 +43,20 @@ Ký hiệu trạng thái: **[đã kiểm chứng]** có ví dụ được duyệ
 - **Bẫy:** đổi lag thì chỉ đổi thời điểm, không đổi tư thế lấy mẫu; đạo cụ nặng bị cha kéo -> trễ key không đủ, phải
   điều khiển đường đi đầu nặng (`mace_delay`).
 - **Kiểm tra:** bảng cực trị từng bộ phận tăng dần theo chuỗi.
+- **Đã làm (Gaygor Walk b13, Pose Lab):** user chê "cứng nhắc". Trước hết quét tầm xoay + bước/frame từng xương: đầu, cổ, khố
+  đứng im, khuỷu tay khiên bị khóa, và có giật 1 frame ở root (F21). Lớp overlap theo hông, tính trên trục thế giới:
+  thân trễ 2F, đầu giảm còn 50% và trễ 2F, khố trễ 3F + bị đùi đẩy, khuỷu trễ vai 3–5F.
+- **Bẫy (walk vác vật nặng):** đặt vai xoay ngược hông 35% với đích là hằng số thì mất 1,5–2 điểm IoU, vì ref để vai đi cùng
+  hông. Đích phải là chính chuyển động cũ dời trễ (`sy(f-2)`) cộng một phần nhỏ xoay ngược (~20%). Không bao giờ đích = trung bình.
+  Đo IoU từng lớp riêng trước khi gộp.
+- **Chuyển overlap dựng tay sang lò xo Pose Lab (Gaygor Walk phys_v1, 2026-10-26, user: "áp dụng vật lý cho walk"):**
+  - Không đưa key về pose tĩnh. Thử với vạt khố tĩnh: lò xo chỉ cho 7° (bản dựng tay 35°), vì cái đẩy chính là đùi; va chạm thân
+    không bắt được vì vạt khố chạm đùi quá nông.
+  - Cách làm: giữ chuyển động chính trong key nhưng dời sớm đúng bằng độ trễ của lò xo (vạt khố +2F với mức "Vừa"), để lò xo trả lại
+    độ trễ và thêm vượt + lắng. Kết quả: cùng nhịp với bản tay, biên độ +13%.
+  - Đo độ trễ bằng tương quan chéo trên trục xoay chính (`work/walk/phys_v1/make_keys.py` ghi số đo). Không dùng tổng góc lệch theo
+    từng mức dời, vì sai do biên độ lấn át.
+  - Đầu là lò xo giữ hướng trong thế giới, nên nhịp gần như không theo key. Chỉ dời 1F, biên độ ~3° như cũ.
 
 ### 6. Slow In & Slow Out (chậm vào, chậm ra) - [đã kiểm chứng]
 - **Ý nghĩa:** chuyển động tăng tốc rồi giảm tốc ở hai đầu.
@@ -84,6 +98,8 @@ Ký hiệu trạng thái: **[đã kiểm chứng]** có ví dụ được duyệ
 - **Vi phạm đã bị nhắc 2 lần:** bẻ/xoắn khớp quá đà phá giải phẫu (Idle 133F khuỷu trái xoắn 169°; Attack f13 hai tay) -
   quy tắc ở `arms_hands.md#no-overbend`, checklist ở `qa_anatomy.md#pre-send-checklist`.
 - **Kiểm tra:** QA trượt chân, giới hạn khớp, độ căng da (`arm_strain`), close-up từng tay.
+- **Ví dụ chân (Gaygor Walk b13 → b14, 2026-10-26):** "gối xoay vặn" khi nhấc chân. Gối xoay ra và bàn chân xoắn ngược chiều
+  quanh ống chân cùng lúc. Cẳng chân là một khối liền: bàn chân phải đi theo mặt phẳng gối (`legs_feet.md#knee-dir`).
 
 ### 12. Appeal (sức hút) - [đã thử]
 - **Ý nghĩa:** nhân vật hấp dẫn, có cá tính.

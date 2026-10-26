@@ -1,26 +1,248 @@
 {
  "characters": {
-  "Gaygor": {"rig_url": "https://claude.ai/artifact/UgRawtmJZW6biJZVbUK4Rs"},
-  "SDR": {"rig_url": ""},
-  "SDR06": {"rig_url": ""}
+  "Gaygor": {
+   "rig_url": "https://claude.ai/artifact/UgRawtmJZW6biJZVbUK4Rs"
+  },
+  "SDR": {
+   "rig_url": ""
+  },
+  "SDR06": {
+   "rig_url": ""
+  }
  },
  "clips": [
-  {"id": "gaygor_attack", "character": "Gaygor", "stage": "blocking", "note": "Attack 68F: blocking v10 chờ góp ý",
-   "review": {"key": "gaygor_attack", "clip": "Attack", "title": "Gaygor Attack Review Lab", "crumb": "Boss Gaygor · anim", "name": "Attack", "parts": null, "url": "https://claude.ai/artifact/WN7idSA1JwaNimebZgQBHP"}},
-  {"id": "gaygor_idle", "character": "Gaygor", "stage": "export", "note": "Idle 133F đã duyệt polish v5",
-   "review": {"key": "gaygor_idle", "clip": "Idle", "title": "Gaygor Idle Review Lab", "crumb": "Boss Gaygor · anim", "name": "Idle (xoay trái phải, 133F)", "parts": null, "url": "https://claude.ai/artifact/JK2CCuwPktgUCsD6k5fe6s"}},
-  {"id": "gaygor_idle_front", "character": "Gaygor", "stage": "export", "note": "Idle_Front 60F đã duyệt v14",
-   "review": {"key": "gaygor_idle_front", "clip": "Idle_Front", "title": "Gaygor Idle Front Review Lab", "crumb": "Boss Gaygor · anim", "name": "Idle_Front", "parts": null, "url": "https://claude.ai/artifact/DyBMx8JhT8mHRKZaXEdqYC"}},
-  {"id": "gaygor_walk", "character": "Gaygor", "stage": "blocking", "note": "Walk 57F: làm anim trên Pose Lab",
-   "pose": {"key": "gaygor_walk", "clip": "Gaygor_Walk", "title": "Gaygor Walk Pose Lab", "url": "https://claude.ai/artifact/RRZZBxz7FzPHsv13Bu4Ao6"}},
-  {"id": "sdr_attack", "character": "SDR", "stage": "export", "note": "Attack polish v5 đã duyệt",
-   "review": {"key": "sdr_attack", "clip": "SDR_Attack", "title": "SDR Attack Review Lab", "crumb": "Shoot Die Repeat · anim", "name": "Attack (ném dao)", "parts": "sdr_attack", "url": "https://claude.ai/artifact/GifbYzqPZfPRFG3X9JFXbx"}},
-  {"id": "sdr_idle", "character": "SDR", "stage": "export", "note": "Idle",
-   "pose": {"key": "sdr_idle", "clip": "SDR_Idle", "title": "SDRmap2 Idle Pose Lab", "url": "https://claude.ai/artifact/XvHD2HJ4CA74skzx8mmfdZ"}},
-  {"id": "sdr06_shoot", "character": "SDR06", "stage": "export", "note": "Shoot polish v1 đã duyệt",
-   "review": {"key": "sdr06_shoot", "clip": "SDR06_Shoot", "title": "SDR06 Shoot Review Lab", "crumb": "Shoot Die Repeat map06 · anim", "name": "Shoot (bắn liên thanh)", "parts": "sdr06", "url": "https://claude.ai/artifact/6ejD7yXjMakstHWF8i2n33"}},
-  {"id": "sdr06_reload", "character": "SDR06", "stage": "export", "note": "Reload lspline v1 đã duyệt",
-   "review": {"key": "sdr06_reload", "clip": "SDR06_Reload", "title": "SDR06 Reload Review Lab", "crumb": "Shoot Die Repeat map06 · anim", "name": "Reload (thay trống)", "parts": "sdr06", "url": "https://claude.ai/artifact/9d5PshiRSA71PKi5gquNC9"},
-   "pose": {"key": "sdr06_reload", "clip": "SDR06_Reload", "title": "SDRmap6 Reload Pose Lab", "url": "https://claude.ai/artifact/UKYdqvs5TXEfXJsg9GSJ3y"}}
+  {
+   "id": "gaygor_attack",
+   "character": "Gaygor",
+   "stage": "blocking",
+   "note": "Attack 68F (Cascadeur/Blender v10): tạm dừng, đã thay bằng Attack 50 (polish_v3 đã duyệt, đã xuất FBX)",
+   "review": {
+    "key": "gaygor_attack",
+    "clip": "Attack",
+    "title": "Gaygor Attack Review Lab",
+    "crumb": "Boss Gaygor · anim",
+    "name": "Attack",
+    "parts": null,
+    "url": "https://claude.ai/artifact/WN7idSA1JwaNimebZgQBHP"
+   },
+   "updated": "2026-10-26",
+   "status": "paused",
+   "title": "Attack (100% AI + Ref)"
+  },
+  {
+   "id": "gaygor_idle",
+   "character": "Gaygor",
+   "stage": "export",
+   "note": "Idle 133F đã duyệt polish v5",
+   "review": {
+    "key": "gaygor_idle",
+    "clip": "Idle",
+    "title": "Gaygor Idle Review Lab",
+    "crumb": "Boss Gaygor · anim",
+    "name": "Idle (xoay trái phải, 133F)",
+    "parts": null,
+    "url": "https://claude.ai/artifact/JK2CCuwPktgUCsD6k5fe6s"
+   },
+   "status": "done",
+   "updated": "2026-10-23"
+  },
+  {
+   "id": "gaygor_idle_front",
+   "character": "Gaygor",
+   "stage": "export",
+   "note": "Idle_Front 60F đã duyệt v14",
+   "review": {
+    "key": "gaygor_idle_front",
+    "clip": "Idle_Front",
+    "title": "Gaygor Idle Front Review Lab",
+    "crumb": "Boss Gaygor · anim",
+    "name": "Idle_Front",
+    "parts": null,
+    "url": "https://claude.ai/artifact/DyBMx8JhT8mHRKZaXEdqYC"
+   },
+   "status": "done",
+   "updated": "2026-10-23"
+  },
+  {
+   "id": "gaygor_walk",
+   "character": "Gaygor",
+   "stage": "polish",
+   "note": "Walk 57F: spline b16 (đùi phải xoay mượt) trên Review Lab chờ góp ý; user OK đùi ở b15",
+   "pose": {
+    "key": "gaygor_walk",
+    "clip": "Gaygor_Walk",
+    "title": "Gaygor Walk Pose Lab",
+    "url": "https://claude.ai/artifact/RRZZBxz7FzPHsv13Bu4Ao6"
+   },
+   "review": {
+    "key": "gaygor_walk",
+    "clip": "Walk",
+    "title": "Gaygor Walk Review Lab",
+    "crumb": "Boss Gaygor · anim",
+    "name": "Walk (57F, lặp tại chỗ)",
+    "parts": null,
+    "url": "https://claude.ai/artifact/4mM5aPH8vKTeLV6wtRwfqJ"
+   },
+   "updated": "2026-10-26"
+  },
+  {
+   "id": "sdr_attack",
+   "character": "SDR",
+   "stage": "export",
+   "note": "Attack polish v5 đã duyệt",
+   "review": {
+    "key": "sdr_attack",
+    "clip": "SDR_Attack",
+    "title": "SDR Attack Review Lab",
+    "crumb": "Shoot Die Repeat · anim",
+    "name": "Attack (ném dao)",
+    "parts": "sdr_attack",
+    "url": "https://claude.ai/artifact/GifbYzqPZfPRFG3X9JFXbx"
+   }
+  },
+  {
+   "id": "sdr_idle",
+   "character": "SDR",
+   "stage": "export",
+   "note": "Idle",
+   "pose": {
+    "key": "sdr_idle",
+    "clip": "SDR_Idle",
+    "title": "SDRmap2 Idle Pose Lab",
+    "url": "https://claude.ai/artifact/XvHD2HJ4CA74skzx8mmfdZ"
+   }
+  },
+  {
+   "id": "sdr06_shoot",
+   "character": "SDR06",
+   "stage": "export",
+   "note": "Shoot polish v1 đã duyệt",
+   "review": {
+    "key": "sdr06_shoot",
+    "clip": "SDR06_Shoot",
+    "title": "SDR06 Shoot Review Lab",
+    "crumb": "Shoot Die Repeat map06 · anim",
+    "name": "Shoot (bắn liên thanh)",
+    "parts": "sdr06",
+    "url": "https://claude.ai/artifact/6ejD7yXjMakstHWF8i2n33"
+   }
+  },
+  {
+   "id": "sdr06_reload",
+   "character": "SDR06",
+   "stage": "export",
+   "note": "Reload lspline v1 đã duyệt",
+   "review": {
+    "key": "sdr06_reload",
+    "clip": "SDR06_Reload",
+    "title": "SDR06 Reload Review Lab",
+    "crumb": "Shoot Die Repeat map06 · anim",
+    "name": "Reload (thay trống)",
+    "parts": "sdr06",
+    "url": "https://claude.ai/artifact/9d5PshiRSA71PKi5gquNC9"
+   },
+   "pose": {
+    "key": "sdr06_reload",
+    "clip": "SDR06_Reload",
+    "title": "SDRmap6 Reload Pose Lab",
+    "url": "https://claude.ai/artifact/UKYdqvs5TXEfXJsg9GSJ3y"
+   }
+  },
+  {
+   "id": "gaygor_attack_50_blocking",
+   "character": "Gaygor",
+   "stage": "export",
+   "note": "Attack 68F: polish_v3 đã duyệt, đã xuất FBX (có mesh + anim_only) trong work/gaygor_attack_50_blocking/export",
+   "frames": 68,
+   "fps": 30,
+   "ref": "Assets/Boss_Gaygor/Blocking/Bloking50.fbx",
+   "desc": "Attack 68F: nạp blocking 50% (Bloking50.fbx, 20 key) vào Pose Lab rồi làm tiếp spline → polish → FBX",
+   "created": "2026-10-23",
+   "updated": "2026-10-23",
+   "review": {
+    "key": "gaygor_attack_50_blocking",
+    "clip": "Attack_50_Blocking",
+    "title": "Gaygor Attack 50 Blocking Review Lab",
+    "crumb": "Gaygor · anim",
+    "name": "Attack 50 Blocking",
+    "parts": null,
+    "url": "https://claude.ai/artifact/CAn8A5JiGjJXYjTNFbKKwX"
+   },
+   "pose": {
+    "key": "gaygor_attack_50_blocking",
+    "clip": "Gaygor_Attack_50_Blocking",
+    "title": "Gaygor Attack 50 Blocking Pose Lab",
+    "url": "https://claude.ai/artifact/8WqsypJBEfDsbXY4Bc3wdz"
+   }
+  },
+  {
+   "id": "gaygor_hit",
+   "character": "Gaygor",
+   "stage": "export",
+   "note": "Hit 32F (B): polish_v7 đã duyệt, đã xuất FBX (có mesh + anim_only) trong work/gaygor_hit/export",
+   "review": {
+    "key": "gaygor_hit",
+    "clip": "Hit",
+    "title": "Gaygor Hit Review Lab",
+    "crumb": "Gaygor · anim",
+    "name": "Hit",
+    "parts": null,
+    "url": "https://claude.ai/artifact/HB2gXovv1s5nD9LbP8EpEJ"
+   },
+   "pose": {
+    "key": "gaygor_hit",
+    "clip": "Gaygor_Hit",
+    "title": "Gaygor Hit Pose Lab",
+    "url": "https://claude.ai/artifact/Kv8cgWCaXgHMK6UH96xFSd"
+   },
+   "frames": 32
+  },
+  {
+   "id": "gaygor_die",
+   "character": "Gaygor",
+   "stage": "polish",
+   "note": "Die 72F (C): polish_v2 (tay và chùy mềm như Hit) trên Review Lab, chờ góp ý",
+   "review": {
+    "key": "gaygor_die",
+    "clip": "Die",
+    "title": "Gaygor Die Review Lab",
+    "crumb": "Gaygor · anim",
+    "name": "Die",
+    "parts": null,
+    "url": "https://claude.ai/artifact/XBUV3W9nmEmC8EfoMBX6rB"
+   },
+   "pose": {
+    "key": "gaygor_die",
+    "clip": "Gaygor_Die",
+    "title": "Gaygor Die Pose Lab",
+    "url": "https://claude.ai/artifact/UyfeSWGCBgju4nQnFgv5XG"
+   }
+  }
+ ],
+ "projects": [
+  {
+   "id": "boss_gaygor",
+   "name": "Boss Gaygor",
+   "desc": "Boss M11 Gaygor: chùy + khiên",
+   "characters": [
+    "Gaygor"
+   ],
+   "labels": {
+    "Gaygor": "boss"
+   }
+  },
+  {
+   "id": "shoot_die_repeat",
+   "name": "Shoot Die Repeat",
+   "desc": "Game bắn súng, mỗi map một nhân vật",
+   "characters": [
+    "SDR",
+    "SDR06"
+   ],
+   "labels": {
+    "SDR": "map2 · lính La Mã",
+    "SDR06": "map06 · gangster + Thompson"
+   }
+  }
  ]
 }

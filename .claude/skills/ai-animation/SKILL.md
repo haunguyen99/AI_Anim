@@ -21,6 +21,16 @@ the user's words; a newer lesson replaces an older one in place, noting the date
 section, and add/adjust a one-line rule in `CORE.md` **only if it applies to every clip** - keep `CORE.md` under ~6 KB.
 The user will coach new types; start their file from `details/other_types.md#template`.
 
+## Ba quy trình: chọn theo nguồn vào
+- **A — từ video ref** (mặc định): phân tích ref → rig/scene → P0 → blocking → spline → polish (các mục dưới, `docs/pipeline_v2.md` §2).
+- **B — từ blocking của người dùng** (FBX đã có key của chính rig, vd `Bloking50.fbx`): nạp vào Pose Lab, khớp file → phân
+  tích nhân vật + đòn từ blocking → sửa lỗi blocking → AI thêm pose chuyển tiếp → trọng lượng → spline + polish nướng từng
+  frame → FBX từ chính file của team. Không Blender. Bước, cổng duyệt, lệnh, luật: `knowledge/details/user_blocking.md`;
+  bộ script mẫu `work/gaygor_attack_50_blocking/` (duyệt 2026-10-23).
+- **C — chỉ có yêu cầu bằng lời** (không ref, không blocking): intake gộp → bản thiết kế + bảng timing (duyệt) → pose kể
+  chuyện 10% trên Pose Lab, người dùng chỉnh được (duyệt) → blocking 25–50% (duyệt) → đi tiếp nhánh B từ bước 3 (sửa lỗi,
+  pose chuyển tiếp, trọng lượng, polish, FBX). `knowledge/details/text_brief.md` (thêm 2026-10-24, chưa chạy thử trọn vẹn).
+
 ## Clip mới / chuỗi công cụ
 Clip hoặc nhân vật mới: dùng skill `/new_clip` (sổ `work/clips.json`, `tools/clip_registry.py`) để đăng ký và nối Rig Lab → Pose Lab → Review Lab; `/rig_ai` cho Rig Lab; `/fb` đọc note từ Review Lab. Xem `list` để biết clip đang ở giai đoạn nào.
 

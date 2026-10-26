@@ -2,6 +2,8 @@
 Đọc mỗi task cùng `INDEX.md`. `→ file#mục` = chi tiết trong `details/`, chỉ mở khi task đụng tới.
 
 ## Phân tích
+- Nguồn vào là FBX blocking của user (không ref) → quy trình B: khớp file, phân tích, breakdown, polish, FBX → user_blocking.md
+- Chỉ có yêu cầu bằng lời → quy trình C: thiết kế + timing, pose 10%, blocking 50%, rồi như B → text_brief.md
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
 - Kiểm kê xương phụ/mảnh mesh (`rig_inventory.py`); nhận diện theo vùng mesh, tên xương lừa → blender_tools.md#rig-inventory
 - Camera hiệu chỉnh riêng từng clip; xác nhận file ref nào là trái/phải nhân vật → blender_tools.md#review-files

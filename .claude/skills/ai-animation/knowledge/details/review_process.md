@@ -82,6 +82,17 @@ Sở thích của người duyệt (animator lead):
 - **Duyệt ("oki rồi" trên version mới nhất) = xuất** bằng `export_clip.py` (`export.md`).
 
 ## pose-lab-3d
+- **Playblast Walk từ Pose Lab trên máy (2026-10-26):** `work/walk/pb_capture.js`, chép vào `work/pose_lab/fbx/out/` rồi nạp bằng
+  thẻ script. Các bước: mở `/index.html` (trang riêng `pages/<clip>/` không tải được model trên máy); `openPose(Walk anim_v1)`; nạp key + đặt
+  `ANIM`/`CT` giống doc `anims` trong db (vật lý, điểm tiếp đất); `__pbw(frames, true, name)` gửi ảnh tới `save_srv.py` (launch
+  `pb-save`, cổng 8125; cổng 8124 có thể đang bị server cũ giữ).
+  Bẫy: vật trợ giúp (đường root nét đứt, dấu khóa chân) được dựng lại sau mỗi `goto()`, nên phải ẩn lại sau mỗi frame. Model là
+  `Group` tên "Scene"; lưới là `GridHelper` (bản three này không có cờ `isGridHelper`). Chụp thử 1 frame trước để kiểm khung.
+- **Encode khung JPEG từ trang thành WebM (2026-10-26, user báo "Không tải được video WebM" trên b14):** JPEG đi vào là dải màu
+  full (yuvj420p), ffmpeg ghi `color_range=pc` / `bt470bg`. Chrome phát được nhưng tua thì báo `PIPELINE_ERROR_DECODE`. Luôn ép
+  dải chuẩn: `-vf "scale=out_range=tv:out_color_matrix=bt709,format=yuv420p" -colorspace bt709 -color_primaries bt709
+  -color_trc bt709 -color_range tv`, rồi `ffprobe` phải thấy `color_range=tv`. Thử trong trình duyệt bằng blob + tua từng frame
+  trước khi đăng.
 Pose Lab 3D (source work/pose_lab/) = the reviewer edits the pose in 3D per frame; dùng lại 2026-10-22 cho SDR06
 Reload lhand_b2.
 - ONE page (artifact + own db) PER ANIMATION, like the playblast review pages (user: map2 and map06 must not share a
@@ -128,6 +139,26 @@ Reload lhand_b2.
     crop = union silhouette +10 %, 360 px cells), POSES `ref.cams` maps page camera -> ref view. Gaygor: page Right
     camera = ref "left" view (refs.json naming), Front = front, Top = top; G toggles, click = size.
   - Camera presets scale with the highest joint (camFit = top/1.75 m); Gaygor ~1.26.
+  - **Import a hand-made FBX into Pose Lab, no Blender** (2026-10-23, Gaygor Attack 50% blocking): `work/gaygor_attack_50_blocking/make_model.py <in.fbx> <out.json>`
+    reads curves with key times (`fbxanim.py`; KeyAttrFlags 2 = constant = stepped). **Apply each bone's RotationOrder**
+    (enum 0 XYZ,1 XZY,2 YZX,3 YXZ,4 ZXY,5 ZYX; "XYZ" = X first = Rz@Ry@Rx; Pre/PostRotation always XYZ): AdvancedSkeleton
+    sets ZYX/ZXY/XZY on 20 bones (neck, head, arms, legs); b50_v1 ignored it and the user rejected it ("nhiều pose lỗi,
+    sai so với file blocking"). A world-match check against my own reader cannot catch this; check with something
+    independent of the reader: hand-in-prop space over the keys (Wrist_L vs Weapon: 77 cm median jumps with XYZ, smooth
+    slide along the haft with the file orders). Takes mesh/skin/nodes from the
+    Gaygor Walk P0 model (same 59 bones, same parents, cm under Armature 0.01 + Rx90), local = PreRotation * Lcl
+    Rotation + Lcl Translation, root bone gets Rx(-90); samples every frame at t = f/30 (1-based). Check: bone worlds
+    vs FBX 0.003 mm. POSES: `mode: "keys", interp: "step", keys: [key frames + 1]` -> page seeds the db keys from it.
+    Publish with files models/<x>.json + fbxexport.js (the page 404s on Xuất FBX without it).
+  - **Fixing an imported blocking without the page** (b50_v3, `work/gaygor_attack_50_blocking/fix_v3.py`): edit FBX-space
+    locals per key, `make_model.write(models, local_fn, nf, out)`. Prop under the floor -> turn the prop about the
+    hands' midpoint (bisection on the lowest mesh point), then two-bone IK (hinge = Elbow/Knee local Z in this rig)
+    so each wrist keeps its prop-space transform. Measure contacts on the TOES, not the ankle: the file already pinned
+    the left toe F35-48 (ankle pivoting about it) and the right foot was still only on F31-32; an ankle lock "fix"
+    bent the knee 32-60 deg. Check units in prop space: glTF world includes Armature 0.01, so prop-space offsets are
+    already cm (a x100 made 0.09 cm read as 9 cm). `verify.py old new` = skinned lowest point, grip drift, ankle move.
+  - `clip_registry.py build` runs the split scripts with `-X utf8` (`-I` ignores PYTHONIOENCODING; cp1252 crashed on
+    Vietnamese prints).
   - Publishing ~4 MB of images in one call failed (ECONNRESET): publish one image per call.
 - **Fit to ref on the page, no Blender (2026-10-23, user: "Tôi cần bỏ hẳn blender")** — button "Khớp ref" (keys mode):
   - Cameras: POSES `ref.cal` per view {dir, up, u0, v0} in ref pixels, 305.3 px/m, ortho; `calibrateRef()` (console)
@@ -197,3 +228,18 @@ sửa staging. Nguyên lý: Staging.
   hướng khuỷu/gối (`arms_hands.md#pole-spec`). Có demo hoặc ảnh mẫu của team thì so với nó ngay từ đầu.
 - Chưa có chữ "duyệt P0" thì chưa block. Sau đó vẫn phải đổi P0 thì đổi bằng layer (P0 cộng thêm delta, xem `#pose-lab-3d`),
   đừng dựng lại từng key.
+
+## home-app
+**Home là cửa vào (2026-10-23, user: "người dùng sẽ bắt đầu làm việc từ đây").** Home chạy trên máy (`tools/home/start.bat`
+hoặc preview `home`, http://127.0.0.1:8780), một người dùng, dữ liệu nằm trên máy đó; không phải artifact.
+- Dự án = game (SDR gồm map2 + map06). Khóa `projects` trong `work/clips.json` gom nhân vật theo dự án; clip thuộc dự án qua nhân vật.
+- Home đọc bản mới nhất + ảnh từ CLIPS (`work/review_page/index.html`) và POSES (`work/pose_lab/index.html`), hoạt động từ git log.
+  Muốn Home hiện đúng thì giữ sổ đúng: đổi giai đoạn bằng `clip_registry.py stage`, ghi `note` có chữ "chờ" khi đợi góp ý
+  (Home đoán trạng thái: export = xong, "tạm dừng" = tạm dừng, "chờ" = chờ góp ý; user có thể chọn tay trong "Sửa trạng thái" → khóa `status`).
+- Trạng thái: working / waiting / done / **paused** ("Tạm dừng", thêm 2026-10-26 cho clip bị thay thế hoặc gác lại, vd Attack cũ → Attack 50;
+  không vào "Tiếp tục làm"). Server đọc cổng từ `HOME_PORT`, rồi `PORT` (preview tự đổi cổng khi 8780 đang có Home của user chạy).
+- Đổi tên (2026-10-26): anim → nút "Sửa / đổi tên", ghi khóa `title` của clip (chỉ tên hiện trên Home; id, thư mục, trang Lab
+  giữ nguyên, để trống = tên gốc `review.name`); dự án → nút "Sửa dự án" (tên + mô tả, id/URL `#/p/<id>` giữ nguyên).
+  Tên nhân vật chưa đổi được trên Home (dùng ở sổ, Rig Lab, file).
+- "+ Animation mới" trên Home đã đăng ký clip (giống `clip_registry.py new`) và viết `work/<id>/brief.md`; khi user gõ
+  `/new_clip <id>` thì đọc brief đó, đừng hỏi lại những gì đã có, rồi làm tiếp từ bước 3 (rig) hoặc 5 (phân tích).
