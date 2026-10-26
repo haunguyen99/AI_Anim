@@ -211,30 +211,132 @@ body.km .lanes { display: flex; }
   .tools { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/*ICONS*/
+.ibtn { font-size: 0 !important; line-height: 0; display: inline-flex; align-items: center; justify-content: center; gap: 0 !important; width: 32px; height: 30px; padding: 0 !important; flex: none; }
+.ibtn kbd { display: none; }
+.ibtn::before, .cams button::before { content: ''; width: 18px; height: 18px; flex: none; background: currentColor; -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+.cams button { font-size: 0; width: 30px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.btn.ibtn { border-radius: 6px; }
+.btn.ibtn[data-state=on]:not(.primary) { border-color: var(--accent); color: var(--accent); }
+.btn.ibtn[data-state=off]:not(.primary) { color: var(--muted); }
+.tool.ibtn[data-state=on]:not(.on) { color: var(--accent); }
+.btn.ibtn:disabled::before { opacity: .6; }
+#play { width: 40px; }
+#play[data-state=on]::before { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M8%205v14M16%205v14%22/%3E%3C/svg%3E"); }
+#kInterp[data-state=on] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2020h5v-5h5v-5h6%22/%3E%3C/svg%3E"); }
+#mSel { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%203l12%207-5.5%201.5L9%2017z%22/%3E%3C/svg%3E"); }
+#mMove { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203v18M3%2012h18M12%203l-3%203M12%203l3%203M12%2021l-3-3M12%2021l3-3M3%2012l3-3M3%2012l3%203M21%2012l-3-3M21%2012l-3%203%22/%3E%3C/svg%3E"); }
+#mRot { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M20%2012a8%208%200%2011-2.6-5.9%22/%3E%3Cpath%20d=%22M20%204v5h-5%22/%3E%3C/svg%3E"); }
+#mScale { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M14%204h6v6M10%2020H4v-6M20%204l-7%207M4%2020l7-7%22/%3E%3C/svg%3E"); }
+#mSpace { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204v9l7%204M12%2013l-7%204%22/%3E%3Ccircle%20cx=%2212%22%20cy=%2213%22%20r=%221.2%22/%3E%3C/svg%3E"); }
+#tLock { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%225%22%20y=%2211%22%20width=%2214%22%20height=%229%22%20rx=%222%22/%3E%3Cpath%20d=%22M8%2011V8a4%204%200%20018%200v3%22/%3E%3C/svg%3E"); }
+#tGunR { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M10%2014a4%204%200%20005.7%200l3-3a4%204%200%2000-5.7-5.7l-1%201%22/%3E%3Cpath%20d=%22M14%2010a4%204%200%2000-5.7%200l-3%203a4%204%200%20005.7%205.7l1-1%22/%3E%3C/svg%3E"); }
+#tGhost { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%2021V10a6%206%200%200112%200v11l-3-2-3%202-3-2z%22/%3E%3Cpath%20d=%22M10%2010h.01M14%2010h.01%22/%3E%3C/svg%3E"); }
+#tJoints { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%226%22%20cy=%226%22%20r=%222%22/%3E%3Ccircle%20cx=%2218%22%20cy=%2212%22%20r=%222%22/%3E%3Ccircle%20cx=%228%22%20cy=%2219%22%20r=%222%22/%3E%3Cpath%20d=%22M7.6%207.4l8.8%203.6M16.4%2013.4L9.6%2017.6%22/%3E%3C/svg%3E"); }
+#tTrail { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2019c5-14%208%204%2011-6%201.5-5%204-6%207-8%22/%3E%3Ccircle%20cx=%223%22%20cy=%2219%22%20r=%221.4%22/%3E%3Ccircle%20cx=%2214%22%20cy=%2213%22%20r=%221.4%22/%3E%3Ccircle%20cx=%2221%22%20cy=%225%22%20r=%221.4%22/%3E%3C/svg%3E"); }
+#tRef { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%223%22%20y=%225%22%20width=%2218%22%20height=%2214%22%20rx=%222%22/%3E%3Ccircle%20cx=%229%22%20cy=%2210%22%20r=%221.5%22/%3E%3Cpath%20d=%22M3%2017l5-5%204%204%203-3%206%206%22/%3E%3C/svg%3E"); }
+#undo { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%2014L4%209l5-5%22/%3E%3Cpath%20d=%22M4%209h10a6%206%200%20010%2012h-3%22/%3E%3C/svg%3E"); }
+#resetAll { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2012a8%208%200%20108-8%208%208%200%2000-5.7%202.4L4%209%22/%3E%3Cpath%20d=%22M4%204v5h5%22/%3E%3C/svg%3E"); }
+#tList { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%223%22%20y=%224%22%20width=%2218%22%20height=%2216%22%20rx=%222%22/%3E%3Cpath%20d=%22M9%204v16%22/%3E%3C/svg%3E"); }
+#tSide { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%223%22%20y=%224%22%20width=%2218%22%20height=%2216%22%20rx=%222%22/%3E%3Cpath%20d=%22M15%204v16%22/%3E%3C/svg%3E"); }
+#resetJoint { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2012a8%208%200%20108-8%208%208%200%2000-5.7%202.4L4%209%22/%3E%3Cpath%20d=%22M4%204v5h5%22/%3E%3C/svg%3E"); }
+#physOn { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M13%203L5%2014h6l-1%207%208-11h-6z%22/%3E%3C/svg%3E"); }
+#physChar { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%208h9M17%208h3M4%2016h3M11%2016h9%22/%3E%3Ccircle%20cx=%2215%22%20cy=%228%22%20r=%222%22/%3E%3Ccircle%20cx=%229%22%20cy=%2216%22%20r=%222%22/%3E%3C/svg%3E"); }
+#physBake { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204v11M7.5%2010.5L12%2015l4.5-4.5M5%2020h14%22/%3E%3C/svg%3E"); }
+#physAdd { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%205v14M5%2012h14%22/%3E%3C/svg%3E"); }
+#physColAdd { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l8%203v6c0%205-4%208-8%209-4-1-8-4-8-9V6z%22/%3E%3C/svg%3E"); }
+#impAdd { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%226%22/%3E%3Cpath%20d=%22M12%202v4M12%2018v4M2%2012h4M18%2012h4%22/%3E%3C/svg%3E"); }
+#impAim { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%2019L19%205M10%205h9v9%22/%3E%3C/svg%3E"); }
+#impStep { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2020h5v-5h5v-5h6%22/%3E%3C/svg%3E"); }
+#ragOn { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%225%22%20r=%222.3%22/%3E%3Cpath%20d=%22M12%208v7M6.5%2010.5L12%208l5.5%202.5M9%2021l3-6%203%206%22/%3E%3C/svg%3E"); }
+#ragRelease { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M10%2014l-2%202a3%203%200%2001-4-4l3-3M14%2010l2-2a3%203%200%20014%204l-3%203M5%205l14%2014%22/%3E%3C/svg%3E"); }
+#ragGoal { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%2021V4M5%204h11l-2%204%202%204H5%22/%3E%3C/svg%3E"); }
+#ragGoalRoot { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%2021s-6-6-6-11a6%206%200%200112%200c0%205-6%2011-6%2011z%22/%3E%3Ccircle%20cx=%2212%22%20cy=%2210%22%20r=%222%22/%3E%3C/svg%3E"); }
+#ragGoalFind { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2211%22%20cy=%2211%22%20r=%226%22/%3E%3Cpath%20d=%22M20%2020l-4.5-4.5%22/%3E%3C/svg%3E"); }
+#ragLim { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2018a8%208%200%200116%200%22/%3E%3Cpath%20d=%22M12%2018l4-6%22/%3E%3C/svg%3E"); }
+#bodyViz { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M2%2012s4-7%2010-7%2010%207%2010%207-4%207-10%207S2%2012%202%2012z%22/%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%223%22/%3E%3C/svg%3E"); }
+#bodyRebuild { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2012a8%208%200%20108-8%208%208%200%2000-5.7%202.4L4%209%22/%3E%3Cpath%20d=%22M4%204v5h5%22/%3E%3C/svg%3E"); }
+#balViz { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203v18M6%2021h12M5%207h14M5%207l-3%207a3%203%200%20006%200zM19%207l-3%207a3%203%200%20006%200z%22/%3E%3C/svg%3E"); }
+#balFix { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%203v8a6%206%200%200012%200V3M6%208h4M14%208h4%22/%3E%3C/svg%3E"); }
+#fallGhost { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l9%205-9%205-9-5zM3%2013l9%205%209-5%22/%3E%3C/svg%3E"); }
+#save { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%204h11l3%203v13H5z%22/%3E%3Cpath%20d=%22M8%204v6h8V4M8%2020v-6h8v6%22/%3E%3C/svg%3E"); }
+#aiSend { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2011l18-8-8%2018-2-8z%22/%3E%3C/svg%3E"); }
+#prevKey { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%205v14M19%206l-9%206%209%206z%22/%3E%3C/svg%3E"); }
+#prevF { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M15%205l-7%207%207%207%22/%3E%3C/svg%3E"); }
+#play { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M8%205l11%207-11%207z%22%20fill=%22black%22%20stroke=%22none%22/%3E%3C/svg%3E"); }
+#nextF { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%205l7%207-7%207%22/%3E%3C/svg%3E"); }
+#nextKey { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M18%205v14M5%206l9%206-9%206z%22/%3E%3C/svg%3E"); }
+#copyKey { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%229%22%20y=%229%22%20width=%2211%22%20height=%2211%22%20rx=%222%22/%3E%3Cpath%20d=%22M5%2015V6a2%202%200%20012-2h9%22/%3E%3C/svg%3E"); }
+#pasteKey { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%204h6v3H9z%22/%3E%3Cpath%20d=%22M7%205H5v16h14V5h-2%22/%3E%3C/svg%3E"); }
+#pasteHold { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%204h6v3H9z%22/%3E%3Cpath%20d=%22M7%205H5v16h14V5h-2%22/%3E%3Cpath%20d=%22M9%2014h6M13%2012l2%202-2%202%22/%3E%3C/svg%3E"); }
+#kSet { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l8%209-8%209-8-9z%22/%3E%3C/svg%3E"); }
+#kDel { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l8%209-8%209-8-9z%22/%3E%3Cpath%20d=%22M9.5%209.5l5%205M14.5%209.5l-5%205%22/%3E%3C/svg%3E"); }
+#kAuto { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%228%22/%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%223%22%20fill=%22black%22/%3E%3C/svg%3E"); }
+#kInterp { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2018C8%2018%208%206%2013%206s5%2012%208%2012%22/%3E%3C/svg%3E"); }
+#kLock { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%225%22%20r=%222%22/%3E%3Cpath%20d=%22M12%207v14M8%2011h8M4%2014c1%204%205%207%208%207s7-3%208-7%22/%3E%3C/svg%3E"); }
+#kFit { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2020L16%208%22/%3E%3Cpath%20d=%22M15%203v4M13%205h4M19%2010v3M17.5%2011.5h3%22/%3E%3C/svg%3E"); }
+#kFloor { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2020h18M12%204v11M8%2011l4%204%204-4%22/%3E%3C/svg%3E"); }
+#kAutoCt { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%208V5a1%201%200%20011-1h3M16%204h3a1%201%200%20011%201v3M20%2016v3a1%201%200%2001-1%201h-3M8%2020H5a1%201%200%2001-1-1v-3M4%2012h16%22/%3E%3C/svg%3E"); }
+#expFbx { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204v11M7.5%2010.5L12%2015l4.5-4.5M5%2020h14%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="right"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M8%205l10%203v11l-10-3z%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="left"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M16%205L6%208v11l10-3z%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="front"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%225%22%20y=%225%22%20width=%2214%22%20height=%2214%22%20rx=%221%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="back"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%225%22%20y=%225%22%20width=%2214%22%20height=%2214%22%20rx=%221%22%20stroke-dasharray=%223%202.5%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="top"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204l8%206-8%206-8-6z%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="bottom"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204l8%206-8%206-8-6z%22%20stroke-dasharray=%223%202.5%22/%3E%3C/svg%3E"); }
+.cams button[data-cam="persp"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l8%204.5v9L12%2021l-8-4.5v-9z%22/%3E%3Cpath%20d=%22M12%2012l8-4.5M12%2012v9M12%2012L4%207.5%22/%3E%3C/svg%3E"); }
+#play[data-state=on] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M8%205v14M16%205v14%22/%3E%3C/svg%3E"); }
+/* less info: version notes only on the open version, help in a popover, physics sections fold */
+.item .vnote { display: none; }
+.item.on .vnote { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 11px; color: var(--muted); }
+.help { margin: 6px 10px 14px; }
+.help > summary { list-style: none; display: inline-flex; width: 30px; height: 30px; align-items: center; justify-content: center; border-radius: 6px; color: var(--muted); cursor: pointer; }
+.help > summary::-webkit-details-marker { display: none; }
+.help > summary:hover { background: var(--raise); color: var(--ink); }
+.help > summary svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.help[open] > summary { color: var(--accent); }
+.help p { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
+.sech { cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none; }
+.sech::before { content: ''; width: 14px; height: 14px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%206l6%206-6%206%22/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%206l6%206-6%206%22/%3E%3C/svg%3E") center / contain no-repeat; transition: transform .12s; opacity: .7; }
+.sech.open::before { transform: rotate(90deg); }
+.sec[hidden] { display: none !important; }
+.legend span { font-size: 0; }
+.legend span i { width: 9px; height: 9px; margin: 0; }
+.legend { gap: 10px; }
+/*ICONS2*/
+.rbar button.ibtn, #rCmp.ibtn { width: 26px; height: 24px; }
+.rbar button[data-v="auto"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%207h12v10H3z%22/%3E%3Cpath%20d=%22M15%2011l6-3v8l-6-3%22/%3E%3C/svg%3E"); }
+.rbar button[data-v="front"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%225%22%20y=%225%22%20width=%2214%22%20height=%2214%22%20rx=%221%22/%3E%3C/svg%3E"); }
+.rbar button[data-v="back"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%225%22%20y=%225%22%20width=%2214%22%20height=%2214%22%20rx=%221%22%20stroke-dasharray=%223%202.5%22/%3E%3C/svg%3E"); }
+.rbar button[data-v="left"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M16%205L6%208v11l10-3z%22/%3E%3C/svg%3E"); }
+.rbar button[data-v="right"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M8%205l10%203v11l-10-3z%22/%3E%3C/svg%3E"); }
+.rbar button[data-v="top"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204l8%206-8%206-8-6z%22/%3E%3C/svg%3E"); }
+#rCmp { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%205h8v14H3zM13%205h8v14h-8z%22/%3E%3C/svg%3E"); }
+.rbar .ibtn::before { width: 16px; height: 16px; }
 </style>
 
 <div class="app">
   <header class="top">
     <div class="crumb"><small id="projName">Shoot Die Repeat</small><b id="poseName">Pose</b></div>
     <div class="tools" role="toolbar" aria-label="Công cụ pose">
-      <button class="tool" id="mSel" title="Chỉ chọn khớp, không gizmo (Q)">Chọn <kbd>Q</kbd></button>
-      <button class="tool" id="mMove" title="Dời hông, bàn chân hoặc bàn tay (IK) (W)">Dời <kbd>W</kbd></button>
-      <button class="tool on" id="mRot" title="Xoay khớp (E)">Xoay <kbd>E</kbd></button>
-      <button class="tool" id="mScale" title="Scale (R): rig không cho scale khớp">Scale <kbd>R</kbd></button>
-      <button class="tool" id="mSpace" title="Trục local / world (X)">Trục: local <kbd>X</kbd></button>
+      <button class="ibtn tool" id="mSel" title="Chỉ chọn khớp, không gizmo (Q)">Chọn <kbd>Q</kbd></button>
+      <button class="ibtn tool" id="mMove" title="Dời hông, bàn chân hoặc bàn tay (IK) (W)">Dời <kbd>W</kbd></button>
+      <button class="ibtn tool on" id="mRot" title="Xoay khớp (E)">Xoay <kbd>E</kbd></button>
+      <button class="ibtn tool" id="mScale" title="Scale (R): rig không cho scale khớp">Scale <kbd>R</kbd></button>
+      <button class="ibtn tool" id="mSpace" title="Trục local / world (X)">Trục: local <kbd>X</kbd></button>
       <span class="vsep"></span>
-      <button class="tool on" id="tLock" title="Khi dời/xoay hông, hai bàn chân giữ nguyên trên sàn (IK)">Khóa chân</button>
-      <button class="tool on" id="tGunR" title="Khi dời/xoay súng, tay phải giữ nguyên chỗ cầm (IK tay)">Tay phải bám súng</button>
-      <button class="tool on" id="tGhost" title="Bóng mờ của pose gốc để so sánh">Bóng pose gốc</button>
-      <button class="tool on" id="tJoints" title="Hiện các điểm khớp (J)">Điểm khớp <kbd>J</kbd></button>
-      <button class="tool" id="tTrail" title="Quỹ đạo của khớp đang chọn qua cả clip (T). Đường xanh lơ = kết quả đang thấy (có vật lý / AutoPhysics), đường xám nét đứt = pose key gốc. Mỗi chấm là một frame: chấm thưa = nhanh, dày = chậm; chấm to = frame đang xem">Quỹ đạo <kbd>T</kbd></button>
-      <button class="tool on" id="tRef" hidden title="Ảnh ref của frame đang xem, cạnh model (G)">Ref <kbd>G</kbd></button>
+      <button class="ibtn tool on" id="tLock" title="Khi dời/xoay hông, hai bàn chân giữ nguyên trên sàn (IK)">Khóa chân</button>
+      <button class="ibtn tool on" id="tGunR" title="Khi dời/xoay súng, tay phải giữ nguyên chỗ cầm (IK tay)">Tay phải bám súng</button>
+      <button class="ibtn tool on" id="tGhost" title="Bóng mờ của pose gốc để so sánh">Bóng pose gốc</button>
+      <button class="ibtn tool on" id="tJoints" title="Hiện các điểm khớp (J)">Điểm khớp <kbd>J</kbd></button>
+      <button class="ibtn tool" id="tTrail" title="Quỹ đạo của khớp đang chọn qua cả clip (T). Đường xanh lơ = kết quả đang thấy (có vật lý / AutoPhysics), đường xám nét đứt = pose key gốc. Mỗi chấm là một frame: chấm thưa = nhanh, dày = chậm; chấm to = frame đang xem">Quỹ đạo <kbd>T</kbd></button>
+      <button class="ibtn tool on" id="tRef" hidden title="Ảnh ref của frame đang xem, cạnh model (G)">Ref <kbd>G</kbd></button>
       <span class="vsep"></span>
-      <button class="tool" id="undo" title="Hoàn tác (Ctrl+Z)">Hoàn tác</button>
-      <button class="tool" id="resetAll" title="Trả cả pose về bản gốc">Về pose gốc</button>
+      <button class="ibtn tool" id="undo" title="Hoàn tác (Ctrl+Z)">Hoàn tác</button>
+      <button class="ibtn tool" id="resetAll" title="Trả cả pose về bản gốc">Về pose gốc</button>
       <span class="vsep"></span>
-      <button class="tool on" id="tList" title="Ẩn / hiện bảng Phiên bản bên trái ( [ )">Phiên bản <kbd>[</kbd></button>
-      <button class="tool on" id="tSide" title="Ẩn / hiện bảng Khớp đang chọn + Điều chỉnh bên phải ( ] )">Bảng chỉnh <kbd>]</kbd></button>
+      <button class="ibtn tool on" id="tList" title="Ẩn / hiện bảng Phiên bản bên trái ( [ )">Phiên bản <kbd>[</kbd></button>
+      <button class="ibtn tool on" id="tSide" title="Ẩn / hiện bảng Khớp đang chọn + Điều chỉnh bên phải ( ] )">Bảng chỉnh <kbd>]</kbd></button>
     </div>
   </header>
 
@@ -242,9 +344,9 @@ body.km .lanes { display: flex; }
     <nav class="pane list" aria-label="Danh sách pose">
       <h2>Phiên bản <span id="poseCount"></span></h2>
       <div id="poses"></div>
-      <p class="empty">Điều khiển như Maya: <b>Alt + chuột trái</b> xoay camera, <b>Alt + chuột giữa</b> dời, <b>Alt + chuột phải</b> hoặc cuộn để zoom. <b>F</b> zoom vào khớp đang chọn, <b>A</b> xem cả người.<br><br>
+      <details class="help"><summary title="Phím tắt và cách điều khiển" aria-label="Phím tắt"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg></summary><p>Điều khiển như Maya: <b>Alt + chuột trái</b> xoay camera, <b>Alt + chuột giữa</b> dời, <b>Alt + chuột phải</b> hoặc cuộn để zoom. <b>F</b> zoom vào khớp đang chọn, <b>A</b> xem cả người.<br><br>
 Bấm điểm khớp để chọn (các điểm khác tạm ẩn), bấm ra chỗ trống hoặc Esc để bỏ chọn. <b>Q</b> chọn · <b>W</b> dời · <b>E</b> xoay · <b>↑ ↓</b> sang khớp cha / con · <b>+ −</b> cỡ gizmo.<br><br>
-Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) hoặc gõ số rồi Enter. <b>, .</b> key trước / sau, <b>← →</b> frame.</p>
+Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) hoặc gõ số rồi Enter. <b>, .</b> key trước / sau, <b>← →</b> frame.</p></details>
     </nav>
 
     <section class="viewer" id="viewer" aria-label="Viewport 3D">
@@ -272,10 +374,10 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
         <h2>Khớp đang chọn</h2>
         <div class="sel">
           <div class="name" id="selName">Chưa chọn khớp</div>
-          <div class="hint" id="selHint">Bấm vào một khớp, hoặc kéo quét một vùng để chọn nhiều. Giữ Shift để chọn thêm.</div>
+          <div class="hint" id="selHint">Bấm một khớp để chỉnh.</div>
           <div class="cb" id="cb" hidden></div>
           <div class="row">
-            <button class="btn" id="resetJoint" disabled>Trả khớp này về gốc</button>
+            <button class="ibtn btn" id="resetJoint" disabled>Trả khớp này về gốc</button>
           </div>
           <div class="changes" id="changes"></div>
         </div>
@@ -283,9 +385,9 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
           <summary>Vật lý <span id="physSum"></span></summary>
           <div class="pbody">
             <div class="row">
-              <button class="btn" id="physOn" title="Bật / tắt lớp vật lý (so trước và sau). Bóng pose gốc luôn là pose của key, không vật lý">Vật lý: tắt</button>
-              <button class="btn" id="physChar" title="Dùng bộ lò xo đã duyệt cho nhân vật này (Gaygor: tay phải, chùy, khuỷu trái; vai trái là vùng chắn)">Mức của nhân vật</button>
-              <button class="btn" id="physBake" title="Ghi mọi frame (có vật lý) thành key rồi tắt vật lý, để sửa tay tiếp. Ctrl+Z để lấy lại key cũ">Bake thành key</button>
+              <button class="ibtn btn" id="physOn" title="Bật / tắt lớp vật lý (so trước và sau). Bóng pose gốc luôn là pose của key, không vật lý">Vật lý: tắt</button>
+              <button class="ibtn btn" id="physChar" title="Dùng bộ lò xo đã duyệt cho nhân vật này (Gaygor: tay phải, chùy, khuỷu trái; vai trái là vùng chắn)">Mức của nhân vật</button>
+              <button class="ibtn btn" id="physBake" title="Ghi mọi frame (có vật lý) thành key rồi tắt vật lý, để sửa tay tiếp. Ctrl+Z để lấy lại key cũ">Bake thành key</button>
             </div>
             <h3 title="Giống AutoPhysics của Cascadeur: mỗi mục bật / tắt và mức 0-100, chồng lên key (không sửa key)">AutoPhysics</h3>
             <div id="apRows"></div>
@@ -293,8 +395,8 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
             <h3>Lò xo từng phần</h3>
             <div class="pparts" id="physParts"></div>
             <div class="row">
-              <button class="btn" id="physAdd" title="Thêm khớp đang chọn: khuỷu/gối = bản lề, vũ khí = vật cầm tay, còn lại = khớp mềm">+ Thêm khớp đang chọn</button>
-              <button class="btn" id="physColAdd" title="Khớp đang chọn thành vùng chắn: vật cầm tay không lại gần khớp này hơn lúc nghỉ (đệm mềm 2,5 cm)">+ Vùng chắn</button>
+              <button class="ibtn btn" id="physAdd" title="Thêm khớp đang chọn: khuỷu/gối = bản lề, vũ khí = vật cầm tay, còn lại = khớp mềm">+ Thêm khớp đang chọn</button>
+              <button class="ibtn btn" id="physColAdd" title="Khớp đang chọn thành vùng chắn: vật cầm tay không lại gần khớp này hơn lúc nghỉ (đệm mềm 2,5 cm)">+ Vùng chắn</button>
             </div>
             <div class="pcols" id="physCols"></div>
             <label class="pinfo">Trả về đúng pose key ở <input type="number" id="physEnd" min="0" max="30" step="1"> frame cuối (clip lặp: tự nối vòng)</label>
@@ -302,63 +404,63 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
             <div class="pinfo" id="physInfo"></div>
             <h3>Tác động</h3>
             <div class="row">
-              <button class="btn" id="impAdd" title="Bấm rồi bấm lên người: đặt một cú tác động (trúng đòn, trúng đạn, bị tông) ở frame đang xem">+ Tác động</button>
-              <button class="btn" id="impAim" title="Bấm hoặc kéo trên màn hình ở chỗ lực đến: mũi tên chỉ vào điểm trúng">Kéo hướng lực</button>
-              <button class="btn" id="impStep" title="Khi bị đẩy ra ngoài chân quá 5 cm: tự bước (tối đa 3 bước). Tắt: chỉ báo cần bước và vẽ vòng đỏ ở chỗ đặt chân">Tự bước: bật</button>
+              <button class="ibtn btn" id="impAdd" title="Bấm rồi bấm lên người: đặt một cú tác động (trúng đòn, trúng đạn, bị tông) ở frame đang xem">+ Tác động</button>
+              <button class="ibtn btn" id="impAim" title="Bấm hoặc kéo trên màn hình ở chỗ lực đến: mũi tên chỉ vào điểm trúng">Kéo hướng lực</button>
+              <button class="ibtn btn" id="impStep" title="Khi bị đẩy ra ngoài chân quá 5 cm: tự bước (tối đa 3 bước). Tắt: chỉ báo cần bước và vẽ vòng đỏ ở chỗ đặt chân">Tự bước: bật</button>
             </div>
             <div class="pparts" id="impList"></div>
             <div class="pinfo" id="impInfo"></div>
             <h3>Ragdoll</h3>
             <div id="ragBox">
               <div class="row">
-                <button class="btn" id="ragOn" title="Từ frame chọn, cơ thể thành các khối nối khớp (giới hạn khớp của nhân vật), mất sức theo đường Sức rồi đổ, đập sàn và lắng. Lực ở frame đó trở đi đẩy ragdoll">Ragdoll: tắt</button>
+                <button class="ibtn btn" id="ragOn" title="Từ frame chọn, cơ thể thành các khối nối khớp (giới hạn khớp của nhân vật), mất sức theo đường Sức rồi đổ, đập sàn và lắng. Lực ở frame đó trở đi đẩy ragdoll">Ragdoll: tắt</button>
                 <label class="pinfo">từ F <input type="number" id="ragFrom" min="2" step="1" style="width:58px"></label>
-                <button class="btn" id="ragRelease" title="Chùy rời tay từ frame đang xem: rơi, nảy, nằm riêng">Buông chùy ở F đang xem</button>
+                <button class="ibtn btn" id="ragRelease" title="Chùy rời tay từ frame đang xem: rơi, nảy, nằm riêng">Buông chùy ở F đang xem</button>
               </div>
               <div class="row">
-                <button class="btn" id="ragGoal" title="Về đích: sau khi chạm sàn, cơ kéo tay chân về pose key cuối; frame cuối trùng đúng key cuối (phần lệch còn lại trộn dần trong ~10 frame cuối)">Về đích: tắt</button>
+                <button class="ibtn btn" id="ragGoal" title="Về đích: sau khi chạm sàn, cơ kéo tay chân về pose key cuối; frame cuối trùng đúng key cuối (phần lệch còn lại trộn dần trong ~10 frame cuối)">Về đích: tắt</button>
                 <label class="psl" id="ragMatchBox" style="flex:1 1 100%" title="Frame cuối giống key cuối bao nhiêu: 0 % = để nguyên vật lý, 100 % = đúng key cuối"><span>Khớp pose cuối</span><input type="range" id="ragMatch" min="0" max="1" step="0.05"><output id="ragMatchOut"></output></label>
-                <button class="btn" id="ragGoalRoot" title="Chỉ dáng: người nằm ở đâu là do vật lý (và tác động), chỉ dáng tay chân / thân / đầu về theo key cuối. Dáng + vị trí: cả hông cũng kéo về đúng chỗ của key cuối">Đích: chỉ dáng</button>
-                <button class="btn" id="ragGoalFind" title="Chạy ragdoll nhiều lần với cú đẩy ban đầu khác nhau (hướng, độ mạnh, xoay) để người nằm đúng chỗ và đúng hướng của key cuối (khoảng 1-2 phút)">Tìm cú đổ</button>
+                <button class="ibtn btn" id="ragGoalRoot" title="Chỉ dáng: người nằm ở đâu là do vật lý (và tác động), chỉ dáng tay chân / thân / đầu về theo key cuối. Dáng + vị trí: cả hông cũng kéo về đúng chỗ của key cuối">Đích: chỉ dáng</button>
+                <button class="ibtn btn" id="ragGoalFind" title="Chạy ragdoll nhiều lần với cú đẩy ban đầu khác nhau (hướng, độ mạnh, xoay) để người nằm đúng chỗ và đúng hướng của key cuối (khoảng 1-2 phút)">Tìm cú đổ</button>
               </div>
               <canvas id="ragGraph" width="580" height="150" aria-label="Đường Sức của ragdoll theo frame: kéo điểm, bấm chỗ trống để thêm, bấm đúp để xoá"></canvas>
               <div id="ragGroups" title="Sức riêng từng phần (nhân với đường Sức). Sức chân giữ thăng bằng: còn sức và chân chạm đất thì hông được kéo về pose key"></div>
-              <div class="row"><button class="btn" id="ragLim" title="Vẽ vùng cho phép của khớp đang chọn (gập x dang) trên model">Hiện giới hạn khớp</button></div>
+              <div class="row"><button class="ibtn btn" id="ragLim" title="Vẽ vùng cho phép của khớp đang chọn (gập x dang) trên model">Hiện giới hạn khớp</button></div>
               <div class="pinfo" id="ragLimTxt"></div>
               <div class="pinfo" id="ragInfo"></div>
             </div>
             <h3>Va chạm thân</h3>
             <div class="row">
-              <button class="btn" id="bodyViz" title="Hiện hình va chạm trên model: lõi con nhộng (xanh), khúc đang xuyên (đỏ), điểm bề mặt của khúc xuyên">Hiện vùng va chạm</button>
-              <button class="btn" id="bodyRebuild" title="Dựng lại hình va chạm từ lưới (sau khi đổi bán kính)">Dựng lại</button>
+              <button class="ibtn btn" id="bodyViz" title="Hiện hình va chạm trên model: lõi con nhộng (xanh), khúc đang xuyên (đỏ), điểm bề mặt của khúc xuyên">Hiện vùng va chạm</button>
+              <button class="ibtn btn" id="bodyRebuild" title="Dựng lại hình va chạm từ lưới (sau khi đổi bán kính)">Dựng lại</button>
             </div>
             <label class="psl" id="bodyRBox" hidden><span id="bodyRName">Bán kính</span><input type="range" id="bodyR" min="2" max="40" step="1"><output id="bodyROut"></output></label>
             <div class="pissues" id="bodyIssues"></div>
             <div class="pinfo" id="bodyInfo"></div>
             <h3>Cân bằng</h3>
             <div class="row">
-              <button class="btn" id="balViz" title="Trên sàn: vùng đỡ (chân + vũ khí chạm đất), chấm trọng tâm, mũi tên tới điểm cần đặt chân để không ngã. Xanh = vững, vàng = đang bước kịp, đỏ = lỗi">Hiện cân bằng</button>
-              <button class="btn" id="balFix" title="Frame đang xem: dời hông ngang (hai bàn chân khóa trên sàn, vũ khí theo người) tới khi trọng tâm vào vùng đỡ, rồi đặt key">Đưa trọng tâm vào chân</button>
+              <button class="ibtn btn" id="balViz" title="Trên sàn: vùng đỡ (chân + vũ khí chạm đất), chấm trọng tâm, mũi tên tới điểm cần đặt chân để không ngã. Xanh = vững, vàng = đang bước kịp, đỏ = lỗi">Hiện cân bằng</button>
+              <button class="ibtn btn" id="balFix" title="Frame đang xem: dời hông ngang (hai bàn chân khóa trên sàn, vũ khí theo người) tới khi trọng tâm vào vùng đỡ, rồi đặt key">Đưa trọng tâm vào chân</button>
             </div>
             <label class="psl"><span>Vũ khí nặng</span><input type="range" id="balProp" min="0" max="60" step="1"><output id="balPropOut"></output></label>
             <div class="pissues" id="balIssues"></div>
             <div class="pinfo" id="balInfo"></div>
-            <div class="row"><button class="btn" id="fallGhost" title="Trong một cú ngã: bóng mờ là cả người ở frame bắt đầu đổ, đổ cứng theo vật lý (cùng góc và đà ban đầu) để so với anim">Bóng đổ theo vật lý</button></div>
+            <div class="row"><button class="ibtn btn" id="fallGhost" title="Trong một cú ngã: bóng mờ là cả người ở frame bắt đầu đổ, đổ cứng theo vật lý (cùng góc và đà ban đầu) để so với anim">Bóng đổ theo vật lý</button></div>
             <canvas id="fallGraph" width="580" height="160" aria-label="Chiều cao trọng tâm trong cú ngã: anim và vật lý" hidden></canvas>
           </div>
         </details>
       </div>
       <div class="pane" id="adjList" aria-live="polite">
         <h2>Điều chỉnh đã gửi <span id="adjCount"></span></h2>
-        <p class="empty" id="adjEmpty">Chưa có điều chỉnh nào cho pose này. Chỉnh khớp trên model, ghi chú lý do rồi bấm "Lưu điều chỉnh".</p>
+        <p class="empty" id="adjEmpty">Chưa có điều chỉnh.</p>
         <div id="adjs"></div>
       </div>
       <div class="compose">
-        <label for="text" class="hint" style="color:var(--muted);font-size:12px">Ghi chú cho AI (vì sao chỉnh, chỗ nào)</label>
-        <textarea id="text" placeholder="Ví dụ: hạ vai phải, cẳng tay nghiêng ra sau như concept"></textarea>
+        
+        <textarea id="text" aria-label="Ghi chú cho AI" placeholder="Ghi chú cho AI: vì sao chỉnh, chỗ nào"></textarea>
         <div class="row">
-          <button class="btn primary" id="save" disabled>Lưu điều chỉnh</button>
-          <button class="btn" id="aiSend" disabled>Gửi cho AI</button>
+          <button class="ibtn btn primary" id="save" disabled>Lưu điều chỉnh</button>
+          <button class="ibtn btn" id="aiSend" disabled>Gửi cho AI</button>
         </div>
         <div class="round" id="round" data-s="none"><span id="roundTxt">Vòng review đang mở.</span><small id="roundSub"></small></div>
         <div class="status" id="status" role="status"></div>
@@ -379,29 +481,29 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
   </div>
   <div class="strip" id="strip" role="slider" tabindex="0" aria-label="Frame" aria-valuemin="1"></div>
   <div class="transport">
-    <button class="btn" id="prevKey" title="Key trước (Shift+←)">◀◆</button>
-    <button class="btn" id="prevF" title="Frame trước (←)">◀</button>
-    <button class="btn primary" id="play" title="Phát / dừng (Space)">Phát</button>
-    <button class="btn" id="nextF" title="Frame sau (→)">▶</button>
-    <button class="btn" id="nextKey" title="Key sau (Shift+→)">◆▶</button>
+    <button class="ibtn btn" id="prevKey" title="Key trước (Shift+←)">◀◆</button>
+    <button class="ibtn btn" id="prevF" title="Frame trước (←)">◀</button>
+    <button class="ibtn btn primary" id="play" title="Phát / dừng (Space)">Phát</button>
+    <button class="ibtn btn" id="nextF" title="Frame sau (→)">▶</button>
+    <button class="ibtn btn" id="nextKey" title="Key sau (Shift+→)">◆▶</button>
     <span class="fcount" id="fcount">F<b>1</b> / 1</span>
     <span class="vsep"></span>
-    <button class="btn" id="copyKey" title="Copy pose của frame này: các khớp đang chọn (chọn nhiều bằng Shift hoặc quét), hoặc cả người khi chưa chọn (Ctrl+C). Shift = kèm các khớp con">Copy key</button>
-    <button class="btn" id="pasteKey" disabled title="Paste vào frame này (Ctrl+V). Shift = paste từ frame này đến trước key kế tiếp">Paste</button>
-    <button class="btn" id="pasteHold" disabled title="Paste từ frame này đến trước key kế tiếp (Ctrl+Shift+V)">Paste đến key kế</button>
+    <button class="ibtn btn" id="copyKey" title="Copy pose của frame này: các khớp đang chọn (chọn nhiều bằng Shift hoặc quét), hoặc cả người khi chưa chọn (Ctrl+C). Shift = kèm các khớp con">Copy key</button>
+    <button class="ibtn btn" id="pasteKey" disabled title="Paste vào frame này (Ctrl+V). Shift = paste từ frame này đến trước key kế tiếp">Paste</button>
+    <button class="ibtn btn" id="pasteHold" disabled title="Paste từ frame này đến trước key kế tiếp (Ctrl+Shift+V)">Paste đến key kế</button>
     <span class="kgrp" id="kTools" hidden>
       <span class="vsep"></span>
-      <button class="btn primary" id="kSet" title="Đặt key ở frame này bằng pose đang thấy (S)">◆ Key <kbd>S</kbd></button>
-      <button class="btn" id="kDel" title="Xoá key ở frame này (Delete). Dời key: Shift + kéo key trên timeline (hoặc kéo bằng chuột giữa)">Xoá key</button>
-      <button class="btn" id="kAuto" title="Bật: mỗi lần chỉnh xong một khớp là tự đặt key ở frame đó">Auto key: bật</button>
-      <button class="btn" id="kInterp" title="Đổi giữa spline (mượt) và bậc thang (blocking: giữ pose tới key kế)">Spline</button>
-      <button class="btn" id="kLock" title="Trên các frame chạm đất (dải xanh / tím), bàn chân đi thẳng giữa các vị trí ở key, không trượt, không lún">Bám sàn: bật</button>
-      <button class="btn" id="kFit" title="Tự xoay hông, chân, thân, chùy và tay cho bóng nhân vật trùng bóng ref ở frame này (5 góc), rồi đặt key. Bấm lần nữa để dừng">Khớp ref</button>
-      <button class="btn" id="kFloor" title="Mọi key: chân đang chống (dải chạm đất) đặt đúng lên sàn theo điểm thấp nhất của lưới bàn chân; chân đang nhấc không được xuyên sàn">Chân lên sàn</button>
-      <button class="btn" id="kAutoCt" title="Tô dải chạm đất từ các key: bàn chân thấp (sát sàn) ở hai key liền nhau thì chạm đất suốt đoạn giữa">Dò chạm đất</button>
+      <button class="ibtn btn primary" id="kSet" title="Đặt key ở frame này bằng pose đang thấy (S)">◆ Key <kbd>S</kbd></button>
+      <button class="ibtn btn" id="kDel" title="Xoá key ở frame này (Delete). Dời key: Shift + kéo key trên timeline (hoặc kéo bằng chuột giữa)">Xoá key</button>
+      <button class="ibtn btn" id="kAuto" title="Bật: mỗi lần chỉnh xong một khớp là tự đặt key ở frame đó">Auto key: bật</button>
+      <button class="ibtn btn" id="kInterp" title="Đổi giữa spline (mượt) và bậc thang (blocking: giữ pose tới key kế)">Spline</button>
+      <button class="ibtn btn" id="kLock" title="Trên các frame chạm đất (dải xanh / tím), bàn chân đi thẳng giữa các vị trí ở key, không trượt, không lún">Bám sàn: bật</button>
+      <button class="ibtn btn" id="kFit" title="Tự xoay hông, chân, thân, chùy và tay cho bóng nhân vật trùng bóng ref ở frame này (5 góc), rồi đặt key. Bấm lần nữa để dừng">Khớp ref</button>
+      <button class="ibtn btn" id="kFloor" title="Mọi key: chân đang chống (dải chạm đất) đặt đúng lên sàn theo điểm thấp nhất của lưới bàn chân; chân đang nhấc không được xuyên sàn">Chân lên sàn</button>
+      <button class="ibtn btn" id="kAutoCt" title="Tô dải chạm đất từ các key: bàn chân thấp (sát sàn) ở hai key liền nhau thì chạm đất suốt đoạn giữa">Dò chạm đất</button>
       <span class="vsep"></span>
     </span>
-    <button class="btn" id="expFbx" title="Xuất cả clip thành FBX (chỉ xương + animation, 30 fps) cho Unity. File tải về là .zip chứa .fbx">Xuất FBX</button>
+    <button class="ibtn btn" id="expFbx" title="Xuất cả clip thành FBX (chỉ xương + animation, 30 fps) cho Unity. File tải về là .zip chứa .fbx">Xuất FBX</button>
     <span class="clipinfo" id="clipInfo"></span>
     <span class="legend"><span><i style="background:var(--joint)"></i>key / đã lưu điều chỉnh</span><span><i style="background:var(--edit)"></i>đang chỉnh, chưa lưu</span><span class="kgrp" id="kLegend" hidden><span><i style="background:var(--laneL)"></i>trái chạm đất</span><span><i style="background:var(--laneR)"></i>phải chạm đất</span><span><i style="background:var(--joint)"></i>ghim pose (vật lý tắt)</span><span><i style="background:var(--edit)"></i>xuyên thân</span><span><i style="background:#ff9f43"></i>cân bằng</span></span></span>
   </div>
@@ -1452,7 +1554,7 @@ function renderPoses() {     // version list (newest first): status of its revie
     const r = rounds[(p.clip + "-" + p.version).replace(/[^A-Za-z0-9_\-.]/g, "_")];
     if (r) { const pl = document.createElement("span"); pl.className = "pill " + (r.status === "fixed" ? "done" : r.status); pl.textContent = ST[r.status] || r.status; head.append(pl); }
     const t = document.createElement("b"); t.textContent = p.label;
-    b.append(head, t);
+    b.append(head, t); b.title = p.note || "";
     if (p.note) { const n = document.createElement("span"); n.className = "vnote"; n.textContent = p.note; b.append(n); }
     const na = adjs.filter(a => a.clip === p.clip && a.version === p.version), open = na.filter(a => a.status !== "done").length;
     const s = document.createElement("small");
@@ -3432,12 +3534,12 @@ function setupRef() {
   for (const v of Object.values(r.views)) { const im = new Image(); im.src = r.dir + "/" + v.file; }
   const bar = $("rbar"); bar.innerHTML = "";
   for (const v of ["auto", ...Object.keys(r.views)]) {
-    const b = document.createElement("button"); b.dataset.v = v; b.textContent = v === "auto" ? "Theo camera" : REF_LBL[v] || v;
+    const b = document.createElement("button"); b.dataset.v = v; b.className = "ibtn"; b.textContent = v === "auto" ? "Theo camera" : REF_LBL[v] || v; b.title = b.textContent;
     b.onclick = () => { refView = v; renderRef(); }; bar.append(b);
   }
   if (r.cal) {              // REF | ANIM: the model rendered through the same calibrated ref camera, next to the ref
-    const b = document.createElement("button"); b.id = "rCmp"; b.textContent = "So cạnh nhau";
-    b.title = "Hiện model qua đúng camera của video ref, đặt cạnh ảnh ref (không chồng lên nhau)";
+    const b = document.createElement("button"); b.id = "rCmp"; b.className = "ibtn"; b.textContent = "So cạnh nhau";
+    b.title = "So cạnh nhau: hiện model qua đúng camera của video ref, đặt cạnh ảnh ref (không chồng lên nhau)";
     b.onclick = () => { refCmp = !refCmp; renderRef(); }; bar.append(b);
   }
   renderRef();
@@ -4413,5 +4515,36 @@ setCam("right"); resize(); loop(); renderPoses(); openPose(POSES[0]);
     applyRemote();
   });
   refresh();
+})();
+</script>
+<script>
+/* UI layer: every button is an icon. The label text stays in the DOM (hidden), so existing code that sets
+   textContent keeps working; here it becomes the tooltip + aria-label, and ": bật / : tắt" becomes a state. */
+(function () {
+  const sel = ".ibtn", T0 = "t0";
+  function label(b) { const c = b.cloneNode(true); c.querySelectorAll("kbd").forEach(k => k.remove()); return c.textContent.replace(/\s+/g, " ").trim(); }
+  function sync(b) {
+    const t = label(b); if (b.dataset[T0] === undefined) b.dataset[T0] = b.getAttribute("title") || "";
+    const dyn = /:|^(Dừng|Phát|Bậc thang|Spline)$/.test(t), t0 = b.dataset[T0];
+    const tip = dyn ? (t + (t0 ? " - " + t0 : "")) : (t0 || t);
+    if (b.title !== tip) b.title = tip;
+    if (t) b.setAttribute("aria-label", t);
+    const st = /(:\s*bật|world|^Dừng$|^Bậc thang$)/i.test(t) ? "on" : (/:\s*tắt/.test(t) ? "off" : "");
+    if (b.dataset.state !== st) b.dataset.state = st;
+  }
+  const mo = new MutationObserver(ms => { const seen = new Set(); ms.forEach(m => { const b = (m.target.nodeType === 3 ? m.target.parentElement : m.target).closest(sel); if (b && !seen.has(b)) { seen.add(b); sync(b); } }); });
+  document.querySelectorAll(sel).forEach(b => { sync(b); mo.observe(b, { childList: true, characterData: true, subtree: true }); });
+  document.querySelectorAll(".cams button").forEach(b => { b.setAttribute("aria-label", b.textContent.trim()); b.title = b.textContent.trim() + (b.title ? " (" + b.title + ")" : ""); });
+  document.querySelectorAll(".legend span").forEach(sp => { if (sp.textContent.trim()) sp.title = sp.textContent.trim(); });
+  /* physics sections fold; the open/closed choice is remembered */
+  const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
+  document.querySelectorAll(".pbody > h3").forEach(h => {
+    const key = "plsec:" + h.textContent.trim(), sec = document.createElement("div"); sec.className = "sec";
+    let n = h.nextSibling; while (n && !(n.nodeType === 1 && n.tagName === "H3")) { const nx = n.nextSibling; sec.appendChild(n); n = nx; }
+    h.after(sec); h.classList.add("sech");
+    const set = open => { h.classList.toggle("open", open); sec.hidden = !open; };
+    set(store.get(key) === "1");
+    h.addEventListener("click", () => { const open = sec.hidden; set(open); store.set(key, open ? "1" : "0"); if (open) window.dispatchEvent(new Event("resize")); });
+  });
 })();
 </script>

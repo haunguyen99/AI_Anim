@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Animation Home</title>
+<title>Home</title>
 <style>
 :root{
   --bg:#f5f4f0; --panel:#ffffff; --ink:#1d1d1b; --muted:#6b6a65; --line:#e3e1da; --soft:#efeee9;
@@ -55,22 +55,22 @@ h1{font-size:24px;margin:0 0 4px} h2{font-size:16px;margin:28px 0 12px}
 .char{margin-top:24px}
 .char-h{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .char-h h2{margin:0}
-.anim{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;box-shadow:var(--shadow)}
-.thumb{width:150px;aspect-ratio:3/1;border-radius:8px;background:var(--soft) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+.anim{display:grid;grid-template-columns:132px 1fr auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;box-shadow:var(--shadow)}
+.thumb{width:100%;aspect-ratio:3/1;border-radius:8px;background:var(--soft) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
 .anim h3{margin:0 0 3px;font-size:16px}
 .pipe{display:flex;gap:3px;margin:6px 0 4px}
 .pipe span{font-size:11px;padding:2px 7px;border-radius:4px;background:var(--soft);color:var(--muted)}
 .pipe span.done{background:color-mix(in srgb,var(--s-done) 18%,transparent);color:var(--s-done)}
 .pipe span.cur{background:var(--accent);color:var(--accent-ink);font-weight:600}
 .note{font-size:13px;color:var(--muted);max-height:2.9em;overflow:hidden}
-.acts{display:flex;flex-direction:column;gap:6px;align-items:stretch;min-width:150px}
-.links{display:flex;gap:4px;justify-content:flex-end}
+.acts{display:flex;gap:6px;align-items:center}
+.links{display:flex;gap:6px}
 .links a{font-size:12px;color:var(--muted);text-decoration:none;padding:2px 6px;border-radius:4px;border:1px solid var(--line)}
 .links a:hover{color:var(--ink)} .links a.off{opacity:.35;pointer-events:none}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
 .filters button{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:20px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer}
 .filters button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.cols{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.cols{display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start}
 .side{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);position:sticky;top:76px}
 .side h2{margin:0 0 10px}
 .log{list-style:none;margin:0;padding:0;font-size:13px}
@@ -93,17 +93,44 @@ textarea{min-height:70px;resize:vertical}
 .empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
 @media (max-width:860px){
   .cols{grid-template-columns:1fr} .side{position:static}
-  .anim{grid-template-columns:1fr} .thumb{width:100%} .acts{min-width:0} .links{justify-content:flex-start}
+  .anim{grid-template-columns:1fr} .thumb{max-width:220px} .acts{flex-wrap:wrap}
   header,main{padding-left:16px;padding-right:16px}
 }
+
+/* icon buttons: every button is an icon, the name is the tooltip (title) */
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico.fill{fill:currentColor;stroke:none}
+.ib{width:38px;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;padding:0}
+.ib:hover{border-color:var(--muted);background:var(--soft)}
+.ib:focus-visible,.fl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ib.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ib.primary:hover{filter:brightness(1.08)}
+.ib.sm{width:30px;height:30px;border-radius:8px}
+.ib.sm .ico{width:16px;height:16px}
+.ib.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.ib.ghost:hover{color:var(--ink);background:var(--soft)}
+.cnt{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cnt .ico{width:15px;height:15px}
+.fl{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:20px;padding:5px 12px 5px 9px;font:inherit;font-size:13px;cursor:pointer;font-variant-numeric:tabular-nums}
+.fl.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fl .ico{width:16px;height:16px}
+.steps{display:flex;align-items:center;margin:4px 0}
+.steps i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block;flex:none}
+.steps u{width:12px;height:2px;background:var(--line);display:block;flex:none}
+.steps i.done,.steps u.done{background:var(--s-done)}
+.steps i.cur{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.steps b{font-weight:500;font-size:12px;color:var(--ink);margin-left:10px}
+.title-row{display:flex;align-items:center;gap:8px}
+.title-row h1{margin:0;font-size:22px}
+.tools{display:flex;gap:8px;align-items:center;margin-left:auto}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo" onclick="go('#/')">AI <span>Animation</span></div>
+  <a class="ib ghost" href="#/" title="Trang chủ" aria-label="Trang chủ"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></a>
   <div class="crumb" id="crumb"></div>
   <div class="sp"></div>
-  <button class="btn small" onclick="refresh(true)" title="Đọc lại sổ work/clips.json">↻ Làm mới</button>
+  <button class="ib ghost" onclick="refresh(true)" title="Làm mới" aria-label="Làm mới"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 11-2.6-5.9"/><path d="M20 4v5h-5"/></svg></button>
 </header>
 <main id="app"><div class="empty">Đang đọc dữ liệu…</div></main>
 
@@ -114,7 +141,7 @@ textarea{min-height:70px;resize:vertical}
   <label>Mô tả<input name="desc" placeholder="thể loại, style, ghi chú"></label>
   <label id="projChars">Nhân vật (mỗi dòng một nhân vật, có thể thêm sau)<textarea name="chars" placeholder="SDR&#10;SDR06"></textarea></label>
   <div class="err" id="errProject"></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Hủy</button><button class="btn primary" id="projSubmit">Tạo dự án</button></div>
+  <div class="row" style="justify-content:flex-end"><button class="ib" value="cancel" formnovalidate title="Hủy" aria-label="Hủy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="ib primary" id="projSubmit" title="Tạo dự án" aria-label="Tạo dự án"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></div>
 </form></dialog>
 
 <dialog id="dlgClip"><form method="dialog" onsubmit="return submitClip(event)">
@@ -129,7 +156,7 @@ textarea{min-height:70px;resize:vertical}
   <label>Thư mục video ref (nếu có)<input name="ref" placeholder="vd: E:\ref\walk"></label>
   <label>Mô tả chuyển động<textarea name="desc" placeholder="nhân vật làm gì, nhịp, cảm xúc, prop…"></textarea></label>
   <div class="err" id="errClip"></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Hủy</button><button class="btn primary">Tạo anim</button></div>
+  <div class="row" style="justify-content:flex-end"><button class="ib" value="cancel" formnovalidate title="Hủy" aria-label="Hủy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="ib primary" title="Tạo anim" aria-label="Tạo anim"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></div>
 </form></dialog>
 
 <dialog id="dlgEdit"><form method="dialog" onsubmit="return submitEdit(event)">
@@ -144,12 +171,14 @@ textarea{min-height:70px;resize:vertical}
   </div>
   <label>Ghi chú<textarea name="note"></textarea></label>
   <div class="err" id="errEdit"></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Hủy</button><button class="btn primary">Lưu</button></div>
+  <div class="row" style="justify-content:flex-end"><button class="ib" value="cancel" formnovalidate title="Hủy" aria-label="Hủy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="ib primary" title="Lưu" aria-label="Lưu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></div>
 </form></dialog>
 
 <div class="toast" id="toast"></div>
 
 <script>
+const ICONS = {"home": "<path d=\"M4 11l8-7 8 7v9h-5v-6H9v6H4z\"/>", "refresh": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "edit": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "play": "<path d=\"M8 5l11 7-11 7z\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "rig": "<circle cx=\"12\" cy=\"5\" r=\"2.3\"/><path d=\"M12 8v7M6.5 10.5L12 8l5.5 2.5M9 21l3-6 3 6\"/>", "pose": "<path d=\"M12 3l8 4.5v9L12 21l-8-4.5v-9z\"/><path d=\"M12 12l8-4.5M12 12v9M12 12L4 7.5\"/>", "review": "<path d=\"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "check": "<path d=\"M5 12.5l4.5 4.5L19 7\"/>", "working": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "waiting": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/>", "done": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 12.5l3 3 5-6\"/>", "paused": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M10 9v6M14 9v6\"/>", "list": "<path d=\"M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>"};
+const ico = (n, cls="") => `<svg class="ico${n==="play"?" fill":""}${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 const STAGE_VI = {rig:"Rig", analysis:"Phân tích", p0:"Base pose", blocking:"Blocking", spline:"Spline", polish:"Polish", export:"Export"};
 const STATUS_VI = {working:"Đang làm", waiting:"Chờ góp ý", done:"Đã xong", paused:"Tạm dừng"};
 let S = null, curProject = null, filter = "all";
@@ -164,22 +193,22 @@ function bar(list){
   const n=list.length||1, k=countBy(list);
   return `<div class="bar">${["done","waiting","working","paused"].map(s=>`<i class="bg-${s}" style="width:${k[s]/n*100}%"></i>`).join("")}</div>`;
 }
-function statusChip(s){ return `<span class="chip st-${s}"><span class="dot bg-${s}"></span>${STATUS_VI[s]||s}</span>`; }
+const stIcon = s => `<span class="st-${s}" title="${STATUS_VI[s]||s}" style="display:inline-flex">${ico(s)}</span>`;
+const cnt = (s, n) => n ? `<span class="cnt st-${s}" title="${STATUS_VI[s]}: ${n}">${ico(s)}${n}</span>` : "";
+/* the one command to paste in chat for the next step (null = nothing to do) */
 function nextCmd(c){
   const key = (c.name||"").split(" ")[0].toLowerCase();
-  if (c.stage==="rig") return `Nhân vật chưa có rig: gõ <code>/rig</code>`;
-  if (!c.pose_url && !c.review_url) return `Gõ <code>/new_clip ${esc(c.id)}</code> để phân tích + dựng P0`;
-  if (c.status==="waiting") return `Góp ý trên Review Lab rồi gõ <code>/check_fb ${esc(key)}</code>`;
-  if (c.status==="done") return `Đã xuất FBX`;
-  if (c.status==="paused") return `Tạm dừng`;
-  return "";
+  if (c.stage==="rig") return "/rig";
+  if (!c.pose_url && !c.review_url) return "/new_clip " + c.id;
+  if (c.status==="waiting") return "/check_fb " + key;
+  return null;
 }
 
 async function refresh(say){
   try{
     const r = await fetch("/api/state", {cache:"no-store"}); S = await r.json();
     if (S.error) throw new Error(S.error);
-    render(); if (say) toast("Đã đọc lại sổ clip");
+    render(); if (say) toast("Đã làm mới");
   }catch(e){ $("#app").innerHTML = `<div class="empty">Không đọc được dữ liệu: ${esc(e.message)}<br>Server Home có đang chạy không? <code>tools\\home\\server.py</code></div>`; }
 }
 async function post(url, body){
@@ -195,116 +224,88 @@ function render(){
   window.scrollTo(0, 0);
 }
 
-/* ---------- Home ---------- */
+/* ---------- Home: project cards + what to continue ---------- */
 function renderHome(){
   $("#crumb").innerHTML = "";
-  document.title = "AI Animation Home";
-  const all = S.clips, k = countBy(all);
-  const waiting = all.filter(c=>c.status==="waiting"), working = all.filter(c=>c.status==="working");
+  document.title = "Home";
+  const todo = S.clips.filter(c => c.status==="waiting" || c.status==="working").sort((a,b)=>(b.status==="waiting")-(a.status==="waiting"));
   const projOf = c => S.projects.find(p=>p.characters.includes(c.character));
-  const todo = [...waiting, ...working];
   $("#app").innerHTML = `
-    <div class="row" style="justify-content:space-between;align-items:flex-end">
-      <div><h1>Dự án</h1><p class="sub">Chọn dự án để xem animation, hoặc tạo dự án mới.</p></div>
-      <button class="btn primary" onclick="openProject()">+ Dự án mới</button>
-    </div>
-    <div class="stats">
-      <div class="stat"><b>${S.projects.length}</b><span>dự án</span></div>
-      <div class="stat"><b>${all.length}</b><span>animation</span></div>
-      <div class="stat"><b class="st-working">${k.working}</b><span>đang làm</span></div>
-      <div class="stat"><b class="st-waiting">${k.waiting}</b><span>chờ góp ý</span></div>
-      <div class="stat"><b class="st-done">${k.done}</b><span>đã xong</span></div>
-      ${k.paused?`<div class="stat"><b class="st-paused">${k.paused}</b><span>tạm dừng</span></div>`:""}
-    </div>
-    <div class="cols" style="margin-top:22px">
+    <div class="title-row"><h1>Dự án</h1>
+      <div class="tools"><button class="ib primary" onclick="openProject()" title="Dự án mới" aria-label="Dự án mới">${ico("plus")}</button></div></div>
+    <div class="cols" style="margin-top:20px">
       <div class="grid">
         ${S.projects.map(p=>{ const cl=clipsOf(p), kk=countBy(cl); return `
           <div class="card" onclick="go('#/p/${encodeURIComponent(p.id)}')">
             <div class="cover" style="${p.cover?`background-image:url('${esc(p.cover)}')`:""}"></div>
             <div class="body">
               <h3>${esc(p.name)}</h3>
-              <div class="small muted">${esc(p.desc||"")}</div>
-              <div class="row small muted">${p.characters.map(c=>`<span class="chip">${esc(c)}${p.labels&&p.labels[c]?` · ${esc(p.labels[c])}`:""}</span>`).join("")}</div>
               <div style="flex:1"></div>
               ${bar(cl)}
-              <div class="row small muted" style="justify-content:space-between">
-                <span>${cl.length} anim · <span class="st-done">${kk.done} xong</span>${kk.waiting?` · <span class="st-waiting">${kk.waiting} chờ</span>`:""}${kk.working?` · <span class="st-working">${kk.working} đang làm</span>`:""}${kk.paused?` · <span class="st-paused">${kk.paused} tạm dừng</span>`:""}</span>
-                <span>${esc(p.updated||"")}</span>
-              </div>
+              <div class="row" style="gap:12px">${cnt("done",kk.done)}${cnt("waiting",kk.waiting)}${cnt("working",kk.working)}${cnt("paused",kk.paused)}</div>
             </div>
           </div>`}).join("")}
-        <div class="card new" onclick="openProject()">+ Dự án mới</div>
       </div>
       <aside class="side">
-        <h2>Tiếp tục làm</h2>
+        <h2>Tiếp tục</h2>
         ${todo.length ? `<ul class="log todo">${todo.map(c=>{const p=projOf(c);return `
-          <li onclick="go('#/p/${encodeURIComponent(p?p.id:"")}')"><b>${esc(c.character)} · ${esc(c.name)}</b> ${statusChip(c.status)}
-          <div class="d">${esc(p?p.name:"")} · ${STAGE_VI[c.stage]||c.stage}${c.review_latest?` · ${esc(c.review_latest.version)}`:""}</div></li>`}).join("")}</ul>`
+          <li onclick="go('#/p/${encodeURIComponent(p?p.id:"")}')" style="display:flex;gap:10px;align-items:center">
+            ${stIcon(c.status)}<div style="min-width:0"><b>${esc(c.name)}</b><div class="d">${esc(c.character)}${c.review_latest?` · ${esc(c.review_latest.version)}`:""}</div></div></li>`}).join("")}</ul>`
           : `<div class="small muted">Không có anim nào đang dở.</div>`}
-        <h2 style="margin-top:18px">Hoạt động gần đây</h2>
-        <ul class="log">${S.activity.slice(0,8).map(g=>`<li>${esc(g.msg)}<div class="d">${esc(g.date)} · ${esc(g.hash)}</div></li>`).join("")}</ul>
       </aside>
     </div>`;
 }
 
 /* ---------- Dự án ---------- */
 function renderProject(p){
-  $("#crumb").innerHTML = `<a href="#/">Home</a> / ${esc(p.name)}`;
-  document.title = p.name + " · AI Animation";
+  $("#crumb").innerHTML = esc(p.name);
+  document.title = p.name;
   const cl = clipsOf(p), k = countBy(cl);
   const shown = c => filter==="all" || c.status===filter;
   const chars = [...new Set([...p.characters, ...cl.map(c=>c.character)])];
+  const flt = [["all","Tất cả",cl.length,"list"],["working","Đang làm",k.working,"working"],["waiting","Chờ góp ý",k.waiting,"waiting"],["done","Đã xong",k.done,"done"],...(k.paused?[["paused","Tạm dừng",k.paused,"paused"]]:[])];
   $("#app").innerHTML = `
-    <div class="row" style="justify-content:space-between;align-items:flex-end">
-      <div><h1>${esc(p.name)}</h1><p class="sub" style="margin-bottom:8px">${esc(p.desc||"")}</p></div>
-      <div class="row" style="gap:8px"><button class="btn" onclick="openProject(true)">Sửa dự án</button><button class="btn primary" onclick="openClip()">+ Animation mới</button></div>
-    </div>
-    <div class="filters">
-      ${[["all",`Tất cả (${cl.length})`],["working",`Đang làm (${k.working})`],["waiting",`Chờ góp ý (${k.waiting})`],["done",`Đã xong (${k.done})`],...(k.paused?[["paused",`Tạm dừng (${k.paused})`]]:[])]
-        .map(([v,t])=>`<button class="${filter===v?"on":""}" onclick="filter='${v}';render()">${t}</button>`).join("")}
-    </div>
-    <div class="cols" style="margin-top:6px">
-      <div>
-        ${chars.map(ch=>{ const list=cl.filter(c=>c.character===ch&&shown(c)); const rig=(S.characters[ch]||{}).rig_url;
-          return `<section class="char">
-            <div class="char-h"><h2>${esc(ch)}</h2><span class="muted small">${esc((p.labels||{})[ch]||"")}</span>
-              ${rig?`<a class="chip" href="${esc(rig)}" target="_blank">Rig Lab ↗</a>`:`<span class="chip">chưa có rig</span>`}</div>
-            ${list.length? list.map(animRow).join("") : `<div class="empty small">Chưa có anim${filter!=="all"?" ở mục này":""}.</div>`}
-          </section>`}).join("")}
-        ${chars.length?"":`<div class="empty">Dự án chưa có nhân vật. Bấm <b>+ Animation mới</b> để thêm nhân vật và anim đầu tiên.</div>`}
+    <div class="title-row"><a class="ib ghost" href="#/" title="Về danh sách dự án" aria-label="Về danh sách dự án">${ico("back")}</a><h1>${esc(p.name)}</h1>
+      <div class="tools">
+        <button class="ib" onclick="openProject(true)" title="Sửa dự án" aria-label="Sửa dự án">${ico("edit")}</button>
+        <button class="ib primary" onclick="openClip()" title="Animation mới" aria-label="Animation mới">${ico("plus")}</button>
       </div>
-      <aside class="side">
-        <h2>Hoạt động</h2>
-        ${p.activity.length?`<ul class="log">${p.activity.map(g=>`<li>${esc(g.msg)}<div class="d">${esc(g.date)} · ${esc(g.hash)}</div></li>`).join("")}</ul>`:`<div class="small muted">Chưa có commit nào.</div>`}
-      </aside>
+    </div>
+    <div class="filters" style="margin-top:14px">
+      ${flt.map(([v,t,n,i])=>`<button class="fl ${filter===v?"on":""}" title="${t}" aria-label="${t}" onclick="filter='${v}';render()">${ico(i)}${n}</button>`).join("")}
+    </div>
+    <div style="margin-top:6px">
+      ${chars.map(ch=>{ const list=cl.filter(c=>c.character===ch&&shown(c)); const rig=(S.characters[ch]||{}).rig_url;
+        return `<section class="char">
+          <div class="char-h"><h2>${esc(ch)}</h2><span class="muted small">${esc((p.labels||{})[ch]||"")}</span>
+            ${rig?`<a class="ib sm ghost" href="${esc(rig)}" target="_blank" title="Mở Rig Lab" aria-label="Mở Rig Lab">${ico("rig")}</a>`:`<span class="muted" title="Chưa có rig (gõ /rig)" style="display:inline-flex;opacity:.5">${ico("rig")}</span>`}</div>
+          ${list.length? list.map(animRow).join("") : `<div class="empty small">Chưa có anim${filter!=="all"?" ở mục này":""}.</div>`}
+        </section>`}).join("")}
+      ${chars.length?"":`<div class="empty">Dự án chưa có nhân vật. Bấm ${ico("plus")} để thêm nhân vật và anim đầu tiên.</div>`}
     </div>`;
 }
 function animRow(c){
   const si = S.stages.indexOf(c.stage);
   const latest = c.review_latest || c.pose_latest;
-  const hint = nextCmd(c);
+  const cmd = nextCmd(c);
+  const lab = (url, n, t) => url ? `<a class="ib sm" href="${esc(url)}" target="_blank" title="${t}" aria-label="${t}">${ico(n)}</a>` : "";
   return `<div class="anim">
-    <div class="thumb" style="${c.thumb?`background-image:url('${esc(c.thumb)}')`:""}">${c.thumb?"":"chưa có playblast"}</div>
-    <div>
-      <div class="row" style="gap:8px"><h3>${esc(c.name)}</h3>${statusChip(c.status)}
-        <span class="small muted">${c.frames?c.frames+"F":""}${latest?` · bản ${esc(latest.version)}`:""}${c.updated?` · ${esc(c.updated)}`:""}</span></div>
-      <div class="pipe">${S.stages.map((s,i)=>`<span class="${i<si?"done":i===si?"cur":""}">${STAGE_VI[s]}</span>`).join("")}</div>
-      <div class="note" title="${esc(c.note)}">${esc(c.note||"")}</div>
-      ${hint?`<div class="small" style="margin-top:4px">→ ${hint}</div>`:""}
+    <div class="thumb" style="${c.thumb?`background-image:url('${esc(c.thumb)}')`:""}">${c.thumb?"":ico("review")}</div>
+    <div style="min-width:0">
+      <div class="title-row" style="gap:8px"><h3 style="margin:0">${esc(c.name)}</h3>${stIcon(c.status)}
+        <span class="small muted">${latest?esc(latest.version):""}</span></div>
+      <div class="steps" title="${S.stages.map(s=>STAGE_VI[s]).join(" › ")}">${S.stages.map((s,i)=>`${i?`<u class="${i<=si?"done":""}"></u>`:""}<i class="${i<si?"done":i===si?"cur":""}" title="${STAGE_VI[s]}"></i>`).join("")}<b>${STAGE_VI[c.stage]||c.stage}</b></div>
+      ${c.note?`<div class="note" title="${esc(c.note)}" style="white-space:nowrap;text-overflow:ellipsis;max-height:none">${esc(c.note)}</div>`:""}
     </div>
     <div class="acts">
-      ${c.continue?`<a class="btn primary" href="${esc(c.continue[1])}" target="_blank">Tiếp tục · ${esc(c.continue[0])}</a>`
-        :`<button class="btn primary" onclick="copyCmd('/new_clip ${esc(c.id)}')">Chép lệnh /new_clip</button>`}
-      <div class="links">
-        <a class="${c.rig_url?"":"off"}" href="${esc(c.rig_url)}" target="_blank">Rig</a>
-        <a class="${c.pose_url?"":"off"}" href="${esc(c.pose_url)}" target="_blank">Pose</a>
-        <a class="${c.review_url?"":"off"}" href="${esc(c.review_url)}" target="_blank">Review</a>
-      </div>
-      <button class="btn small" onclick="openEdit('${esc(c.id)}')">Sửa / đổi tên</button>
+      ${c.continue?`<a class="ib primary" href="${esc(c.continue[1])}" target="_blank" title="Tiếp tục · ${esc(c.continue[0])}" aria-label="Tiếp tục">${ico("play")}</a>`:""}
+      ${cmd?`<button class="ib" onclick="copyCmd('${esc(cmd)}')" title="Chép lệnh ${esc(cmd)}" aria-label="Chép lệnh">${ico("copy")}</button>`:""}
+      ${lab(c.rig_url,"rig","Rig Lab")}${lab(c.pose_url,"pose","Pose Lab")}${lab(c.review_url,"review","Review Lab")}
+      <button class="ib sm ghost" onclick="openEdit('${esc(c.id)}')" title="Sửa / đổi tên" aria-label="Sửa">${ico("edit")}</button>
     </div>
   </div>`;
 }
-function copyCmd(t){ navigator.clipboard?.writeText(t).then(()=>toast(`Đã chép "${t}": dán vào chat với Claude`), ()=>toast(t)); }
+function copyCmd(t){ navigator.clipboard?.writeText(t).then(()=>toast(`Đã chép ${t}: dán vào chat`), ()=>toast(t)); }
 
 /* ---------- hộp thoại ---------- */
 function openProject(edit){
@@ -312,7 +313,7 @@ function openProject(edit){
   const p = edit ? curProject : null;
   f.pid.value = p ? p.id : ""; f.name.value = p ? p.name : ""; f.desc.value = p ? (p.desc||"") : "";
   $("#projTitle").textContent = p ? "Sửa dự án" : "Dự án mới";
-  $("#projSubmit").textContent = p ? "Lưu" : "Tạo dự án";
+  $("#projSubmit").title = p ? "Lưu" : "Tạo dự án";
   $("#projChars").style.display = p ? "none" : "";
   d.showModal();
 }
@@ -334,7 +335,7 @@ async function submitProject(e){
 function openClip(){
   const d=$("#dlgClip"), f=d.querySelector("form"); f.reset(); $("#errClip").textContent="";
   const chars=[...new Set([...curProject.characters, ...clipsOf(curProject).map(c=>c.character)])];
-  f.character.innerHTML = chars.map(c=>`<option>${esc(c)}</option>`).join("") + `<option value="__new">+ Nhân vật mới…</option>`;
+  f.character.innerHTML = chars.map(c=>`<option>${esc(c)}</option>`).join("") + `<option value="__new">+ Nhân vật mới</option>`;
   f.newchar.parentElement.style.display = chars.length ? "none" : "";
   if (!chars.length) f.character.value="__new";
   d.showModal();
