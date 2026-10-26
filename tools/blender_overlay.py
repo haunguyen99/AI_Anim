@@ -1,6 +1,6 @@
 """Overlay renders of the LIVE Blender scene (made through the Ref_* cameras) on the reference frames.
 
-Blender side (run via MCP execute_blender_code):  exec(open(r"E:/AI Animation/tools/blender/live_render.py").read())
+Blender side (run via MCP execute_blender_code):  exec(open(ROOT + r"/tools/blender/live_render.py").read())
 then:  python tools/blender_overlay.py --frames 1,17 [--views front,left] [--refs work/idle]
 Writes work/blender/look/overlay_<frame>.png  (per view: reference+model outline | model).
 """

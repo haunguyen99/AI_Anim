@@ -1,7 +1,7 @@
 """Pole audit: one table per clip, run BEFORE rendering a version (lesson from SDR map06, ~9 review rounds lost to free poles).
 Per key: knee direction vs foot direction (deg), elbow drop below shoulder (cm), upper-arm roll vs P0 (deg).
 Run inside Blender after the clip's loader (needs ARM, goto(f), done()):
-    exec(open(r"E:/AI Animation/tools/blender/pole_audit.py", encoding="utf8").read()); pole_audit(KEYS)
+    exec(open(ROOT + r"/tools/blender/pole_audit.py", encoding="utf8").read()); pole_audit(KEYS)
 Flags: knee > KNEE_MAX (knee not over the toes), elbow drop outside ELBOW_DROP for a free/low arm, roll jump > ROLL_JUMP between keys.
 """
 import math

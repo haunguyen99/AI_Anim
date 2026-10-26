@@ -1,6 +1,10 @@
 # Build Idle_Front end to end (review rounds v9..v11): shared breath curve + overlap lags, spine/neck/head bend with the
 # breath, right arm IK hand lift, loop seams. Re-run after any parameter change; measure with idle_front_measure().
-#   exec(open(r"E:/AI Animation/tools/blender/idle_front_build.py").read()); idle_front_build(); print(idle_front_measure())
+#   exec(open(ROOT + r"/tools/blender/idle_front_build.py").read()); idle_front_build(); print(idle_front_measure())
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import math
 
 import bpy
@@ -168,7 +172,7 @@ def idle_front_build(**over):
     g = globals()
     g.pop("BREATH_AMP", None)
     g["BREATH_EASE"] = cfg["ease"]; g["BREATH_LAGS"] = cfg["lags"]
-    exec(open(r"E:/AI Animation/work/blender/key_idle_breath_curve.py").read(), g)
+    exec(open(ROOT + r"/work/blender/key_idle_breath_curve.py").read(), g)
     A = bpy.data.objects["Armature"]; C = bpy.data.objects["CTRL"]; sc = bpy.context.scene
     mw = A.matrix_world; P = A.pose.bones; act = A.animation_data.action
     br = g["breath"]
@@ -197,13 +201,13 @@ def idle_front_build(**over):
         mace_delay(**cfg["mace_delay"])
     if cfg.get("flaps"):
         cloth_flaps(cfg["flaps"])
-    exec(open(r"E:/AI Animation/tools/blender/arm_ik_R.py").read(), g)
+    exec(open(ROOT + r"/tools/blender/arm_ik_R.py").read(), g)
     g["ik_R_breath"](**cfg["hand"])
     hb = C.pose.bones["H_Elbow_R"]
     hb.rotation_quaternion = Quaternion(Vector((1, 0, 0)), math.radians(-0.5)) @ Quaternion(Vector((0, 1, 0)), math.radians(-3.0))
     for f in (1, 60):
         hb.keyframe_insert("rotation_quaternion", frame=f)
-    exec(open(r"E:/AI Animation/tools/blender/direct.py").read(), g)
+    exec(open(ROOT + r"/tools/blender/direct.py").read(), g)
     g["match_seam"](A); g["match_seam"](C)
 
 

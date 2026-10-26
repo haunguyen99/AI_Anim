@@ -1,10 +1,14 @@
 # One stance trial: original P0 + STANCE (feet) + CH (fullbody_solve channels), rendered through the 5 Ref cameras.
 #   TAG = "L1"; STANCE = dict(r=(x, y), l=(x, y), l_yaw=deg, r_yaw=deg); TRIAL_CH = {"Root_M.rz": 15}
-#   exec(open(r"E:/AI Animation/tools/blender/leg_trial.py").read())    -> eye_<TAG>_<view>.png, prints joints + limits
+#   exec(open(ROOT + r"/tools/blender/leg_trial.py").read())    -> eye_<TAG>_<view>.png, prints joints + limits
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import bpy
 
 FB_NO_RUN = True
-exec(open(r"E:/AI Animation/tools/blender/fullbody_solve.py").read())
+exec(open(ROOT + r"/tools/blender/fullbody_solve.py").read())
 setup_base()
 _p = np.zeros(len(NAMES))
 for _k, _v in TRIAL_CH.items():  # noqa: F821
@@ -22,13 +26,13 @@ try:
     _body.hide_render = False; _vk.hide_render = False
     for _v in ("front", "left", "back", "right", "top"):
         _sc.camera = bpy.data.objects["Ref_" + _v]
-        _sc.render.filepath = f"E:/AI Animation/work/blender/look/eye_{TAG}_{_v}.png"  # noqa: F821
+        _sc.render.filepath = f"{ROOT}/work/blender/look/eye_{TAG}_{_v}.png"  # noqa: F821
         bpy.ops.render.render(write_still=True)
     if globals().get("ALSO_WEAPON_ONLY"):      # weapon-only renders for outline checks -> part_<TAG>_<view>.png
         _body.hide_render = True
         for _v in ("front", "left", "back", "right"):
             _sc.camera = bpy.data.objects["Ref_" + _v]
-            _sc.render.filepath = f"E:/AI Animation/work/blender/look/part_{TAG}_{_v}.png"  # noqa: F821
+            _sc.render.filepath = f"{ROOT}/work/blender/look/part_{TAG}_{_v}.png"  # noqa: F821
             bpy.ops.render.render(write_still=True)
     _body.hide_render, _vk.hide_render = _hb, _hv
 finally:

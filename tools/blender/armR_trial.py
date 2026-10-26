@@ -1,6 +1,10 @@
 # Try right-arm edits on frame F of the live action (nothing keyed), render 5 views to eye_<tag>_<view>.png.
 #   AR = {"tag": "python using rl(bone, axis_idx, deg)"}; AR_FRAME = 1; exec(open(r".../armR_trial.py").read())
 # rl(): rotate a pose bone about its own local axis (0=x length axis of this rig, 1=y, 2=z hinge) around its head.
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import math
 
 import bpy
@@ -37,7 +41,7 @@ try:
         exec(_code)
         for _v in ("front", "left", "back", "right", "top"):
             _sc.camera = bpy.data.objects["Ref_" + _v]
-            _sc.render.filepath = f"E:/AI Animation/work/blender/look/eye_{_tag}_{_v}.png"
+            _sc.render.filepath = f"{ROOT}/work/blender/look/eye_{_tag}_{_v}.png"
             bpy.ops.render.render(write_still=True)
 finally:
     _A.animation_data.action = _act

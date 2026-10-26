@@ -2,9 +2,9 @@
 # Unity (armature + meshes, one take), re-import and compare per frame, and save <scene>_<clip>_baked.blend with the
 # baked action on the joints and the CTRL rig / constraints removed. The working scene is reopened untouched.
 #   EXPORT = dict(take="EN_M11_Boss_Gaygor_Idle_Front", f0=1, f1=60,
-#                 fbx=r"E:/AI Animation/work/idle_front/export/EN_M11_Boss_Gaygor_Idle_Front.fbx",
-#                 baked_blend=r"E:/AI Animation/work/blender/boss_idle_front_baked.blend")
-#   exec(open(r"E:/AI Animation/tools/blender/export_clip.py").read())
+#                 fbx=ROOT + r"/work/idle_front/export/EN_M11_Boss_Gaygor_Idle_Front.fbx",
+#                 baked_blend=ROOT + r"/work/blender/boss_idle_front_baked.blend")
+#   exec(open(ROOT + r"/tools/blender/export_clip.py").read())
 import os
 
 import bpy

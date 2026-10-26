@@ -6,7 +6,7 @@ và con trỏ tới chỗ mới.
 ## status
 > Gaygor Attack (68F, cửa sổ `work/blender/boss_attack_v4.blend`, bản lưu `boss_attack_v6.blend`, cổng MCP 9877).
 > Blocking v9 (27 key, 2026-10-21, bản lưu `boss_attack_v9.blend`) đã lên trang review. Nạp môi trường mỗi lệnh MCP:
-> `exec(open(r"E:/AI Animation/work/blender/attack_load.py", encoding="utf8").read())`.
+> `exec(open(ROOT + "/work/blender/attack_load.py", encoding="utf8").read())` (ROOT = thư mục dự án).
 > Sau đó (2026-10-21) Gaygor Attack chuyển sang Cascadeur: `#cascadeur-keys` (tới casc_blocking_v4).
 > 2026-10-22 user quay lại Blender: "làm tiếp Attack với blender", chọn tiếp từ `boss_attack_v9.blend` (bỏ bản Cascadeur). Lỗi v9 tự soi: `work/attack/v10rev/defects_v9.md`.
 > Blocking v10 (2026-10-22, `boss_attack_v10.blend`, sửa trong `work/attack/v10/fixes.py`: mỗi `fixNN()` bắt đầu bằng `goto_v9(NN)` nên chạy lại

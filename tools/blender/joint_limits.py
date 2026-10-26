@@ -1,8 +1,12 @@
 # Joint limit check for a rig (docs/pipeline_v2.md step 3 + QA step 6).
-#   LIMITS = r"E:/AI Animation/work/idle/joint_limits.json"; FRAMES = [1, 45]
-#   exec(open(r"E:/AI Animation/tools/blender/joint_limits.py").read())   -> prints violations, sets JL_REPORT
+#   LIMITS = ROOT + r"/work/idle/joint_limits.json"; FRAMES = [1, 45]
+#   exec(open(ROOT + r"/tools/blender/joint_limits.py").read())   -> prints violations, sets JL_REPORT
 # Each pose bone is compared with its rest relation to the parent: twist about the length axis, then the swing as
 # Euler YZX bends. Bones are matched against the patterns in the limits file (fnmatch, first match wins).
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import fnmatch
 import json
 import math
@@ -10,7 +14,7 @@ import math
 import bpy
 from mathutils import Quaternion, Vector
 
-_cfg = json.load(open(globals().get("LIMITS", r"E:/AI Animation/work/idle/joint_limits.json")))
+_cfg = json.load(open(globals().get("LIMITS", ROOT + r"/work/idle/joint_limits.json")))
 _len_axis = {"X": 0, "Y": 1, "Z": 2}[_cfg["axes"]["length"][-1]]
 _arm = bpy.data.objects["Armature"]
 

@@ -17,7 +17,7 @@ frame N is the same moment in every view. Claude works like an animator:
 No pose-estimation model is used. Claude's eyes are the tracker.
 
 ```bash
-PY=".venv/Scripts/python.exe"   # run from the project root, E:\AI Animation
+PY=".venv/Scripts/python.exe"   # run from the project root
 $PY tools/keyanim.py prep    --work work/<job> --view front=F.mp4 --view left=L.mp4 [--view back=… --view right=…]
 $PY tools/keyanim.py ref     --work work/<job> --frames 1,40          # reference frames with pixel rulers
 $PY tools/keyanim.py calib   --work work/<job> --view front --top 212 --ground 688 --center 355

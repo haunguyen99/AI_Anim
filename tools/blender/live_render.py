@@ -1,13 +1,17 @@
 # Run inside the live Blender (MCP execute_blender_code):
-#   FRAMES = [1, 17]; VIEWS = ["front", "left"]; exec(open(r"E:/AI Animation/tools/blender/live_render.py").read())
+#   FRAMES = [1, 17]; VIEWS = ["front", "left"]; exec(open(ROOT + r"/tools/blender/live_render.py").read())
 # Renders the scene through Ref_<view> cameras (Workbench, transparent) to work/blender/look/r_<view>_<frame>.png,
 # restoring the user's render settings, camera and frame afterwards.
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import os
 
 import bpy
 
 _sc = bpy.context.scene
-_out = r"E:/AI Animation/work/blender/look"
+_out = ROOT + r"/work/blender/look"
 os.makedirs(_out, exist_ok=True)
 _saved = dict(engine=_sc.render.engine, cam=_sc.camera, frame=_sc.frame_current, path=_sc.render.filepath,
               transp=_sc.render.film_transparent, pct=_sc.render.resolution_percentage,

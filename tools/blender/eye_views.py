@@ -1,15 +1,18 @@
 """Render the current pose through every Ref_* camera (live Blender), for REF|ANIM eye checks with tools/eye_side.py.
 
-  OUT = r"E:/AI Animation/work/attack/look_v4"; TAG = "f13_a"; exec(open(r"E:/AI Animation/tools/blender/eye_views.py").read())
+  OUT = ROOT + r"/work/attack/look_v4"; TAG = "f13_a"; exec(open(ROOT + r"/tools/blender/eye_views.py").read())
 Writes OUT/<TAG>_<view>.png (RGBA, workbench studio solid, transparent film, 1920x1080) for front/back/left/right/top.
 Render settings and the scene camera are restored afterwards.
 """
 import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 
 import bpy
 
 _sc = bpy.context.scene
-_out = globals().get("OUT", r"E:/AI Animation/work/attack/look_v4")
+_out = globals().get("OUT", ROOT + r"/work/attack/look_v4")
 _tag = globals().get("TAG", "pose")
 _views = globals().get("VIEWS", ["front", "back", "left", "right", "top"])
 os.makedirs(_out, exist_ok=True)

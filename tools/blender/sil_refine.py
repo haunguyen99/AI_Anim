@@ -1,6 +1,6 @@
 # Refine only the torso twist / lean and the weapon pivot of solved keys against the reference silhouettes.
 # Run after solve_keys.py in the same exec namespace (needs apply, sil_residual, PARAMS, SOL, PX_CM):
-#   REFINE = [85, 95]; exec(open(r"E:/AI Animation/tools/blender/sil_refine.py").read())
+#   REFINE = [85, 95]; exec(open(ROOT + r"/tools/blender/sil_refine.py").read())
 # Pattern search on a few channels, everything else stays at the tracking solution; a soft pull back
 # to the tracking value (SIGMA deg) keeps the head turn, breath and arm drag the tracking measured.
 import numpy as np

@@ -1,17 +1,21 @@
 # Solve blocking key poses from motion measured on the reference (docs/pipeline_v2.md, step 4).
 # Run in the LIVE Blender (MCP):
-#   KEYS = [1, 17, ...]; exec(open(r"E:/AI Animation/tools/blender/solve_keys.py").read())
+#   KEYS = [1, 17, ...]; exec(open(ROOT + r"/tools/blender/solve_keys.py").read())
 # Needs: P0 on the deform armature at frame 1 (captured into P0 by the caller or here), the CTRL rig,
 # and work/idle/analysis/motion.json (tools/ref_timing.py).
 # Each key frame: 12 animator channels (offsets from P0, character axes) are solved with damped
 # Gauss-Newton so that model points move like the tracked reference regions. Returns SOL {frame: params}.
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import json
 
 import numpy as np
 
-exec(open(r"E:/AI Animation/tools/blender/anim_helpers.py").read())
+exec(open(ROOT + r"/tools/blender/anim_helpers.py").read())
 
-MOTION = json.load(open(r"E:/AI Animation/work/idle/analysis/motion.json"))
+MOTION = json.load(open(ROOT + r"/work/idle/analysis/motion.json"))
 PARAMS = ["root_z", "root_y", "lean", "twist", "head_yaw", "head_pitch", "head_roll",
           "scap_L", "scap_R", "armR_x", "armR_z", "elbowR", "wpn_x", "wpn_y", "wpn_z", "wpn_tx", "wpn_ty", "wpn_tz", "neck_side",
           "grip_slide", "grip_roll", "pole_swing", "protract", "root_yaw", "root_pitch"]
@@ -113,7 +117,7 @@ def targets(f):
 
 # ---- silhouette term: model vertices (+ edge midpoints) projected through the Ref_* ortho cameras vs the
 # reference masks (precomputed distance maps + contour samples in work/idle/analysis/silref.npz)
-SILREF = np.load(r"E:/AI Animation/work/idle/analysis/silref.npz")
+SILREF = np.load(ROOT + r"/work/idle/analysis/silref.npz")
 SIL_VIEWS = ["front", "back", "left", "right"]
 SIL_W = globals().get("SIL_W", 0.0)      # weight per silhouette sample (0 = tracking only)
 PX_CM = 2.06

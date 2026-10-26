@@ -1,5 +1,5 @@
 # Build an animator control rig ("CTRL" armature) for the Boss rig in the LIVE Blender scene.
-# Run via MCP:  exec(open(r"E:/AI Animation/tools/blender/build_ctrl_rig.py").read())
+# Run via MCP:  exec(open(ROOT + r"/tools/blender/build_ctrl_rig.py").read())
 # The deform armature must already be in the base pose (P0) at the current frame.
 #   legs   : clean IK chains (hip->knee->ankle), planted foot controls, knee poles
 #   weapon : CTRL_weapon follows Chest_M (child-of), animatable on top

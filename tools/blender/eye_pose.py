@@ -1,7 +1,11 @@
 # Eye-keying helper: apply channel offsets (solve_keys.PARAMS) on top of the ORIGINAL P0 (Idle_Breath f1)
 # and render the five reference views (front/left/back/right/top) for a side-by-side check against the ref.
-#   TRIALS = {"a": {"grip_roll": -40}, "b": {...}}; exec(open(r"E:/AI Animation/tools/blender/eye_pose.py").read())
+#   TRIALS = {"a": {"grip_roll": -40}, "b": {...}}; exec(open(ROOT + r"/tools/blender/eye_pose.py").read())
 # then:  python tools/eye_compare.py --frame 1 --trials a,b
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import bpy
 
 _arm = bpy.data.objects["Armature"]; _ctrl = bpy.data.objects["CTRL"]
@@ -15,8 +19,8 @@ CP0 = {n: _ctrl.pose.bones[n].matrix_basis.copy() for n in _CB}
 _arm.animation_data.action = None; _ctrl.animation_data.action = None
 bpy.context.view_layer.update()
 SIL_W = 0.0; KEYS = []
-exec(open(r"E:/AI Animation/tools/blender/solve_keys.py").read())
-exec(open(r"E:/AI Animation/tools/blender/grip_set.py").read())
+exec(open(ROOT + r"/tools/blender/solve_keys.py").read())
+exec(open(ROOT + r"/tools/blender/grip_set.py").read())
 
 _sc = bpy.context.scene
 _save = (_sc.render.engine, _sc.camera, _sc.render.filepath, _sc.render.film_transparent, _sc.render.resolution_percentage,
@@ -35,7 +39,7 @@ try:
             exec(_d["_post"])
         for _v in ("front", "left", "back", "right", "top"):
             _sc.camera = bpy.data.objects["Ref_" + _v]
-            _sc.render.filepath = f"E:/AI Animation/work/blender/look/eye_{_tag}_{_v}.png"
+            _sc.render.filepath = f"{ROOT}/work/blender/look/eye_{_tag}_{_v}.png"
             bpy.ops.render.render(write_still=True)
 finally:
     (_sc.render.engine, _sc.camera, _sc.render.filepath, _sc.render.film_transparent, _sc.render.resolution_percentage,

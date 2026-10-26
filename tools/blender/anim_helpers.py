@@ -1,5 +1,5 @@
 # Helpers for keying in the LIVE Blender scene (exec'd through MCP).
-#   exec(open(r"E:/AI Animation/tools/blender/anim_helpers.py").read())
+#   exec(open(ROOT + r"/tools/blender/anim_helpers.py").read())
 # Character axes (world): right = -X, forward = -Y, up = +Z (the Boss faces -Y).
 import math
 

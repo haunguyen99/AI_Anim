@@ -1,13 +1,17 @@
 # Score the CURRENT pose of "Armature" against the original animation (answer key; never used to set the pose).
 #   SCORE_FRAME = 1; SCORE_TAG = "legs K4"; SCORE_BONES = [...]; exec(open(r".../score_pose.py").read())
 # Appends a line to work/idle/original/tests.jsonl: per-bone position error (cm, character axes) and rotation error (deg).
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import json
 import math
 
 import bpy
 import numpy as np
 
-_O = json.load(open(r"E:/AI Animation/work/idle/original/orig_joints.json"))
+_O = json.load(open(ROOT + r"/work/idle/original/orig_joints.json"))
 _f = globals().get("SCORE_FRAME", 1); _i = _O["frames"].index(_f)
 _arm = bpy.data.objects["Armature"]; _mw = _arm.matrix_world
 _res = {}
@@ -21,5 +25,5 @@ for _n in SCORE_BONES:  # noqa: F821
                 "rot_deg": round(math.degrees(2 * math.acos(min(1.0, _dot))), 1)}
 _line = {"tag": globals().get("SCORE_TAG", ""), "frame": _f, "bones": _res,
          "mean_cm": round(float(np.mean([v["err_cm"] for v in _res.values()])), 1)}
-open(r"E:/AI Animation/work/idle/original/tests.jsonl", "a").write(json.dumps(_line) + "\n")
+open(ROOT + r"/work/idle/original/tests.jsonl", "a").write(json.dumps(_line) + "\n")
 print(json.dumps(_line))

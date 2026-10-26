@@ -1,5 +1,9 @@
 # QA report on the live Idle action (docs/pipeline_v2.md step 6). Every frame 1..N.
-#   exec(open(r"E:/AI Animation/tools/blender/qa_report.py").read())   -> prints PASS/FAIL table, sets QA dict
+#   exec(open(ROOT + r"/tools/blender/qa_report.py").read())   -> prints PASS/FAIL table, sets QA dict
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import json
 import math
 
@@ -7,8 +11,8 @@ import bpy
 import numpy as np
 
 _sc = bpy.context.scene; _A = bpy.data.objects["Armature"]; _mw = _A.matrix_world; _P = _A.pose.bones
-LIMITS = r"E:/AI Animation/work/idle/joint_limits.json"; FRAMES = []
-exec(open(r"E:/AI Animation/tools/blender/joint_limits.py").read())
+LIMITS = ROOT + r"/work/idle/joint_limits.json"; FRAMES = []
+exec(open(ROOT + r"/tools/blender/joint_limits.py").read())
 N = _sc.frame_end
 _sc.frame_set(1)
 _a0 = {s: np.array(_mw @ _P["Ankle_" + s].head) for s in "LR"}
@@ -56,4 +60,4 @@ for name, val, thr, ok in rows:
     print(f"{'PASS' if ok else 'FAIL'}  {name:22s} {val:8.2f}   ({thr})")
 print(json.dumps({k: v for k, v in QA.items() if k in ("limit_violations",)}))
 print("worst seam:", max(seam, key=seam.get), "worst accel:", max(jit, key=jit.get), round(max(jit.values()), 2))
-json.dump(QA, open(r"E:/AI Animation/work/idle/qa.json", "w"), indent=1)
+json.dump(QA, open(ROOT + r"/work/idle/qa.json", "w"), indent=1)

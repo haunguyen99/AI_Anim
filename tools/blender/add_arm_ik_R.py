@@ -3,7 +3,7 @@
 #   CTRL_elbow_pole_R (child of FOLLOW_chest), helpers H_Shoulder_R/H_Elbow_R/H_Wrist_R.
 # Shoulder_R/Elbow_R/Wrist_R get COPY_LOCATION/ROTATION constraints whose influence is keyed:
 # 1 while the right hand grips the weapon, 0 when the arm is FK (idle hang).
-# Built at frame 1 (P0).   exec(open(r"E:/AI Animation/tools/blender/add_arm_ik_R.py").read())
+# Built at frame 1 (P0).   exec(open(ROOT + r"/tools/blender/add_arm_ik_R.py").read())
 import math
 
 import bpy

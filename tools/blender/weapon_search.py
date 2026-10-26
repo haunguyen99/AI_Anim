@@ -1,12 +1,16 @@
 # Pattern search of the weapon placement (6 channels, bounded) on top of the accepted P0 stages: minimise the mean
 # distance of weapon-mesh vertices outside the reference silhouette (4 grid cameras) + a pull to the start.
 #   W_START = {"weapon.ty": 28}; W_BOUND = 12; exec(open(r".../weapon_search.py").read())  -> prints / sets W_BEST
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import json
 
 import bpy
 import numpy as np
 
-_S = json.load(open(r"E:/AI Animation/work/idle/p0_stages.json"))
+_S = json.load(open(ROOT + r"/work/idle/p0_stages.json"))
 _base = dict(_S["stage1_legs"]["TRIAL_CH"])
 for _k, _st in _S.items():
     if _k != "stage1_legs":
@@ -17,7 +21,7 @@ for _k, _st in _S.items():
     if _k != "stage1_legs" and _st.get("POST_add"):
         _post += "; " + _st["POST_add"]
 FB_NO_RUN = True
-exec(open(r"E:/AI Animation/tools/blender/fullbody_solve.py").read())
+exec(open(ROOT + r"/tools/blender/fullbody_solve.py").read())
 setup_base()
 _W = ["weapon.rx", "weapon.ry", "weapon.rz", "weapon.tx", "weapon.ty", "weapon.tz"]
 _start = dict(globals().get("W_START", {}))

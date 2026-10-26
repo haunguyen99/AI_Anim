@@ -2,11 +2,15 @@
 # render of this very model): gradient correlation inside the head region, in the front and side views.
 # Run after solve_keys.py (same namespace):  PHOTOF = [1, 45]; exec(open(r".../photo_refine.py").read())
 import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
+import os
 
 import bpy
 import numpy as np
 
-REFG = np.load(r"E:/AI Animation/work/idle/analysis/refgray.npz")
+REFG = np.load(ROOT + r"/work/idle/analysis/refgray.npz")
 PSUB = globals().get("PSUB", ["neck_side", "head_yaw", "head_pitch", "head_roll"])
 PSIG = {"neck_side": 15.0, "head_yaw": 30.0, "head_pitch": 20.0, "head_roll": 12.0, "twist": 6.0, "lean": 4.0}
 PVIEWS = globals().get("PVIEWS", ["front", "left", "right"])

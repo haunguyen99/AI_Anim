@@ -1,5 +1,5 @@
 # "Director" tools that edit curves instead of re-keying (docs/pipeline_v2.md step 5).
-#   exec(open(r"E:/AI Animation/tools/blender/direct.py").read())
+#   exec(open(ROOT + r"/tools/blender/direct.py").read())
 #   offset_bone(obj, "Chest_M", 2)          # delay a bone by 2 frames, cyclic over the loop (first key == last key)
 #   scale_amp(obj, "Scapula_R", 1.2)        # scale the motion of a bone around its mean pose (loc + rot)
 import bpy

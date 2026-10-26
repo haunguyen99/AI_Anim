@@ -4,6 +4,10 @@
 #   weapon rotation on the shoulder (+ tiny translation). The left arm rides the weapon (fixed separately later).
 # Residuals: two-sided silhouette distance in 4 views + joint-limit excess (generic limits) + weak prior.
 # Run in passes (state file keeps the solution):  ITERS = 3; exec(open(r".../fullbody_solve.py").read())
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import json
 import math
 import os
@@ -12,11 +16,11 @@ import bpy
 import numpy as np
 from mathutils import Matrix, Quaternion, Vector
 
-exec(open(r"E:/AI Animation/tools/blender/anim_helpers.py").read())
-STATE = globals().get("FB_STATE", r"E:/AI Animation/work/idle/p0_fullbody.json")
+exec(open(ROOT + r"/tools/blender/anim_helpers.py").read())
+STATE = globals().get("FB_STATE", ROOT + r"/work/idle/p0_fullbody.json")
 FRAME = globals().get("FB_FRAME", 1)
-LIMITS = json.load(open(r"E:/AI Animation/work/idle/joint_limits.json"))
-SILREF = np.load(r"E:/AI Animation/work/idle/analysis/silref.npz")
+LIMITS = json.load(open(ROOT + r"/work/idle/joint_limits.json"))
+SILREF = np.load(ROOT + r"/work/idle/analysis/silref.npz")
 PX_CM = 2.01
 
 BODY = ["Root_M", "Spine1_M", "Chest_M", "Neck_M", "Head_M", "Scapula_L", "Scapula_R", "Shoulder_R", "Elbow_R", "Wrist_R"]

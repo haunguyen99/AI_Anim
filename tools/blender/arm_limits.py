@@ -12,6 +12,10 @@
 # Use (namespace that already has wpos, palm_of, hand_on from p0_shoot/blocking):
 #   ARM_LIMITS = r".../work/sdr06/joint_limits.json"; exec(open(r".../tools/blender/arm_limits.py").read(), NS)
 #   NS["arm_angles"]("L"), NS["arm_violations"]("L"), NS["hand_on_limited"](side, grip, hw, pw, pole_w)
+import os
+ROOT = (globals().get("ROOT") or os.environ.get("AI_ANIM_ROOT") or os.getcwd()).replace("\\", "/").rstrip("/")   # project folder: set ROOT = r"<folder>" before exec(), or env AI_ANIM_ROOT, or run from the project folder
+if not os.path.exists(ROOT + "/MAP.md"):
+    raise RuntimeError("Project folder not found: set ROOT = r'<project folder>' or env AI_ANIM_ROOT")
 import json
 
 import bpy
@@ -19,7 +23,7 @@ import math
 
 from mathutils import Matrix, Quaternion, Vector
 
-ARM_LIM = json.load(open(globals().get("ARM_LIMITS", r"E:/AI Animation/work/sdr06/joint_limits.json"), encoding="utf-8"))
+ARM_LIM = json.load(open(globals().get("ARM_LIMITS", ROOT + r"/work/sdr06/joint_limits.json"), encoding="utf-8"))
 
 
 def _chest():

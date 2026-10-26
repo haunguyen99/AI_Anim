@@ -1,5 +1,5 @@
 # Right arm FK -> IK on the live CTRL rig (same layout as the left arm, see build_ctrl_rig.py), keeping the current motion.
-#   exec(open(r"E:/AI Animation/tools/blender/arm_ik_R.py").read())            # build once + key from the FK action
+#   exec(open(ROOT + r"/tools/blender/arm_ik_R.py").read())            # build once + key from the FK action
 #   ik_R_breath(lift_cm=4, fwd_cm=0, lag=2)                                     # then: hand rises more than the shoulder
 # Layout: FOLLOW_scap_R (child of Scapula_R) > CTRL_upper_R > CTRL_fore_R (IK -> CTRL_hand_ik_R, pole CTRL_elbow_pole_R)
 #         CTRL_hand_ik_R under FOLLOW_root (keyed); pole under FOLLOW_scap_R (rides the shrug, not keyed)
