@@ -64,6 +64,7 @@ Cách làm:
 - Tô skin ở bước 4 đang pose: dùng vị trí đã pose, và phải `computeBoundingSphere` sau khi pose.
 - Gaygor: khiên rời 90 đỉnh bên R (x≈−118) gán 100% cho joint twist cẳng tay; xương cuối (`*End_*`, `Finger3`, `Weapon`) không skin.
 
+- Chỉ chụp màn hình khi người dùng yêu cầu: họ xem trang trực tiếp. Kiểm bằng `javascript_tool` / `read_page`, báo bằng chữ (xem `CLAUDE.md`).
 ## Chưa làm
 
 Xuất FBX có skin (writer `work/pose_lab/fbx/fbxwrite.py` mới ghi xương và animation), Pose Lab đọc `rig.json` và xương twist, template quadruped/nhện 8 chân. Khi người dùng đòi, kiểm sớm bằng một FBX tối thiểu nạp lại vào Pose Lab (so vị trí xương như `fbx/cmp_page_track.py`).

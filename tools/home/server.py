@@ -10,6 +10,8 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, unquote
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import store
+import fbx_import
+import rig_data
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -137,6 +139,63 @@ def rig_page_of(char, d, kind="rig"):
     return ""
 
 
+STUDIO = os.path.join(ROOT, "tools", "studio")
+RIGLAB = os.path.join(ROOT, "work", "rig_lab")
+
+
+def studio_chars():
+    """Nhân vật mở được trong Studio: Gaygor (ref_gaygor) + mỗi work/rig_lab/chars/<id>.json có mesh_cm.json."""
+    out = []
+    if os.path.isfile(os.path.join(RIGLAB, "ref_gaygor", "ref_mesh.json")):
+        out.append({"id": "gaygor", "name": "Gaygor"})
+    cd = os.path.join(RIGLAB, "chars")
+    if os.path.isdir(cd):
+        for f in sorted(os.listdir(cd)):
+            cid = f[:-5]
+            if f.endswith(".json") and os.path.isfile(os.path.join(cd, cid, "mesh_cm.json")):
+                try:
+                    name = json.load(open(os.path.join(cd, f), encoding="utf8")).get("name") or cid
+                except Exception:
+                    name = cid
+                out.append({"id": cid, "name": name})
+    return out
+
+
+def studio_skeleton(ref, sc):
+    """Xương bind của nhân vật (work/rig_lab/<ref_dir>/ref_skeleton.json), cm. Xương thiếu bind (vd root) lấy vị trí cha / gốc."""
+    f = os.path.join(RIGLAB, ref, "ref_skeleton.json") if ref else ""
+    if not f or not os.path.isfile(f):
+        return []
+    sk = json.load(open(f, encoding="utf8"))
+    pos = {s["name"]: s.get("bind_pos") for s in sk}
+    out = []
+    for s in sk:
+        p, q = s.get("bind_pos"), s.get("parent")
+        while p is None and q:
+            p, q = pos.get(q), next((x.get("parent") for x in sk if x["name"] == q), None)
+        out.append({"name": s["name"], "parent": s.get("parent"), "pos": [round(v * sc, 3) for v in (p or [0, 0, 0])]})
+    return out
+
+
+def studio_char(cid):
+    """Mesh gốc (cm, +Y lên) của nhân vật, cùng nguồn với work/mesh_lab/build_mesh.py."""
+    if not re.match(r"^[A-Za-z0-9_\-]+$", cid):
+        return None
+    if cid == "gaygor":
+        p, name, ref, sc = os.path.join(RIGLAB, "ref_gaygor", "ref_mesh.json"), "Gaygor", "ref_gaygor", 1
+    else:
+        cf = os.path.join(RIGLAB, "chars", cid + ".json")
+        if not os.path.isfile(cf):
+            return None
+        C = json.load(open(cf, encoding="utf8"))
+        p, name, ref, sc = os.path.join(RIGLAB, "chars", cid, "mesh_cm.json"), C.get("name") or cid, C.get("ref_dir", ""), C.get("scale", 1)
+    if not os.path.isfile(p):
+        return None
+    meshes = json.load(open(p, encoding="utf8"))
+    return {"id": cid, "name": name, "unit": "cm", "skeleton": studio_skeleton(ref, sc),
+            "meshes": [{"name": m["name"], "verts": [round(v, 3) for v in m["verts"]], "tris": m["tris"]} for m in meshes]}
+
+
 def lab_html(kind, id_):
     """Trang Lab đã build, thêm <base> để model/clip/ảnh ref tương đối tìm đúng chỗ khi mở trong vỏ ứng dụng."""
     p = os.path.join(lab_dir(kind, id_), "index.html")
@@ -187,6 +246,7 @@ def enrich(d):
         labs = {"pose": os.path.isfile(os.path.join(lab_dir("pose", c["id"]), "index.html")),
                 "review": os.path.isfile(os.path.join(lab_dir("review", c["id"]), "index.html")),
                 "rig": rp, "mesh": rig_page_of(c["character"], d, "mesh")}
+        labs["studio"] = labs["mesh"] if any(x["id"] == labs["mesh"] for x in studio_chars()) else ""
         out.append({**c, "labs": labs, "status_manual": c.get("status", ""), "status": status_of(c), "thumb": thumb, "updated": updated, "frames": frames,
                     "rig_url": rig, "pose_url": p.get("url", ""), "review_url": r.get("url", ""),
                     "review_latest": rv, "pose_latest": pv, "continue": cont,
@@ -399,7 +459,22 @@ def playblast_to_review(b):
     return {"version": ver, "reencoded": ok}
 
 
-ROUTES = {"/api/rig/to-pose": rig_to_pose, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
+def fbx_parse(b):
+    """Studio → Tệp → Nhập FBX: đọc FBX (base64), trả mesh cm Y lên."""
+    return fbx_import.parse(base64.b64decode(b.get("fbx_b64") or ""))
+
+
+def rig_build(b):
+    """Studio workspace Rig: dựng dữ liệu rig (landmark gợi ý, trang Rig Lab) cho nhân vật mới."""
+    return rig_data.build(b.get("id", ""))
+
+
+def fbx_new_char(b):
+    """Studio: tạo nhân vật mới từ FBX (work/rig_lab/ref_<id>, chars/<id>)."""
+    return fbx_import.new_char(base64.b64decode(b.get("fbx_b64") or ""), b.get("name", ""), b.get("filename", ""))
+
+
+ROUTES = {"/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
           "/api/clip/update": update_clip, "/api/project/update": update_project}
 
 
@@ -487,7 +562,9 @@ class H(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         path = unquote(urlparse(self.path).path)
-        if path in ("/", "/index.html"):
+        if path in ("/", "/index.html"):   # mở là vào thẳng Studio (viewport), nhân vật mở lần trước
+            return self.send_file(os.path.join(STUDIO, "index.html"), "text/html; charset=utf-8")
+        if path in ("/home", "/home/"):    # trang quản lý dự án (trước đây ở /)
             return self.send_file(os.path.join(HERE, "index.html"), "text/html; charset=utf-8")
         if path.startswith("/api/store"):
             return self.store_call("GET")
@@ -496,6 +573,28 @@ class H(SimpleHTTPRequestHandler):
                 return self.send_json(state())
             except Exception as e:
                 return self.send_json({"error": str(e)}, 500)
+        if path == "/api/chars":
+            return self.send_json(studio_chars())
+        m = re.match(r"^/api/rigdata/([^/]+)$", path)
+        if m:
+            try:
+                d = rig_data.data(m.group(1))
+            except ValueError as e:
+                return self.send_json({"error": str(e)}, 400)
+            return self.send_json(d) if d else self.send_json({"error": "chưa có dữ liệu rig", "build": True}, 404)
+        m = re.match(r"^/api/char/([^/]+)$", path)
+        if m:
+            c = studio_char(m.group(1))
+            return self.send_json(c) if c else self.send_json({"error": "không có nhân vật " + m.group(1)}, 404)
+        if path == "/studio" or path.startswith("/studio/"):
+            rel = path[len("/studio/"):] if path.startswith("/studio/") else ""
+            full = os.path.abspath(os.path.join(STUDIO, rel))
+            ext = os.path.splitext(full)[1].lower()
+            if full.startswith(STUDIO + os.sep) and os.path.isfile(full) and ext in LAB_STATIC:
+                return self.send_bytes(open(full, "rb").read(), LAB_STATIC[ext], True)
+            if not ext:   # /studio, /studio/<nhân vật>: vỏ ứng dụng
+                return self.send_file(os.path.join(STUDIO, "index.html"), "text/html; charset=utf-8")
+            return self.send_error(404)
         m = re.match(r"^/lab/(mesh|pose|review|rig)/([^/]+)/?$", path)
         if m:
             body = lab_html(m.group(1), m.group(2))

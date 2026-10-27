@@ -147,6 +147,7 @@ body.app header{display:none} body.app main{max-width:none;padding:0;margin:0}
   <a class="ib ghost" href="#/" title="Trang chủ" aria-label="Trang chủ"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></a>
   <div class="crumb" id="crumb"></div>
   <div class="sp"></div>
+  <a class="ib ghost" href="/" title="Mở Studio (viewport)" aria-label="Mở Studio"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M8 8v10"/></svg></a>
   <button class="ib ghost" onclick="refresh(true)" title="Làm mới" aria-label="Làm mới"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 11-2.6-5.9"/><path d="M20 4v5h-5"/></svg></button>
 </header>
 <main id="app"><div class="empty">Đang đọc dữ liệu…</div></main>
@@ -194,7 +195,7 @@ body.app header{display:none} body.app main{max-width:none;padding:0;margin:0}
 <div class="toast" id="toast"></div>
 
 <script>
-const ICONS = {"home": "<path d=\"M4 11l8-7 8 7v9h-5v-6H9v6H4z\"/>", "refresh": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "edit": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "play": "<path d=\"M8 5l11 7-11 7z\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "rig": "<circle cx=\"12\" cy=\"5\" r=\"2.3\"/><path d=\"M12 8v7M6.5 10.5L12 8l5.5 2.5M9 21l3-6 3 6\"/>", "pose": "<path d=\"M12 3l8 4.5v9L12 21l-8-4.5v-9z\"/><path d=\"M12 12l8-4.5M12 12v9M12 12L4 7.5\"/>", "review": "<path d=\"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "check": "<path d=\"M5 12.5l4.5 4.5L19 7\"/>", "working": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "waiting": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/>", "done": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 12.5l3 3 5-6\"/>", "paused": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M10 9v6M14 9v6\"/>", "list": "<path d=\"M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "mesh": "<path d=\"M12 3l8 4.5v9L12 21l-8-4.5v-9z\"/><path d=\"M4 7.5l8 4.5 8-4.5M12 12v9\"/>", "send": "<path d=\"M3 11l18-8-8 18-2-8z\"/>", "film": "<rect x=\"3\" y=\"6\" width=\"13\" height=\"12\" rx=\"2\"/><path d=\"M16 10l5-3v10l-5-3z\"/>", "cloud": "<path d=\"M7 18a4 4 0 010-8 5 5 0 019.6-1A4.500 4.500 0 0117 18z\"/>", "reload": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>"};
+const ICONS = {"home": "<path d=\"M4 11l8-7 8 7v9h-5v-6H9v6H4z\"/>", "refresh": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "edit": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "play": "<path d=\"M8 5l11 7-11 7z\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "rig": "<circle cx=\"12\" cy=\"5\" r=\"2.3\"/><path d=\"M12 8v7M6.5 10.5L12 8l5.5 2.5M9 21l3-6 3 6\"/>", "pose": "<path d=\"M12 3l8 4.5v9L12 21l-8-4.5v-9z\"/><path d=\"M12 12l8-4.5M12 12v9M12 12L4 7.5\"/>", "review": "<path d=\"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "check": "<path d=\"M5 12.5l4.5 4.5L19 7\"/>", "working": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "waiting": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/>", "done": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 12.5l3 3 5-6\"/>", "paused": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M10 9v6M14 9v6\"/>", "list": "<path d=\"M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "mesh": "<path d=\"M12 3l8 4.5v9L12 21l-8-4.5v-9z\"/><path d=\"M4 7.5l8 4.5 8-4.5M12 12v9\"/>", "send": "<path d=\"M3 11l18-8-8 18-2-8z\"/>", "film": "<rect x=\"3\" y=\"6\" width=\"13\" height=\"12\" rx=\"2\"/><path d=\"M16 10l5-3v10l-5-3z\"/>", "cloud": "<path d=\"M7 18a4 4 0 010-8 5 5 0 019.6-1A4.500 4.500 0 0117 18z\"/>", "studio": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 8h18M8 8v10\"/>", "reload": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>"};
 const ico = (n, cls="") => `<svg class="ico${n==="play"?" fill":""}${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 const STAGE_VI = {rig:"Rig", analysis:"Phân tích", p0:"Base pose", blocking:"Blocking", spline:"Spline", polish:"Polish", export:"Export"};
 const STATUS_VI = {working:"Đang làm", waiting:"Chờ góp ý", done:"Đã xong", paused:"Tạm dừng"};
@@ -233,10 +234,10 @@ async function post(url, body){
   const j = await r.json(); if (!j.ok) throw new Error(j.error||"Lỗi"); return j;
 }
 
-const LABNAME = {mesh:"Mesh Lab", rig:"Rig Lab", pose:"Pose Lab", review:"Review Lab"};
-const labKey = n => /^Mesh/.test(n) ? "mesh" : /^Rig/.test(n) ? "rig" : /^Pose/.test(n) ? "pose" : "review";
+const LABNAME = {studio:"Studio", mesh:"Mesh Lab", rig:"Rig Lab", pose:"Pose Lab", review:"Review Lab"};
+const labKey = n => /^Studio/.test(n) ? "studio" : /^Mesh/.test(n) ? "mesh" : /^Rig/.test(n) ? "rig" : /^Pose/.test(n) ? "pose" : "review";
 const labOK = (c, k) => !!(c.labs && c.labs[k]);
-const labURL = (c, k) => k==="mesh" ? "" : k==="rig" ? c.rig_url : k==="pose" ? c.pose_url : c.review_url;
+const labURL = (c, k) => k==="mesh"||k==="studio" ? "" : k==="rig" ? c.rig_url : k==="pose" ? c.pose_url : c.review_url;
 /* link tới Lab: trang trên máy (vỏ ứng dụng) nếu đã build, không thì artifact trên claude.ai */
 function labHref(c, k){ return labOK(c,k) ? "#/app/"+encodeURIComponent(c.id)+"/"+k : (labURL(c,k)||""); }
 function labAttr(c, k){ return labOK(c,k) ? "" : ' target="_blank"'; }
@@ -250,7 +251,7 @@ function renderShell(c, lab){
       <div class="snav">
         <a class="ib ghost" id="sBack" title="Về danh sách" aria-label="Về danh sách">${ico("back")}</a>
         <div class="ttl"><small>${esc(c.character)}</small><b>${esc(c.name)}</b></div>
-        <div class="stabs">${["mesh","rig","pose","review"].map(k=>`<a class="stab" data-k="${k}" title="${LABNAME[k]}">${ico(k)}<span>${LABNAME[k].replace(" Lab","")}</span></a>`).join("")}</div>
+        <div class="stabs">${["studio","mesh","rig","pose","review"].map(k=>`<a class="stab" data-k="${k}" title="${LABNAME[k]}">${ico(k)}<span>${LABNAME[k].replace(" Lab","")}</span></a>`).join("")}</div>
         <button class="ib primary" id="sNext" hidden></button>
         <a class="ib ghost" id="sCloud" target="_blank" title="Mở bản trên claude.ai" aria-label="Mở bản trên claude.ai">${ico("cloud")}</a>
         <button class="ib ghost" id="sReload" title="Tải lại Lab này" aria-label="Tải lại Lab này">${ico("reload")}</button>
@@ -275,10 +276,10 @@ function renderShell(c, lab){
   const fr = sh.querySelector(".sframes");
   fr.querySelectorAll(".sempty").forEach(e=>e.remove());
   fr.querySelectorAll("iframe").forEach(f=>f.classList.toggle("on", f.dataset.k===lab));
-  if (!labOK(c, lab)) { fr.insertAdjacentHTML("beforeend", `<div class="sempty">Chưa có trang ${LABNAME[lab]} cho anim này.<br>${lab==="mesh"?"Chạy work/mesh_lab/build_mesh.py &lt;nhân vật&gt;.":lab==="rig"?"Gõ /rig trong chat.":"Gõ /new_clip "+esc(c.id)+" trong chat."}</div>`); return; }
+  if (!labOK(c, lab)) { fr.insertAdjacentHTML("beforeend", `<div class="sempty">Chưa có trang ${LABNAME[lab]} cho anim này.<br>${lab==="studio"?"Nhân vật chưa có mesh cho Studio (work/rig_lab/chars/&lt;id&gt;/mesh_cm.json).":lab==="mesh"?"Chạy work/mesh_lab/build_mesh.py &lt;nhân vật&gt;.":lab==="rig"?"Gõ /rig trong chat.":"Gõ /new_clip "+esc(c.id)+" trong chat."}</div>`); return; }
   if (!fr.querySelector(`iframe[data-k="${lab}"]`)){
     const f = document.createElement("iframe"); f.dataset.k = lab; f.className = "on";
-    f.src = "/lab/" + lab + "/" + encodeURIComponent(lab==="rig"||lab==="mesh" ? c.labs[lab] : c.id);
+    f.src = lab==="studio" ? "/studio/" + encodeURIComponent(c.labs.studio) + "?clip=" + encodeURIComponent(c.id) : "/lab/" + lab + "/" + encodeURIComponent(lab==="rig"||lab==="mesh" ? c.labs[lab] : c.id);
     f.allow = "clipboard-write; fullscreen";
     fr.appendChild(f);
   }
@@ -312,7 +313,7 @@ async function sendNext(id, lab){
 }
 
 function render(){
-  const ma = location.hash.match(/^#\/app\/([^/]+)\/(mesh|rig|pose|review)/);
+  const ma = location.hash.match(/^#\/app\/([^/]+)\/(studio|mesh|rig|pose|review)/);
   if (ma && S){
     const c = S.clips.find(x=>x.id===decodeURIComponent(ma[1]));
     if (c) return renderShell(c, ma[2]);
@@ -401,7 +402,7 @@ function animRow(c){
     <div class="acts">
       ${c.continue?`<a class="ib primary" href="${esc(labHref(c, labKey(c.continue[0])) || c.continue[1])}"${labAttr(c, labKey(c.continue[0]))} title="Tiếp tục · ${esc(c.continue[0])}" aria-label="Tiếp tục">${ico("play")}</a>`:""}
       ${cmd?`<button class="ib" onclick="copyCmd('${esc(cmd)}')" title="Chép lệnh ${esc(cmd)}" aria-label="Chép lệnh">${ico("copy")}</button>`:""}
-      ${lab("mesh","Mesh Lab")}${lab("rig","Rig Lab")}${lab("pose","Pose Lab")}${lab("review","Review Lab")}
+      ${lab("studio","Studio: Mesh / Rig / Pose chung một viewport")}${lab("mesh","Mesh Lab")}${lab("rig","Rig Lab")}${lab("pose","Pose Lab")}${lab("review","Review Lab")}
       <button class="ib sm ghost" onclick="openEdit('${esc(c.id)}')" title="Sửa / đổi tên" aria-label="Sửa">${ico("edit")}</button>
     </div>
   </div>`;

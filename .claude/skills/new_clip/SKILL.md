@@ -48,3 +48,4 @@ Người dùng bắt đầu từ Home (`tools/home/start.bat`, http://127.0.0.1:
 - Không sửa `PAGES` trong `split_pages.py`: chúng tự đọc `work/clips.json`.
 - Giữ tên Review Lab: tiêu đề trang `<Nhân vật> <Clip> Review Lab`, Pose Lab `<Nhân vật> <Clip> Pose Lab`.
 - Cổng duyệt từng bước. Không sang giai đoạn sau khi người dùng chưa duyệt giai đoạn trước.
+- Version polish (nướng từng frame) cũng đăng ở chế độ keys: `--keys 1,2,...,N --mode keys --main <key chính> --phases "..."`, để trang có đủ công cụ key, bảng Timing và Xuất FBX (user 2026-10-27: "các bản polish bị thiếu UI với Key").

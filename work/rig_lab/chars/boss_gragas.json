@@ -1,0 +1,29 @@
+{
+ "id": "boss_gragas",
+ "name": "Boss_Gragas",
+ "ref_dir": "ref_boss_gragas",
+ "scale": 1,
+ "body": "EN_Boss_Gragas1",
+ "clothes": [],
+ "extra": [],
+ "names_from": "ref_boss_gragas",
+ "cfg": {
+  "name": "EN_Boss_Gragas1",
+  "fingers": [
+   "Middle",
+   "Thumb",
+   "Index",
+   "Ring",
+   "Pinky"
+  ],
+  "fseg": 3,
+  "toes": true,
+  "toesEnd": false,
+  "fingerEnd": false,
+  "headEnd": true,
+  "dress": false,
+  "prop": false,
+  "weapon": false
+ },
+ "source": "Studio Nhập FBX 2026-10-27: Boss_Gragas.fbx"
+}

@@ -53,6 +53,7 @@
 - User muốn có trọng lượng, có hồn, luôn kèm số đo → review_process.md#reviewer-prefs
 
 ## Render / playblast / file
+- Chụp màn hình trình duyệt chỉ khi user yêu cầu; kiểm trang bằng JS/read_page, báo bằng chữ. Render tự kiểm pose vẫn làm → CLAUDE.md (gốc)
 
 ## QA / anatomy
 - Trước khi gửi: joint_limits = 0, anatomy_check mọi key, close-up 2 góc, strain ≤ P0, prop xuyên 0, scale 1 → qa_anatomy.md#pre-send-checklist

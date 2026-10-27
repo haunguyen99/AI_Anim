@@ -22,11 +22,13 @@
   --tl: 40px;            /* timeline strip */
   --tr: 38px;            /* transport row */
   --ln: 0px;             /* contact lanes (keys mode only) */
+  --tm: 0px;             /* timing panel (keys mode, when open) */
   --laneL: #5aa9ff;
   --laneR: #c38bff;
   color-scheme: dark;
 }
-body.km { --ln: 45px; }
+body.km.lanesOn { --ln: 45px; }
+body.tmgOn { --tm: 126px; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { height: 100%; }
@@ -37,7 +39,7 @@ button { cursor: pointer; }
 
 .app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr);
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 calc(var(--ln) + var(--tl) + var(--tr) + env(safe-area-inset-bottom, 0px)); }
+  padding-block: 0 calc(var(--tm) + var(--ln) + var(--tl) + var(--tr) + env(safe-area-inset-bottom, 0px)); }
 
 .top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding-block: 8px; border-bottom: 1px solid var(--line); }
 .crumb { display: grid; line-height: 1.2; min-width: 0; }
@@ -71,6 +73,35 @@ h2 span { color: var(--muted); font-weight: 400; font-size: 11px; }
 .hud { position: absolute; left: 10px; top: 10px; display: grid; gap: 4px; pointer-events: none; }
 .tag { font-size: 12px; background: #000a; padding: 3px 9px; border-radius: 4px; width: max-content; max-width: 70cqw; }
 .tag b { font-family: var(--font-num); font-weight: 700; }
+.tmg { height: var(--tm); padding-top: 4px; border-bottom: 1px solid var(--line); user-select: none; touch-action: none; }
+.tmgh { display: flex; align-items: center; gap: 12px; height: 30px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.tmgSp { flex: 1; }
+.tmgInfo { font-family: var(--font-num); }
+.tmgHelp { cursor: help; font-size: 14px; color: var(--muted); }
+.tmgDirty { color: #ffd23f; font-weight: 600; }
+.tmgB { font: inherit; font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.tmgB:hover:not(:disabled) { border-color: var(--accent); }
+.tmgB.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.tmgB:disabled { opacity: .4; cursor: default; }
+.tmgh b { color: var(--ink); }
+.tmgh label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; color: var(--ink); }
+.tmgt { position: relative; height: 88px; }
+.tmgt .tk { position: absolute; top: 0; width: 1px; height: 6px; background: var(--line); }
+.tmgt .tkl { position: absolute; top: 5px; translate: -50% 0; font: 10px var(--font-num); color: var(--muted); }
+.tmgt .tb { position: absolute; top: 22px; height: 22px; white-space: nowrap; border-left: 1px solid var(--line); background: #1fa37a22; display: grid; place-items: center; font: 11px var(--font-num); color: var(--ink); overflow: hidden; }
+.tmgt .tb.odd { background: #4db3ff1f; }
+.tmgt .tsub { position: absolute; top: 53px; width: 9px; height: 9px; translate: -50% 0; rotate: 45deg; background: var(--muted); opacity: .75; cursor: pointer; }
+.tmgt .tsub:hover { background: #4db3ff; opacity: 1; }
+.tmgt .tb { cursor: text; }
+.tmgt .tbin { position: absolute; top: 22px; height: 22px; font: 12px var(--font-ui); background: var(--panel); color: var(--ink); border: 1px solid var(--accent); border-radius: 4px; padding: 0 6px; z-index: 2; }
+.tmgt .tk2 { position: absolute; top: 49px; width: 16px; height: 16px; translate: -50% 0; rotate: 45deg; background: var(--joint); cursor: ew-resize; border-radius: 2px; }
+.tmgt .tk2.new { background: #4db3ff; }
+.tmgt .tk2:not(.fixed):hover { filter: brightness(1.25); outline: 2px solid #fff6; }
+.tmgt .tk2.fixed { opacity: .45; cursor: default; }
+.tmgt .tk2.moved { outline: 2px solid #fff; }
+.tmgt .tkn { position: absolute; top: 68px; translate: -50% 0; font: 11px var(--font-num); color: var(--ink); }
+.tmgt .tkn.moved { color: #ffd23f; font-weight: 700; }
+.tmgt .tcur { position: absolute; top: 0; bottom: 0; width: 2px; translate: -50% 0; background: var(--accent); opacity: .8; pointer-events: none; }
 .drawbar { position: absolute; left: 10px; bottom: 10px; z-index: 4; display: flex; gap: 4px; align-items: center; background: #000a; border-radius: 4px; padding: 3px; }
 .drawbar button { font: inherit; font-size: 12px; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
 .drawbar button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -79,6 +110,10 @@ h2 span { color: var(--muted); font-weight: 400; font-size: 11px; }
 .drawbar .sw.on { outline: 2px solid #fff; }
 .viewer #drawCv { position: absolute; inset: 0; pointer-events: none; touch-action: none; }
 .viewer.drawing #drawCv { pointer-events: auto; cursor: crosshair; }   /* replaced by dvCursor() */
+.aiself { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; font-size: 12.5px; }
+.aiself label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+.aiself select { background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; }
+.asStatus { font-size: 12px; color: var(--muted); min-height: 1em; }
 .adjimg { width: 100%; border-radius: 6px; border: 1px solid var(--line); cursor: zoom-in; display: block; }
 .cams { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 2px; background: #000a; border-radius: 4px; padding: 2px; }
 .cams button { border: 0; background: none; color: var(--ink); height: 26px; padding: 0 8px; border-radius: 3px; font-size: 12px; }
@@ -145,7 +180,7 @@ textarea { width: 100%; min-height: 64px; resize: vertical; background: var(--ra
 .cell.kdrop { box-shadow: inset 0 0 0 2px var(--joint); }
 /* contact lanes: frames where each foot is planted (keys mode) */
 .lanes { display: none; height: var(--ln); flex-direction: column; justify-content: center; gap: 2px; }
-body.km .lanes { display: flex; }
+body.km.lanesOn .lanes { display: flex; }
 .lane { display: flex; height: 7px; cursor: crosshair; touch-action: none; user-select: none; background: #ffffff0a; }
 .lane i { flex: 1 1 0; min-width: 0; }
 .lane[data-s="L"] i.on { background: var(--laneL); }
@@ -281,6 +316,8 @@ body.km .lanes { display: flex; }
 #pasteKey { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%204h6v3H9z%22/%3E%3Cpath%20d=%22M7%205H5v16h14V5h-2%22/%3E%3C/svg%3E"); }
 #pasteHold { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M9%204h6v3H9z%22/%3E%3Cpath%20d=%22M7%205H5v16h14V5h-2%22/%3E%3Cpath%20d=%22M9%2014h6M13%2012l2%202-2%202%22/%3E%3C/svg%3E"); }
 #kSet { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l8%209-8%209-8-9z%22/%3E%3C/svg%3E"); }
+#tmgBtn { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%2214%22%20r=%227%22/%3E%3Cpath%20d=%22M12%2014V10.5M10%203h4M12%203v4M18.5%207.5l1.5-1.5%22/%3E%3C/svg%3E"); }
+#lanesBtn { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%206h16M4%2010h11M4%2014h16M4%2018h7%22/%3E%3Ccircle%20cx=%2219%22%20cy=%2218%22%20r=%221.4%22%20fill=%22black%22/%3E%3C/svg%3E"); }
 #kDel { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%203l8%209-8%209-8-9z%22/%3E%3Cpath%20d=%22M9.5%209.5l5%205M14.5%209.5l-5%205%22/%3E%3C/svg%3E"); }
 #kAuto { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%228%22/%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%223%22%20fill=%22black%22/%3E%3C/svg%3E"); }
 #kInterp { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2018C8%2018%208%206%2013%206s5%2012%208%2012%22/%3E%3C/svg%3E"); }
@@ -501,6 +538,12 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
           <button class="ibtn btn" id="aiSend" disabled>Gửi cho AI</button>
         </div>
         <div class="round" id="round" data-s="none"><span id="roundTxt">Vòng review đang mở.</span><small id="roundSub"></small></div>
+        <div class="aiself" id="aiself">
+          <label title="Sau mỗi lần Gửi cho AI: khi AI ra version mới, trang tự chụp anim ở 3 góc và nhờ AI đánh giá, rồi gửi kết quả cho AI sửa tiếp, đủ số vòng thì dừng chờ bạn duyệt"><input type="checkbox" id="asOn"> AI tự xem lại</label>
+          <label>Số vòng <select id="asRounds"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <button class="tmgB" id="asRun" title="Nhờ AI xem và đánh giá version đang mở ngay bây giờ (kết quả thành một ghi chú)">Xem ngay</button>
+        </div>
+        <div class="asStatus" id="asStatus" role="status"></div>
         <div class="status" id="status" role="status"></div>
       </div>
     </aside>
@@ -508,6 +551,21 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
 </div>
 
 <footer class="timeline" aria-label="Timeline">
+  <div class="tmg" id="tmgPanel" hidden>
+    <div class="tmgh">
+      <b>⏱ Timing</b>
+      <span class="tmgInfo" id="tmgInfo"></span>
+      <label class="tmgOpt" title="Bật: kéo một key chính thì mọi key chính phía sau dịch theo, độ dài các pha sau giữ nguyên (pha cuối bị nén vì key cuối cố định). Tắt: chỉ dời key chính đó, hai pha kề nó co giãn."><input type="checkbox" id="tmgRipple"> Dịch cả các pha sau</label>
+      <span class="tmgHelp" title="Kéo kim cương lớn (key chính của từng giai đoạn). Các chấm nhỏ là key chuyển tiếp, tự co giãn theo tỉ lệ, pose giữ nguyên. Key đầu và cuối cố định nên clip vẫn dài như cũ. Ctrl+Z hoàn tác.">ⓘ</span>
+      <button class="tmgB" id="tmgSplit" disabled title="Biến key chuyển tiếp ở frame đang đứng thành key chính: tách pha đang chứa nó làm hai (cũng có thể nhấp đúp vào chấm nhỏ)">+ Tách pha</button>
+      <button class="tmgB" id="tmgMerge" disabled title="Key chính ở frame đang đứng trở lại thành key chuyển tiếp: pha bắt đầu từ nó gộp vào pha trước">− Gộp pha</button>
+      <span class="tmgSp"></span>
+      <span class="tmgDirty" id="tmgDirty" hidden>● chưa gửi</span>
+      <button class="tmgB" id="tmgReset" disabled title="Đưa timing về như lần gửi trước (hoặc như lúc AI dựng version này)">↺ Về lần gửi trước</button>
+      <button class="tmgB primary" id="tmgSend" disabled title="Lưu timing vừa kéo thành một góp ý (chữ trong khung ghi chú được kèm vào), rồi bấm Gửi cho AI như các góp ý khác">Gửi timing như góp ý</button>
+    </div>
+    <div class="tmgt" id="tmgTrack"></div>
+  </div>
   <div class="lanes" aria-label="Chân chạm đất">
     <div class="lane" data-s="L" id="laneL" title="Chân trái chạm đất: kéo trên dải xanh để tô / xoá frame. Trên các frame này bàn chân bám sàn (IK)"></div>
     <div class="lane" data-s="R" id="laneR" title="Chân phải chạm đất: kéo trên dải tím để tô / xoá frame"></div>
@@ -532,6 +590,8 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
     <span class="kgrp" id="kTools" hidden>
       <span class="vsep"></span>
       <button class="ibtn btn primary" id="kSet" title="Đặt key ở frame này bằng pose đang thấy (S)">◆ Key <kbd>S</kbd></button>
+      <button class="ibtn btn" id="lanesBtn" title="Hiện / ẩn các dải phân tích: chân trái và phải chạm đất, cân bằng, xuyên thân, ragdoll, tác động, ghim pose">Dải phân tích</button>
+      <button class="ibtn btn" id="tmgBtn" title="Mở bảng Timing: kéo key để đổi nhịp các pha">⏱ Timing</button>
       <button class="ibtn btn" id="kDel" title="Xoá key ở frame này (Delete). Dời key: Shift + kéo key trên timeline (hoặc kéo bằng chuột giữa)">Xoá key</button>
       <button class="ibtn btn" id="kAuto" title="Bật: mỗi lần chỉnh xong một khớp là tự đặt key ở frame đó">Auto key: bật</button>
       <button class="ibtn btn" id="kInterp" title="Đổi giữa spline (mượt) và bậc thang (blocking: giữ pose tới key kế)">Spline</button>
@@ -668,6 +728,15 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
 // contacts = default planted frames per foot ("15-45", cycle frames); ref = sprite sheets of the reference video
 // (work/pose_lab/make_ref_sprites.py), offset = ref frame - anim frame.
 const POSES = [
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "polish_v4", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68], mode: "keys", main: [1, 15, 21, 28, 33, 52, 61, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "Polish v4: lắng cuối có trọng lượng (AI tự kiểm vòng 1/1)", note: "Từ AI tự kiểm vòng 1/1 của polish_v3 (6/10): đoạn cuối F61-68 đứng im (đo 1.0 -> 0.4°/F) -> F63 hông hạ 2,5 cm, gối khuỵu trên chân đứng yên, rồi nhô dần về pose loop ở F68. Không đổi (pose key của team hoặc lựa chọn làm lại từ b75_v1): dáng vung/đập F15-33, chân sau F25-28, chùy dựng F52. Khung chụp AI giờ lấy ~4 frame một ảnh trong mỗi pha.", glb: "models/gaygor_attack_10_blocking_polish_v4.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "polish_v3", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68], mode: "keys", main: [1, 15, 21, 28, 33, 52, 61, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "Polish v3: sửa theo AI tự kiểm của polish_v2", note: "Từ ghi chú AI tự kiểm polish_v2 (đã đối chiếu số đo): chân phải bước lùi thật 7 frame F45-52, nhấc 10 cm (trước 4 frame, 7 cm); đế chân không còn lún ở F48, F60 (kiểm sàn mọi frame kể cả key). Không đổi: dáng vung/đập F15-33 và gối trái trong cú đập là pose key của team; 'chùy bị che ở F33' là do ô ảnh vuông cắt mất chùy, đã sửa khung chụp.", glb: "models/gaygor_attack_10_blocking_polish_v3.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "polish_v2", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68], mode: "keys", main: [1, 15, 21, 28, 33, 52, 61, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "Polish từ b75_v7 (68 frame)", note: "Spline PCHIP qua 39 key của b75_v7, nướng từng frame: chùy cung quanh ngực / nằm sàn theo thế giới, tay dính cán, chân khóa, sàn, lò xo vạt khố + mặt vòng ≤ 15°. QA: chân phải trượt 11 cm trên sàn F45-48 rồi chỉ nhấc 3 cm -> ghim tại chỗ đến F48 rồi bước lùi 4 frame, nhấc 7 cm, đặt xuống F52. Còn: gối trái gập rồi duỗi trong cú đập F28-33, đế chân lún 1 cm ở F48, F60.", glb: "models/gaygor_attack_10_blocking_polish_v2.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v7", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 30, 31, 33, 34, 35, 37, 39, 41, 42, 44, 46, 48, 49, 50, 51, 52, 55, 57, 59, 60, 61, 63, 68], mode: "keys", main: [1, 15, 21, 28, 33, 52, 61, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "b75_v6 + pha về vai ngắn lại (F52-61)", note: "Note: F56-63 chậm quá. Chùy chạm vai dời F65 -> F61, pha về vai 13 F -> 9 F, key xếp theo quãng đường cho tốc độ đều (chùy + ngực ~8-10°/F, trước 4-5°/F). Key: F55, 57, 59, 60, 61. Pha lắng F61-68 dài 7 F (gần đứng yên từ F63).", glb: "models/gaygor_attack_10_blocking_b75_v7.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v6", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 30, 31, 33, 34, 35, 37, 39, 41, 42, 44, 46, 48, 49, 50, 51, 52, 58, 61, 63, 64, 65, 66, 68], mode: "keys", main: [1, 15, 21, 28, 33, 52, 65, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "b75_v5 + pha về vai đều tốc độ", note: "Note: tốc độ về không ổn định nên khựng. b75_v5 F52-65 chùy đi 7.6 → 2.7 → 4.7 → 1.2 → 3.5°/F (nhanh, dừng, đi, dừng). Key chuyển tiếp của pha Đặt về vai xếp lại theo quãng đường thật (chùy + ngực), nhanh dần nhẹ: chùy đều 3.5-4.7°/F, ngực tăng dần 1.3 → 3.1 → 3.6 → 6.4°/F (rơi vào vai), rồi lắng 2 → 1°/F. Key: F58, 61, 63, 64 (trước: 55, 59, 61, 64).", glb: "models/gaygor_attack_10_blocking_b75_v6.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v5", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 30, 31, 33, 34, 35, 37, 39, 41, 42, 44, 46, 48, 49, 50, 51, 52, 55, 59, 61, 64, 65, 66, 68], mode: "keys", main: [1, 15, 21, 28, 33, 52, 65, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "b75_v4 + F48-55 ngắn lại còn F48-52", note: "Đo b75_v4: chùy vào F48 nhanh 15-18°/F rồi chỉ trôi 3-5°/F suốt 7 frame tới F55, sau đó giật 11°/F ở F55-57. Key chính F55 (chùy dựng, thân đứng) dời về F52: F48-55 còn F48-52, chùy chậm dần đều 18 → 10 → 6 → 4°/F. 3 frame dư cho pha Đặt về vai (10 → 13 F). Pha gồng trước F48 giữ nguyên.", glb: "models/gaygor_attack_10_blocking_b75_v5.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v4", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 30, 31, 33, 34, 35, 37, 39, 41, 42, 44, 46, 48, 50, 52, 54, 55, 57, 60, 62, 64, 65, 66, 68], mode: "keys", main: [1, 15, 21, 28, 33, 55, 65, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "Làm lại từ b75_v1: phản lực khi đập + chân phải trụ (timing gốc)", note: "Theo yêu cầu bắt đầu lại từ b75_v1, chỉ giữ hai sửa của vòng b75_v1: F34 chùy bật lên sau cú đập (phản lực sàn), chân phải trụ tại chỗ F34-F44. Timing gốc, bỏ timing đã kéo, chùy ngả sau F48-52 và phản lực vai của b75_v3. Cùng pose với b75_v2 nhưng db sạch (b75_v2 trong db đang thừa key).", glb: "models/gaygor_attack_10_blocking_b75_v4.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "polish_v1", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68], mode: "keys", main: [1, 15, 21, 28, 31, 53, 59, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "Polish v1: spline + nướng 68 frame từ b75_v3", note: "Spline PCHIP qua 40 key của b75_v3, nướng từng frame: chùy cung quanh ngực / nằm sàn theo thế giới, tay dính cán, chân khóa, sàn, lò xo vạt khố + mặt vòng ≤ 15°. QA: key F54 dời sang F55 (tay trái và chùy giật 23-34°/frame vì pha Đặt về vai bị nén). Còn: gối trái gập rồi duỗi F28-31 (cú đập 3F), đế chân lún 1 cm ở F46, F58.", glb: "models/gaygor_attack_10_blocking_polish_v1.json" },
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v3", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 29, 30, 31, 32, 33, 35, 37, 39, 40, 42, 44, 46, 48, 50, 52, 53, 54, 56, 57, 58, 59, 61, 64, 68], mode: "keys", main: [1, 15, 21, 28, 31, 53, 59, 68], phases: ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng nhấc chùy", "Đặt về vai", "Lắng"], label: "75% v3: timing đã kéo + chùy trễ khi đứng dậy + phản lực vai", note: "Timing bạn kéo: Đập F28→31 (3F), hết gồng F53, chạm vai F59; key chuyển tiếp co giãn theo tỉ lệ. Note F50: chùy ngả ra sau 5/15/6° ở F48/F50/F52 (quán tính khi đứng dậy). Note F59: F61 vai chịu lực (hông -5 cm, gối khuỵu, chùy bật lên 8°), F64 chùy nằm lại trên vai, rồi về Idle F68.", glb: "models/gaygor_attack_10_blocking_b75_v3.json" },
   { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v2", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 30, 31, 33, 34, 35, 37, 39, 41, 42, 44, 46, 48, 50, 52, 54, 55, 57, 60, 62, 64, 65, 66, 68], mode: "keys", label: "75% v2: phản lực khi chùy đập (F34), chân phải trụ đến F44", note: "Note F33: đập xuống chưa có phản lực -> thêm F34 (đầu chùy bật lên 12° quanh cổ tay trái, thân dội lên 2 cm), F35 chùy còn 6°. Note F37: chân phải nhấc quá sớm -> chân phải ghim tại chỗ F33 từ F34 đến F44, bắt đầu rời ở F46 và F48 (trước F37 đã nhấc, gối phải duỗi 157° ở F46 khi ghim thêm nên cho rời sớm hơn một nhịp).", glb: "models/gaygor_attack_10_blocking_b75_v2.json" },
   { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b75_v1", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 4, 6, 8, 10, 11, 13, 15, 16, 18, 19, 21, 22, 24, 26, 28, 30, 31, 33, 35, 37, 39, 41, 42, 44, 46, 48, 50, 52, 54, 55, 57, 60, 62, 64, 65, 66, 68], mode: "keys", label: "75%: 38 key (thêm 18 pose chuyển tiếp)", note: "Từ b50_v1 đã duyệt: thêm 18 pose (F4, 6, 10, 13, 16, 19, 22, 26, 31, 35, 41, 44, 46, 50, 54, 57, 64, 66). F35 nảy nhẹ sau va chạm (hông cao thêm 3 cm); F44/46 đầu chùy rời sàn dần (thấp 68 và 96 cm, không nhảy 92 cm như trước). Còn cảnh báo khuỷu phải gập 67-76° (khoảng gốc min 81°) ở F41-48.", glb: "models/gaygor_attack_10_blocking_b75_v1.json" },
   { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b50_v1", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 8, 11, 15, 18, 21, 24, 28, 30, 33, 37, 39, 42, 48, 52, 55, 60, 62, 65, 68], mode: "keys", label: "50%: 20 key (thêm F11, 18, 24, 30, 39, 52, 62)", note: "Từ b25_v3 đã duyệt: thêm 7 pose chuyển tiếp (F11 chùy rơi, F18 nén, F24 bật lên, F30 bắt đầu đập, F39 gồng tiếp, F52 đứng dậy, F62 đặt chùy lên vai). Kiểm giải phẫu: cả 7 pose mới không cảnh báo.", glb: "models/gaygor_attack_10_blocking_b50_v1.json" },
@@ -871,19 +940,23 @@ const loader = new THREE.GLTFLoader();
 // keys added by this version = in P.keys but not in the previous version of the same clip (blue diamond on the timeline)
 let NEWK = new Set();
 function calcNewKeys() { const i = POSES.indexOf(P), prev = POSES.slice(i + 1).find(q => q.clip === P.clip && q.keys);
-  NEWK = prev ? new Set((P.keys || []).filter(f => !prev.keys.includes(f))) : new Set(); }
+  NEWK = prev && (P.keys || []).length < (P.frames || 1) ? new Set((P.keys || []).filter(f => !prev.keys.includes(f))) : new Set(); }   // a bake keys every frame: nothing to mark
 let P = POSES[0]; calcNewKeys();
 function loadGlb(url) { return new Promise((res, rej) => loader.load(url, res, undefined, rej)); }
+let openTok = 0;
 async function openPose(p) {
   if (keysMode() && (dirtyKeys.size || animDirty)) { clearTimeout(flushT); await flush(); }   // keys of the old version first
   P = p; calcNewKeys(); useNames(p);
-  document.body.classList.toggle("km", keysMode()); $("kTools").hidden = $("kLegend").hidden = !keysMode();
+  document.body.classList.toggle("km", keysMode()); $("kTools").hidden = $("kLegend").hidden = !keysMode(); if (!keysMode() && typeof TMG !== "undefined" && TMG.on) $("tmgBtn").click();
   ready = false; BN = []; TR = null; $("loading").hidden = false; $("loading").textContent = "Đang tải model…";
   $("poseName").textContent = p.label + " · " + p.version; $("projName").textContent = p.project;
   if (model) { scene.remove(model); scene.remove(ghost); }
   gizmo.detach(); sel = null; selSet = new Set(); edited.clear(); undoStack = []; drafts = {}; mixers = []; frame = 1; stopPlay();
+  const tok = ++openTok;
   try {
     const [g1, g2] = await Promise.all([loadGlb(p.glb), loadGlb(p.glb)]);
+    if (tok !== openTok) return;          // a newer version was opened while this one loaded: its model must not stay in the scene (two maces, 2026-10-27)
+    if (model) { scene.remove(model); scene.remove(ghost); }
     model = posed(g1); ghost = posed(g2);
     ghost.traverse(o => { if (o.isMesh) { o.material = new THREE.MeshBasicMaterial({ color: 0x8fd3ff, transparent: true, opacity: .18, depthWrite: false }); o.renderOrder = 2; } });
     ghost.visible = $("tGhost").classList.contains("on");
@@ -897,6 +970,7 @@ async function openPose(p) {
     const top = Math.max(...Object.values(B).map(b => wp(b).y));
     camFit = P.camFit || Math.max(0.6, Math.min(4, top / 1.75)); setCam(curCam);   // POSES camFit when a prop sticks out above the joints
     ready = true; if (keysMode()) applyRemote(); renderPhys(); if (keysMode()) bodyChanged(true);
+    setTimeout(() => maybeAutoReview(), 1500);
   } catch (e) {
     $("loading").textContent = "Không tải được model (" + (e && e.message ? e.message : "lỗi mạng") + "). Tải lại trang để thử lại.";
   }
@@ -1003,7 +1077,7 @@ function renderStrip() {
   }
   $("fcount").innerHTML = "F<b></b> / " + (P.frames || 1); $("fcount").querySelector("b").textContent = frame;
   $("strip").setAttribute("aria-valuenow", frame);
-  renderLanes(); renderRef(); drawPhysGraph();
+  renderLanes(); renderRef(); drawPhysGraph(); renderTiming();
 }
 function frameAtX(x) {
   const r = $("strip").getBoundingClientRect(); return 1 + Math.floor(Math.max(0, Math.min(0.9999, (x - r.left) / r.width)) * (P.frames || 1));
@@ -1033,6 +1107,150 @@ $("strip").addEventListener("pointerup", () => {
   }
   renderStrip();
 });
+// ---------------------------------------------------------------- Timing panel: drag the MAIN keys (the phases); the breakdowns between them follow
+// Main keys = the keys of the oldest version of this clip (the team's blocking), found again by their rank among the keys so they
+// stay main after being moved. Dragging a main key re-spaces the keys between its neighbours in proportion (breakdown poses unchanged).
+const PHASE_NAMES = { "Gaygor_Attack 10 Blocking": ["Quật ra sau", "Nén", "Giơ chùy", "Đập", "Gồng, nhấc chùy", "Đặt về vai", "Lắng"] };
+const TMG = { on: false, ripple: false, drag: null };
+const tmgKeys = () => [...KEYS.keys()].sort((a, b) => a - b);
+function tmgRanks() {     // ranks (among all keys) of the main keys, null when this version has no usable list
+  const ks = tmgKeys(), old = POSES.filter(q => q.clip === P.clip && q.keys && q.keys.length).pop(), seed = [...(P.keys || [])].sort((a, b) => a - b);
+  if (old && ks.length === seed.length) { const r = seed.map((k, i) => old.keys.includes(k) ? i : -1).filter(i => i >= 0); if (r.length >= 3) return r; }
+  return null;
+}
+function tmgMain() {      // main keys carry a stored flag (survives moves and reloads); first time: derive them and save the flag
+  const ks = tmgKeys(), flagged = ks.filter(k => KEYS.get(k).main);
+  if (flagged.length >= 2) { seedPhaseNames(flagged); return flagged; }
+  const r = tmgRanks(), old = POSES.filter(q => q.clip === P.clip && q.keys && q.keys.length).pop(), given = (P.main || []).filter(k => KEYS.has(k));
+  let m = given.length >= 2 ? given : r ? r.map(i => ks[i]) : old ? ks.filter(k => old.keys.includes(k)) : [];
+  if (m.length < 3) return ks;
+  for (const k of m) { KEYS.set(k, { ...KEYS.get(k), main: true }); dirtyKeys.add(k); }
+  seedPhaseNames(m); scheduleFlush(); return m;
+}
+function seedPhaseNames(main) {   // first time only: the default names of this clip go onto the keys that start each phase
+  const def = P.phases || PHASE_NAMES[P.clip];
+  if (!def || def.length !== main.length - 1 || main.some(k => KEYS.get(k).phase)) return;
+  main.slice(0, -1).forEach((k, i) => { KEYS.set(k, { ...KEYS.get(k), phase: def[i] }); dirtyKeys.add(k); }); scheduleFlush();
+}
+const phaseNames = main => main.slice(0, -1).map((k, i) => (KEYS.get(k) && KEYS.get(k).phase) || "Pha " + (i + 1));
+function setMain(f, on) {         // split a phase at key f (on) or merge the phase starting at f into the one before (off)
+  const k = KEYS.get(f); if (!k) return;
+  pushUndo(); const n = { ...k };
+  if (on) { n.main = true; n.phase = "Pha mới"; } else { delete n.main; delete n.phase; }
+  KEYS.set(f, n); dirtyKeys.add(f); keysChanged(); renderTiming();
+  $("status").textContent = on ? "Đã tách pha ở F" + f + ". Nhấp đúp vào thanh pha để đặt tên." : "Đã gộp pha ở F" + f + " vào pha trước.";
+}
+function setPhaseName(f, name) {
+  const k = KEYS.get(f); name = (name || "").trim(); if (!k || !k.main || name === (k.phase || "")) return;
+  pushUndo(); KEYS.set(f, { ...k, phase: name.slice(0, 40) }); dirtyKeys.add(f); keysChanged(); renderTiming();
+}
+function tmgMap(mainNew) {      // old frame -> new frame for every key: piecewise-linear between the main keys, then strictly between the neighbouring main keys
+  const ks = tmgKeys(), mains = [...mainNew.keys()].sort((a, b) => a - b), out = new Map(mainNew);
+  for (let i = 0; i + 1 < mains.length; i++) {
+    const a = mains[i], b = mains[i + 1], subs = ks.filter(k => k > a && k < b), v = subs.map(k => Math.round(mainNew.get(a) + (k - a) * (mainNew.get(b) - mainNew.get(a)) / (b - a)));
+    for (let j = 0; j < v.length; j++) v[j] = Math.max(v[j], (j ? v[j - 1] : mainNew.get(a)) + 1);               // forward: strictly after the previous key
+    for (let j = v.length - 1; j >= 0; j--) v[j] = Math.min(v[j], (j < v.length - 1 ? v[j + 1] : mainNew.get(b)) - 1);   // backward: strictly before the next (a rounded key used to land on a main key and overwrite it)
+    subs.forEach((k, j) => out.set(k, v[j]));
+  }
+  for (const k of ks) if (!out.has(k)) out.set(k, k);
+  return out;
+}
+function renderTiming() {
+  if (!TMG.on || !keysMode() || $("tmgTrack").querySelector(".tbin")) return;   // keep a phase name being typed
+  const box = $("tmgTrack"), N = P.frames || 1, ks = tmgKeys(), main = tmgMain(), pos = TMG.drag ? TMG.drag.pos : new Map(ks.map(k => [k, k]));
+  const xp = f => ((f - 0.5) / N * 100) + "%", el = (cls, st, txt) => { const d = document.createElement("div"); d.className = cls; Object.assign(d.style, st); if (txt != null) d.textContent = txt; box.append(d); return d; };
+  const names = phaseNames(main);
+  box.innerHTML = "";
+  for (let f = 5; f <= N; f += (N > 80 ? 10 : 5)) { el("tk", { left: xp(f) }); el("tkl", { left: xp(f) }, f); }
+  for (let i = 0; i + 1 < main.length; i++) {
+    const a = pos.get(main[i]), b = pos.get(main[i + 1]), nm = names[i] + " ";
+    const d = el("tb" + (i % 2 ? " odd" : ""), { left: xp(a), width: ((b - a) / N * 100) + "%" }, nm + (b - a) + "F");
+    d.title = nm + (b - a) + " frame = " + ((b - a) / (P.fps || 30)).toFixed(2) + " s. Nhấp đúp để đổi tên."; d.dataset.k = main[i];
+  }
+  for (const k of ks) if (!main.includes(k)) { const d = el("tsub", { left: xp(pos.get(k)) }); d.dataset.k = k; d.title = "F" + k + ": nhấp đúp để tách pha ở đây"; }
+  for (const o of main) {
+    const n = pos.get(o), fixed = o === main[0] || o === main[main.length - 1], moved = o !== n;
+    const h = el("tk2" + (fixed ? " fixed" : "") + (moved ? " moved" : ""), { left: xp(n) }); h.dataset.o = o; h.title = "F" + o + (moved ? " → F" + n : "") + (fixed ? " (cố định)" : "");
+    el("tkn" + (moved ? " moved" : ""), { left: xp(n) }, moved ? o + "→" + n : n);
+  }
+  el("tcur", { left: xp(frame) });
+  const isMain = main.includes(frame), canSplit = KEYS.has(frame) && !isMain && frame > main[0] && frame < main[main.length - 1];
+  $("tmgSplit").disabled = !canSplit; $("tmgSplit").textContent = "+ Tách pha" + (canSplit ? " ở F" + frame : "");
+  $("tmgMerge").disabled = !(isMain && frame !== main[0] && frame !== main[main.length - 1]); $("tmgMerge").textContent = "− Gộp pha" + (!$("tmgMerge").disabled ? " ở F" + frame : "");
+  const chg = tmgChanged(), same = tmgBase().length === ks.length;
+  $("tmgSend").disabled = !db || !canWrite || !chg; $("tmgReset").disabled = !chg || !same; $("tmgDirty").hidden = !chg;
+  $("tmgInfo").textContent = N + " F · " + (N / (P.fps || 30)).toFixed(2) + " s · " + main.length + " key chính · " + (ks.length - main.length) + " chuyển tiếp";
+}
+function tmgTarget(clientX) {
+  const r = $("tmgTrack").getBoundingClientRect(), N = P.frames || 1, ks = tmgKeys(), main = tmgMain(), o = TMG.drag.o;
+  let delta = Math.round((clientX - TMG.drag.x0) / r.width * N);
+  const cnt = (a, b) => ks.filter(k => k > a && k < b).length, i = main.indexOf(o), prev = main[i - 1], last = main[main.length - 1], nxt = main[i + 1];
+  const mainNew = new Map(main.map(k => [k, k]));
+  if (!TMG.ripple) { delta = Math.max(prev + cnt(prev, o) + 1 - o, Math.min(nxt - cnt(o, nxt) - 1 - o, delta)); mainNew.set(o, o + delta); }
+  else {
+    const mv = main.filter(k => k >= o && k !== last), lm = mv[mv.length - 1];
+    delta = Math.max(prev + cnt(prev, o) + 1 - o, Math.min(last - cnt(lm, last) - 1 - lm, delta)); for (const k of mv) mainNew.set(k, k + delta);
+  }
+  return { pos: tmgMap(mainNew), delta };
+}
+function tmgCommit(pos) {
+  const moves = [...pos].filter(([o, n]) => o !== n); if (!moves.length) return;
+  pushUndo();
+  const saved = new Map(moves.map(([o]) => [o, KEYS.get(o)])), at = new Date().toISOString();
+  for (const [o] of moves) KEYS.delete(o);
+  for (const [o, n] of moves) { KEYS.set(n, { ...saved.get(o), at }); dirtyKeys.add(o); dirtyKeys.add(n); }
+  keysChanged(); reEval();
+  $("status").textContent = "Timing: " + moves.length + " key dời (" + moves.slice(0, 6).map(([o, n]) => "F" + o + "→F" + n).join(", ") + (moves.length > 6 ? "…" : "") + "). Ctrl+Z để hoàn tác.";
+}
+function tmgBase() {      // frames the AI last built / was last told: the latest timing note of this version, else the version's own key list
+  const t = mine().filter(a => a.kind === "timing" && a.timing && a.timing.after).sort((x, y) => (x.createdAt || "").localeCompare(y.createdAt || "")).pop();
+  return t ? t.timing.after : [...(P.keys || [])].sort((a, b) => a - b);
+}
+const tmgChanged = () => { const b = tmgBase(), c = tmgKeys(); return b.length !== c.length || b.some((k, i) => k !== c[i]); };
+$("tmgSend").onclick = async () => {
+  const before = tmgBase(), after = tmgKeys(), main = tmgMain(), names = phaseNames(main), r = after.map((k, i) => main.includes(k) ? i : -1).filter(i => i >= 0);
+  if (!db || !canWrite) { $("status").textContent = "Chưa lưu được góp ý (cần đăng nhập và có quyền ghi)."; return; }
+  const bm = r && before.length === after.length ? r.map(i => before[i]) : before, am = r && before.length === after.length ? r.map(i => after[i]) : after;
+  const lines = [];
+  for (let i = 0; i + 1 < bm.length; i++) { const d0 = bm[i + 1] - bm[i], d1 = am[i + 1] - am[i]; if (d0 !== d1) lines.push((names[i] || "F" + bm[i] + "→F" + bm[i + 1]) + " " + d0 + "F → " + d1 + "F"); }
+  const note = $("text").value.trim();
+  const text = "Timing mới (key chính F" + am.join(", F") + "; trước đó F" + bm.join(", F") + ")" + (lines.length ? ". Đổi: " + lines.join("; ") : "") +
+    ". Key chuyển tiếp co giãn theo tỉ lệ, pose giữ nguyên." + (note ? " " + note : "");
+  const body = { clip: P.clip, version: P.version, frame: frame, kind: "timing", bones: {}, local: {}, text, timing: { before, after, main: { before: bm, after: am }, phases: names }, status: "open", createdAt: new Date().toISOString() };
+  if (myId) body.author = myId;
+  $("tmgSend").disabled = true;
+  try { await db.collection("adjusts").add(body); adjs.push({ ...body }); if (note) $("text").value = ""; renderAdjs(); renderTiming();
+        $("status").textContent = "Đã lưu góp ý timing. Bấm Gửi cho AI để gửi cùng các góp ý khác."; }
+  catch (e) { fail(e); renderTiming(); }
+};
+function applyLanes(on) { document.body.classList.toggle("lanesOn", on); $("lanesBtn").classList.toggle("primary", on); try { localStorage.setItem("poselab:lanes", on ? "1" : "0"); } catch {} window.dispatchEvent(new Event("resize")); }
+$("lanesBtn").onclick = () => applyLanes(!document.body.classList.contains("lanesOn"));
+{ let on = false; try { on = localStorage.getItem("poselab:lanes") === "1"; } catch {} applyLanes(on); }
+$("tmgSplit").onclick = () => setMain(frame, true);
+$("tmgMerge").onclick = () => setMain(frame, false);
+$("tmgTrack").addEventListener("dblclick", e => {
+  const sub = e.target.closest(".tsub"); if (sub) { setMain(+sub.dataset.k, true); return; }
+  const bar = e.target.closest(".tb"); if (!bar) return;
+  const k = +bar.dataset.k, inp = document.createElement("input"); inp.className = "tbin"; inp.value = (KEYS.get(k) && KEYS.get(k).phase) || "";
+  inp.style.left = bar.style.left; inp.style.width = "max(120px, " + bar.style.width + ")"; inp.placeholder = "Tên pha";
+  $("tmgTrack").append(inp); inp.focus(); inp.select();
+  let done = false; const fin = ok => { if (done) return; done = true; if (ok) setPhaseName(k, inp.value); inp.remove(); renderTiming(); };
+  inp.onkeydown = ev => { ev.stopPropagation(); if (ev.key === "Enter") fin(true); if (ev.key === "Escape") fin(false); };
+  inp.onblur = () => fin(true);
+});
+$("tmgReset").onclick = () => { const b = tmgBase(), c = tmgKeys(); if (b.length === c.length) { tmgCommit(new Map(c.map((k, i) => [k, b[i]]))); renderTiming(); } };
+$("tmgBtn").onclick = () => { TMG.on = !TMG.on; $("tmgPanel").hidden = !TMG.on; document.body.classList.toggle("tmgOn", TMG.on); $("tmgBtn").classList.toggle("primary", TMG.on); window.dispatchEvent(new Event("resize")); renderTiming(); };
+$("tmgRipple").onchange = e => { TMG.ripple = e.target.checked; };
+$("tmgTrack").addEventListener("pointerdown", e => {
+  if (e.target.closest(".tbin")) return;
+  const h = e.target.closest(".tk2"); if (!h) { const r = $("tmgTrack").getBoundingClientRect(); goto(Math.max(1, Math.min(P.frames || 1, 1 + Math.floor((e.clientX - r.left) / r.width * (P.frames || 1))))); return; }
+  const o = +h.dataset.o; goto(o); if (h.classList.contains("fixed")) return;
+  try { $("tmgTrack").setPointerCapture(e.pointerId); } catch {}
+  TMG.drag = { o, x0: e.clientX, pos: new Map(tmgKeys().map(k => [k, k])) }; e.preventDefault();
+});
+$("tmgTrack").addEventListener("pointermove", e => { if (!TMG.drag) return; TMG.drag.pos = tmgTarget(e.clientX).pos; renderTiming(); });
+$("tmgTrack").addEventListener("pointerup", e => { if (!TMG.drag) return; const { pos } = tmgTarget(e.clientX); TMG.drag = null; tmgCommit(pos); renderTiming(); });
+$("tmgTrack").addEventListener("pointercancel", () => { TMG.drag = null; renderTiming(); });
 $("strip").addEventListener("auxclick", e => e.preventDefault());
 const keyList = () => keysMode() ? [...new Set([...KEYS.keys(), ...(P.loop ? [P.frames] : [])])].sort((a, b) => a - b)
   : [...new Set([1, ...(P.keys || []), P.frames || 1])].sort((a, b) => a - b);
@@ -1643,7 +1861,7 @@ async function renderAdjs() {
     bones.textContent = Object.entries(a.bones || {}).map(([n, v]) => (NAMES[n] || n) + " " + (v.deg ?? 0).toFixed(1) + "°").join(" · ");
     el.append(meta, bones);
     if (a.text) { const p = document.createElement("p"); p.textContent = a.text; el.append(p); }
-    if (a.img && a.img.url) { const im = document.createElement("img"); im.className = "adjimg"; im.loading = "lazy"; im.src = a.img.url; im.alt = "Ảnh ghi chú F" + (a.frame || 1); im.onclick = () => window.open(a.img.url, "_blank"); el.append(im); }
+    for (const g of (a.imgs && a.imgs.length ? a.imgs : a.img ? [a.img] : [])) if (g && g.url) { const im = document.createElement("img"); im.className = "adjimg"; im.loading = "lazy"; im.src = g.url; im.alt = "Ảnh ghi chú F" + (a.frame || 1); im.onclick = () => window.open(g.url, "_blank"); el.append(im); }
     const row = document.createElement("div"); row.className = "row";
     const view = document.createElement("button"); view.className = "btn"; view.textContent = "Xem trên model";
     view.onclick = () => { applyLocal(a); if (a.cam && a.cam.pos) { camera.position.fromArray(a.cam.pos); orbit.target.fromArray(a.cam.target); orbit.update(); } };
@@ -1689,17 +1907,170 @@ $("aiSend").onclick = async () => {
       const anchor = await comments.anchorFor($("aiSend"));
       const fr = [...new Set(open.map(a => a.frame || 1))].sort((a, b) => a - b).join(", ");
       await comments.sendToClaude({ anchor, text: `Pose Lab: ${open.length} điều chỉnh pose cho ${P.clip} ${P.version} (frame ${fr}). ` +
-        `Đọc collection "adjusts" (clip ${P.clip}, version ${P.version}) rồi áp vào pose (ảnh ghi chú ở trường img.url, camera ở cam).` });
+        `Đọc collection "adjusts" (clip ${P.clip}, version ${P.version}) rồi áp vào pose (ảnh ghi chú ở trường img.url, camera ở cam).` +
+        (AIS.on ? ` Bật AI tự xem lại ${AIS.rounds} vòng: ra version mới thì trang tự xem lại và gửi kết quả, sửa đủ ${AIS.rounds} vòng rồi chờ duyệt.` : "") });
       toClaude = true;
     }
   } catch (e) {}
   const body = { clip: P.clip, version: P.version, kind: "pose", status: "sent", sentAt: new Date().toISOString(), adjustCount: open.length, toClaude };
   if (myId) body.sentBy = myId;
+  if (AIS.on) { body.selfRounds = AIS.rounds; db.doc("selfplan/" + planId()).set({ clip: P.clip, from: P.version, left: AIS.rounds, of: AIS.rounds, done: [], at: new Date().toISOString() }).catch(fail); }
   try { await db.doc("rounds/" + roundId()).set(body);
         $("status").textContent = toClaude ? "Đã gửi cho AI. Trạng thái sẽ cập nhật ở đây." : "Đã đánh dấu gửi. AI sẽ nhận ở lần kiểm tra trang kế tiếp."; }
   catch (e) { fail(e); }
   renderRound();
 };
+
+// ---------------------------------------------------------------- AI tự xem lại (user 2026-10-27): the page shoots the anim in 3 views and asks
+// Claude (sample capability) for a review; the result is an adjust note kind "ai". With "AI tự xem lại" on, every Gửi cho AI opens a plan
+// of N rounds (db selfplan): each new version the AI publishes is reviewed once when the page opens it, the result is sent to the AI,
+// until N rounds are done. Settings live in db settings/aiself.
+const AIS = { on: false, rounds: 2, plan: null, busy: false };
+const planId = () => idOf(P.clip, "selfplan");
+function aisFrames() {
+  const N = P.frames || 1;
+  let m = (P.main && P.main.length ? P.main : keysMode() ? tmgMain() : (P.keys || [1])).filter(f => f >= 1 && f <= N);
+  m = [...new Set([1, ...m, N])].sort((a, b) => a - b);
+  const out = new Set(m);          // a frame every ~4 F inside each phase (one midpoint made F33-43 look static to the reviewer)
+  for (let i = 0; i + 1 < m.length; i++) { const g = m[i + 1] - m[i], n = Math.max(g >= 3 ? 1 : 0, Math.round(g / 4) - 1); for (let j = 1; j <= n; j++) out.add(Math.round(m[i] + g * j / (n + 1))); }
+  return [...out].sort((a, b) => a - b).slice(0, 24);
+}
+async function aisSheets(frames) {
+  const cams = ["right", "front", "top"], cols = 6, cw = 220, ch = 220, rows = Math.ceil(frames.length / cols), sheets = [];
+  const wasFrame = frame, wasCam = curCam, wasGhost = ghost && ghost.visible, wasSize = renderer.getSize(new THREE.Vector2()), bg = new THREE.Color(0x15181f);
+  stopPlay(); if (ghost) ghost.visible = false; gizmo.detach();
+  try {
+    for (const k of cams) {
+      const out = document.createElement("canvas"); out.width = cw * cols; out.height = ch * rows + 26; const c = out.getContext("2d");
+      c.fillStyle = "#15181f"; c.fillRect(0, 0, out.width, out.height);
+      c.fillStyle = "#fff"; c.font = "bold 15px sans-serif"; c.fillText(P.clip.replace(/_/g, " ") + " · " + P.version + " · góc " + CAMS[k].label, 8, 18);
+      renderer.setSize(cw, ch, false); camera.aspect = cw / ch; camera.updateProjectionMatrix();
+      frames.forEach((f, i) => {
+        goto(f); model.updateMatrixWorld(true); setCam(k);
+        { const t = orbit.target; camera.position.sub(t).multiplyScalar(1.5).add(t); camera.lookAt(t); }   // square cell: pull back so the 2.5 m mace stays in frame (polish_v2 review cropped it at F33)
+        renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, camera);
+        const x = (i % cols) * cw, y = 26 + Math.floor(i / cols) * ch; c.drawImage(canvas, x, y, cw, ch);
+        c.strokeStyle = "#333"; c.lineWidth = 1; c.strokeRect(x + .5, y + .5, cw - 1, ch - 1);
+        c.font = "bold 16px sans-serif"; c.lineWidth = 3; c.strokeStyle = "#000"; c.strokeText("F" + f, x + 6, y + 20); c.fillStyle = "#ffd23f"; c.fillText("F" + f, x + 6, y + 20);
+      });
+      sheets.push(await new Promise(r => out.toBlob(r, "image/jpeg", 0.85)));
+    }
+  } finally {
+    if (ghost) ghost.visible = wasGhost; renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
+  }
+  return { sheets, cams };
+}
+// per-part measurements for the reviewer (user 2026-10-27: "chưa tự check hết từng bộ phận"): every frame, every part
+const AIS_PARTS = { "Hông": ["Root_M"], "Thân, ngực": ["Spine1_M", "Chest_M"], "Đầu, cổ": ["Neck_M", "Head_M"],
+  "Tay trái": ["Shoulder_L", "Elbow_L", "Wrist_L"], "Tay phải": ["Shoulder_R", "Elbow_R", "Wrist_R"],
+  "Chân trái": ["Hip_L", "Knee_L", "Ankle_L"], "Chân phải": ["Hip_R", "Knee_R", "Ankle_R"], "Vũ khí": ["Weapon"], "Vạt áo, phụ kiện": ["DressFront_M", "DressBack_M", "Prop_M"] };
+function aisMetrics() {
+  const N = P.frames || 1, wasFrame = frame, Q = new THREE.Quaternion(), V = new THREE.Vector3(), rows = [];
+  const parts = Object.fromEntries(Object.entries(AIS_PARTS).map(([k, bs]) => [k, bs.filter(b => B[b])]).filter(([, bs]) => bs.length));
+  const used = [...new Set(Object.values(parts).flat())];
+  try {
+    for (let f = 1; f <= N; f++) {
+      goto(f); model.updateMatrixWorld(true); const r = {};
+      for (const b of used) { r[b] = { q: B[b].getWorldQuaternion(Q.clone()), p: B[b].getWorldPosition(V.clone()).multiplyScalar(100) }; }
+      rows.push(r);
+    }
+  } finally { goto(wasFrame); }
+  const deg = (a, b) => THREE.MathUtils.radToDeg(a.angleTo(b));
+  const hinge = (r, a, b, c) => { const u = r[a].p.clone().sub(r[b].p), v = r[c].p.clone().sub(r[b].p); return THREE.MathUtils.radToDeg(u.angleTo(v)); };
+  const out = {};
+  for (const [part, bs] of Object.entries(parts)) {
+    const sp = rows.map((r, i) => i ? Math.max(...bs.map(b => deg(rows[i - 1][b].q, r[b].q))) : 0);
+    const spikes = []; for (let i = 2; i < N - 1; i++) if (sp[i] > 6 && sp[i] > 2.5 * Math.max(sp[i - 1], .5) && sp[i] > 2.5 * Math.max(sp[i + 1], .5)) spikes.push("F" + (i + 1));
+    const stops = []; for (let i = 2; i < N - 1; i++) if (sp[i - 1] > 4 && sp[i] < 0.25 * sp[i - 1] && sp[i + 1] > 4) stops.push("F" + (i + 1));
+    const o = { speed: sp.map(x => Math.round(x)), spikes, stops };
+    const side = part === "Tay trái" ? "L" : part === "Tay phải" ? "R" : part === "Chân trái" ? "L" : part === "Chân phải" ? "R" : null;
+    if (side && part.startsWith("Tay") && bs.length === 3) o.elbow = rows.map(r => Math.round(hinge(r, "Shoulder_" + side, "Elbow_" + side, "Wrist_" + side)));
+    if (side && part.startsWith("Chân") && bs.length === 3) {
+      o.knee = rows.map(r => Math.round(hinge(r, "Hip_" + side, "Knee_" + side, "Ankle_" + side)));
+      const a = "Ankle_" + side, low = Math.min(...rows.map(r => r[a].p.y));
+      o.ankleHeight = rows.map(r => Math.round(r[a].p.y - low));
+      const slide = []; for (let i = 1; i < N; i++) { const p0 = rows[i - 1][a].p, p1 = rows[i][a].p; if (p0.y - low < 2 && p1.y - low < 2) { const d = Math.hypot(p1.x - p0.x, p1.z - p0.z); if (d > 1.5) slide.push("F" + (i + 1) + " " + d.toFixed(1) + "cm"); } }
+      o.slideOnFloor = slide;
+    }
+    if (part === "Vũ khí") o.height = rows.map(r => Math.round(r.Weapon.p.y));
+    out[part] = o;
+  }
+  return out;
+}
+function aisMetricsText(m) {
+  return Object.entries(m).map(([part, o]) => "- " + part + ": tốc độ xoay °/frame F1→: " + o.speed.join(" ") +
+    (o.spikes.length ? " | giật (vọt hơn 2,5 lần hai frame bên): " + o.spikes.join(", ") : "") + (o.stops.length ? " | khựng (đang đi thì gần dừng 1 frame): " + o.stops.join(", ") : "") +
+    (o.elbow ? " | góc khuỷu: " + o.elbow.join(" ") : "") + (o.knee ? " | góc gối: " + o.knee.join(" ") : "") +
+    (o.ankleHeight ? " | cổ chân cao hơn điểm thấp nhất (cm): " + o.ankleHeight.join(" ") : "") + (o.slideOnFloor && o.slideOnFloor.length ? " | trượt khi đang chạm sàn: " + o.slideOnFloor.join(", ") : "") +
+    (o.height ? " | độ cao gốc vũ khí (cm): " + o.height.join(" ") : "")).join("\n");
+}
+function aisPrompt(frames, metrics) {
+  const main = P.main && P.main.length ? P.main : keysMode() ? tmgMain() : (P.keys || []);
+  const names = P.phases || (keysMode() ? phaseNames(main) : []);
+  const ph = main.slice(0, -1).map((f, i) => (names[i] || "Pha " + (i + 1)) + " F" + f + "–F" + main[i + 1]).join("; ");
+  return `Bạn là animator game senior, review một anim 3D cho game. Nhân vật ${P.project || ""}: boss to vạm vỡ, chân ngắn tay dài, cầm chùy rất nặng dài khoảng 2,5 m.
+Clip "${P.clip}", version ${P.version} (${P.label}), ${P.frames} frame, 30 fps. Các pha: ${ph || "không có"}.
+Ghi chú của version: ${P.note || "(không)"}.
+Ảnh gửi kèm: 3 tấm, mỗi tấm một góc nhìn (phải = góc game, trước, trên); mỗi ô là một frame, số frame ghi ở góc ô: ${frames.map(f => "F" + f).join(", ")}.
+Số đo của trang cho TỪNG bộ phận ở MỌI frame (đo thật từ anim, tin số này hơn mắt khi nói về giật, khựng, trượt, góc khớp):
+${aisMetricsText(metrics)}
+Kiểm LẦN LƯỢT TỪNG bộ phận trong danh sách trên, không bỏ bộ phận nào: với mỗi bộ phận xét cả chuỗi frame - chuyển động có liền mạch không (dùng tốc độ: chỗ giật, khựng, trôi), có độ trễ / overlap hợp lý so với hông và thân không, khớp có gập sai chiều hay duỗi khóa không (góc khuỷu, góc gối), chân có trượt hoặc xuyên sàn khi đang chịu lực không, tay có rời cán không, vũ khí có thể hiện độ nặng không. Sau đó xét toàn thân: pha nào đọc không rõ, dáng (silhouette) ở góc game.
+Không ước lượng góc khớp từ ảnh; dùng số đo. Lỗi phải chỉ rõ frame.
+Trả lời CHỈ bằng JSON, tiếng Việt:
+{"summary": "1-2 câu", "score": 1-10,
+ "parts": [{"part": "đúng tên bộ phận như danh sách", "ok": true/false, "frames": "các frame có vấn đề hoặc rỗng", "comment": "nhận xét ngắn, kể cả khi ổn"}],
+ "issues": [{"frame": số, "part": "bộ phận", "problem": "lỗi", "fix": "cách sửa"}]}
+"parts" phải có đủ mọi bộ phận trong danh sách. "issues" tối đa 8, nặng nhất trước.`;
+}
+const AIS_ERR = { not_granted: "Bạn chưa cho phép trang gọi AI.", images_unavailable: "Trang chưa được phép gửi ảnh cho AI.", rate_limited: "AI đang bận, thử lại sau ít phút.", cancelled: "Đã dừng." };
+async function aisRun(round, of) {          // one review of the open version -> adjust note kind "ai"; returns the note or null
+  if (AIS.busy || !model) return null;
+  const st = $("asStatus"), sample = window.claude && claude.use ? await claude.use("sample").catch(() => null) : null;
+  if (!sample) { st.textContent = "Không gọi được AI từ trang này (cần mở trên claude.ai)."; return null; }
+  AIS.busy = true; $("asRun").disabled = true;
+  try {
+    const frames = aisFrames(); st.textContent = "AI tự xem lại: đang chụp " + frames.length + " frame × 3 góc…";
+    const { sheets } = await aisSheets(frames);
+    st.textContent = "AI đang xem và đánh giá (thường 30–90 giây)…";
+    st.textContent = "AI tự xem lại: đang đo từng bộ phận ở mọi frame…"; const metrics = aisMetrics();
+    st.textContent = "AI đang xem và đánh giá từng bộ phận (thường 30–90 giây)…";
+    const r = (await sample.json(aisPrompt(frames, metrics), { images: sheets, cache: false })) || {};
+    const issues = Array.isArray(r.issues) ? r.issues.slice(0, 8) : [], parts = Array.isArray(r.parts) ? r.parts : [];
+    const imgs = [], as = await getAssets();
+    if (as) for (const b of sheets) { try { const up = await as.upload(b); imgs.push({ id: up.id, url: up.url }); } catch (e) {} }
+    const text = "AI tự kiểm" + (round ? " vòng " + round + "/" + of : "") + " (điểm " + (r.score ?? "?") + "/10): " + (r.summary || "") +
+      (parts.length ? " Từng bộ phận: " + parts.map(x => (x.ok ? "✓ " : "✗ ") + x.part + (x.frames ? " (" + x.frames + ")" : "") + ": " + (x.comment || "")).join("; ") + "." : "") +
+      (issues.length ? " Lỗi: " + issues.map(i => "F" + i.frame + " " + (i.part || "") + ": " + (i.problem || "") + " → " + (i.fix || "")).join("; ") : " Không thấy lỗi rõ.");
+    const body = { clip: P.clip, version: P.version, frame: (issues[0] && +issues[0].frame) || 1, kind: "ai", bones: {}, local: {}, text,
+      ai: { score: r.score ?? null, summary: r.summary || "", parts, issues, frames, metrics, round: round || null, of: of || null }, status: "open", createdAt: new Date().toISOString() };
+    if (imgs.length) { body.img = imgs[0]; body.imgs = imgs; }
+    if (myId) body.author = myId;
+    if (db && canWrite) { await db.collection("adjusts").add(body); adjs.push({ ...body }); renderAdjs(); renderRound(); }
+    st.textContent = "AI tự kiểm xong: " + parts.filter(x => !x.ok).length + "/" + parts.length + " bộ phận có vấn đề, " + issues.length + " lỗi, điểm " + (r.score ?? "?") + "/10 (ghi chú ở danh sách điều chỉnh).";
+    return body;
+  } catch (e) { st.textContent = "AI tự xem lại chưa chạy được: " + (AIS_ERR[e && e.code] || (e && e.message) || e); return null; }
+  finally { AIS.busy = false; $("asRun").disabled = false; }
+}
+async function maybeAutoReview() {           // the round of the plan for this version, once, when the page opens the newest version
+  const pl = AIS.plan;
+  if (!AIS.on || !pl || AIS.busy || !ready || !model || !db || !canWrite) return;
+  if (POSES.find(q => q.clip === P.clip) !== P || P.version === pl.from || (pl.done || []).includes(P.version) || !(pl.left > 0)) return;
+  const k = pl.of - pl.left + 1, left = pl.left - 1;
+  AIS.plan = { ...pl, left, done: [...(pl.done || []), P.version], at: new Date().toISOString() };
+  await db.doc("selfplan/" + planId()).set(AIS.plan);          // mark first: one run per version
+  const note = await aisRun(k, pl.of); if (!note) return;
+  try {
+    if (comments && (await comments.canSendToClaude().catch(() => "off")) === "available") {
+      const anchor = await comments.anchorFor($("aiSend"));
+      await comments.sendToClaude({ anchor, text: `Pose Lab: AI tự kiểm vòng ${k}/${pl.of} cho ${P.clip} ${P.version}: ${note.ai.issues.length} lỗi, điểm ${note.ai.score ?? "?"}/10. ` +
+        `Đọc collection "adjusts" (clip ${P.clip}, version ${P.version}, kind "ai"; ảnh 3 góc ở imgs), sửa rồi ra version mới. ` + (left > 0 ? `Còn ${left} vòng tự kiểm.` : `Đây là vòng cuối: sửa xong thì dừng, chờ người dùng duyệt.`) });
+      $("asStatus").textContent += " Đã gửi kết quả cho AI.";
+    } else $("asStatus").textContent += " Bấm Gửi cho AI để AI sửa theo kết quả này.";
+  } catch (e) { $("asStatus").textContent += " Bấm Gửi cho AI để AI sửa theo kết quả này."; }
+}
+function aisSave() { AIS.on = $("asOn").checked; AIS.rounds = +$("asRounds").value; if (db && canWrite) db.doc("settings/aiself").set({ on: AIS.on, rounds: AIS.rounds, at: new Date().toISOString() }).catch(fail); }
+$("asOn").onchange = aisSave; $("asRounds").onchange = aisSave;
+$("asRun").onclick = () => aisRun(null, null);
 
 function renderPoses() {     // version list (newest first): status of its review round + its adjustments
   const box = $("poses"); box.innerHTML = ""; $("poseCount").textContent = POSES.length;
@@ -1729,7 +2100,7 @@ function renderPoses() {     // version list (newest first): status of its revie
 // the contact lanes the ankle moves on straight lines through its positions at the span ends and at the keys inside the
 // span (two-bone IK on the spline pose), so a planted foot neither floats, sinks nor wobbles between keys.
 let KEYS = new Map(), TR = null, ANK = {}, BN = [], REST = {}, CT = { L: new Set(), R: new Set() }, ready = false;
-let ANIM = { interp: "spline", lock: true }, animAt = "", autoKey = true, keysInDb = false, dirtyKeys = new Set(), animDirty = false, flushT = 0, flushing = false;
+let ANIM = { interp: "spline", lock: true }, animAt = "", autoKey = true, keysInDb = false, dirtyKeys = new Set(), animDirty = false, flushT = 0, flushing = false, quietUntil = 0;
 let remoteKeys = {}, remoteAnims = {}, keySig = "";
 function keysMode() { return !!P && P.mode === "keys"; }
 const NFR = () => P.frames || 1;
@@ -1752,7 +2123,7 @@ function fmtSet(set) {
 const packBone = (q, p) => [...q.toArray().map(x => +x.toFixed(6)), ...p.toArray().map(x => +x.toFixed(5))];
 function poseNow() { const o = {}; for (const n of BN) o[n] = packBone(B[n].quaternion, B[n].position); return o; }
 function poseFromCache(f) { const c = cache[f] || cache[1], o = {}; for (const n of BN) if (c && c[n]) o[n] = packBone(c[n][1], c[n][0]); return o; }
-const sigOf = m => [...m.entries()].sort((a, b) => a[0] - b[0]).map(([f, k]) => f + "@" + k.at).join("|");
+const sigOf = m => [...m.entries()].sort((a, b) => a[0] - b[0]).map(([f, k]) => f + "@" + k.at + (k.main ? "*" : "") + (k.phase || "")).join("|");
 
 function initKeys() {
   BN = Object.keys(B); REST = poseFromCache(1); if (P.frames0 != null) P.frames = P.frames0;
@@ -3262,7 +3633,7 @@ function drawBodyViz() {
   }
   scene.add(bodyViz);
 }
-function setKey(f, pose) { f = cyc(f); pose = unphys(f, pose); KEYS.set(f, { pose, at: new Date().toISOString() }); dirtyKeys.add(f); keysChanged(); }
+function setKey(f, pose) { f = cyc(f); pose = unphys(f, pose); KEYS.set(f, { pose, at: new Date().toISOString(), ...(KEYS.get(f) && KEYS.get(f).main ? { main: true, ...(KEYS.get(f).phase ? { phase: KEYS.get(f).phase } : {}) } : {}) }); dirtyKeys.add(f); keysChanged(); }
 function keysChanged() { buildTracks(); keySig = sigOf(KEYS); scheduleFlush(); renderStrip(); bodyChanged(); }
 function reEval() {       // show the new evaluation of this frame (keeps the undo history)
   if (!model || editedList().length) { renderStrip(); return; }
@@ -3343,7 +3714,7 @@ async function flush() {
   try {
     for (const f of fs) {
       const ref = db.doc("keys/" + id + "-F" + f), k = KEYS.get(f);
-      if (k) await ref.set({ clip, version, frame: f, pose: k.pose, at: k.at, ...(myId ? { by: myId } : {}) });
+      if (k) await ref.set({ clip, version, frame: f, pose: k.pose, at: k.at, ...(k.main ? { main: true } : {}), ...(k.phase ? { phase: k.phase } : {}), ...(myId ? { by: myId } : {}) });
       else await ref.delete();
     }
     keysInDb = true;
@@ -3351,16 +3722,17 @@ async function flush() {
       contacts: { L: fmtSet(CT.L), R: fmtSet(CT.R) }, phys: ANIM.phys, at: animAt || new Date().toISOString(), ...(myId ? { by: myId } : {}) });
     $("status").textContent = "Đã lưu " + KEYS.size + " key (" + fmtTime(new Date().toISOString()) + ").";
   } catch (e) { fs.forEach(f => dirtyKeys.add(f)); if (wasAnim) animDirty = true; fail(e); }
-  finally { flushing = false; }
+  finally { flushing = false; quietUntil = Date.now() + 2500; setTimeout(applyRemote, 2700); }
 }
 function applyRemote() {    // keys / settings from the db (another viewer, or Claude) replace the local ones
   if (!ready || !keysMode() || !model || dirtyKeys.size || animDirty || flushing || gizmo.dragging || paint) return;
+  if (Date.now() < quietUntil) return;     // echoes of our own key writes arrive one doc at a time: wait for the last one
   const id = idOf(P.clip, P.version);
   let src = remoteKeys[id], seeded = false;
   if (!src && P.seedFrom) { src = remoteKeys[idOf(P.clip, P.seedFrom)]; seeded = !!src; }
   let changed = false;
   if (src) {
-    const m = new Map(Object.values(src).map(d => [d.frame, { pose: d.pose, at: d.at }]));
+    const m = new Map(Object.values(src).map(d => [d.frame, { pose: d.pose, at: d.at, ...(d.main ? { main: true } : {}), ...(d.phase ? { phase: d.phase } : {}) }]));
     keysInDb = !seeded;
     if (sigOf(m) !== keySig) { KEYS = m; keySig = sigOf(m); changed = true; }
   }
@@ -3794,7 +4166,7 @@ async function saveKeysMode() {
   let msg = fs.length ? "Đã đặt key " + fs.map(f => "F" + f).join(", ") + "." : "";
   if ((text || DV.strokes.length) && db) {
     const body = { clip: P.clip, version: P.version, frame: cur, kind: "note", bones: {}, local: {}, text, status: "open", createdAt: new Date().toISOString() };
-    try {
+    if (DV.strokes.length) try {         // a shot only when something was drawn (user: không vẽ thì không cần gửi hình ảnh)
       const as = await getAssets();
       if (as) { const up = await as.upload(await snapNote()); body.img = { id: up.id, url: up.url }; body.cam = camNow(); }
       else msg += " Không có quyền tải ảnh nên ghi chú chưa kèm ảnh.";
@@ -4108,7 +4480,8 @@ $("impStep").onclick = () => { ANIM.phys.autoStep = ANIM.phys.autoStep === false
 $("laneI").addEventListener("click", e => { const f = frameAtX(e.clientX), k = impAt(f); stopPlay(); if (k >= 0) impSelI = k; goto(f); renderImpacts(); });
 // ---------------------------------------------------------------- ragdoll panel: on / from, strength curve, groups, release, length, limit view
 let ragDrag = null, ragLimOn = false, ragLimViz = null;
-const ragCfg = () => (ANIM.phys.rag ||= { on: false, from: null, pts: [], groups: {}, release: null, len: 0 });
+const ragCfg = () => ((ANIM.phys ||= physDefault()).rag ||= {   // non-keys versions (polish bakes) have no phys: "Xem ngay" broke on reading rag
+   on: false, from: null, pts: [], groups: {}, release: null, len: 0 });
 function ragLen() {                     // clip length: the version's own, or longer when the ragdoll needs time to settle
   if (!P || !keysMode()) return; if (P.frames0 == null) P.frames0 = P.frames;
   const R = ANIM.phys && ANIM.phys.rag, want = Math.max(P.frames0, R && R.on && R.len ? R.len : 0);
@@ -4202,7 +4575,7 @@ function ragGoalFinish(G, out, last) {
   }
   G.goal.blendFrom = b0; G.goal.blendTo = b1; G.goal.lift = +lift.toFixed(1); G.goal.poseOnly = poseOnly;
 }
-const ragGoalPoseOnly = () => ((ANIM.phys.rag.goal || {}).root ?? "pose") !== "full";
+const ragGoalPoseOnly = () => (((ANIM.phys && ANIM.phys.rag && ANIM.phys.rag.goal) || {}).root ?? "pose") !== "full";
 async function ragGoalSearch() {
   // 1 correct the push along the measured miss (where / how turned the body lies vs the last key), gain adapted;
   // 2 then a small pattern search. A pure pattern search from zero fell into a face-down landing (141 cm, 149 deg).
@@ -4720,6 +5093,9 @@ setCam("right"); resize(); loop(); renderPoses(); openPose(POSES[0]);
   if (!canWrite) $("status").textContent = "Bạn đang ở quyền chỉ xem: chỉnh thử được nhưng không lưu được.";
   db.collection("adjusts").onSnapshot(snap => { adjs = snap.docs.filter(s => s.exists).map(s => ({ id: s.id, ...s.data() })); renderAdjs(); renderRound(); renderPoses(); refresh(); });
   db.collection("rounds").onSnapshot(snap => { rounds = {}; snap.docs.filter(s => s.exists).forEach(s => rounds[s.id] = s.data()); renderRound(); renderPoses(); });
+  db.collection("settings").onSnapshot(snap => { const d = snap.docs.find(s => s.exists && s.id === "aiself"); if (!d) return; const v = d.data();
+    AIS.on = !!v.on; AIS.rounds = v.rounds || 2; $("asOn").checked = AIS.on; $("asRounds").value = String(AIS.rounds); maybeAutoReview(); });
+  db.collection("selfplan").onSnapshot(snap => { const d = snap.docs.find(s => s.exists && s.id === planId()); AIS.plan = d ? d.data() : null; maybeAutoReview(); });
   db.collection("keys").onSnapshot(snap => {
     remoteKeys = {};
     snap.docs.filter(s => s.exists).forEach(s => { const d = s.data(); if (d && d.clip && d.frame) (remoteKeys[idOf(d.clip, d.version)] ||= {})[d.frame] = d; });

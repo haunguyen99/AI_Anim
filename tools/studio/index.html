@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Anim Studio</title>
+<link rel="stylesheet" href="/studio/studio.css">
+</head>
+<body>
+<div id="menubar">
+  <a class="logo" href="/home" target="_top" title="Dự án (Home)">Studio</a>
+  <nav id="menus" aria-label="Menu"></nav>
+  <span class="sp"></span>
+  <div id="charName"></div>
+  <div id="wstabs" role="tablist" aria-label="Workspace"></div>
+</div>
+<div id="shelf" role="toolbar" aria-label="Shelf"></div>
+<div id="main">
+  <div id="toolbox" role="toolbar" aria-label="Công cụ" aria-orientation="vertical"></div>
+  <aside id="outliner"><header>Outliner</header><div class="body ol" id="olBody"></div></aside>
+  <div class="split v" id="splitO" title="Kéo để đổi độ rộng"></div>
+  <div id="vp">
+    <canvas id="cv"></canvas>
+    <div id="panes"></div>
+    <div class="marquee" id="marq"></div>
+    <div id="empty" hidden></div>
+    <div id="tmBar" role="toolbar" aria-label="Thao tác cảm ứng"></div>
+  </div>
+  <div class="split v" id="splitR" title="Kéo để đổi độ rộng"></div>
+  <aside id="dock">
+    <section id="attr"><div id="attrTabs" role="tablist"></div><div class="body" id="attrBody"></div></section>
+  </aside>
+</div>
+<div id="timeline"></div>
+<footer id="status"><span id="stInfo"></span><span class="sp"></span><span id="stHint"></span><span id="stSave"></span></footer>
+<div id="menuPop" role="menu"></div>
+<div class="modal" id="palette"><div class="box"><input id="palIn" placeholder="Tìm lệnh…" aria-label="Tìm lệnh"><div class="list" id="palList"></div></div></div>
+<div class="modal" id="dialog"><div class="box"><h3 id="dlgT"></h3><div class="body" id="dlgB"></div></div></div>
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+<script src="/studio/core/app.js"></script>
+<script src="/studio/core/viewport.js"></script>
+<script src="/studio/core/ui.js"></script>
+<script src="/studio/modules/mesh.js"></script>
+<script src="/studio/modules/skel.js"></script>
+<script src="/studio/modules/fbx.js"></script>
+<script src="/studio/modules/later.js"></script>
+<script src="/studio/modules/rig_engine.js"></script>
+<script src="/studio/modules/rig.js"></script>
+<script src="/studio/workspaces.js"></script>
+<script>ST.boot();</script>
+</body>
+</html>

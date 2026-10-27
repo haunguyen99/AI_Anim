@@ -224,7 +224,7 @@
   {
    "id": "gaygor_attack_10_blocking",
    "character": "Gaygor",
-   "stage": "blocking",
+   "stage": "polish",
    "note": "Attack 68F: nạp Bloking10.fbx (8 key) vào Pose Lab để review, chờ khớp file",
    "review": {
     "key": "gaygor_attack_10_blocking",
@@ -267,6 +267,22 @@
     "SDR": "map2 · lính La Mã",
     "SDR06": "map06 · gangster + Thompson"
    }
+  },
+  {
+   "id": "test",
+   "name": "test",
+   "desc": "",
+   "characters": [],
+   "labels": {},
+   "created": "2026-10-27"
+  },
+  {
+   "id": "fdsfdsf",
+   "name": "fdsfdsf",
+   "desc": "",
+   "characters": [],
+   "labels": {},
+   "created": "2026-10-27"
   }
  ]
 }

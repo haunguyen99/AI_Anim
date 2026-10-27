@@ -2,7 +2,7 @@
 
 Bộ công cụ làm anim game cho nhân vật 3D cùng Claude Code. Đầu vào có thể là video ref, file blocking FBX của team, hoặc chỉ một yêu cầu bằng lời. Đầu ra là FBX cho Unity.
 
-Mọi thứ chạy trong **Home**, một ứng dụng web trên máy bạn (http://127.0.0.1:8780) với thanh tab. Mỗi anim đi qua các trang:
+Mọi thứ chạy trên máy bạn ở http://127.0.0.1:8780: mở ra là vào thẳng **Studio** với cảnh trống (viewport chung, Mesh / Rig / Pose là các workspace; Nhập FBX hoặc Mở nhân vật để bắt đầu), trang quản lý dự án **Home** ở http://127.0.0.1:8780/home (bấm chữ Studio góc trái hoặc Tệp → Dự án). Home có thanh tab. Mỗi anim đi qua các trang:
 - **Mesh Lab:** sửa mesh cơ bản (chọn điểm / mặt / khối, dời xoay scale, Channel Box, Free Transform, hàn, tách, dọn, đặt sàn, chiều cao).
 - **Rig Lab:** dựng khớp và skin cho nhân vật (có Outliner; dùng luôn xương và skin có sẵn của mesh).
 - **Pose Lab:** dựng pose, key, spline, vật lý, xuất FBX.
@@ -32,7 +32,7 @@ Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã củ
    ```
    Lệnh này tạo `.venv` và cài các thư viện trong `requirements.txt`.
 4. **Mở thư mục trong Claude Code.** Các skill trong `.claude/skills` tự có sẵn, không cần cài thêm.
-5. **Mở Home:** gõ `/project` trong Claude Code, hoặc bấm đúp `tools\home\start.bat` rồi mở http://127.0.0.1:8780. Các Lab cần mạng (tải three.js từ CDN). ffmpeg có thì playblast được nén lại để tua mượt; không có thì vẫn dùng được.
+5. **Mở Home:** gõ `/project` trong Claude Code, hoặc bấm đúp `tools\home\start.bat` (tự mở http://127.0.0.1:8780 = Studio; dự án ở /home). Các Lab cần mạng (tải three.js từ CDN). ffmpeg có thì playblast được nén lại để tua mượt; không có thì vẫn dùng được.
 
 ## Bắt đầu dùng
 
@@ -40,6 +40,7 @@ Trong Claude Code, gõ:
 
 | Lệnh | Làm gì |
 |---|---|
+| `/studio` | Mở **Studio** (http://127.0.0.1:8780): viewport chung, workspace Mesh / Rig / Pose. Thêm tên nhân vật / workspace / anim để mở thẳng, vd `/studio zom1 rig`. |
 | `/project` | Mở **Home** (trang quản lý chạy trên máy, http://127.0.0.1:8780): dự án theo game → anim → nút **Tiếp tục** mở đúng trang Lab. Có thể mở Home không cần Claude bằng cách bấm đúp `tools\home\start.bat`. |
 | `/new_clip` | Tạo anim mới và đăng ký vào sổ `work/clips.json`. Claude hỏi một lần những gì còn thiếu (nhân vật, số frame, ref…) rồi chọn quy trình. |
 | `/rig` | Rig Lab: dựng khớp và skin cho nhân vật mới. |

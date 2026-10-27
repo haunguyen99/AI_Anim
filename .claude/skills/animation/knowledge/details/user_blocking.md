@@ -34,6 +34,19 @@ Sau mỗi cổng: `git commit` kèm câu của user, tag bản duyệt (`<nv>-<c
 - **QA polish trước khi gửi** (`check_polish.py`): góc khớp trong khoảng của key gốc ±5°, "pops", "fold_backs" (đổi chiều > 10° trong 6 F), chân cắm trượt, tay rời prop, sàn. Xem từng mục "giữa key". → `timing_spline.md#polish-bake-no-blender`
 - **Khi user nói "nhầm bản":** so các frame **giữa key**, vì key của spline và blocking giống nhau. Sau đó hỏi frame cụ thể. Lỗi thật nằm ở F21, không phải nhầm version.
 
+- **Mỗi vòng góp ý = một version mới** (Gaygor Attack 10 Blocking, 2026-10-27). Ghi key thẳng vào db của version đang mở (khi user đang
+  kéo timing trên trang) đè lên thao tác của user và làm mất key; user: "ko cập nhật bản mới sao". Đọc key/timing user đã kéo từ db,
+  rồi dựng lại bằng script (vd `build_b75v3.py`) và đăng `pose-version` mới, kèm `--main` / `--phases` cho bảng Timing.
+- **Ghi chú có ảnh vẽ:** đọc `img.url` bằng Artifact read `path=<asset id>`, xem ảnh trước khi sửa (F42 "đầu vũ khí vẫn ở trên mặt sàn",
+  F50 "chùy nghiêng ra sau do quán tính"); `cam` cho biết góc nhìn.
+- **Lỗi "hai cây chùy"** là model của version cũ còn trong cảnh khi đổi version nhanh, không phải lỗi rig. Đã sửa ở Pose Lab (`openTok`).
+
+- **AI tự xem lại** (Pose Lab, 2026-10-27): công tắc + "Số vòng" cạnh Gửi cho AI (db `settings/aiself`). Bật thì mỗi lần Gửi cho AI
+  mở kế hoạch N vòng (db `selfplan`); khi trang mở version mới nhất, nó chụp các key chính + giữa pha ở 3 góc, gọi AI (`sample`),
+  lưu ghi chú `kind: "ai"` (`ai.issues`, ảnh ở `imgs`) rồi gửi cho Claude. Claude: đọc ghi chú ai, **kiểm lại bằng số đo trước khi sửa**
+  (AI nhìn ảnh có thể sai), ra version mới; hết vòng thì dừng chờ user duyệt. Trang chỉ chạy vòng khi user đang mở trang.
+  Đăng trang phải khai báo `sample: {images: true}` cùng `db, user, comments, downloads, assets`.
+
 ## Dùng lại cho clip sau
 Chép `work/gaygor_attack_50_blocking/` làm mẫu (`work/<id>/`). Những chỗ phải đổi trong từng script:
 - `make_model.py`: `SRC_GLTF` = model Pose Lab cùng rig (mesh/skin). Rig khác thì xuất model đó trước.
