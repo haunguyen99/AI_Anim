@@ -61,3 +61,25 @@ Nút Rig Lab được dựng lại bằng `innerHTML` mỗi lần đổi bước
 Giống Pose Lab: chữ ẩn bằng CSS, icon bằng mask, script cuối trang gắn `data-ic` theo id (`aiSend`, `send`, `zOut`, `zIn`) hoặc theo chữ của nút ghi chú `.mini` (Đã sửa, Mở lại, Sửa, Xoá, Lưu, Huỷ), nên nút dựng bằng JS cũng được đổi. Riêng nút "Gửi feedback cho AI" có bước xác nhận: lúc đang chờ xác nhận (`.arm`) nó hiện lại chữ "Đã xem hết clip? Gửi N ghi chú…" thay cho icon, vì đó là câu hỏi cần đọc.
 
 Khi thử trang Review dựng sẵn bằng `http.server`, tiếng Việt bị lỗi font vì thiếu `<meta charset>` (claude.ai thêm khi đăng); để thử, nạp bằng `fetch` rồi `document.write('<meta charset="utf-8">' + html)`.
+
+## Chế độ cảm ứng (iPad / điện thoại) — Pose Lab, Rig Lab
+
+Checkbox có icon bàn tay ở thanh trên (Pose Lab: cuối thanh công cụ; Rig Lab: cạnh tiêu đề). Máy cảm ứng (`pointer:coarse`) tự bật lần đầu; lựa chọn nhớ theo trang (`localStorage tm:<đường dẫn>`). Mã nằm giữa `/*TOUCH*/` ở cuối mỗi file master.
+
+- Thanh nổi dưới viewport: **Xoay** (1 ngón xoay, 2 ngón zoom + kéo) · **Chọn** (chạm chọn, kéo gizmo) · **Khung** (kéo khung chọn nhiều) · **+** (thêm vào vùng chọn, thay Shift; trên timeline Pose Lab thì thay Shift để dời key).
+- Thay Alt/Shift/chuột phải/phím tắt, nên mọi thao tác chính có nút trên màn hình.
+- Nút, ô nhập, checkbox lớn hơn (≥40px, chữ 16px để iOS không tự zoom); vùng chạm chọn khớp 30px (chuột 14px); gizmo to hơn.
+- Pose Lab: màn hẹp (<1100px) tự ẩn bảng Phiên bản và Bảng chỉnh lần đầu bật; mở lại bằng hai nút ở thanh trên.
+- Rig Lab: vẽ skin (cọ, đảo) và chọn khớp dùng được bằng ngón tay khi ở chế độ Chọn/Khung.
+- Chưa có: bút cảm ứng riêng, giữ-lâu = menu, phím tắt trên màn hình (Undo/Redo đã có nút).
+
+## Outliner (Rig Lab)
+
+Nút cây ở thanh trên mở bảng Outliner trong viewport (mở sẵn khi màn >900px; nhớ lựa chọn theo trang). Bản vá: `work/rig_lab/patch_outliner.py` (idempotent, đã áp vào `template.html`, khối `/*OUTLINER*/`).
+
+- **Lớp mesh:** Thân, Quần áo, từng prop, đường nối xương, ngón tay: mắt = ẩn/hiện (đồng bộ với menu Hiển thị).
+- **Cây xương** theo cha → con (kể cả ngón, twist): ▸/▾ mở thu gọn, mắt ẩn khớp (ẩn cha thì con ẩn theo), khoá = không chọn được, tìm theo tên.
+- **Chọn:** click; Ctrl hoặc nút "+" chạm = thêm/bớt; Shift = chọn dải. Đồng bộ hai chiều với viewport (bước 2 chọn điểm đặt khớp, bước 4–5 chọn xương để vẽ skin/pose). Double-click = nhìn vào khớp.
+- **Nút đầu bảng:** chọn cả nhánh con · nhìn vào · cô lập (ẩn mọi khớp khác) · hiện + mở khoá tất cả · mở/thu cả cây.
+- **Không có:** đổi tên, kéo-thả đổi cha. Cây và tên xương do mẫu rig (`buildSkeleton`) quyết định, tên xương dùng cho Unity.
+- Ẩn/khoá chỉ có tác dụng ở bước 2 (marker khớp); ở bước 3–5 hàng vẫn hiện nhưng không ẩn được khớp trong viewport.

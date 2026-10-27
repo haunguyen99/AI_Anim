@@ -76,7 +76,7 @@ js = r"""
     ["#gOk", "check"], ["#gFix", "edit"], ["#toStep2", "arrowR"],
     ["#resetAuto", "reset"], ["#spReset", "reset"], ["#poseReset", "reset"], ["#jClr", "reset"], ["#clr", "close"], ["#jX", "close"],
     ["#exportRig", "download"], ["#expW", "download"],
-    ["#doSkin", "bolt"], ["#doSkin2", "bolt"], ["#doTest", "scan"], ["#pBat", "play"],
+    ["#doSkin", "bolt"], ["#doSkin2", "bolt"], ["#doSkin3", "bolt"], ["#doTest", "scan"], ["#pBat", "play"],
     ["#skPrev", "chevL"], ["#skNext", "chevR"],
     ["[data-tw='0']", "tw0"], ["[data-tw='1']", "tw1"], ["[data-tw='2']", "tw2"],
     ["[data-skt=pick]", "pointer"], ["[data-skt=brush]", "brush"], ["[data-skt=island]", "island"],

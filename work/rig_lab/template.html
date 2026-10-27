@@ -129,15 +129,63 @@ details.more[open]>summary{margin-bottom:6px}
 [data-ic="brush"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M18%203l3%203-9%209-3-3z%22/%3E%3Cpath%20d=%22M9%2012c-3%200-5%202-5%205%200%202-1%203-1%203s3%201%205%200c2-1%203-3%203-5%22/%3E%3C/svg%3E")}
 [data-ic="island"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%225%22%20y=%225%22%20width=%2214%22%20height=%2214%22%20rx=%221%22%20stroke-dasharray=%223%202.5%22/%3E%3C/svg%3E")}
 [data-ic="eye"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M2%2012s4-7%2010-7%2010%207%2010%207-4%207-10%207S2%2012%202%2012z%22/%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%223%22/%3E%3C/svg%3E")}
+
+/*TOUCH*/
+.tmchk { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; color: var(--muted, #8b93a0); padding: 0 6px; }
+.tmchk input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent, #4aa3ff); }
+.tmchk svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.tmchk:has(input:checked) { color: var(--accent, #4aa3ff); }
+#tmBar { position: absolute; left: 50%; bottom: 56px; transform: translateX(-50%); display: none; gap: 6px; padding: 5px; border-radius: 12px; background: color-mix(in srgb, var(--bg, #14161a) 82%, transparent); border: 1px solid var(--line, #2a2f38); backdrop-filter: blur(6px); z-index: 6; touch-action: none; }
+body.tm #tmBar { display: flex; }
+#tmBar button { width: 48px; height: 44px; border-radius: 9px; border: 1px solid var(--line, #2a2f38); background: var(--raise, #1d2026); color: var(--text, #e6e9ee); display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+#tmBar button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+#tmBar button.on { background: var(--accent, #4aa3ff); border-color: var(--accent, #4aa3ff); color: #fff; }
+body.tm button, body.tm summary, body.tm select { min-height: 40px; }
+body.tm .ibtn { min-width: 40px; }
+body.tm input, body.tm select, body.tm textarea { font-size: 16px; }
+body.tm input[type=checkbox], body.tm input[type=radio] { min-width: 22px; min-height: 22px; }
+body.tm input[type=range] { min-height: 32px; }
+body.tm, body.tm * { -webkit-tap-highlight-color: transparent; }
+body.tm .viewer, body.tm #vp { touch-action: none; -webkit-user-select: none; user-select: none; }
+body.tm .mini { min-height: 34px; min-width: 34px; }
+
+/*OUTLINER*/
+#olBtn{padding:0;width:34px;height:30px;display:inline-flex;align-items:center;justify-content:center}
+#olBtn svg,.ol svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#olBtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ol{position:absolute;left:8px;top:52px;width:264px;max-height:calc(100% - 128px);display:none;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;z-index:5;box-shadow:0 4px 18px #0003;overflow:hidden}
+.ol.show{display:flex}
+.olh{display:flex;align-items:center;gap:2px;padding:4px;border-bottom:1px solid var(--line)}
+.olh input{flex:1;min-width:0;height:26px;padding:0 8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:12px}
+.olh button,.olr button{padding:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--mute);border-radius:6px;flex:none}
+.olh button:hover,.olr button:hover{background:var(--line);color:var(--fg)}
+.olb{overflow:auto;padding:3px 0;flex:1;-webkit-overflow-scrolling:touch}
+.ols{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:6px 10px 2px}
+.olr{display:flex;align-items:center;gap:2px;height:26px;padding-right:2px;cursor:pointer;font-size:12px;white-space:nowrap;user-select:none}
+.olr:hover{background:color-mix(in srgb,var(--line) 55%,transparent)}
+.olr.sel{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--fg);font-weight:600}
+.olr.hid .olt{opacity:.38}
+.olr .olt{flex:1;overflow:hidden;text-overflow:ellipsis}
+.olr .olx{width:16px;text-align:center;color:var(--mute);font-size:10px;flex:none}
+.olr .old{width:8px;height:8px;border-radius:50%;flex:none;margin-right:4px}
+.olr button.act{color:var(--accent)}
+.olr button.off{color:var(--mute);opacity:.55}
+.olr.dim{opacity:.4}
+body.tm .olr{height:38px}body.tm .olr button,body.tm .olh button{width:36px;height:36px}body.tm .olh input{height:36px}
+body.tm .ol{width:min(300px,calc(100% - 16px))}
 </style>
 
 <header>
   <div><h1>__NAME__ Rig Lab</h1></div>
+  <label class="tmchk" id="tmLbl" title="Chế độ cảm ứng (iPad / điện thoại)"><input type="checkbox" id="tmChk" aria-label="Chế độ cảm ứng"><svg viewBox="0 0 24 24"><path d="M9 11V5a1.6 1.6 0 013.2 0v5l3.3.7a2 2 0 011.5 2.3L16.4 19a2 2 0 01-2 1.6H11a2 2 0 01-1.6-.8L6 14.6a1.5 1.5 0 012.2-1.9z"/></svg></label>
+  <button class="tool" id="olBtn" title="Outliner: cây xương và các lớp mesh" aria-label="Outliner"><svg viewBox="0 0 24 24"><path d="M4 5h6M4 12h6M4 19h6M14 5h6M14 12h6"/><path d="M7 5v14"/></svg></button>
   <div class="steps" role="tablist" id="steps"></div>
 </header>
 <main>
   <div id="vp">
     <canvas id="cv"></canvas>
+    <div class="ol" id="ol" role="tree" aria-label="Outliner"><div class="olh"><input id="olQ" type="search" placeholder="Tìm…" aria-label="Tìm trong Outliner"><button id="olSel" title="Chọn cả nhánh con của mục đang chọn" aria-label="Chọn nhánh"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="12" r="2"/><path d="M6 8v8M8 6c6 0 6 6 8 6"/></svg></button><button id="olFoc" title="Nhìn vào mục đang chọn" aria-label="Nhìn vào"><svg viewBox="0 0 24 24"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3"/><circle cx="12" cy="12" r="2"/></svg></button><button id="olIso" title="Cô lập: ẩn mọi khớp khác" aria-label="Cô lập"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></button><button id="olAll" title="Hiện tất cả, mở khoá tất cả" aria-label="Hiện tất cả"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button><button id="olExp" title="Mở / thu gọn cả cây" aria-label="Mở hoặc thu gọn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div><div class="olb" id="olB"></div></div>
+    <div id="tmBar" role="toolbar" aria-label="Thao tác cảm ứng"><button data-m="orbit" class="on" title="Xoay / kéo / zoom camera (1 ngón xoay, 2 ngón zoom + kéo)" aria-label="Xoay camera"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9"/><path d="M12 3l3 3M12 3L9 6"/><circle cx="12" cy="12" r="2.4"/></svg></button><button data-m="sel" title="Chạm để chọn, kéo gizmo để chỉnh" aria-label="Chọn"><svg viewBox="0 0 24 24"><path d="M6 4l11 6-5 1.5L10 17z"/></svg></button><button data-m="box" title="Kéo khung để chọn nhiều điểm" aria-label="Chọn khung"><svg viewBox="0 0 24 24"><path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3" /><path d="M10 12h4"/></svg></button><button data-add="1" title="Thêm vào vùng chọn (như giữ Shift)" aria-label="Thêm vào chọn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
     <div class="vbar" id="vbar"></div>
     <div class="vbar2" id="vopts"></div>
     <div class="jbox" id="jbox" hidden></div>
@@ -359,6 +407,8 @@ function frame() { requestAnimationFrame(frame); orbit.update(); renderer.setCle
 // Alt+LMB xoay · Alt+MMB kéo · Alt+RMB / lăn chuột zoom · LMB click hoặc kéo khung để chọn
 // Shift đảo chọn · Ctrl bỏ chọn · Ctrl+Shift thêm · Q chọn, W dời, E xoay, R co giãn · F nhìn vào vùng chọn · A nhìn toàn bộ
 const MAYA = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.DOLLY }, NONE = { LEFT: -1, MIDDLE: -1, RIGHT: -1 };
+const TM = { on: false, mode: "orbit", add: false };   // chế độ cảm ứng (nối ở cuối script)
+const tmE = e => ({ ctrlKey: e.ctrlKey, metaKey: e.metaKey, shiftKey: e.shiftKey || TM.add });
 const ray = new THREE.Raycaster(); let down = null, boxing = false;
 const boxEl = document.createElement("div");
 boxEl.style.cssText = "position:absolute;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);display:none;pointer-events:none";
@@ -374,11 +424,11 @@ function applySel(keys, e) {   // quy tắc chọn của Maya
 cv.addEventListener("pointerdown", e => {
   if (e.pointerType === "mouse") orbit.mouseButtons = e.altKey ? MAYA : NONE;
   down = [e.clientX, e.clientY]; boxing = false;
-  if (step === 2 && e.pointerType === "mouse" && e.button === 0 && !e.altKey && !tc.axis) boxing = true;
+  if (step === 2 && (e.pointerType === "mouse" || TM.on) && e.button === 0 && !e.altKey && !tc.axis && (!TM.on || TM.mode !== "orbit")) boxing = true;
 }, true);
 cv.addEventListener("wheel", () => { orbit.mouseButtons = MAYA; }, true);
 cv.addEventListener("pointermove", e => {
-  if (!boxing || !down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 4) return;
+  if (!boxing || !down || (TM.on && TM.mode === "sel") || Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 4) return;
   const r = vp.getBoundingClientRect(), x0 = down[0] - r.left, y0 = down[1] - r.top, x1 = e.clientX - r.left, y1 = e.clientY - r.top;
   Object.assign(boxEl.style, { display: "block", left: Math.min(x0, x1) + "px", top: Math.min(y0, y1) + "px", width: Math.abs(x1 - x0) + "px", height: Math.abs(y1 - y0) + "px" });
 });
@@ -388,6 +438,7 @@ window.addEventListener("pointerup", e => {
   down = null; boxing = false; boxEl.style.display = "none";
   if (step !== 2 || !was || (e.target !== cv && !moved)) return;
   const r = cv.getBoundingClientRect();
+  if (moved && TM.on && TM.mode === "sel") return;
   if (moved) {
     const xa = Math.min(d0[0], e.clientX), xb = Math.max(d0[0], e.clientX), ya = Math.min(d0[1], e.clientY), yb = Math.max(d0[1], e.clientY), hit = [];
     for (const k of LM_ORDER) {
@@ -395,12 +446,12 @@ window.addEventListener("pointerup", e => {
       const v = m.position.clone().project(cam), px = r.left + (v.x + 1) / 2 * r.width, py = r.top + (1 - v.y) / 2 * r.height;
       if (px >= xa && px <= xb && py >= ya && py <= yb) hit.push(k);
     }
-    applySel(hit, e); return;
+    applySel(hit, tmE(e)); return;
   }
   ray.setFromCamera({ x: ((e.clientX - r.left) / r.width) * 2 - 1, y: -((e.clientY - r.top) / r.height) * 2 + 1 }, cam);
   const h = ray.intersectObjects(Object.values(lmMesh).filter(m => m.visible), false)[0];
-  if (h) applySel([h.object.userData.key], e);
-  else if (!(e.shiftKey || e.ctrlKey || e.metaKey)) pick(null);
+  if (h) applySel([h.object.userData.key], tmE(e));
+  else if (!(e.shiftKey || e.ctrlKey || e.metaKey || TM.add)) pick(null);
 });
 function frameView(keys) {   // F / A: đưa tâm nhìn tới điểm, giữ hướng nhìn
   let c, d;
@@ -1100,6 +1151,7 @@ function renderSkinPanel(p) {
     ${stale ? `<div class="big warn">! Khớp hoặc twist đã đổi</div><div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính lại skin"}</button></div>` : ""}
     ${testHtml()}
     <div class="row">${tools}</div>
+      <div class="row" id="skModeRow"><select id="skMode" aria-label="Cách tính skin"><option value="pro">Cấp cao</option><option value="smart">Thông minh</option><option value="classic">Cổ điển</option></select><button id="doSkin3" title="Tính lại skin theo cách đã chọn" aria-label="Tính lại skin">Tính lại</button>${SK_INFO ? `<span class="sub">lần tính: ${SK_INFO.mode}${SK_INFO.mode !== "classic" ? ", " + SK_INFO.visible + " đỉnh thấy xương, " + SK_INFO.fallback + " dự phòng" : ""}</span>` : ""}</div>
     ${skTool === "island" ? '<div class="sub">Chọn joint, rồi click một khối rời của mesh để gán cả khối 100% cho joint đó.</div>' : ""}
     ${skTool === "brush" ? `<div class="row"><select id="brMode" aria-label="Kiểu cọ"><option value="add" ${brush.mode === "add" ? "selected" : ""}>Cộng trọng số</option><option value="sub" ${brush.mode === "sub" ? "selected" : ""}>Trừ trọng số</option><option value="smooth" ${brush.mode === "smooth" ? "selected" : ""}>Làm mượt</option></select>
       <label class="t"><input type="checkbox" id="brMir" ${brush.mirror ? "checked" : ""}> Đối xứng</label></div>
@@ -1112,12 +1164,11 @@ function renderSkinPanel(p) {
     ${poseSection()}
     ${more("m4stats", "Thống kê và xuất", (() => { const q = skinStats(); return `<div class="kv"><span>Xương có skin</span><span>${SK.names.length}</span><span>Xương / đỉnh</span><span>${fix(q.infl, 2)}</span><span>Trùng skin khách</span><span>${fix(q.same * 100)}%</span><span>Lệch TB</span><span>${fix(q.l1 * 100)}%</span></div>
       <table><thead><tr><th>Lệch nhiều nhất</th><th>lệch</th><th>đỉnh</th></tr></thead><tbody>${q.worst.map(w => `<tr><td>${w[0]}</td><td>${fix(w[1] * 100)}%</td><td>${w[2]}</td></tr>`).join("")}</tbody></table>
-      <div class="row"><select id="skMode" aria-label="Cách tính skin"><option value="pro">Cấp cao</option><option value="smart">Thông minh</option><option value="classic">Cổ điển</option></select>${SK_INFO ? `<span class="sub">lần tính: ${SK_INFO.mode}${SK_INFO.mode !== "classic" ? ", " + SK_INFO.visible + " đỉnh thấy xương, " + SK_INFO.fallback + " dự phòng" : ""}</span>` : ""}</div>
       <div class="row"><button id="doSkin2">Tính lại skin</button><button id="expW">Xuất weights.json</button></div>`; })())}
     ${gateHtml(4)}`;
   const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
   on("doTest", () => { const b = $("doTest"); if (b) { b.disabled = true; b.textContent = "Đang kiểm…"; } setTimeout(runSelfTest, 30); });
-  on("doSkin", computeSkin); on("doSkin2", computeSkin); on("expW", exportWeights);
+  on("doSkin", computeSkin); on("doSkin2", computeSkin); on("doSkin3", computeSkin); on("expW", exportWeights);
   { const sm = $("skMode"); if (sm) { sm.value = skinMode; sm.onchange = () => { skinMode = sm.value; }; } }
   const v = $("skView"); if (v) { v.value = skinView; v.onchange = () => { skinView = v.value; paintSkin(); }; }
   const b = $("skBone"); if (b) b.onchange = () => { skinBone = b.value; paintSkin(); };
@@ -1279,12 +1330,17 @@ function pickJoint(e) {
     if (d < best) { best = d; name = b.name; }
   }
   if (!name) { if (jointSel) { jointSel = null; renderJointBox(); } return; }
+  selectBoneByName(name);
+}
+function selectBoneByName(name) {
+  if (name === "root" || name === "Weapon" || step < 4) return;
+  if (step === 4 && (!SK || SK.idx[name] === undefined)) return;
   jointSel = /Twist/.test(name) ? null : name; if (jointSel) poseBone = name;
   if (step === 4) { skinBone = name; if (!/Twist/.test(name)) poseBone = name; if (skinView === "dom") skinView = "one"; paintSkin(); } else poseBone = name;
   syncScene(); renderPanel();
 }
 cv.addEventListener("pointerdown", e => {
-  if (step < 4 || e.pointerType !== "mouse" || e.button !== 0 || e.altKey) return;
+  if (step < 4 || (e.pointerType !== "mouse" && !(TM.on && TM.mode !== "orbit")) || e.button !== 0 || e.altKey) return;
   if (step === 4 && skTool === "island" && SK) { assignIsland(e); }
   else if (step === 4 && skTool === "brush" && SK) { painting = true; stroke = new Map(); paintAt(e); lastDab = performance.now(); }
   else pickDown = [e.clientX, e.clientY];
@@ -1330,7 +1386,7 @@ renderVbar(); resize(); setView("front"); syncScene(); renderAll(); frame(); res
     ["#gOk", "check"], ["#gFix", "edit"], ["#toStep2", "arrowR"],
     ["#resetAuto", "reset"], ["#spReset", "reset"], ["#poseReset", "reset"], ["#jClr", "reset"], ["#clr", "close"], ["#jX", "close"],
     ["#exportRig", "download"], ["#expW", "download"],
-    ["#doSkin", "bolt"], ["#doSkin2", "bolt"], ["#doTest", "scan"], ["#pBat", "play"],
+    ["#doSkin", "bolt"], ["#doSkin2", "bolt"], ["#doSkin3", "bolt"], ["#doTest", "scan"], ["#pBat", "play"],
     ["#skPrev", "chevL"], ["#skNext", "chevR"],
     ["[data-tw='0']", "tw0"], ["[data-tw='1']", "tw1"], ["[data-tw='2']", "tw2"],
     ["[data-skt=pick]", "pointer"], ["[data-skt=brush]", "brush"], ["[data-skt=island]", "island"],
@@ -1351,5 +1407,152 @@ renderVbar(); resize(); setView("front"); syncScene(); renderAll(); frame(); res
   let q = 0; const sched = () => { if (!q) q = setTimeout(() => { q = 0; apply(); }, 20); };
   new MutationObserver(sched).observe(document.body, { childList: true, subtree: true });
   apply();
+})();
+
+/*TOUCH*/
+(function () {
+  const chk = document.getElementById("tmChk"), bar = document.getElementById("tmBar");
+  const key = "tm:" + location.pathname;
+  let saved = null; try { saved = localStorage.getItem(key); } catch {}
+  function apply() {
+    TM.on = chk.checked; document.body.classList.toggle("tm", TM.on);
+    bar.querySelectorAll("button[data-m]").forEach(b => b.classList.toggle("on", b.dataset.m === TM.mode));
+    bar.querySelector("[data-add]").classList.toggle("on", TM.add);
+    try { (() => {
+    const nonOrbit = TM.on && TM.mode !== "orbit";
+    orbit.touches = { ONE: nonOrbit ? -1 : THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+    tc.setSize(TM.on ? 1.3 : 0.8);
+    tc.enabled = !(TM.on && TM.mode === "orbit");
+  })(); } catch (e) { console.error(e); }
+    setTimeout(() => window.dispatchEvent(new Event("resize")), 30);
+  }
+  bar.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.m) TM.mode = b.dataset.m; else TM.add = !TM.add;
+    apply();
+  });
+  chk.addEventListener("change", () => { try { localStorage.setItem(key, chk.checked ? "1" : "0"); } catch {} apply(); });
+  chk.checked = saved === null ? matchMedia("(pointer:coarse)").matches : saved === "1";
+  apply();
+})();
+
+/*OUTLINER*/
+// Outliner kiểu Maya: lớp mesh + cây xương (cha → con). Mắt = ẩn/hiện (ẩn cha thì con ẩn theo), khoá = không chọn được,
+// Ctrl/Shift/"+" nhiều mục, double-click = nhìn vào. Quan hệ cha-con do mẫu rig quyết định nên không kéo-thả đổi cha.
+(function () {
+  const ol = $("ol"), body = $("olB"), btn = $("olBtn"), q = $("olQ");
+  const hide = new Set(), lock = new Set(), openN = {}, ico = {
+    eye: '<svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', eyeOff: '<svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0112 6c6 0 10 6 10 6a17 17 0 01-3.2 3.7M6.4 7.5C3.6 9.3 2 12 2 12s4 7 10 7a9.700 9.700 0 004.100-.9"/></svg>', lock: '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>', unlock: '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.600-1.700"/></svg>' };
+  let tree = [], kids = {}, sig = "", anchor = null, queued = 0, expAll = false;
+  const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
+  const KEY = "ol:" + location.pathname;
+  const label = n => n === "root" ? "root" : n;
+  function build() {
+    const B = buildSkeleton(LM); kids = {}; B.forEach(b => (kids[b.parent || ""] = kids[b.parent || ""] || []).push(b.name));
+    const depth = {}, order = [];
+    (function walk(n, d) { depth[n] = d; order.push(n); (kids[n] || []).forEach(c => walk(c, d + 1)); })("root", 0);
+    // "Weapon" nằm cạnh root, các nút mồ côi khác (nếu có) đứng cuối
+    B.forEach(b => { if (!(b.name in depth)) { (function walk(n, d) { depth[n] = d; order.push(n); (kids[n] || []).forEach(c => walk(c, d + 1)); })(b.name, 1); } });
+    tree = order.map(n => ({ n, d: depth[n], twist: !!(B.find(b => b.name === n) || {}).twist }));
+    sig = order.join("|");
+  }
+  const parentOf = n => { for (const p in kids) if (kids[p].includes(n)) return p || null; return null; };
+  const effHidden = n => { for (let c = n; c; c = parentOf(c)) if (hide.has(c)) return true; return false; };
+  const lockedEff = n => { for (let c = n; c; c = parentOf(c)) if (lock.has(c)) return true; return false; };
+  const isOpen = n => (n in openN) ? openN[n] : (expAll || !/(Finger|Twist)/.test(n) && !/^Wrist_/.test(n));
+  function sub(n) { const out = []; (function w(x) { (kids[x] || []).forEach(c => { out.push(c); w(c); }); })(n); return out; }
+  function visibleRows() {
+    const f = q.value.trim().toLowerCase(), rows = [], hiddenBy = [];
+    let skipDepth = null;
+    for (const t of tree) {
+      if (skipDepth !== null && t.d > skipDepth) continue; skipDepth = null;
+      if (f) { if (!t.n.toLowerCase().includes(f)) continue; rows.push(t); continue; }
+      rows.push(t);
+      if ((kids[t.n] || []).length && !isOpen(t.n)) skipDepth = t.d;
+    }
+    return rows;
+  }
+  const selNames = () => step === 2 ? [...S] : (jointSel ? [jointSel] : []);
+  function meshRows() {
+    const r = [{ id: "body", t: "Thân (mesh)", on: vis.body }];
+    if (typeof clothMeshes !== "undefined" && clothMeshes.length) r.push({ id: "cloth", t: "Quần áo", on: vis.cloth });
+    DATA.props.forEach((p, i) => r.push({ id: "p" + i, t: String(p.name || "Prop").replace("EN_M11_Boss_Gaygor_", "Prop "), on: vis.props[i] }));
+    r.push({ id: "skel", t: "Xương (đường nối)", on: showSkel });
+    if (FINGERS && FINGERS.length) r.push({ id: "fing", t: "Ngón tay", on: showFing });
+    return r;
+  }
+  function render() {
+    queued = 0;
+    if (!ol.classList.contains("show")) return;
+    const B = buildSkeleton(LM).map(b => b.name).join("|"); if (B !== sig) build();
+    const sn = new Set(selNames()), rows = visibleRows();
+    let h = '<div class="ols">Lớp mesh</div>' + meshRows().map(m => `<div class="olr ${m.on ? "" : "hid"}" data-m="${m.id}"><span class="olx"></span><span class="olt">${esc(m.t)}</span><button data-a="mv" class="${m.on ? "" : "off"}" title="Ẩn / hiện" aria-label="Ẩn hoặc hiện">${m.on ? ico.eye : ico.eyeOff}</button></div>`).join("");
+    h += '<div class="ols">Xương</div>';
+    h += rows.map(t => {
+      const hn = effHidden(t.n), ln = lockedEff(t.n), has = (kids[t.n] || []).length, col = t.n === "root" ? "var(--mute)" : lmColor(t.n);
+      const dis = !(t.n in lmMesh) && step === 2;
+      return `<div class="olr ${sn.has(t.n) ? "sel" : ""} ${hn ? "hid" : ""} ${dis ? "dim" : ""}" role="treeitem" data-n="${t.n}" style="padding-left:${4 + (q.value ? 0 : t.d) * 11}px" title="${t.n}${t.twist ? " (twist)" : ""}">
+        <span class="olx" data-a="x">${has && !q.value ? (isOpen(t.n) ? "▾" : "▸") : ""}</span><i class="old" style="background:${col}"></i><span class="olt">${esc(label(t.n))}</span>
+        <button data-a="v" class="${hide.has(t.n) ? "off" : hn ? "off" : ""}" title="Ẩn / hiện (ẩn cha thì con ẩn theo)" aria-label="Ẩn hoặc hiện">${hn ? ico.eyeOff : ico.eye}</button>
+        <button data-a="l" class="${lock.has(t.n) ? "act" : ln ? "act" : "off"}" title="Khoá: không chọn được" aria-label="Khoá">${ln ? ico.lock : ico.unlock}</button></div>`;
+    }).join("");
+    const sy = body.scrollTop; body.innerHTML = h; body.scrollTop = sy;
+  }
+  const later = () => { if (!queued) queued = setTimeout(render, 30); };
+
+  // ---- chọn
+  function setJointByName(n) { try { selectBoneByName(n); } catch (e) { console.error(e); } }
+  function select(n, mode) {   // mode: "set" | "toggle" | "range"
+    if (lockedEff(n)) return;
+    if (step === 2) {
+      if (!(n in lmMesh)) return;
+      if (mode === "range" && anchor && anchor !== n) {
+        const rows = visibleRows().map(t => t.n).filter(x => x in lmMesh && !lockedEff(x)), a = rows.indexOf(anchor), b = rows.indexOf(n);
+        if (a >= 0 && b >= 0) { setSel(rows.slice(Math.min(a, b), Math.max(a, b) + 1), false); return; }
+      }
+      if (mode === "toggle") pick(n, true); else pick(n, false);
+      anchor = n;
+    } else if (step >= 4) { setJointByName(n); anchor = n; }
+    later();
+  }
+  function applyHide() { syncScene(); later(); }
+  body.addEventListener("click", e => {
+    const mr = e.target.closest("[data-m]");
+    if (mr) {
+      const id = mr.dataset.m;
+      if (id === "body") vis.body = !vis.body; else if (id === "cloth") vis.cloth = !vis.cloth; else if (id === "skel") showSkel = !showSkel; else if (id === "fing") showFing = !showFing;
+      else if (id[0] === "p") vis.props[+id.slice(1)] = !vis.props[+id.slice(1)];
+      try { renderVopts(); } catch {} syncScene(); later(); return;
+    }
+    const r = e.target.closest("[data-n]"); if (!r) return; const n = r.dataset.n, a = (e.target.closest("[data-a]") || {}).dataset;
+    if (a && a.a === "x") { openN[n] = !isOpen(n); later(); return; }
+    if (a && a.a === "v") { hide.has(n) ? hide.delete(n) : hide.add(n); applyHide(); return; }
+    if (a && a.a === "l") { lock.has(n) ? lock.delete(n) : lock.add(n); if (lockedEff(n)) { S.delete(n); if (sel === n) sel = [...S].pop() || null; syncScene(); } later(); return; }
+    select(n, e.shiftKey ? "range" : (e.ctrlKey || e.metaKey || TM.add) ? "toggle" : "set");
+  });
+  body.addEventListener("dblclick", e => { const r = e.target.closest("[data-n]"); if (r && !e.target.closest("[data-a]")) { try { frameView([r.dataset.n].filter(k => LM[k])); } catch {} } });
+  q.addEventListener("input", later);
+  $("olSel").onclick = () => { const n = selNames(); if (!n.length) return; const all = new Set(); n.forEach(x => { all.add(x); sub(x).forEach(c => all.add(c)); });
+    if (step === 2) setSel([...all].filter(k => k in lmMesh && !lockedEff(k)), false); later(); };
+  $("olFoc").onclick = () => { const n = selNames().filter(k => LM[k]); try { frameView(n.length ? n : null); } catch {} };
+  $("olIso").onclick = () => { const n = new Set(selNames()); if (!n.size) return;
+    const keep = new Set(); n.forEach(x => { keep.add(x); for (let c = parentOf(x); c; c = parentOf(c)) keep.add(c); sub(x).forEach(c => keep.add(c)); });
+    hide.clear(); tree.forEach(t => { if (!keep.has(t.n)) hide.add(t.n); }); applyHide(); };
+  $("olAll").onclick = () => { hide.clear(); lock.clear(); applyHide(); };
+  $("olExp").onclick = () => { expAll = !expAll; for (const k in openN) delete openN[k]; if (!expAll) tree.forEach(t => { openN[t.n] = !/(Finger|Twist)/.test(t.n) && !/^Wrist_/.test(t.n) && t.d < 99; });
+    if (expAll) tree.forEach(t => openN[t.n] = true); else tree.forEach(t => { if (t.d > 2) openN[t.n] = false; }); later(); };
+
+  // ---- nối vào Rig Lab: ẩn marker, khoá chọn, làm tươi khi đổi chọn / bước / dữ liệu
+  const _sync = syncScene;
+  syncScene = function (d) { _sync.apply(this, arguments); if (step === 2) for (const k in lmMesh) if (effHidden(k)) lmMesh[k].visible = false; later(); };
+  const _pick = pick; pick = function (k, add) { if (k && lockedEff(k)) return; return _pick.apply(this, arguments); };
+  const _apply = applySel; applySel = function (keys, e) { return _apply.call(this, keys.filter(k => !lockedEff(k)), e); };
+  const _setSel = setSel; setSel = function (keys, add) { return _setSel.call(this, keys.filter(k => !lockedEff(k)), add); };
+  const _rp = renderPanel; renderPanel = function () { const r = _rp.apply(this, arguments); later(); return r; };
+
+  function show(on) { ol.classList.toggle("show", on); btn.classList.toggle("on", on); store.set(KEY, on ? "1" : "0"); if (on) { build(); render(); } }
+  btn.onclick = () => show(!ol.classList.contains("show"));
+  const saved = store.get(KEY);
+  show(saved === null ? innerWidth > 900 : saved === "1");
 })();
 </script>

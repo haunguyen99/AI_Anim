@@ -313,6 +313,25 @@ body.km .lanes { display: flex; }
 .rbar button[data-v="top"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%204l8%206-8%206-8-6z%22/%3E%3C/svg%3E"); }
 #rCmp { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%205h8v14H3zM13%205h8v14h-8z%22/%3E%3C/svg%3E"); }
 .rbar .ibtn::before { width: 16px; height: 16px; }
+
+/*TOUCH*/
+.tmchk { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; color: var(--muted, #8b93a0); padding: 0 6px; }
+.tmchk input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent, #4aa3ff); }
+.tmchk svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.tmchk:has(input:checked) { color: var(--accent, #4aa3ff); }
+#tmBar { position: absolute; left: 50%; bottom: 56px; transform: translateX(-50%); display: none; gap: 6px; padding: 5px; border-radius: 12px; background: color-mix(in srgb, var(--bg, #14161a) 82%, transparent); border: 1px solid var(--line, #2a2f38); backdrop-filter: blur(6px); z-index: 6; touch-action: none; }
+body.tm #tmBar { display: flex; }
+#tmBar button { width: 48px; height: 44px; border-radius: 9px; border: 1px solid var(--line, #2a2f38); background: var(--raise, #1d2026); color: var(--text, #e6e9ee); display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+#tmBar button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+#tmBar button.on { background: var(--accent, #4aa3ff); border-color: var(--accent, #4aa3ff); color: #fff; }
+body.tm button, body.tm summary, body.tm select { min-height: 40px; }
+body.tm .ibtn { min-width: 40px; }
+body.tm input, body.tm select, body.tm textarea { font-size: 16px; }
+body.tm input[type=checkbox], body.tm input[type=radio] { min-width: 22px; min-height: 22px; }
+body.tm input[type=range] { min-height: 32px; }
+body.tm, body.tm * { -webkit-tap-highlight-color: transparent; }
+body.tm .viewer, body.tm #vp { touch-action: none; -webkit-user-select: none; user-select: none; }
+body.tm .mini { min-height: 34px; min-width: 34px; }
 </style>
 
 <div class="app">
@@ -336,6 +355,7 @@ body.km .lanes { display: flex; }
       <button class="ibtn tool" id="resetAll" title="Trả cả pose về bản gốc">Về pose gốc</button>
       <span class="vsep"></span>
       <button class="ibtn tool on" id="tList" title="Ẩn / hiện bảng Phiên bản bên trái ( [ )">Phiên bản <kbd>[</kbd></button>
+      <label class="tmchk" id="tmLbl" title="Chế độ cảm ứng (iPad / điện thoại)"><input type="checkbox" id="tmChk" aria-label="Chế độ cảm ứng"><svg viewBox="0 0 24 24"><path d="M9 11V5a1.6 1.6 0 013.2 0v5l3.3.7a2 2 0 011.5 2.3L16.4 19a2 2 0 01-2 1.6H11a2 2 0 01-1.6-.8L6 14.6a1.5 1.5 0 012.2-1.9z"/></svg></label>
       <button class="ibtn tool on" id="tSide" title="Ẩn / hiện bảng Khớp đang chọn + Điều chỉnh bên phải ( ] )">Bảng chỉnh <kbd>]</kbd></button>
     </div>
   </header>
@@ -349,7 +369,7 @@ Bấm điểm khớp để chọn (các điểm khác tạm ẩn), bấm ra ch�
 Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) hoặc gõ số rồi Enter. <b>, .</b> key trước / sau, <b>← →</b> frame.</p></details>
     </nav>
 
-    <section class="viewer" id="viewer" aria-label="Viewport 3D">
+    <section class="viewer" id="viewer" aria-label="Viewport 3D"><div id="tmBar" role="toolbar" aria-label="Thao tác cảm ứng"><button data-m="orbit" class="on" title="Xoay / kéo / zoom camera (1 ngón xoay, 2 ngón zoom + kéo)" aria-label="Xoay camera"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9"/><path d="M12 3l3 3M12 3L9 6"/><circle cx="12" cy="12" r="2.4"/></svg></button><button data-m="sel" title="Chạm để chọn, kéo gizmo để chỉnh" aria-label="Chọn"><svg viewBox="0 0 24 24"><path d="M6 4l11 6-5 1.5L10 17z"/></svg></button><button data-m="box" title="Kéo khung để chọn nhiều điểm" aria-label="Chọn khung"><svg viewBox="0 0 24 24"><path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3" /><path d="M10 12h4"/></svg></button><button data-add="1" title="Thêm vào vùng chọn (như giữ Shift)" aria-label="Thêm vào chọn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
       <canvas id="cv"></canvas>
       <div class="hud">
         <div class="tag" id="camTag">Camera: <b>Right (ingame)</b></div>
@@ -598,6 +618,7 @@ function gunFollowHand() {
 const $ = id => document.getElementById(id);
 const V3 = THREE.Vector3, Q = THREE.Quaternion;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const TM = { on: false, mode: "orbit", add: false };   // touch mode state (wired at the end of the script)
 
 // ---------------------------------------------------------------- three.js scene
 const canvas = $("cv"), viewer = $("viewer");
@@ -618,9 +639,10 @@ orbit.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT:
 const gizmo = new THREE.TransformControls(camera, canvas);
 gizmo.setSize(0.85); gizmo.setSpace("local"); overlay.add(gizmo);
 viewer.addEventListener("pointerdown", e => {
+  if (TM.on) { orbit.enableRotate = orbit.enablePan = orbit.enableZoom = true; gizmo.enabled = !e.altKey && TM.mode !== "orbit"; return; }
   const a = e.altKey; orbit.enableRotate = orbit.enablePan = orbit.enableZoom = a; gizmo.enabled = !a;
 }, true);
-window.addEventListener("pointerup", () => { orbit.enableZoom = true; gizmo.enabled = true; });
+window.addEventListener("pointerup", () => { if (TM.on) return; orbit.enableZoom = true; gizmo.enabled = true; });
 viewer.addEventListener("contextmenu", e => e.preventDefault());
 const footHandle = { L: new THREE.Object3D(), R: new THREE.Object3D() };
 const handHandle = { L: new THREE.Object3D(), R: new THREE.Object3D() };
@@ -856,7 +878,7 @@ let scrubbing = false, keyDrag = null;
 $("strip").addEventListener("pointerdown", e => {
   stopPlay(); try { $("strip").setPointerCapture(e.pointerId); } catch {}
   const f = frameAtX(e.clientX);
-  if (keysMode() && (e.button === 1 || e.shiftKey) && KEYS.has(cyc(f))) {     // Shift / middle drag = move the key
+  if (keysMode() && (e.button === 1 || e.shiftKey || TM.add) && KEYS.has(cyc(f))) {     // Shift / middle drag = move the key
     e.preventDefault(); keyDrag = { from: cyc(f), to: f }; renderStrip(); return;
   }
   scrubbing = true; goto(f);
@@ -962,11 +984,11 @@ function placeMarkers() {
 let downAt = null, marq = null, marqDiv = null;
 const visJoints = () => $("tJoints").classList.contains("on") ? Object.keys(markers) : [];
 function pickAt(x, y) {
-  let best = null, bd = 14, bz = Infinity;
+  const R = TM.on ? 30 : 14; let best = null, bd = R, bz = Infinity;
   for (const n of visJoints()) {
     const p = jointPos(n), sp = toScreen(p); if (!sp.front) continue;
     const d = Math.hypot(sp.x - x, sp.y - y), z = camera.position.distanceTo(p);
-    if (d > 14) continue;
+    if (d > R) continue;
     if (d < bd - 3 || (Math.abs(d - bd) <= 3 && z < bz)) { best = n; bd = d; bz = z; }   // overlapping: nearer the camera wins
   }
   return best;
@@ -974,7 +996,7 @@ function pickAt(x, y) {
 const localXY = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
 canvas.addEventListener("pointerdown", e => {
   downAt = localXY(e);
-  marq = e.button === 0 && !e.altKey && !gizmo.axis ? { x0: downAt[0], y0: downAt[1], shift: e.shiftKey, on: false } : null;
+  marq = e.button === 0 && !e.altKey && !gizmo.axis && (!TM.on || TM.mode === "box") ? { x0: downAt[0], y0: downAt[1], shift: e.shiftKey || TM.add, on: false } : null;
 });
 canvas.addEventListener("pointermove", e => {
   hoverXY = localXY(e);
@@ -1009,11 +1031,12 @@ canvas.addEventListener("pointerup", e => {
   if (Math.hypot(x - downAt[0], y - downAt[1]) > 4) return;
   const pk = pickPole(x, y); if (pk) { selectPole(pk); return; }
   const n = pickAt(x, y);
-  if (n && e.shiftKey) {                            // Shift+click: add / remove
+  const addSel = e.shiftKey || TM.add;
+  if (n && addSel) {                            // Shift+click: add / remove
     if (selSet.has(n)) { const rest = [...selSet].filter(k => k !== n); setSelection(rest, n === sel ? rest[rest.length - 1] : sel); }
     else setSelection([...selSet, n], n);
   } else if (n) setSelection([n], n);
-  else if (!gizmo.axis && !e.shiftKey) select(null);
+  else if (!gizmo.axis && !addSel) select(null);
 });
 function setSelection(names, primary) {
   if (playing) stopPlay(); setTimeout(() => { if (typeof renderBody === "function") renderBody(); if (typeof drawRagLimits === "function" && ragLimOn) drawRagLimits(); });
@@ -4546,5 +4569,36 @@ setCam("right"); resize(); loop(); renderPoses(); openPose(POSES[0]);
     set(store.get(key) === "1");
     h.addEventListener("click", () => { const open = sec.hidden; set(open); store.set(key, open ? "1" : "0"); if (open) window.dispatchEvent(new Event("resize")); });
   });
+})();
+
+/*TOUCH*/
+(function () {
+  const chk = document.getElementById("tmChk"), bar = document.getElementById("tmBar");
+  const key = "tm:" + location.pathname;
+  let saved = null; try { saved = localStorage.getItem(key); } catch {}
+  function apply() {
+    TM.on = chk.checked; document.body.classList.toggle("tm", TM.on);
+    bar.querySelectorAll("button[data-m]").forEach(b => b.classList.toggle("on", b.dataset.m === TM.mode));
+    bar.querySelector("[data-add]").classList.toggle("on", TM.add);
+    try { (() => {
+    const touch = TM.on;
+    orbit.touches.ONE = touch && TM.mode !== "orbit" ? -1 : THREE.TOUCH.ROTATE;
+    orbit.enableRotate = orbit.enablePan = orbit.enableZoom = touch ? true : orbit.enableZoom;
+    gizmo.enabled = !(touch && TM.mode === "orbit");
+    gizmo.setSize(touch ? 1.35 : 0.85);
+    if (touch && !TM.seen && innerWidth < 1100) {     // narrow screen: give the viewport the width, panels come back with their toggles
+      TM.seen = true; for (const id of ["tList", "tSide"]) { const b = document.getElementById(id); if (b && b.classList.contains("on")) b.click(); }
+    }
+  })(); } catch (e) { console.error(e); }
+    setTimeout(() => window.dispatchEvent(new Event("resize")), 30);
+  }
+  bar.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.m) TM.mode = b.dataset.m; else TM.add = !TM.add;
+    apply();
+  });
+  chk.addEventListener("change", () => { try { localStorage.setItem(key, chk.checked ? "1" : "0"); } catch {} apply(); });
+  chk.checked = saved === null ? matchMedia("(pointer:coarse)").matches : saved === "1";
+  apply();
 })();
 </script>
