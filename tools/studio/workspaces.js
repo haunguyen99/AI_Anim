@@ -6,7 +6,7 @@ ST.WS = {
     id: "general", label: "General", icon: "mesh", module: "mesh", display: "edit",
     tools: ["tool.sel", "tool.move", "tool.rot", "tool.scl", "tool.free"],
     modes: ["mesh.mode.o", "mesh.mode.v", "mesh.mode.f", "mesh.mode.i"],
-    shelf: ["edit.undo", "edit.redo", "|", "mesh.delete", "mesh.separate", "mesh.merge", "mesh.dup", "|", "mesh.flip", "mesh.smooth", "mesh.flipx", "mesh.weld", "mesh.clean", "|",
+    shelf: ["selmask.joint", "selmask.mesh", "|", "edit.undo", "edit.redo", "|", "mesh.delete", "mesh.separate", "mesh.merge", "mesh.dup", "|", "mesh.flip", "mesh.smooth", "mesh.flipx", "mesh.weld", "mesh.clean", "|",
       "mesh.ground", "mesh.height", "|", "mesh.pivEdit", "mesh.pivCenter", "|", "sel.sym", "sel.soft", "sel.front", "|", "mesh.wire", "view.toggle4", "view.frameAll", "view.frameSel", "|", "file.fbx", "file.save", "edit.search"],
     tabs: [["channel", "Channel Box"], ["tool", "Công cụ"], ["check", "Kiểm tra"]],
     ui: { outliner: true, dock: true, shelf: true, timeline: false },

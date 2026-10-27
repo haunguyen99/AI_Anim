@@ -77,7 +77,7 @@
   M.display = s => { style = s; allVis(); refreshSel(); };
 
   // ---------------------------------------------------------------- undo (lịch sử chung)
-  M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice(), skin: o.skin || null, piv: o.piv || null })), cp: cPiv });
+  M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice(), skin: o.skin || null, piv: o.piv || null, zero: o.zero || null })), cp: cPiv });
   M.restore = s => {
     OBJ.slice().forEach(disposeObj); OBJ = []; TS = null;
     s.o.forEach(d => { const o = Object.assign({}, d); buildGeo(o); OBJ.push(o); });
@@ -136,8 +136,10 @@
   // Giữ D hoặc bật/tắt Insert: gizmo chỉ dời pivot, không dời mesh. Xoay / scale (gizmo, Channel Box) quay quanh pivot.
   let cPiv = null, pivEdit = false, pivHold = false;
   const pivOn = () => pivEdit || pivHold;
+  const refObj = () => mode === "o" ? (active && selO.has(active.id) ? active : get([...selO][0])) : null;
+  const zeroOf = () => { const o = refObj(); return o && o.zero ? o.zero.clone() : new V3(); };   // Freeze: Translate trong Channel Box tính từ đây
   function pivotPoint() {
-    if (mode === "o") { const o = active && selO.has(active.id) ? active : get([...selO][0]); if (o && o.piv) return o.piv.clone(); return selCenter(); }
+    if (mode === "o") { const o = refObj(); if (o && o.piv) return o.piv.clone(); return selCenter(); }
     if (cPiv && cPiv.sig === selSig()) return cPiv.p.clone();
     return selCenter();
   }
@@ -230,15 +232,16 @@
     vals() {
       if (ST.ws !== "general" || frozen()) return null;
       const c = pivotPoint(); if (!c) return null;
-      if (!TS) return { t: [c.x, c.y, c.z], r: [0, 0, 0], s: [1, 1, 1] };
-      const t = TS.c0.clone().applyMatrix4(TS.A), L = TS.A.clone().setPosition(0, 0, 0), q = new THREE.Quaternion(), p = new V3(), sc = new V3();
+      const z = zeroOf();
+      if (!TS) return { t: [c.x - z.x, c.y - z.y, c.z - z.z], r: [0, 0, 0], s: [1, 1, 1] };
+      const t = TS.c0.clone().applyMatrix4(TS.A).sub(z), L = TS.A.clone().setPosition(0, 0, 0), q = new THREE.Quaternion(), p = new V3(), sc = new V3();
       L.decompose(p, q, sc); const e = new THREE.Euler().setFromQuaternion(q, "XYZ");
       return { t: [t.x, t.y, t.z], r: [deg(e.x), deg(e.y), deg(e.z)], s: [sc.x, sc.y, sc.z] };
     },
     apply(vals, push) {
       const T = ensureTS(); if (!T) return;
       const R = new M4().makeRotationFromEuler(new THREE.Euler(rad(vals.r[0]), rad(vals.r[1]), rad(vals.r[2]), "XYZ")), S = new M4().makeScale(...vals.s.map(x => Math.abs(x) < 1e-3 ? (x < 0 ? -1e-3 : 1e-3) : x));
-      const Anew = new M4().makeTranslation(...vals.t).multiply(R).multiply(S).multiply(new M4().makeTranslation(-T.c0.x, -T.c0.y, -T.c0.z));
+      const z = zeroOf(), Anew = new M4().makeTranslation(vals.t[0] + z.x, vals.t[1] + z.y, vals.t[2] + z.z).multiply(R).multiply(S).multiply(new M4().makeTranslation(-T.c0.x, -T.c0.y, -T.c0.z));
       const D = Anew.clone().multiply(T.A.clone().invert());
       if (push) pushUndo("Channel Box");
       const aff = affSnapshot(); xformApply(D, aff); T.A = Anew;
@@ -265,12 +268,14 @@
     const d = p.cam.getWorldDirection(new V3()).negate(); return i => nrm.getX(i) * d.x + nrm.getY(i) * d.y + nrm.getZ(i) * d.z > 0;
   }
   M.canBox = () => mode !== "o" && ST.tool === "sel";
+  // mặt nạ chọn kiểu Maya (thanh trên): loại nào tắt thì click / kéo khung trong viewport bỏ qua loại đó; Outliner vẫn chọn được
+  const mask = Object.assign({ joint: true, mesh: true }, ST.pref.get("selmask", null) || {});
   M.pick = (x, y, e, p) => {
     if (style !== "edit") return;
     const add = ST.addSel(e), sk = ST.mods.skel;
-    if (mode === "o" && sk) { const jn = sk.pickAt(x, y, p); if (jn) { sk.select(jn); return; } if (sk.sel()) sk.select(null); }
+    if (mode === "o" && sk) { const jn = mask.joint ? sk.pickAt(x, y, p) : null; if (jn) { sk.select(jn); return; } if (sk.sel()) sk.select(null); }
     if (mode === "o") {
-      const h = hitObjects(x, y, p);
+      const h = mask.mesh ? hitObjects(x, y, p) : null;
       if (!h) { if (!add) selO.clear(); } else { const o = get(h.object.userData.oid); if (add) { selO.has(o.id) ? selO.delete(o.id) : selO.add(o.id); } else selO = new Set([o.id]); active = o; }
       allVis(); refreshSel(); return;
     }
@@ -365,7 +370,7 @@
     }
     touchGeo(o, true); changed(); refreshSel();
   }
-  function opDuplicate() { const o = active; if (!o) return; pushUndo("Nhân bản"); const n = makeObj(o.name + "_copy", o.pos.slice(), o.idx.slice(), { piv: o.piv || null }); active = n; selO = new Set([n.id]); allVis(); changed(); say("Đã nhân bản."); refreshSel(); }
+  function opDuplicate() { const o = active; if (!o) return; pushUndo("Nhân bản"); const n = makeObj(o.name + "_copy", o.pos.slice(), o.idx.slice(), { piv: o.piv || null, zero: o.zero || null }); active = n; selO = new Set([n.id]); allVis(); changed(); say("Đã nhân bản."); refreshSel(); }
   function opFlipX() {
     const Ls = mode === "o" && selO.size ? [...selO].map(get) : active ? [active] : []; if (!Ls.length) return; pushUndo("Lật trái/phải");
     Ls.forEach(o => { for (let i = 0; i < nV(o); i++) o.pos[3 * i] = -o.pos[3 * i]; for (let t = 0; t < nT(o); t++) { const b = o.idx[3 * t + 1]; o.idx[3 * t + 1] = o.idx[3 * t + 2]; o.idx[3 * t + 2] = b; } buildGeo(o); });
@@ -425,7 +430,7 @@
   }
 
   // ---------------------------------------------------------------- lưu / nạp / xuất
-  const ser = () => ({ v: 1, at: new Date().toISOString(), meshes: OBJ.map(o => ({ name: o.name, vis: o.vis, lock: o.lock, verts: Array.from(o.pos, v => +v.toFixed(3)), tris: Array.from(o.idx), piv: o.piv ? o.piv.toArray().map(v => +v.toFixed(3)) : undefined })) });
+  const ser = () => ({ v: 1, at: new Date().toISOString(), meshes: OBJ.map(o => ({ name: o.name, vis: o.vis, lock: o.lock, verts: Array.from(o.pos, v => +v.toFixed(3)), tris: Array.from(o.idx), piv: o.piv ? o.piv.toArray().map(v => +v.toFixed(3)) : undefined, zero: o.zero ? o.zero.toArray().map(v => +v.toFixed(3)) : undefined })) });
   async function save() {
     clearTimeout(saveT); if (!dirty || !store) return;
     try { const doc = ser(), w = await store.set("mesh/edit", doc); editAt = doc.at; dirty = false; ST.saveState(w === "disk" ? "Đã lưu vào dự án (work/store/" + store.ns + ")" : "Đã lưu (chỉ trình duyệt này)", w === "disk" ? "" : "dirty"); }
@@ -434,7 +439,7 @@
   M.save = save;
   function loadMeshes(list) {
     OBJ.slice().forEach(disposeObj); OBJ = []; selO.clear(); clearSel(); TS = null;
-    list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length], skin: skinOf(m.name, m.verts.length / 3), piv: m.piv ? new V3().fromArray(m.piv) : null }));
+    list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length], skin: skinOf(m.name, m.verts.length / 3), piv: m.piv ? new V3().fromArray(m.piv) : null, zero: m.zero ? new V3().fromArray(m.zero) : null }));
     active = OBJ[OBJ.length - 1] || null; if (active) selO = new Set([active.id]); allVis();
   }
   // Nhập mesh từ FBX (đã đổi cm, Y lên ở server): "replace" thay mesh trùng tên (giữ màu, ẩn/khoá), còn lại thêm mới
@@ -611,6 +616,11 @@
   const C = (o) => ST.cmd(Object.assign({ ws: ["general"] }, o));
   const md = (m, label, icon, key) => C({ id: "mesh.mode." + m, menu: "Select", label, icon, key, check: () => mode === m, run: () => setMode(m) });
   md("o", "Chọn mesh", "obj", "1"); md("v", "Chọn điểm", "vert", "2"); md("f", "Chọn mặt", "face", "3"); md("i", "Chọn khối rời", "island", "4");
+  const mk = (k, label, icon) => C({ id: "selmask." + k, menu: "Select", head: k === "joint" ? "Chọn được trong viewport" : undefined, sep: k === "joint", label, icon,
+    tip: "Bật / tắt: click trong viewport có chọn được " + label.toLowerCase() + " không", check: () => mask[k],
+    run: () => { mask[k] = !mask[k]; ST.pref.set("selmask", mask); say(label + (mask[k] ? ": chọn được trong viewport." : ": không chọn được trong viewport (Outliner vẫn chọn được).")); } });
+  mk("joint", "Joint", "joint"); mk("mesh", "Mesh", "mesh");
+  C({ id: "selmask.all", menu: "Select", label: "Chọn được tất cả", icon: "all", run: () => { mask.joint = mask.mesh = true; ST.pref.set("selmask", mask); say("Chọn được mọi loại trong viewport."); } });
   C({ id: "sel.all", menu: "Select", sep: true, label: "Chọn tất cả", icon: "all", key: "ctrl+a", run: selectAll });
   C({ id: "sel.none", menu: "Select", label: "Bỏ chọn", icon: "none", key: "ctrl+shift+a", run: selectNone });
   C({ id: "sel.invert", menu: "Select", label: "Đảo vùng chọn", icon: "invert", key: "ctrl+i", run: selectInvert });
@@ -618,7 +628,13 @@
   C({ id: "sel.front", menu: "Select", sep: true, label: "Chỉ chọn mặt trước", icon: "front", check: () => frontOnly, run: () => { frontOnly = !frontOnly; } });
   C({ id: "sel.sym", menu: "Select", label: "Đối xứng X", icon: "sym", check: () => sym, run: () => { sym = !sym; } });
   C({ id: "sel.soft", menu: "Select", label: "Chọn mềm (falloff)", icon: "soft", key: "b", check: () => soft.on, run: () => { soft.on = !soft.on; } });
-  C({ id: "mesh.free", menu: "Mesh", label: "Free Transform (hộp bao)", icon: "free", tip: "Phím T", check: () => ST.tool === "free", run: () => ST.setTool(ST.tool === "free" ? "sel" : "free") });
+  C({ id: "mesh.freeze", menu: "Mesh", label: "Freeze Transformations", icon: "reset", tip: "Giữ mesh tại chỗ, đưa Translate / Rotate về 0 và Scale về 1 (như Maya)", on: () => mode === "o" && selO.size > 0, run: opFreeze });
+  function opFreeze() {
+    const os = [...selO].map(get).filter(o => o && !o.lock); if (!os.length) return say("Chọn mesh trước (chế độ chọn mesh).");
+    pushUndo("Freeze Transformations");
+    os.forEach(o => { o.zero = (o.piv ? o.piv.clone() : (o.mesh.geometry.computeBoundingBox(), o.mesh.geometry.boundingBox.getCenter(new V3()))); });
+    TS = null; changed(); refreshSel(); say("Đã freeze " + os.length + " mesh: Translate / Rotate = 0, Scale = 1.");
+  }
   const pivCmd = (label, fn) => () => { if (!selCenter()) return say("Chọn mesh hoặc điểm / mặt trước."); pushUndo(label); fn(); changed(); refreshSel(); };
   C({ id: "mesh.pivEdit", menu: "Mesh", sep: true, label: "Sửa pivot (giữ D)", icon: "move", key: "insert", check: () => pivOn(), run: () => { pivEdit = !pivEdit; say(pivEdit ? "Sửa pivot: kéo gizmo để dời pivot. Insert lần nữa để thôi." : "Thôi sửa pivot."); refreshSel(); } });
   C({ id: "mesh.pivCenter", menu: "Mesh", label: "Pivot về tâm (Center Pivot)", icon: "frame", run: pivCmd("Pivot về tâm", () => setPiv(null)) });
