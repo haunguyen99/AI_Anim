@@ -81,9 +81,8 @@ Skill **`/spine2d`** biến Claude thành animator Spine: nhận order của GD,
 Cách dùng điển hình: export `.spine` → JSON, sửa JSON, import ra **file `.spine` mới** (không đè project gốc), mở trong Spine để kiểm tra. Chi tiết và danh sách tool ở `tools/spine_mcp/README.md`.
 
 Cài trên máy bạn:
-1. Cài [uv](https://docs.astral.sh/uv/) và Spine (mặc định `C:\Program Files\Spine\Spine.com`).
-2. Thêm server `spine` vào `.mcp.json` ở thư mục gốc dự án theo mẫu trong `tools/spine_mcp/README.md`, sửa đường dẫn cho đúng máy bạn.
-3. Mở lại session Claude Code.
+1. Cài [uv](https://docs.astral.sh/uv/) (phải có `uv` trong PATH) và Spine (mặc định `C:\Program Files\Spine\Spine.com`, phiên bản 4.2.43; Spine ở chỗ khác thì đặt biến môi trường `SPINE_EXE`, `SPINE_VERSION`).
+2. Repo đã có sẵn `.mcp.json` khai báo server `spine` (chạy từ thư mục gốc dự án, không ghi cứng đường dẫn). Mở dự án trong Claude Code, duyệt server `spine` khi được hỏi, mở lại session nếu cần. Máy bạn đã có `.mcp.json` riêng (Blender, Cascadeur…) thì gộp mục `spine` vào đó thay vì ghi đè.
 
 Project Spine nằm ở `work/spine/<game>/<anim>/`, ví dụ `work/spine/G-PirateGoldrush/HandTut/` (dựng bằng `build_handtut.py`). Phần này không có trong repo GitHub.
 

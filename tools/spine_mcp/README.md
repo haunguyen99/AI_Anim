@@ -30,7 +30,7 @@ Biến môi trường:
 - `SPINE_VERSION`: phiên bản editor dùng khi chạy CLI (mặc định `4.2.43`)
 
 ### Claude Code (app này)
-Server `spine` đã khai báo trong `.mcp.json` ở thư mục gốc dự án (file này không đẩy lên GitHub vì chứa đường dẫn trên máy). Trên máy khác, thêm một mục như dưới vào `.mcp.json` của bạn, sửa đường dẫn `uv.exe` và thư mục dự án, rồi mở lại session.
+Server `spine` đã khai báo sẵn trong `.mcp.json` ở thư mục gốc dự án (`uv run --directory tools/spine_mcp spine-mcp`, cần `uv` trong PATH; Spine ở đường dẫn khác thì đặt `SPINE_EXE` / `SPINE_VERSION`). Mở dự án trong Claude Code và duyệt server khi được hỏi.
 
 ### Claude Desktop (tab Chat)
 Thêm vào `%APPDATA%\Claude\claude_desktop_config.json`:

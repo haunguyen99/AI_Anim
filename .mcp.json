@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "spine": {
+      "command": "uv",
+      "args": ["run", "--directory", "tools/spine_mcp", "spine-mcp"]
+    }
+  }
+}
