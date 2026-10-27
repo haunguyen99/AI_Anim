@@ -12,7 +12,7 @@ Dữ liệu đi từ trang này sang trang sau ngay trong Home: Rig Lab tự dù
 
 Claude làm phần dựng và sửa theo note duyệt của bạn. Hỗ trợ cả iPad / điện thoại: tick ô hình bàn tay ở Pose Lab, Rig Lab, Mesh Lab.
 
-Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã của các trang Lab. Model nhân vật, video ref, playblast, file Blender/Cascadeur và lịch sử duyệt không nằm trong repo (xem mục [Dữ liệu không có trong repo](#dữ-liệu-không-có-trong-repo)).
+Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã của các trang Lab. Model nhân vật, video ref, playblast, file dựng cũ (.blend, .casc) và lịch sử duyệt không nằm trong repo (xem mục [Dữ liệu không có trong repo](#dữ-liệu-không-có-trong-repo)).
 
 ## Cài đặt (một lần)
 
@@ -20,7 +20,7 @@ Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã củ
    - [Git](https://git-scm.com/download/win)
    - [Python 3.10+](https://www.python.org/downloads/): lúc cài nhớ tick "Add python.exe to PATH".
    - [Claude Code](https://claude.com/claude-code): app desktop (tab Code) hoặc CLI, đăng nhập bằng tài khoản Claude của bạn.
-   - Không bắt buộc: Blender 4.5 (cho các clip cũ làm bằng Blender), Cascadeur, ffmpeg (để ghép video playblast).
+   - Không bắt buộc: ffmpeg (nén playblast để tua mượt). **Không cần Blender hay Cascadeur**: team không còn dùng hai phần mềm này, và repo đã bỏ mọi tool của chúng.
 2. **Lấy code** về một thư mục bất kỳ, ví dụ `D:\AI_Anim`:
    ```bash
    git clone https://github.com/haunguyen99/AI_Anim.git "D:/AI_Anim"
@@ -86,26 +86,6 @@ Cài trên máy bạn:
 
 Project Spine nằm ở `work/spine/<game>/<anim>/`, ví dụ `work/spine/G-PirateGoldrush/HandTut/` (dựng bằng `build_handtut.py`). Phần này không có trong repo GitHub.
 
-## Tool cũ cho Blender (`legacy/`)
-
-Từ 2026-10-23 clip mới làm hoàn toàn trên Pose Lab, **không cần Blender**. Tool Blender chỉ còn để dựng lại các clip cũ làm bằng Blender (Gaygor Idle, Idle_Front, Attack v10, SDR, SDR map06) và được dời vào `legacy/`:
-
-- `legacy/blender/`: script chạy **bên trong Blender** (dựng control rig, khớp pose theo ref, render, QA, xuất FBX);
-- `legacy/blender_tools/`: tool chạy ngoài nhưng chỉ dùng với Blender (`keyanim.py` gọi Blender, các `eye_*.py` / `sil_compare.py` so render Blender với ref, `playblast_*.py` ghép video từ render Blender);
-- `legacy/mediapipe/`: thử nghiệm đầu tiên (mediapipe), bỏ.
-
-Tool Python thường chạy từ thư mục dự án nên không cần làm gì thêm. Riêng script chạy bên trong Blender (`legacy/blender/*.py`, chạy bằng `exec`) và script Cascadeur cần biết thư mục dự án. Có ba cách, chọn một:
-
-```python
-ROOT = r"D:/AI_Anim"          # đặt trước khi exec, ví dụ trong console Blender
-exec(open(ROOT + "/legacy/blender/live_render.py").read())
-```
-
-- hoặc đặt biến môi trường `AI_ANIM_ROOT=D:\AI_Anim` (một lần, cho mọi script);
-- hoặc mở Blender với thư mục làm việc là thư mục dự án.
-
-Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay, kèm cách sửa.
-
 ## Cấu trúc
 
 | Thư mục | Nội dung |
@@ -114,7 +94,6 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 | `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, sửa FBX (`fbx_remove_mesh.py`, `fbx_replace_mesh.py`), vật lý `physics_sim.py`; `tools/cascadeur/` chạy trong Cascadeur |
 | `tools/spine_mcp/` | MCP server Spine 2D (Spine CLI + sửa skeleton JSON) |
 | `tools/spine/` | `render_spine.py`: xem trước anim Spine thành GIF + contact sheet (xương, alpha slot, region, mesh có weight; không IK/clipping) |
-| `legacy/` | Tool cũ: Blender (`blender/`, `blender_tools/`) và mediapipe, chỉ để dựng lại clip cũ |
 | `docs/` | Quy trình (`pipeline_v2.md`), thiết kế Rig Lab, vật lý Pose Lab |
 | `work/pose_lab/`, `work/review_page/`, `work/rig_lab/`, `work/mesh_lab/` | Mã các trang Lab (bản gốc + script dựng trang), đọc/ghi FBX (`work/pose_lab/fbx/`) |
 | `work/store/` | Kho dữ liệu Lab trên máy (ghi chú, key, skin, mesh đã sửa), mỗi máy một bản, **không** có trong repo |
@@ -127,7 +106,7 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 - Video ref, playblast (`work/review_page/clips/`), FBX đã xuất, file `.blend` / `.casc`.
 - Mesh gốc của nhân vật (vd `work/rig_lab/ref_gaygor/`): thiếu thì Mesh Lab và Rig Lab của nhân vật đó không dựng lại được (`work/mesh_lab/build_mesh.py <nhân vật>`, `work/rig_lab/build_char.py <id>`). Trang Pose / Review của anim cũ cũng cần model và video gốc; Home vẫn liệt kê anim từ `work/clips.json` và mở link claude.ai nếu chưa có trang trên máy.
 - `work/store/`: dữ liệu làm việc của riêng mỗi máy. Muốn chuyển sang máy khác thì xuất file `.json` bằng nút Lưu trữ rồi mở lại ở máy kia.
-- `.mcp.json` (server Blender / Cascadeur / Spine của máy bạn): tự tạo theo máy, xem `tools/spine_mcp/README.md` cho Spine.
+- `.mcp.json` có sẵn trong repo chỉ khai báo server Spine; muốn thêm server khác thì gộp vào file đó trên máy bạn.
 
 Muốn làm tiếp clip của người khác thì xin họ thư mục `work/<clip>/` và model tương ứng. Làm nhân vật mới thì bắt đầu bằng `/rig` hoặc `/new_clip` với FBX nhân vật của bạn.
 

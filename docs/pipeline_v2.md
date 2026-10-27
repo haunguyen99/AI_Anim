@@ -1,3 +1,5 @@
+> **Đã ngừng dùng Blender và Cascadeur (2026-10-27).** Tài liệu này giữ làm thiết kế gốc: các bước Blender (MCP, `legacy/blender`) không còn trong repo. Quy trình hiện tại: chuỗi Mesh → Rig → Pose → Review Lab (`docs/app_shell.md`, `docs/data_flow.md`), skill `animation`.
+
 # Quy trình diễn hoạt bằng AI — v2 (Blender-first, animator-first)
 
 *Bản thiết kế lại sau các vòng thử: MediaPipe, fit silhouette, tool key tự viết, layer trong keys.json, và cuối cùng là key Idle_Breath trong Blender qua MCP.*

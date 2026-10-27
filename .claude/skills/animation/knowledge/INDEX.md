@@ -11,7 +11,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | Loại | File | Trạng thái |
 |---|---|---|
 | Idle | `idle.md` | Gaygor Idle 133F (duyệt), Idle_Front 60F (duyệt v14), SDR Idle 1 pose (v19) |
-| Attack | `attack.md` | Gaygor Attack: Cascadeur casc_blocking_v1 chờ góp ý; **Gaygor Attack 50 Blocking (quy trình B) polish v3 duyệt, xuất FBX 2026-10-23**; SDR Attack chốt polish v5 (xuất) |
+| Attack | `attack.md` | Gaygor Attack 68F (làm cũ) tạm dừng; **Gaygor Attack 50 Blocking (quy trình B) polish v3 duyệt, xuất FBX 2026-10-23**; SDR Attack chốt polish v5 (xuất) |
 | Shoot / Reload | `shoot_reload.md` | SDR map06 đang làm (Reload spline v3) |
 | Walk/Run, Hit, Death, Skill, Jump/khác | `other_types.md` | chưa làm - khung trống + mẫu file |
 
@@ -91,23 +91,6 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | **qa_anatomy.md** | |
 | `#pre-send-checklist` | trước mỗi lần gửi review |
 | `#anatomy-check` | chạy anatomy pass; đọc ngưỡng da |
-| **blender_tools.md** | |
-| `#action-slot` | tạo action bằng script (Blender 4.4+); render ra mọi frame giống nhau |
-| `#fbx-bone-axes` | dựng IK/CTRL trên rig FBX AdvancedSkeleton |
-| `#rig-inventory` | bước phân tích; tìm xương phụ |
-| `#live-posing` | pose trong file live; mất pose, lật 180°, scale trôi |
-| `#review-files` | cắt ảnh ref theo view; đọc toạ độ ảnh lớn; camera clip mới |
-| `#batch-fit-traps` | fit hàng loạt key theo silhouette |
-| **cascadeur.md** | |
-| `#pipeline` | import + Quick Rig; prop không controller; ngón tay |
-| `#measure-vs-ref` | render/đo so ref trong Cascadeur |
-| `#autoposing` | AutoPosing kéo lệch điểm, hông/vai tụt |
-| `#key-before-points` | `set_points` không giữ được |
-| `#base-chain` | dựng key từ base key trước; sinh lại tham số |
-| `#window-focus` | đưa cửa sổ lên trước; mất key bí ẩn |
-| `#render` | render/playblast trong Cascadeur; ảnh đổi tỉ lệ |
-| `#fast-blocking` | blocking nhanh toàn thân `block_pose` |
-| `#quick-anatomy` | kiểm giải phẫu trong Cascadeur |
 | **export.md** | |
 | `#reparent-prop` | intake (prop treo joint nào); đổi cha joint prop sau khi bake |
 | `#export-clip` | xuất FBX, tên take, kiểm đọc lại |
@@ -122,10 +105,9 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#feedback` `#errors` `#qa-checklist` `#tools` | sửa feedback idle; QA idle |
 | `#sdr-one-pose` | idle 1 pose theo concept; tấn đứng, đổ người, xoắn eo |
 | **attack.md** | |
-| `#status` `#goals` `#recipe` `#params` | làm attack; Gaygor Attack (Blender) |
+| `#status` `#goals` `#recipe` `#params` | làm attack; Gaygor Attack |
 | `#feedback` `#errors` | tra feedback/lỗi Attack đã gặp (con trỏ tới mục chủ đề) |
 | `#qa-checklist` `#tools` | QA pose blocking Attack; script Attack |
-| `#cascadeur-keys` | số liệu key Gaygor Attack trong Cascadeur |
 | `#sdr-attack` | ném dao SDR: nhịp recover, 2 tay lệch pha, điểm thả |
 | **shoot_reload.md** | |
 | `#trigger-hand` | reload: tay cầm cò |

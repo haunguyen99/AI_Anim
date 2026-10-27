@@ -5,8 +5,6 @@
 - Nguồn vào là FBX blocking của user (không ref) → quy trình B: khớp file, phân tích, breakdown, polish, FBX → user_blocking.md
 - Chỉ có yêu cầu bằng lời → quy trình C: thiết kế + timing, pose 10%, blocking 50%, rồi như B → text_brief.md
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
-- Kiểm kê xương phụ/mảnh mesh (`rig_inventory.py`); nhận diện theo vùng mesh, tên xương lừa → blender_tools.md#rig-inventory
-- Camera hiệu chỉnh riêng từng clip; xác nhận file ref nào là trái/phải nhân vật → blender_tools.md#review-files
 - Intake: hỏi prop treo vào joint nào khi xuất → export.md#reparent-prop
 - Clip không ref / ref điện ảnh: thiết kế theo silhouette camera game, đề xuất bản tối giản → review_process.md#no-ref-clips
 
@@ -55,10 +53,6 @@
 - User muốn có trọng lượng, có hồn, luôn kèm số đo → review_process.md#reviewer-prefs
 
 ## Render / playblast / file
-- Blender 4.4+: gán `action_slot`, kiểm 2 frame khác nhau → blender_tools.md#action-slot
-- Posing mode, reset scale, xoá f-curve rỗng; gọi `_p0()` trước khi sửa → blender_tools.md#live-posing
-- Ảnh > 1500 px bị thu nhỏ khi đọc; view left trang review = right.mov → blender_tools.md#review-files
-- Cascadeur: không lấy focus, không gọi play_to_images_sequence, key trước rồi set_points → cascadeur.md#render
 
 ## QA / anatomy
 - Trước khi gửi: joint_limits = 0, anatomy_check mọi key, close-up 2 góc, strain ≤ P0, prop xuyên 0, scale 1 → qa_anatomy.md#pre-send-checklist

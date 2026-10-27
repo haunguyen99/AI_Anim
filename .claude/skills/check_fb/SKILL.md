@@ -18,9 +18,7 @@ Người dùng gõ `/check_fb` khi đã ghi xong note **và** bấm "Gửi feedb
 3. **Đọc TẤT CẢ note còn mở** của version đó: query `notes` theo `clip` + `version`, `status != "done"`, kể cả note thêm sau khi bấm gửi. Dùng `out_dir` vào scratchpad để note dài/strokes không tràn context. Note có circle strokes thì làm theo [[feedback-circled-notes]] (memory).
 4. **Lập kế hoạch gộp:** gom note theo key/bộ phận, và một version mới phải sửa hết. Viết danh sách ngắn trong chat: `F9 vai trái: … | F15 trống: …`. Note mâu thuẫn hoặc không rõ thì hỏi người dùng **một lần, gộp mọi câu hỏi**, không gửi version nửa vời.
 5. **Sửa và tự kiểm tra bằng render nhanh** (không playblast):
-   - SDR06: `blender -b work/blender/sdr06_char.blend --python work/sdr06/<blocking|spline>.py -- <ver> <clip> quick=<các frame note>,<frame kề> views=<góc note>`
-   - Sau đó `python tools/quick_sheet.py work/sdr06/pb_<clip>_<ver>_quick` → đọc **một** ảnh `sheet.jpg`.
-   - Clip khác: render đúng frame và góc cần xem ở độ phân giải thấp, rồi ghép bằng `tools/quick_sheet.py` (cần file `<view>_<frame>.png`).
+   - Sửa pose / key trên Pose Lab (hoặc bằng script key rồi nạp vào Pose Lab), rồi quay playblast nhanh các frame và góc có note: nút 🎞 trong Home (chọn ít camera, cỡ nhỏ) hoặc render frame lẻ, ghép bằng `tools/quick_sheet.py` (cần file `<view>_<frame>.png`) → đọc **một** ảnh `sheet.jpg`.
    - Không đọc từng PNG lẻ. Chỉ zoom/crop khi tấm sheet không đủ để thấy lỗi.
    - Chạy anatomy_check trên các key đã sửa.
 6. **Render đầy đủ một lần** khi mọi note đã ổn trên sheet: chạy lại không có `quick=`, rồi playblast → thêm version vào CLIPS trong `work/review_page/index.html` → `split_pages.py` → publish trang (Artifact, cùng file path/URL).
