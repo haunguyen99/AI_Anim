@@ -2,6 +2,10 @@
 
 Đọc `MAP.md` trước khi tạo file mới. Luật làm anim nằm ở `.claude/skills/animation/knowledge/CORE.md`.
 
+## Điều khiển Studio: dùng cầu nối trước
+- Việc trong Studio (ẩn/hiện mesh, chọn, xoay/dời joint, về bind pose, đổi workspace, chạy lệnh): `.venv/Scripts/python.exe -I tools/studio_cmd.py …` (xem đầu file). Lệnh tới trang Studio đang mở ở bất kỳ trình duyệt nào (Chrome của người dùng hoặc trình duyệt trong app), ~4 ms mỗi lệnh; gom nhiều lệnh bằng `";"` trong một lần chạy. Kiểm bằng `studio_cmd.py state`.
+- Chỉ dùng công cụ trình duyệt của Claude khi cầu nối chưa có lệnh cần (thì thêm lệnh vào `tools/studio/modules/bridge.js`), hoặc để test giao diện. Cầu nối chỉ có lệnh có tên, không chạy mã tuỳ ý.
+
 ## Trình duyệt (Studio, Home, các Lab, trang review)
 - **Chỉ chụp màn hình khi người dùng yêu cầu** (người dùng, 2026-10-27). Người dùng xem trực tiếp trên trang nên thấy ngay mọi thay đổi.
 - Kiểm tra kết quả bằng `javascript_tool`, `read_page` hoặc `find` (tên object, ẩn/hiện, đang chọn gì, lỗi console), rồi báo ngắn bằng chữ.

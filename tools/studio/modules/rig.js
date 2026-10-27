@@ -9,7 +9,7 @@
   const TOOL2MODE = { sel: "select", move: "translate", rot: "rotate", scl: "scale" }, MODE2TOOL = { select: "sel", translate: "move", rotate: "rot", scale: "scl" };
   const step = () => eng ? eng.get().step : 0;
 
-  // ---- mesh đã sửa ở workspace Mesh → DATA (giống MESHLINK của Rig Lab: thay theo tên, dời landmark nếu thân đổi cỡ / vị trí)
+  // ---- mesh đã sửa ở workspace General → DATA (giống MESHLINK của Rig Lab: thay theo tên, dời landmark nếu thân đổi cỡ / vị trí)
   const bbox = a => { const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9]; for (let i = 0; i < a.length; i += 3) for (let k = 0; k < 3; k++) { mn[k] = Math.min(mn[k], a[i + k]); mx[k] = Math.max(mx[k], a[i + k]); } return { mn, mx }; };
   function meshApply(D) {
     const ms = ST.mods.mesh, at = ms.editAt && ms.editAt();

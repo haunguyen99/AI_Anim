@@ -86,7 +86,7 @@ studio/
 ```
 
 - **Đơn vị**: cảnh chung tính bằng mét (như glTF và Unity). Module Mesh và Rig giữ số liệu cm bên trong, đặt dưới một nhóm scale 0,01, nên ngưỡng cũ không phải đổi.
-- **Một Character trong bộ nhớ**: sửa mesh ở workspace Mesh thì Rig và Pose thấy ngay. Skin của Rig chuyển thẳng thành SkinnedMesh cho Pose (thay cho vòng file `rig_vN.json`). Vẫn lưu phiên bản để có lịch sử và git.
+- **Một Character trong bộ nhớ**: sửa mesh ở workspace General thì Rig và Pose thấy ngay. Skin của Rig chuyển thẳng thành SkinnedMesh cho Pose (thay cho vòng file `rig_vN.json`). Vẫn lưu phiên bản để có lịch sử và git.
 - **Dữ liệu tải lúc chạy**, không chèn lúc build: Home server thêm `/api/char/<id>` (mesh, landmark, skin) và `/api/clip/<id>` (phiên bản, key, ref). Một ứng dụng mở được mọi nhân vật / clip; bỏ dần `build_mesh.py`, `build_page.py`, `split_pages.py` và các `patch_*.py`.
 - **three.js**: giữ r128 dạng script ở giai đoạn đầu để chuyển mã cũ nhanh; nâng bản sau khi gộp xong.
 - **Chạy ở đâu**: trong Home (`/studio/<nhân vật>/<clip>`), thay cho các tab iframe Mesh/Rig/Pose. Review vẫn là tab riêng.
@@ -98,7 +98,7 @@ studio/
 | S1 | Vỏ + core: menu, dock, viewport 1/4 khung, chọn, gizmo, undo chung, Outliner, Channel Box, đổi workspace, `/api/char` | mở được Gaygor, xoay/chọn/di chuyển, đổi 3 workspace |
 | S2 | Workspace Mesh: chuyển toàn bộ Mesh Lab | làm đủ các thao tác của Mesh Lab cũ trên Gaygor và Zom1 |
 | S3 | Workspace Rig: landmark, xương, skin, cọ, cổng duyệt, self-test | ra cùng rig/weight như Rig Lab cũ (so số liệu) — **xong 2026-10-27**, mục 8 |
-| S4 | Workspace Pose phần lõi: phiên bản, key, timeline, IK/pole, Channel Box, foot lock, ref, FBX | xuất FBX một clip đã duyệt, so khớp từng khung với bản cũ |
+| S4 | Workspace Pose phần lõi: phiên bản, key, timeline, IK/pole, Channel Box, foot lock, ref, FBX | xuất FBX một clip đã duyệt, so khớp từng khung với bản cũ — **chuyển cả lõi (gồm phần S5) 2026-10-27**, mục 9 |
 | S5 | Pose phần còn lại: physics, fit theo ref, AI self-review, playblast → Review | đủ chức năng Pose Lab cũ, tắt tab Mesh/Rig/Pose cũ |
 | S6 | Workspace tự tạo, nâng three.js, dọn patch cũ | |
 
@@ -113,7 +113,7 @@ studio/
 ## 7. Đã làm: S1 + S2 (2026-10-27)
 
 Mở: `http://127.0.0.1:8780` vào thẳng Studio với cảnh trống (user: "sao không mở một file trống"; ô giữa viewport: Nhập FBX, Mở nhân vật, mở nhanh; Tệp → Cảnh mới = Ctrl+N) (từ 2026-10-27, user: "bây giờ là tool tổng hợp… mở phát ra viewport luôn"; Home chuyển sang `/home`, về Home bằng chữ Studio góc trái hoặc Tệp → Dự án, Ctrl+H). Mở nhân vật cụ thể: `http://127.0.0.1:8780/studio/<nhân vật>` (`gaygor`, `zom1_map1`), hoặc trong Home: anim → tab **Studio** (đầu thanh tab, nạp `?clip=<anim>`). Không có nhân vật trong đường dẫn thì hiện hộp Mở nhân vật.
-Tham số: `?ws=mesh|rig|pose` (workspace mở đầu), `?ns=<kho>` (lưu vào kho riêng để thử, không đụng bản sửa thật).
+Tham số: `?ws=general|rig|pose` (workspace mở đầu; `mesh` cũ tự thành `general`), `?ns=<kho>` (lưu vào kho riêng để thử, không đụng bản sửa thật).
 
 | File | Nội dung |
 |---|---|
@@ -147,6 +147,19 @@ Chỉ đọc FBX binary. Mesh skin vào xương hiện ở tư thế bind của 
 
 `/api/char/<id>` trả thêm `skeleton` [{name, parent, pos cm}] từ `work/rig_lab/<ref_dir>/ref_skeleton.json` (× `scale` của nhân vật; joint thiếu bind lấy vị trí cha). `tools/studio/modules/skel.js`: vẽ joint (chấm xanh) + đoạn cha → con trong viewport, nhóm **Skeleton** trong Outliner dạng cây mở / gập (nhớ theo nhân vật), bấm joint để tô cam và xem toạ độ ở dòng trạng thái, F nhìn joint đang chọn, Hiển thị → Xương bật / tắt. Chỉ xem; sửa xương là S3. Zom1 là model tĩnh nên không có xương.
 
+### Chọn và sửa joint trong viewport (2026-10-27, user: "Người dùng không thể chọn được joint trong viewport và translate")
+Workspace General, chế độ chọn mesh: click gần joint (≤ 10 px, cảm ứng 26 px) thì chọn joint (joint vẽ đè lên mesh nên ưu tiên joint), click chỗ khác hoặc chọn mesh thì bỏ chọn. Joint đang chọn nhận gizmo (W dời, E xoay, R scale) và Channel Box (TX/TY/TZ = vị trí joint, cm; xoay / scale tính quanh vị trí joint lúc chọn); mọi joint con đi theo như Maya. Undo chung. Lưu tự động ở doc `skel/edit` (`{joints: {tên: [x,y,z] cm}}`) của kho `<nhân vật>_mesh_lab`, cạnh `mesh/edit`; mở lại nhân vật thì nạp bản sửa. Code: `tools/studio/modules/skel.js` (pickAt, select, gz*, channel) + `mesh.js` chuyển click / gizmo / Channel Box sang joint khi có joint đang chọn. Chưa có: workspace Rig / Pose chưa dùng vị trí joint đã sửa ở General.
+
+### Mesh skin đi theo joint (2026-10-27, user: "FBX hiện tại đang có Skin, sao khi xoay joint trong General mesh không đi theo")
+`/api/char` gửi kèm `weights` của FBX (`{xương: [[đỉnh], [w]]}`, trong `chars/<id>/mesh_cm.json`). `mesh.js` gắn skin cho mesh trùng tên và cùng số đỉnh với bản gốc (4 ảnh hưởng mạnh nhất / đỉnh, chuẩn hoá). Mỗi joint giữ `D` = biến đổi từ bind tới hiện tại (cm, world); dời / xoay / scale joint nhân D cho joint đó và mọi joint con. Mesh hiển thị = Σ w·D·v_bind (LBS trên CPU, ~4k đỉnh tức thì); `o.pos` vẫn là mesh bind nên `mesh/edit` và Rig không bị pose làm hỏng. Skin → **Về Bind Pose** đưa joint + D về bind. Khi xương đang pose, mesh có skin bị khoá sửa đỉnh (gizmo / Channel Box / chế độ điểm-mặt) cho tới khi về bind pose. `skel/edit` v2 lưu thêm `D` (chỉ joint khác bind). Sửa topology (xoá mặt, tách, hàn) thì mesh đó mất skin.
+
+### Ẩn / hiện kiểu Maya (2026-10-27)
+Ctrl+H ẩn mesh đang chọn, Shift+H hiện mesh đang chọn (chọn mesh ẩn trong Outliner), Ctrl+Shift+H hiện tất cả (menu Hiển thị).
+
+### Cầu nối Claude ↔ Studio (2026-10-27, user: "có cách nào tối ưu hơn không" / "làm thử và test xem cách cũ với mới chênh lệch như nào")
+Trang Studio long-poll `GET /api/studio/poll` (server `tools/home/studio_bridge.py`), Claude gửi `POST /api/studio/cmd {op, args}` qua `tools/studio_cmd.py`, trang làm rồi `POST /api/studio/result`. Lệnh đi tới tab đang xem có nhân vật, poll gần nhất; tab báo đổi nhân vật / workspace / ẩn hiện bằng `/hello`, đóng tab gửi `/bye`. Lệnh (`modules/bridge.js`): state, vis, select, joint {t, r, s}, bindPose, ws, run {id}, open. An toàn: không có eval; `/cmd`, `/result` chỉ nhận `application/json` và Origin rỗng hoặc 127.0.0.1 / localhost (chặn trang web lạ).
+Đo trên Boss_Gragas (ẩn/hiện một mesh): cách cũ (công cụ trình duyệt của Claude chạy JS bấm nút Outliner) ~170 ms mỗi lần gọi, ~340 ms nếu chờ cập nhật, chỉ dùng được trong trình duyệt của app. Cầu nối: trong trang 2–5 ms, khứ hồi HTTP trung vị 3,7 ms (20 lần); một lệnh lẻ qua `studio_cmd.py` ~160 ms (phần lớn là khởi động Python), qua curl ~60 ms; 6 lệnh gộp một lần chạy 185 ms. Dùng được ở Chrome của người dùng.
+
 ### Outliner bên trái, không lớp nhóm (2026-10-27, user: "Đưa Outliner sang bên trái giống maya. Bỏ lớp tên nhân vật với nhóm Mesh đi", "Ẩn các lớp này đi")
 
 Outliner là cột riêng giữa hộp công cụ và viewport (kéo mép phải để đổi rộng, Cửa sổ → Outliner bật / tắt); dock phải chỉ còn Channel Box / Công cụ / Kiểm tra. Không còn dòng nhân vật, nhóm Mesh, nhóm Skeleton: mesh và joint gốc nằm ngay cấp đầu; mắt ở joint gốc ẩn / hiện cả bộ xương; nút khoá chỉ hiện khi rê chuột hoặc đang khoá.
@@ -161,7 +174,7 @@ Lõi Rig Lab chạy thẳng trong viewport Studio, không viết lại thuật t
 - Bước 4–5: click joint trong viewport, cọ / khối rời chặn chọn khung, thanh xoay joint nằm đầu panel.
 - Undo chung: khớp / twist và từng nét tô skin là một bước trong Sửa → Hoàn tác.
 - Outliner: mesh của rig (ẩn / hiện) + cây xương đang dựng (bấm để chọn khớp ở bước 2, chọn xương ở bước 4–5).
-- Mesh: dùng mesh đang sửa ở workspace Mesh (thay theo tên, dời landmark nếu thân đổi cỡ), như MESHLINK của Rig Lab.
+- Mesh: dùng mesh đang sửa ở workspace General (thay theo tên, dời landmark nếu thân đổi cỡ), như MESHLINK của Rig Lab.
 - Lưu cùng kho với Rig Lab cũ (`<nhân vật>_rig_lab`: rig/landmarks, rig/gates, rig/skin) nên hai bản dùng thay nhau được.
 - Rig → Gửi rig sang Pose…: chọn anim của nhân vật → `POST /api/rig/to-pose` (như nút ➤ của Home cũ).
 
@@ -169,3 +182,14 @@ Server: `tools/home/rig_data.py` — `GET /api/rigdata/<id>` lấy DATA nhúng t
 
 Đã thử (kho thử `studio_test_*`, đã xoá; kho rig thật không đổi): Gaygor bước 1–5 (chọn + dời khớp, đối xứng, undo; 7 kiểm tra xương đạt; tính skin ~1 s; cọ tô + undo; pose "Giơ tay lên" căng 4,5%), Gragas (dựng dữ liệu rig từ FBX, dùng xương + skin khách, "Ngồi xổm" căng 3%), Zom1 (tính skin, dựng glTF 29 xương). Chưa thử: Gửi rig sang Pose thật (ghi phiên bản vào anim), chuột thật trên gizmo khớp.
 Giới hạn: template ngón tối đa 3 đốt (Gragas có đốt 4 + Cup: báo thiếu ở bước 3, không ảnh hưởng skin khách).
+
+## 9. S4: workspace Pose (2026-10-27, user: "Bắt đầu S4: chuyển Pose Lab vào workspace Pose của Studio")
+
+Như S3, không viết lại: `tools/studio/port_pose.py` sinh từ `work/pose_lab/index.html` (bản gốc có mọi clip):
+- `modules/pose_engine.js`: toàn bộ lõi Pose Lab (key, spline / bậc thang, IK tay chân, pole, khóa chân, Timing, copy / paste, Channel Box, vật lý: AutoPhysics, lò xo, tác động, ragdoll, va chạm thân, cân bằng, ngã; khớp ref, chân chạm sàn, vẽ ghi chú, AI tự xem, FBX, playblast) bọc trong `ST.poseEngine(POSES, host)`; chỉ thay renderer / camera / canvas / OrbitControls / TransformControls / vòng vẽ / kho lưu bằng của Studio; nút tải FBX tải thẳng về máy (Pose Lab cũ chỉ tải được trên claude.ai). `ST.POSE_HTML` = giao diện Pose Lab, `ST.poseDB(ns)` = kho Home (có onSnapshot).
+- `pose.css`: CSS Pose Lab khoanh trong `.pz` (biến màu dùng của Studio).
+`modules/pose.js` đặt giao diện vào vỏ: thanh công cụ → shelf; Khớp / Vật lý / Ghi chú / Phiên bản → tab dock (tab Phiên bản có ô chọn anim); timeline (key, lane, Timing, transport, Xuất FBX) → vùng timeline; HUD, nút camera, ref, vẽ ghi chú → lớp phủ viewport. Viewport vẽ thêm cảnh + lớp phủ của Pose (`V.extra`), 1 hoặc 4 khung. Outliner = cây khớp của model. Phím: workspace Pose tự xử lý (Space phát, 1–7 camera, Q/W/E…), Studio chỉ giữ phím chung (Ctrl+O/H/N, F1, F3). Sửa → Hoàn tác gọi undo của Pose. Animate → Quay playblast và gửi sang Review (như nút 🎞 Home cũ), Đổi anim…, Mở Pose Lab cũ.
+Một anim mỗi lần: `?clip=<anim>` (từ Home, lần trước, hoặc anim đầu của nhân vật); đổi anim = tải lại trang. Mở được cả anim không có nhân vật trong Studio (SDR): `/studio/?ws=pose&clip=sdr_idle`. Kho: đúng kho Pose Lab cũ (`<tiêu đề trang>_pose_lab`), `?ns=` để thử.
+Server: `tools/home/pose_data.py` — `GET /api/poses?char=<id>` (anim có Pose của nhân vật), `GET /api/poses/<anim>` (phiên bản lấy từ bản gốc, như split_pages.py).
+
+Đã thử (kho thử, đã xoá): Gaygor Die (goal_v1 72 F): chọn khớp từ Outliner, xoay bằng gizmo, đặt key F30 + Sửa → Hoàn tác, phát / dừng, tab Phiên bản / Vật lý, Xuất FBX (zip 0,8 MB, không tải), đổi General ↔ Rig ↔ Pose; SDR Idle không nhân vật, 4 khung. Chưa thử: playblast → Review thật, khớp ref, AI tự xem, vật lý chạy thật trên trang Studio.

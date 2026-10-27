@@ -12,6 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import store
 import fbx_import
 import rig_data
+import studio_bridge
+import pose_data
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -193,7 +195,8 @@ def studio_char(cid):
         return None
     meshes = json.load(open(p, encoding="utf8"))
     return {"id": cid, "name": name, "unit": "cm", "skeleton": studio_skeleton(ref, sc),
-            "meshes": [{"name": m["name"], "verts": [round(v, 3) for v in m["verts"]], "tris": m["tris"]} for m in meshes]}
+            "meshes": [dict({"name": m["name"], "verts": [round(v, 3) for v in m["verts"]], "tris": m["tris"]},
+                            **({"weights": m["weights"]} if m.get("weights") else {})) for m in meshes]}   # skin FBX: {xương: [[đỉnh], [w]]}
 
 
 def lab_html(kind, id_):
@@ -568,6 +571,10 @@ class H(SimpleHTTPRequestHandler):
             return self.send_file(os.path.join(HERE, "index.html"), "text/html; charset=utf-8")
         if path.startswith("/api/store"):
             return self.store_call("GET")
+        if path.startswith("/api/studio/"):   # cầu nối Claude ↔ Studio (studio_bridge.py)
+            from urllib.parse import parse_qs
+            if studio_bridge.handle_get(self, path, parse_qs(urlparse(self.path).query)):
+                return
         if path == "/api/state":
             try:
                 return self.send_json(state())
@@ -575,6 +582,16 @@ class H(SimpleHTTPRequestHandler):
                 return self.send_json({"error": str(e)}, 500)
         if path == "/api/chars":
             return self.send_json(studio_chars())
+        if path == "/api/poses":   # anim có Pose của một nhân vật Studio (?char=<id>)
+            from urllib.parse import parse_qs
+            cid = (parse_qs(urlparse(self.path).query).get("char") or [""])[0]
+            d = load()
+            names = [n for n in (d.get("characters") or {}) if rig_page_of(n, d, "mesh") == cid or n.lower() == cid.lower()]
+            return self.send_json(pose_data.clips_for(names if cid else None))
+        m = re.match(r"^/api/poses/([^/]+)$", path)
+        if m:
+            r = pose_data.poses(m.group(1))
+            return self.send_json(r) if r else self.send_json({"error": "anim chưa có phiên bản Pose"}, 404)
         m = re.match(r"^/api/rigdata/([^/]+)$", path)
         if m:
             try:
@@ -617,6 +634,10 @@ class H(SimpleHTTPRequestHandler):
         path = urlparse(self.path).path
         if path.startswith("/api/store"):
             return self.store_call("POST")
+        if path.startswith("/api/studio/"):
+            n = int(self.headers.get("Content-Length", "0"))
+            if studio_bridge.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
+                return
         fn = ROUTES.get(path)
         if not fn:
             return self.send_error(404)

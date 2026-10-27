@@ -33,9 +33,38 @@
     o.mesh.userData.oid = o.id;
     o.wire = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x1b2230, wireframe: true, transparent: true, opacity: 0.22, depthWrite: false }));
     o.pts = new THREE.Points(g, new THREE.PointsMaterial({ size: 3.5, sizeAttenuation: false, color: 0x1b2230 }));
-    o.mesh.add(o.wire); o.mesh.add(o.pts); root.add(o.mesh); o.mirror = null; o.adj = null;
-    applyVis(o);
+    o.mesh.add(o.wire); o.mesh.add(o.pts); root.add(o.mesh); o.mirror = null; o.adj = null; o.def = null;
+    applyVis(o); if (o.skin) deform(o, posed());
   }
+
+  // ---------------------------------------------------------------- skin FBX: mesh đi theo joint (workspace General)
+  // o.pos luôn là mesh bind (lưu, Rig đọc); khi xương đang pose, hình hiển thị = Σ w·D·v với D = ST.mods.skel.skinMat(xương).
+  const posed = () => !!(ST.mods.skel && ST.mods.skel.posed && ST.mods.skel.posed());
+  function skinOf(name, n) {   // weights của FBX: {xương: [[đỉnh], [w]]} → 4 ảnh hưởng mạnh nhất mỗi đỉnh, chuẩn hoá
+    const m = (ORIG || []).find(x => x.name === name && x.weights); if (!m || m.verts.length / 3 !== n) return null;
+    const bones = Object.keys(m.weights), per = Array.from({ length: n }, () => []);
+    bones.forEach((b, bi) => { const [ix, ws] = m.weights[b]; ix.forEach((v, k) => { if (v < n && ws[k] > 0) per[v].push([bi, ws[k]]); }); });
+    const B = new Uint16Array(n * 4), W = new Float32Array(n * 4);
+    per.forEach((l, v) => { l.sort((a, c) => c[1] - a[1]); const top = l.slice(0, 4), s = top.reduce((a, x) => a + x[1], 0) || 1; top.forEach(([bi, w], k) => { B[4 * v + k] = bi; W[4 * v + k] = w / s; }); });
+    return { bones, B, W };
+  }
+  const ID16 = new M4().elements;
+  function deform(o, on) {
+    const g = o.mesh.geometry, attr = g.attributes.position;
+    if (!on || !o.skin) { if (attr.array !== o.pos) { g.setAttribute("position", new THREE.BufferAttribute(o.pos, 3)); g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox(); } return; }
+    const n = nV(o), P = o.pos, out = o.def && o.def.length === P.length ? o.def : (o.def = new Float32Array(P.length)), { bones, B, W } = o.skin;
+    const E = bones.map(b => { const m = ST.mods.skel.skinMat(b); return m ? m.elements : ID16; });
+    for (let i = 0; i < n; i++) {
+      const x = P[3 * i], y = P[3 * i + 1], z = P[3 * i + 2]; let ox = 0, oy = 0, oz = 0, ws = 0;
+      for (let k = 0; k < 4; k++) { const w = W[4 * i + k]; if (!w) continue; const e = E[B[4 * i + k]]; ox += w * (e[0] * x + e[4] * y + e[8] * z + e[12]); oy += w * (e[1] * x + e[5] * y + e[9] * z + e[13]); oz += w * (e[2] * x + e[6] * y + e[10] * z + e[14]); ws += w; }
+      if (ws < 1e-6) { ox = x; oy = y; oz = z; }
+      out[3 * i] = ox; out[3 * i + 1] = oy; out[3 * i + 2] = oz;
+    }
+    if (attr.array !== out) g.setAttribute("position", new THREE.BufferAttribute(out, 3)); else attr.needsUpdate = true;
+    g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox();
+  }
+  ST.on("skel:pose", () => { const on = posed(); OBJ.forEach(o => deform(o, on)); placePivot && placePivot(); });
+  const frozen = () => posed() && (mode === "o" ? [...selO].some(i => (get(i) || {}).skin) : !!(active && active.skin));   // mesh skin đang pose: không sửa đỉnh
   function touchGeo(o, full) { const g = o.mesh.geometry; g.attributes.position.needsUpdate = true; g.computeVertexNormals(); if (full) { g.computeBoundingSphere(); g.computeBoundingBox(); } }
   function applyVis(o) {
     const edit = style === "edit", mat = o.mesh.material;
@@ -48,7 +77,7 @@
   M.display = s => { style = s; allVis(); refreshSel(); };
 
   // ---------------------------------------------------------------- undo (lịch sử chung)
-  M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice() })) });
+  M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice(), skin: o.skin || null })) });
   M.restore = s => {
     OBJ.slice().forEach(disposeObj); OBJ = []; TS = null;
     s.o.forEach(d => { const o = Object.assign({}, d); buildGeo(o); OBJ.push(o); });
@@ -103,15 +132,20 @@
     else if (active) selV.forEach(i => { c.x += active.pos[3 * i]; c.y += active.pos[3 * i + 1]; c.z += active.pos[3 * i + 2]; n++; });
     return n ? c.multiplyScalar(1 / n) : null;
   }
+  const SK = () => (ST.mods.skel && ST.mods.skel.sel() ? ST.mods.skel : null);   // joint đang chọn thì gizmo / Channel Box sửa joint
   function placePivot() {
     const G = V.gizmo;
-    if (style !== "edit" || ST.ws !== "mesh") { G.detach(); buildFree(); return; }
+    if (style !== "edit" || ST.ws !== "general") { G.detach(); buildFree(); return; }
+    const sk = SK();
+    if (sk) { const t = ST.tool; if (t === "move" || t === "rot" || t === "scl") G.place(sk.selPos(), root, t === "move" ? "translate" : t === "rot" ? "rotate" : "scale"); else G.detach(); buildFree(); return; }
+    if (frozen()) { G.detach(); buildFree(); return; }
     const t = ST.tool, c = t === "sel" || t === "free" ? null : selCenter(), lockedObj = mode === "o" && [...selO].every(i => (get(i) || {}).lock);
     if (!c || lockedObj || (mode !== "o" && active && active.lock)) G.detach();
     else G.place(c, root, t === "move" ? "translate" : t === "rot" ? "rotate" : "scale");
     buildFree();
   }
-  ST.on("tool", () => { if (ST.ws === "mesh") placePivot(); });
+  ST.on("tool", () => { if (ST.ws === "general") placePivot(); });
+  ST.on("jsel", n => { if (n) { selO.clear(); clearSel(); TS = null; allVis(); } refreshSel(); });
 
   // ---------------------------------------------------------------- biến đổi: falloff mềm + đối xứng X (dùng cho gizmo, Channel Box, Free Transform)
   function mirrorMap(o) {
@@ -165,17 +199,17 @@
 
   // gizmo chung → ma trận chênh lệch trong toạ độ cm
   let drag = null;
-  M.gzStart = () => { pushUndo("Biến đổi"); ensureTS(); drag = { aff: affSnapshot(), A0: TS ? TS.A.clone() : new M4() }; };
-  M.gzChange = Mx => { if (!drag) return; xformApply(Mx, drag.aff); if (TS) TS.A = Mx.clone().multiply(drag.A0); overlayPositions(); ST.chRefresh(); };
-  M.gzEnd = () => { if (!drag) return; const aff = drag.aff; drag = null; xformEnd(aff); };
+  M.gzStart = () => { if (SK()) return SK().gzStart(); pushUndo("Biến đổi"); ensureTS(); drag = { aff: affSnapshot(), A0: TS ? TS.A.clone() : new M4() }; };
+  M.gzChange = Mx => { if (SK()) return SK().gzChange(Mx); if (!drag) return; xformApply(Mx, drag.aff); if (TS) TS.A = Mx.clone().multiply(drag.A0); overlayPositions(); ST.chRefresh(); };
+  M.gzEnd = () => { if (SK()) return SK().gzEnd(); if (!drag) return; const aff = drag.aff; drag = null; xformEnd(aff); };
 
   // Channel Box: phép biến đổi cộng dồn của vùng chọn (quanh tâm lúc chọn)
   const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
-  M.channel = {
+  const MCH = {
     unit: "cm",
     title: () => mode === "o" ? (selO.size > 1 ? selO.size + " mesh" : (active && selO.size ? active.name : "")) : (active ? active.name + " · " + (mode === "v" ? selV.size + " điểm" : selF.size + " mặt") : ""),
     vals() {
-      if (ST.ws !== "mesh") return null;
+      if (ST.ws !== "general" || frozen()) return null;
       const c = selCenter(); if (!c) return null;
       if (!TS) return { t: [c.x, c.y, c.z], r: [0, 0, 0], s: [1, 1, 1] };
       const t = TS.c0.clone().applyMatrix4(TS.A), L = TS.A.clone().setPosition(0, 0, 0), q = new THREE.Quaternion(), p = new V3(), sc = new V3();
@@ -195,6 +229,8 @@
     begin() { pushUndo("Channel Box"); },
     reset() { TS = null; },
   };
+  const chOf = () => SK() ? ST.mods.skel.channel : MCH;
+  M.channel = { unit: "cm", title: () => chOf().title(), vals: () => chOf().vals(), apply: (v, p) => { chOf().apply(v, p); placePivot(); }, begin: () => chOf().begin(), reset: () => chOf().reset() };
 
   // ---------------------------------------------------------------- chọn bằng chuột (viewport gọi pick / box)
   const camLocal = p => root.worldToLocal(p.cam.position.clone());
@@ -212,7 +248,8 @@
   M.canBox = () => mode !== "o" && ST.tool === "sel";
   M.pick = (x, y, e, p) => {
     if (style !== "edit") return;
-    const add = ST.addSel(e);
+    const add = ST.addSel(e), sk = ST.mods.skel;
+    if (mode === "o" && sk) { const jn = sk.pickAt(x, y, p); if (jn) { sk.select(jn); return; } if (sk.sel()) sk.select(null); }
     if (mode === "o") {
       const h = hitObjects(x, y, p);
       if (!h) { if (!add) selO.clear(); } else { const o = get(h.object.userData.oid); if (add) { selO.has(o.id) ? selO.delete(o.id) : selO.add(o.id); } else selO = new Set([o.id]); active = o; }
@@ -249,7 +286,7 @@
     const ni = new Uint32Array(idx.length); for (let i = 0; i < idx.length; i++) ni[i] = map[idx[i]];
     return { pos: np, idx: ni };
   }
-  function setTopology(o, pos, idx) { const c = compact(pos, idx); o.pos = c.pos; o.idx = c.idx; buildGeo(o); clearSel(); TS = null; }
+  function setTopology(o, pos, idx) { const c = compact(pos, idx); o.pos = c.pos; o.idx = c.idx; o.skin = null; buildGeo(o); clearSel(); TS = null; }
   const say = t => ST.toast(t);
   function opDelete() {
     if (mode === "o") { if (!selO.size) return; pushUndo("Xoá mesh"); [...selO].forEach(id => removeObj(get(id))); selO.clear(); clearSel(); changed(); refreshSel(); return; }
@@ -363,6 +400,7 @@
   function selectInvert() { if (!active || mode === "o") return; if (mode === "v") setVerts(new Set(allIdx(nV(active)).filter(i => !selV.has(i)))); else setFaces(new Set(allIdx(nT(active)).filter(t => !selF.has(t)))); }
   function selectGrow() { const o = active; if (!o || mode === "o" || !selV.size) return; const vf = adjacency(o), n = new Set(selV); selV.forEach(i => vf[i].forEach(t => { for (let k = 0; k < 3; k++) n.add(o.idx[3 * t + k]); })); mode === "v" ? setVerts(n) : setFaces(facesOfVerts(o, n, false)); }
   function setMode(m) {
+    if (m !== "o" && posed() && active && active.skin) return say("Xương đang pose: Skin → Về Bind Pose rồi mới sửa điểm / mặt.");
     mode = m; if (m === "o") clearSel(); else if (active) { selO = new Set([active.id]); if (selF.size && m !== "v") selV = vertsOfFaces(active, selF); }
     allVis(); refreshSel();
   }
@@ -377,7 +415,7 @@
   M.save = save;
   function loadMeshes(list) {
     OBJ.slice().forEach(disposeObj); OBJ = []; selO.clear(); clearSel(); TS = null;
-    list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length] }));
+    list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length], skin: skinOf(m.name, m.verts.length / 3) }));
     active = OBJ[OBJ.length - 1] || null; if (active) selO = new Set([active.id]); allVis();
   }
   // Nhập mesh từ FBX (đã đổi cm, Y lên ở server): "replace" thay mesh trùng tên (giữ màu, ẩn/khoá), còn lại thêm mới
@@ -434,7 +472,7 @@
   }
   function buildFree() {
     FREE.group.children.slice().forEach(c => { FREE.group.remove(c); if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); }); FREE.hs = [];
-    const b = ST.tool === "free" && ST.ws === "mesh" && style === "edit" ? selBox() : null; FREE.box = b; FREE.group.visible = !!b; if (!b) return;
+    const b = ST.tool === "free" && ST.ws === "general" && style === "edit" ? selBox() : null; FREE.box = b; FREE.group.visible = !!b; if (!b) return;
     const c = b.getCenter(new V3()), sz = b.getSize(new V3());
     const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(sz.x, sz.y, sz.z)), new THREE.LineBasicMaterial({ color: FCOL, depthTest: false, transparent: true, opacity: 0.9 }));
     edges.position.copy(c); edges.renderOrder = 28; edges.raycast = () => {}; FREE.group.add(edges);
@@ -486,7 +524,7 @@
   M.outline = () => {
     const rows = [];   // như Maya: mesh và xương nằm ngay cấp đầu, không có dòng nhân vật / nhóm Mesh
     const sk = ST.mods.skel ? ST.mods.skel.rows() : [];
-    OBJ.forEach(o => rows.push({ id: o.id, d: 0, label: o.name, icon: "mesh", vis: o.vis, lock: o.lock, count: nT(o), sel: selO.has(o.id), act: o === active, del: ST.ws === "mesh", rename: ST.ws === "mesh" }));
+    OBJ.forEach(o => rows.push({ id: o.id, d: 0, label: o.name, icon: "mesh", vis: o.vis, lock: o.lock, count: nT(o), sel: selO.has(o.id), act: o === active, del: ST.ws === "general", rename: ST.ws === "general" }));
     return rows.concat(sk);
   };
   M.olAct = (id, a, e, val) => {
@@ -494,18 +532,20 @@
     const o = get(+id); if (!o) return;
     if (a === "vis") { o.vis = !o.vis; applyVis(o); dirty = true; changed(); refreshSel(); return; }
     if (a === "lock") { o.lock = !o.lock; if (o.lock) { selO.delete(o.id); if (active === o) { active = OBJ.find(x => !x.lock && x.vis) || null; clearSel(); } } changed(); allVis(); refreshSel(); return; }
-    if (ST.ws !== "mesh") return;
+    if (ST.ws !== "general") return;
     if (a === "del") { pushUndo("Xoá mesh"); removeObj(o); clearSel(); changed(); refreshSel(); return; }
     if (a === "rename") { if (val && val !== o.name) { pushUndo("Đổi tên"); o.name = val; changed(); } return; }
     if (o.lock) return;
+    if (ST.mods.skel && ST.mods.skel.sel()) ST.mods.skel.select(null);   // chọn mesh thì bỏ chọn joint
     if (ST.addSel(e)) { selO.has(o.id) ? selO.delete(o.id) : selO.add(o.id); } else selO = new Set([o.id]);
     if (active !== o) { active = o; clearSel(); }
     allVis(); refreshSel();
   };
   M.info = () => {
+    if (SK()) return ST.mods.skel.info();
     const o = active, h = sceneH();
     return (o ? o.name + " · " + nV(o) + " điểm · " + nT(o) + " tam giác" : "Chưa có mesh") +
-      (ST.ws === "mesh" ? (mode !== "o" ? " · chọn " + (mode === "v" ? selV.size + " điểm" : selF.size + " mặt") : selO.size ? " · chọn " + selO.size + " mesh" : "") : "") + " · cao " + h.toFixed(1) + " cm";
+      (ST.ws === "general" ? (mode !== "o" ? " · chọn " + (mode === "v" ? selV.size + " điểm" : selF.size + " mặt") : selO.size ? " · chọn " + selO.size + " mesh" : "") : "") + " · cao " + h.toFixed(1) + " cm";
   };
   const chk = (ok, bad, txt, detail) => `<i class="${bad ? "s-bad" : ok ? "s-ok" : "s-warn"}">${bad ? "✗" : ok ? "✓" : "!"}</i><span>${txt}${detail ? `<br><small class="sub">${detail}</small>` : ""}</span>`;
   M.panel = tab => {
@@ -545,11 +585,11 @@
   M.panel_input = e => { if (e.target.dataset.k === "r") { soft.r = +e.target.value; const s = document.getElementById("mSr"); if (s) s.textContent = soft.r + " cm"; } };
 
   // ---------------------------------------------------------------- vào / ra workspace
-  M.enter = w => { M.display(w.display || "edit"); if (ST.ws === "mesh") placePivot(); };
+  M.enter = w => { M.display(w.display || "edit"); if (ST.ws === "general") placePivot(); };
   M.leave = () => { V.gizmo.detach(); };
 
   // ---------------------------------------------------------------- lệnh (menu, shelf, phím)
-  const C = (o) => ST.cmd(Object.assign({ ws: ["mesh"] }, o));
+  const C = (o) => ST.cmd(Object.assign({ ws: ["general"] }, o));
   const md = (m, label, icon, key) => C({ id: "mesh.mode." + m, menu: "Select", label, icon, key, check: () => mode === m, run: () => setMode(m) });
   md("o", "Chọn mesh", "obj", "1"); md("v", "Chọn điểm", "vert", "2"); md("f", "Chọn mặt", "face", "3"); md("i", "Chọn khối rời", "island", "4");
   C({ id: "sel.all", menu: "Select", sep: true, label: "Chọn tất cả", icon: "all", key: "ctrl+a", run: selectAll });
@@ -575,4 +615,11 @@
   C({ id: "file.obj", menu: "File", label: "Xuất OBJ", icon: "export", run: exportOBJ });
   C({ id: "file.rigjson", menu: "File", label: "Xuất mesh_cm.json (cho Rig)", icon: "export", run: exportRig });
   C({ id: "file.reset", menu: "File", label: "Về mesh gốc", icon: "reset", run: resetAll });
+  // ẩn / hiện như Maya: Ctrl+H ẩn mesh đang chọn, Shift+H hiện mesh đang chọn (chọn trong Outliner), Ctrl+Shift+H hiện tất cả
+  M.setVis = (list, v) => { list = list.filter(o => o && o.vis !== v); if (!list.length) return 0; list.forEach(o => { o.vis = v; applyVis(o); }); dirty = true; changed(); refreshSel(); return list.length; };
+  M.byName = n => OBJ.find(o => o.name === n) || null;
+  const selObjs = () => [...selO].map(get).filter(Boolean);
+  C({ id: "mesh.hide", menu: "Display", sep: true, label: "Ẩn mesh đang chọn", icon: "eyeoff", key: "ctrl+h", on: () => selO.size > 0, run: () => say("Đã ẩn " + M.setVis(selObjs(), false) + " mesh.") });
+  C({ id: "mesh.showSel", menu: "Display", label: "Hiện mesh đang chọn", icon: "eye", key: "shift+h", on: () => selO.size > 0, run: () => say("Đã hiện " + M.setVis(selObjs(), true) + " mesh.") });
+  C({ id: "mesh.showAll", menu: "Display", label: "Hiện tất cả mesh", icon: "eye", key: "ctrl+shift+h", run: () => say("Đã hiện " + M.setVis(OBJ, true) + " mesh.") });
 })();

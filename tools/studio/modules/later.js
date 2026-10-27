@@ -23,7 +23,7 @@
       info: () => mesh().info() + " · workspace " + ST.WS[id].label + " đang chuyển (" + step + ")",
       panel() {
         if (!ST.char) return `<h2>${kind === "rig" ? "Rig" : "Pose"}</h2><p class="note">Cảnh trống: mở nhân vật (Ctrl+O) hoặc nhập FBX (Ctrl+Shift+I) trước.</p>`;
-        if (kind === "rig") return `<h2>Rig</h2><p class="note">Workspace Rig sẽ có landmark, xương, skin, cọ vẽ weight và cổng duyệt ngay trong viewport này (bước ${step}). Trong lúc chờ, dùng Rig Lab cũ: nó đọc mesh vừa sửa ở workspace Mesh.</p>
+        if (kind === "rig") return `<h2>Rig</h2><p class="note">Workspace Rig sẽ có landmark, xương, skin, cọ vẽ weight và cổng duyệt ngay trong viewport này (bước ${step}). Trong lúc chờ, dùng Rig Lab cũ: nó đọc mesh vừa sửa ở workspace General.</p>
           <div class="row"><a class="note" href="${esc(oldRig())}" target="_blank">${ic("ext")} Mở Rig Lab cũ của ${esc(ST.char ? ST.char.name : "")}</a></div>`;
         const list = clips === null ? '<div class="sub">Đang tải danh sách clip…</div>' : clips.length ? clips.map(c => `<div class="row"><a class="note" href="/lab/pose/${encodeURIComponent(c.id)}" target="_blank">${ic("ext")} ${esc(c.name || c.id)}</a><span class="sub">${esc(c.stage || "")}</span></div>`).join("") : '<div class="sub">Nhân vật này chưa có clip.</div>';
         return `<h2>Pose</h2><p class="note">Workspace Pose sẽ có phiên bản, key, timeline, IK/pole, physics và xuất FBX trong viewport này (bước ${step}). Trong lúc chờ, mở Pose Lab cũ của từng clip:</p>${list}`;
@@ -31,12 +31,8 @@
       timeline: () => `<span class="sub">Timeline (${step})</span><div class="tlbar"></div>`,
     };
   }
-  ST.mods.pose = mk("pose", "pose", "S4–S5");
 
   // menu: lệnh sẽ chuyển (mờ) + lối sang Lab cũ
   const later = (menu, label, step) => ST.cmd({ id: "later." + menu + "." + label, menu, label: label + " (" + step + ")", on: () => false, tip: "Chưa chuyển vào Studio: bước " + step });
   ST.cmd({ id: "rig.oldlab", menu: "Rig", sep: true, label: "Mở Rig Lab cũ", icon: "ext", on: () => !!ST.char, run: () => open(oldRig(), "_blank") });
-  ST.cmd({ id: "pose.oldlab", menu: "Animate", label: "Mở Pose Lab cũ…", icon: "ext", on: () => !!ST.char, run: () => ST.setWS("pose") });
-  ["Key", "Breakdown", "Stepped / Spline", "Timing", "IK / FK", "Pole", "Foot lock", "Fit theo ref", "AI self-review"].forEach(l => later("Animate", l, "S4"));
-  ["AutoPhysics", "Spring", "Impact", "Ragdoll", "Va chạm thân", "Cân bằng", "Ngã"].forEach(l => later("Physics", l, "S5"));
 })();

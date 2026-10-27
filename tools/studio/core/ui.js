@@ -7,12 +7,12 @@
 
   // ---------------------------------------------------------------- lệnh chung
   const C = ST.cmd;
-  C({ id: "file.home", menu: "File", label: "Dự án (Home)", icon: "home", key: "ctrl+h", run: () => { (window.top || window).location.href = "/home"; } });
-  C({ id: "file.new", menu: "File", sep: true, label: "Cảnh mới", icon: "plus", key: "ctrl+n", run: () => { location.href = "/"; } });
-  C({ id: "file.open", menu: "File", label: "Mở nhân vật…", icon: "open", key: "ctrl+o", run: openChar });
-  C({ id: "edit.undo", menu: "Edit", label: "Hoàn tác", icon: "undo", key: "ctrl+z", on: () => ST.hist.U.length > 0, run: () => ST.hist.undo() });
-  C({ id: "edit.redo", menu: "Edit", label: "Làm lại", icon: "redo", key: ["ctrl+shift+z", "ctrl+y"], on: () => ST.hist.R.length > 0, run: () => ST.hist.redo() });
-  C({ id: "edit.search", menu: "Edit", sep: true, label: "Tìm lệnh…", icon: "search", key: ["f3", "ctrl+k"], run: openPalette });
+  C({ id: "file.home", global: true, menu: "File", label: "Dự án (Home)", icon: "home", key: "ctrl+h", run: () => { (window.top || window).location.href = "/home"; } });
+  C({ id: "file.new", global: true, menu: "File", sep: true, label: "Cảnh mới", icon: "plus", key: "ctrl+n", run: () => { location.href = "/"; } });
+  C({ id: "file.open", global: true, menu: "File", label: "Mở nhân vật…", icon: "open", key: "ctrl+o", run: openChar });
+  C({ id: "edit.undo", menu: "Edit", label: "Hoàn tác", icon: "undo", key: "ctrl+z", on: () => ST.mod().canUndo ? ST.mod().canUndo() : ST.hist.U.length > 0, run: () => ST.hist.undo() });
+  C({ id: "edit.redo", menu: "Edit", label: "Làm lại", icon: "redo", key: ["ctrl+shift+z", "ctrl+y"], on: () => !ST.mod().undo && ST.hist.R.length > 0, run: () => ST.hist.redo() });
+  C({ id: "edit.search", global: true, menu: "Edit", sep: true, label: "Tìm lệnh…", icon: "search", key: ["f3", "ctrl+k"], run: openPalette });
   const tool = (id, label, icon, key, extra) => C(Object.assign({ id: "tool." + id, menu: "Edit", label, icon, key, check: () => ST.tool === id, on: () => { const w = ST.WS[ST.ws]; return !w || !w.tools || w.tools.includes("tool." + id); }, run: () => ST.setTool(id) }, extra || {}));
   tool("sel", "Công cụ chọn", "sel", "q", { sep: true }); tool("move", "Dời", "move", "w"); tool("rot", "Xoay", "rot", "e"); tool("scl", "Scale", "scl", "r");
   tool("free", "Free Transform (hộp bao)", "free", "t");
@@ -26,7 +26,7 @@
   const panel = (k, label) => C({ id: "win." + k, menu: "Window", label, check: () => ui()[k], run: () => { const u = ui(); u[k] = !u[k]; ST.pref.set("ui:" + ST.ws, u); applyLayout(); } });
   panel("outliner", "Outliner"); panel("dock", "Dock phải (Channel Box, Công cụ)"); panel("shelf", "Shelf"); panel("timeline", "Timeline");
   C({ id: "win.reset", menu: "Window", sep: true, label: "Bố cục mặc định của workspace", icon: "reset", run: () => { ST.pref.set("ui:" + ST.ws, null); ST.pref.set("size:" + ST.ws, null); applyLayout(); } });
-  C({ id: "help.keys", menu: "Help", label: "Phím tắt", icon: "keys", key: "f1", run: showKeys });
+  C({ id: "help.keys", global: true, menu: "Help", label: "Phím tắt", icon: "keys", key: "f1", run: showKeys });
   C({ id: "help.nav", menu: "Help", label: "Điều hướng camera", run: () => ST.dialog("Điều hướng camera (kiểu Maya)", `<div class="keys"><kbd>Alt + kéo trái</kbd><span>Xoay quanh</span><kbd>Kéo giữa</kbd><span>Pan</span><kbd>Kéo phải / Alt + kéo phải</kbd><span>Xoay / dolly</span><kbd>Lăn chuột</kbd><span>Zoom (khung dưới chuột)</span><kbd>Space</kbd><span>1 khung ⇄ 4 khung (khung dưới chuột)</span><kbd>A / F</kbd><span>Nhìn toàn bộ / vùng chọn</span></div>`) });
 
   // ---------------------------------------------------------------- bố cục theo workspace
@@ -72,8 +72,10 @@
   const btn = (id, cls) => { const c = ST.cmds.get(id); if (!c) return ""; const t = c.label + (c.key ? " (" + ST.keyLabel(c.key) + ")" : ""); return `<button data-c="${id}" class="${(c.check && c.check()) ? "on" : ""} ${cls || ""}" title="${esc(t)}" aria-label="${esc(c.label)}" ${ST.cmdOn(c) ? "" : "disabled"}>${ic(c.icon || "plus")}</button>`; };
   const strip = list => (list || []).map(id => id === "|" ? '<span class="gap"></span>' : btn(id)).join("");
   function renderBars() {
-    const w = ST.WS[ST.ws] || {};
-    $("shelf").innerHTML = strip(w.shelf);
+    const w = ST.WS[ST.ws] || {}, m = ST.mod();
+    document.body.className = document.body.className.replace(/(^|\s)ws-[\w-]+/g, " ").trim() + " ws-" + ST.ws;
+    if (m.shelfNode) { const n = m.shelfNode(); if (n && $("shelf").firstChild !== n) $("shelf").replaceChildren(n); }   // khối shelf riêng của module (vd thanh công cụ Pose)
+    else $("shelf").innerHTML = strip(w.shelf);
     $("toolbox").innerHTML = strip(w.tools) + (w.modes ? '<span class="gap"></span>' + strip(w.modes) : "");
     $("wstabs").innerHTML = Object.values(ST.WS).map(x => `<button role="tab" aria-selected="${x.id === ST.ws}" class="${x.id === ST.ws ? "on" : ""}" data-ws="${x.id}" title="Workspace ${esc(x.label)}">${ic(x.icon)}<span>${esc(x.label)}</span></button>`).join("");
   }
@@ -111,6 +113,7 @@
     $("attrTabs").innerHTML = tabs.map(([id, label]) => `<button role="tab" data-t="${id}" class="${id === t ? "on" : ""}">${esc(label)}</button>`).join("");
     if (!force && attrB.contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
     if (t === "channel") { attrB.dataset.key = ""; return chRender(); }
+    if (ST.mod().panelNode) { const n = ST.mod().panelNode(t); if (n) { if (attrB.firstChild !== n || attrB.childNodes.length !== 1) attrB.replaceChildren(n); attrB.dataset.key = ""; return; } }
     const m = ST.mod(), key = ST.ws + ":" + t + ":" + (m.panelKey ? m.panelKey() : "");
     if (m.panelStatic && !force && attrB.dataset.key === key) return;   // module tự vẽ lại panel của nó (vd lõi Rig)
     attrB.innerHTML = m.panel ? m.panel(t) : ""; attrB.dataset.key = key;
@@ -159,7 +162,7 @@
   attrB.addEventListener("pointerup", chEnd); attrB.addEventListener("pointercancel", chEnd);
 
   // ---------------------------------------------------------------- timeline + dòng trạng thái
-  function renderTimeline() { const m = ST.mod(); $("timeline").innerHTML = m.timeline ? m.timeline() : '<span class="sub">Timeline</span><div class="tlbar"></div>'; }
+  function renderTimeline() { const m = ST.mod(); if (m.timelineNode) { const n = m.timelineNode(); if ($("timeline").firstChild !== n) $("timeline").replaceChildren(n); return; } $("timeline").innerHTML = m.timeline ? m.timeline() : '<span class="sub">Timeline</span><div class="tlbar"></div>'; }
   function renderStatus() { const m = ST.mod(); $("stInfo").textContent = m.info ? m.info() : ""; $("stHint").textContent = ST.hint || ""; }
 
   // ---------------------------------------------------------------- tìm lệnh (F3)
@@ -193,7 +196,7 @@
     try {
       const L = await (await fetch("/api/chars")).json();
       $("dlgB").innerHTML = `<div class="list">${L.map(c => `<button class="it" data-id="${esc(c.id)}">${ic("mesh")}<span>${esc(c.name)}</span><small>${esc(c.id)}</small></button>`).join("")}</div>`;
-      $("dlgB").onclick = e => { const b = e.target.closest("[data-id]"); if (!b) return; const u = new URL("/studio/" + encodeURIComponent(b.dataset.id), location.origin); u.searchParams.set("ws", ST.ws || "mesh"); location.href = u; };
+      $("dlgB").onclick = e => { const b = e.target.closest("[data-id]"); if (!b) return; const u = new URL("/studio/" + encodeURIComponent(b.dataset.id), location.origin); u.searchParams.set("ws", ST.ws || "general"); location.href = u; };
     } catch (e) { $("dlgB").innerHTML = '<div class="sub">Không đọc được danh sách nhân vật (Home server).</div>'; }
   }
 
@@ -207,6 +210,7 @@
     const k = combo(e), all = [...ST.cmds.values()].filter(c => keyMatch(c, k));
     const c = all.find(c => c.ws && c.ws.includes(ST.ws)) || all.find(c => !c.ws);
     if (!c) return;
+    if (ST.mod().ownKeys && !c.global) return;   // workspace tự xử lý phím (Pose): Studio chỉ giữ phím chung
     e.preventDefault(); ST.run(c.id);
   });
 
@@ -219,7 +223,7 @@
     el.innerHTML = `<b>Cảnh trống</b><div class="row"><button class="on" data-c="file.fbx">${ic("import")} Nhập FBX…</button><button data-c="file.open">${ic("open")} Mở nhân vật…</button></div><div class="sub">Mở nhanh:</div><div class="list" id="emptyList"><span class="sub">Đang tải…</span></div>`;
     let L = []; try { L = await (await fetch("/api/chars")).json(); } catch (e) {}
     const last = ST.pref.get("char", null); L.sort((a, b) => (b.id === last) - (a.id === last));
-    $("emptyList").innerHTML = L.map(c => `<a class="it" href="/studio/${encodeURIComponent(c.id)}?ws=${encodeURIComponent(ST.ws || "mesh")}">${ic("mesh")}<span>${esc(c.name)}</span><small>${c.id === last ? "mở lần trước" : esc(c.id)}</small></a>`).join("") || '<span class="sub">Chưa có nhân vật.</span>';
+    $("emptyList").innerHTML = L.map(c => `<a class="it" href="/studio/${encodeURIComponent(c.id)}?ws=${encodeURIComponent(ST.ws || "general")}">${ic("mesh")}<span>${esc(c.name)}</span><small>${c.id === last ? "mở lần trước" : esc(c.id)}</small></a>`).join("") || '<span class="sub">Chưa có nhân vật.</span>';
   });
   $("empty").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) ST.run(b.dataset.c); });
   ST.on("hist", () => ST.refresh());

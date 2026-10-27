@@ -1,8 +1,9 @@
 // AI Anim Studio — workspace = cấu hình sẵn: module nhận chuột, hộp công cụ, shelf, tab dock, panel hiện / ẩn, kiểu hiển thị mesh.
 // Thêm workspace mới = thêm một mục ở đây (về sau lưu được workspace tự tạo, bước S6).
+ST.WS_ALIAS = { mesh: "general" };   // link / pref cũ ?ws=mesh
 ST.WS = {
-  mesh: {
-    id: "mesh", label: "Mesh", icon: "mesh", module: "mesh", display: "edit",
+  general: {   // như Maya "General": workspace chung, không giới hạn ở mesh
+    id: "general", label: "General", icon: "mesh", module: "mesh", display: "edit",
     tools: ["tool.sel", "tool.move", "tool.rot", "tool.scl", "tool.free"],
     modes: ["mesh.mode.o", "mesh.mode.v", "mesh.mode.f", "mesh.mode.i"],
     shelf: ["edit.undo", "edit.redo", "|", "mesh.delete", "mesh.separate", "mesh.merge", "mesh.dup", "|", "mesh.flip", "mesh.smooth", "mesh.flipx", "mesh.weld", "mesh.clean", "|",
@@ -21,10 +22,11 @@ ST.WS = {
     ui: { outliner: true, dock: true, shelf: true, timeline: false },
   },
   pose: {
-    id: "pose", label: "Pose", icon: "pose", module: "pose", display: "pose",
-    tools: ["tool.sel"],
-    shelf: ["edit.undo", "edit.redo", "|", "view.toggle4", "view.frameAll", "|", "edit.search"],
-    tabs: [["tool", "Pose"]],
+    id: "pose", label: "Pose", icon: "pose", module: "pose", display: "hidden",
+    tools: [], modes: [], shelf: [],   // thanh công cụ Pose Lab nằm ở shelf (modules/pose.js)
+    tabs: [["joint", "Khớp"], ["phys", "Vật lý"], ["notes", "Ghi chú"], ["versions", "Phiên bản"]],
+    size: { dockW: 340 },
     ui: { outliner: true, dock: true, shelf: true, timeline: true },
   },
+
 };

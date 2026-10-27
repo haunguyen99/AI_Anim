@@ -77,8 +77,8 @@
   ST.hist = {
     U: [], R: [], max: 60,
     push(owner, label) { this.U.push({ owner, label, s: owner.snap() }); if (this.U.length > this.max) this.U.shift(); this.R = []; ST.emit("hist"); },
-    undo() { const e = this.U.pop(); if (!e) return; this.R.push({ owner: e.owner, label: e.label, s: e.owner.snap() }); e.owner.restore(e.s); ST.emit("hist"); ST.toast("Hoàn tác: " + e.label); },
-    redo() { const e = this.R.pop(); if (!e) return; this.U.push({ owner: e.owner, label: e.label, s: e.owner.snap() }); e.owner.restore(e.s); ST.emit("hist"); ST.toast("Làm lại: " + e.label); },
+    undo() { const m = ST.mod(); if (m.undo) { m.undo(); ST.emit("hist"); return; } const e = this.U.pop(); if (!e) return; this.R.push({ owner: e.owner, label: e.label, s: e.owner.snap() }); e.owner.restore(e.s); ST.emit("hist"); ST.toast("Hoàn tác: " + e.label); },
+    redo() { const m = ST.mod(); if (m.undo) return; const e = this.R.pop(); if (!e) return; this.U.push({ owner: e.owner, label: e.label, s: e.owner.snap() }); e.owner.restore(e.s); ST.emit("hist"); ST.toast("Làm lại: " + e.label); },
   };
 
   // ---- sổ lệnh: một lệnh gọi được từ menu, shelf, toolbox, phím tắt, tìm lệnh (F3)
@@ -132,26 +132,28 @@
   ST.refresh = () => ST.emit("ui");
 
   // ---- khởi động: /studio/<nhân vật>?clip=…&ws=…
+  let readyRes; ST.ready = new Promise(r => readyRes = r);   // xong khi nhân vật (nếu có) đã nạp
   ST.boot = async () => {
     const parts = location.pathname.replace(/^\/studio\/?/, "").split("/").filter(Boolean), q = new URLSearchParams(location.search);
     ST.clip = q.get("clip") || null;
     ST.emit("init");
-    let cid = parts[0]; const wsId = ST.WS[q.get("ws")] ? q.get("ws") : !cid ? "mesh" : (ST.WS[ST.pref.get("ws", "mesh")] ? ST.pref.get("ws", "mesh") : "mesh");
+    const wsOf = x => ST.WS[x] ? x : (ST.WS_ALIAS || {})[x] || null;   // ?ws=mesh cũ → general
+    let cid = parts[0]; const wsId = wsOf(q.get("ws")) || (!cid ? "general" : wsOf(ST.pref.get("ws", "general")) || "general");
     ST.setWS(wsId);
     if (!cid) {   // mở ở "/" hoặc Tệp → Mới: cảnh trống (như Maya / Blender), chọn Mở nhân vật hoặc Nhập FBX
       document.title = "Cảnh mới · Studio"; ST.$("charName").textContent = "Cảnh mới";
-      ST.saveState("Cảnh trống"); ST.emit("empty"); ST.refresh(); return;
+      ST.saveState("Cảnh trống"); ST.emit("empty"); ST.refresh(); readyRes(); return;
     }
     ST.saveState("Đang tải " + cid + "…");
     try {
       const r = await fetch("/api/char/" + enc(cid)); if (!r.ok) throw new Error((await r.json()).error || r.status);
       ST.char = await r.json();
-    } catch (e) { ST.saveState("Không tải được nhân vật: " + (e.message || e), "err"); ST.run("file.open"); return; }
+    } catch (e) { ST.saveState("Không tải được nhân vật: " + (e.message || e), "err"); readyRes(); ST.run("file.open"); return; }
     ST.pref.set("char", ST.char.id); ST.emit("filled");
     document.title = ST.char.name + " · Studio";
     ST.$("charName").textContent = ST.char.name + (ST.clip ? " · " + ST.clip : "");
     await Promise.all((L.char || []).map(f => Promise.resolve().then(() => f(ST.char)).catch(e => console.error(e))));
     const m = ST.mod(); if (m.enter) m.enter(ST.WS[ST.ws]);
-    ST.emit("loaded"); ST.refresh();
+    ST.emit("loaded"); ST.refresh(); readyRes();
   };
 })();

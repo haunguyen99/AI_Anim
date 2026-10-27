@@ -1,0 +1,84 @@
+"""Điều khiển Studio đang mở (Chrome hay trình duyệt trong app) qua server Home — không cần chụp màn hình hay trình duyệt của Claude.
+
+  python tools/studio_cmd.py state                         # nhân vật, workspace, mesh (ẩn/hiện, skin), joint đang chọn, pose
+  python tools/studio_cmd.py vis EN_Boss_Gragas1 off       # on | off | toggle ; tên "*" = mọi mesh
+  python tools/studio_cmd.py select joint Shoulder_L       # select mesh <tên> | select joint <tên> | select none
+  python tools/studio_cmd.py joint Shoulder_L --r 0,0,-30  # xoay thêm (độ) quanh joint; --t x,y,z (cm, tuyệt đối); --s
+  python tools/studio_cmd.py bindpose
+  python tools/studio_cmd.py ws general | run <id lệnh> | open <nhân vật> [ws] | clients
+Chỉ có các lệnh có tên (không chạy mã tuỳ ý trong trang).
+Nhiều lệnh một lần (nhanh hơn: Python chỉ khởi động một lần):  studio_cmd.py vis A off ";" select joint B ";" state
+Thêm --time để in thời gian khứ hồi. Cổng: HOME_PORT (mặc định 8780). Server: tools/home/studio_bridge.py; trang: tools/studio/modules/bridge.js.
+"""
+import json
+import os
+import sys
+import time
+import urllib.request
+
+BASE = f"http://127.0.0.1:{os.environ.get('HOME_PORT', '8780')}"
+
+
+def call(op, args=None, timeout=10):
+    body = json.dumps({"op": op, "args": args or {}, "timeout": timeout}).encode()
+    req = urllib.request.Request(BASE + "/api/studio/cmd", body, {"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout + 5) as r:
+        return json.loads(r.read())
+
+
+def vec(s):
+    return [float(x) for x in s.split(",")]
+
+
+def main(argv):
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    if ";" in argv:   # nhiều lệnh một lần chạy: studio_cmd.py vis A off ; joint B --r 0,0,30 ; state
+        groups, cur = [], []
+        for a in argv + [";"]:
+            if a == ";":
+                if cur:
+                    groups.append(cur)
+                cur = []
+            else:
+                cur.append(a)
+        return max(main(g) for g in groups)
+    show_time = "--time" in argv
+    argv = [a for a in argv if a != "--time"]
+    if not argv:
+        print(__doc__)
+        return 2
+    op, rest = argv[0].lower(), argv[1:]
+    t0 = time.perf_counter()
+    if op == "clients":
+        with urllib.request.urlopen(BASE + "/api/studio/clients", timeout=5) as r:
+            res = {"ok": True, "result": json.loads(r.read())}
+    elif op == "vis":
+        on = {"on": True, "off": False, "toggle": "toggle"}[(rest[1] if len(rest) > 1 else "toggle").lower()]
+        res = call("vis", {"name": rest[0], "on": on})
+    elif op == "select":
+        kind, name = (rest + ["none", None])[:2]
+        res = call("select", {"joint": name} if kind == "joint" else {"mesh": None if kind == "none" else name})
+    elif op == "joint":
+        a, i = {"name": rest[0]}, 1
+        while i < len(rest):
+            a[rest[i].lstrip("-")] = vec(rest[i + 1]); i += 2
+        res = call("joint", a)
+    elif op == "bindpose":
+        res = call("bindPose")
+    elif op == "ws":
+        res = call("ws", {"id": rest[0]})
+    elif op == "run":
+        res = call("run", {"id": rest[0]})
+    elif op == "open":
+        res = call("open", {"char": rest[0], "ws": rest[1] if len(rest) > 1 else None})
+    else:
+        res = call(op, json.loads(rest[0]) if rest else {})
+    if show_time:
+        res["roundtrip_ms"] = round((time.perf_counter() - t0) * 1000, 1)
+    print(json.dumps(res, ensure_ascii=False))
+    return 0 if res.get("ok") else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

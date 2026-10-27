@@ -92,22 +92,40 @@
   // ---- vẽ
   function resize() { const r = vp.getBoundingClientRect(); R.setSize(r.width, r.height, false); layoutPanes(); }
   addEventListener("resize", resize); new ResizeObserver(resize).observe(vp);
-  (function frame() {
-    requestAnimationFrame(frame);
+  // cảnh phụ của workspace (vd lõi Pose: cảnh + lớp phủ riêng, mét): vẽ trước / sau cảnh chung trong cùng khung
+  V.extra = null;   // { scene, overlay }
+  const frameCbs = [];
+  V.onFrame = f => frameCbs.push(f);
+  function drawAll() {
     const r = vp.getBoundingClientRect(), H = r.height; if (r.width < 2 || H < 2) return;
-    orbit.update(); ST.emit("prerender");
+    R.setScissorTest(true);
     R.setClearColor(css("--view") || "#15191f");
+    const X = V.extra;
     for (const p of V.visible()) {
       const { x, y, w, h } = p.rect, asp = w / Math.max(1, h), cam = p.cam;
       if (cam.isPerspectiveCamera) { if (cam.aspect !== asp) { cam.aspect = asp; cam.updateProjectionMatrix(); } }
       else if (cam.right !== asp) { cam.left = -asp; cam.right = asp; cam.top = 1; cam.bottom = -1; cam.updateProjectionMatrix(); }
-      grid.visible = V.showGrid;
+      grid.visible = V.showGrid && !X;
       R.setViewport(x, H - y - h, w, h); R.setScissor(x, H - y - h, w, h);
       if (tc.camera !== cam) tc.camera = cam;
-      R.render(scene, cam);
+      if (X) { R.autoClear = false; R.clear(); R.render(X.scene, cam); R.render(scene, cam); R.clearDepth(); R.render(X.overlay, cam); R.autoClear = true; }
+      else R.render(scene, cam);
     }
     if (V.active && tc.camera !== V.active.cam) tc.camera = V.active.cam;
+  }
+  V.renderNow = drawAll;
+  (function frame(now) {
+    requestAnimationFrame(frame);
+    const r = vp.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return;
+    orbit.update(); frameCbs.forEach(f => { try { f(now); } catch (e) { console.error(e); } }); ST.emit("prerender");
+    drawAll();
   })();
+  // renderer cho mã chụp ảnh của lõi (setSize tắt cắt khung, vẽ cả canvas); V.resize trả lại cỡ viewport
+  V.renderer = new Proxy(R, {
+    get(t, k) { if (k === "setSize") return (w, h, u) => { t.setScissorTest(false); t.setSize(w, h, u); t.setViewport(0, 0, w, h); }; const v = t[k]; return typeof v === "function" ? v.bind(t) : v; },
+    set(t, k, v) { t[k] = v; return true; },
+  });
+  V.resize = () => resize();
   V.showGrid = ST.pref.get("grid", true);
 
   // ---- gizmo dùng chung: module đặt tâm (toạ độ của parent), nhận ma trận chênh lệch M trong toạ độ parent

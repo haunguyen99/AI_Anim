@@ -46,12 +46,12 @@
       try {
         const r = await post("/api/fbx/new-char", { fbx_b64: data, name, filename: file.name });
         msg.textContent = "Đã tạo " + r.id + " (" + r.meshes + " mesh, " + r.bones + " xương). Đang mở…";
-        const u = new URL("/studio/" + encodeURIComponent(r.id), location.origin); u.searchParams.set("ws", "mesh"); location.href = u;
+        const u = new URL("/studio/" + encodeURIComponent(r.id), location.origin); u.searchParams.set("ws", "general"); location.href = u;
       } catch (err) { msg.textContent = "Không tạo được: " + (err.message || err); }
       return;
     }
     const list = picked(); if (!list.length) { msg.textContent = "Chọn ít nhất một mesh."; return; }
-    if (ST.ws !== "mesh") ST.setWS("mesh");
+    if (ST.ws !== "general") ST.setWS("general");
     const r = ST.mods.mesh.importMeshes(list, a.dataset.a);
     ST.closeDialog(); ST.toast("Nhập FBX: thay " + r.rep + " mesh, thêm " + r.add + " mesh (Ctrl+Z để bỏ)");
   }

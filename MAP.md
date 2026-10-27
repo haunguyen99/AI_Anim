@@ -2,7 +2,7 @@
 
 Bản đồ ghi file nào nằm ở đâu và file mới nên lưu vào đâu. Đọc file này trước khi tạo script hay thư mục mới để tránh trùng. Mỗi khi tạo, đổi tên hoặc dời file, cập nhật lại MAP này, mỗi mục một dòng.
 
-Bắt đầu làm việc: bấm đúp `tools/home/start.bat` → http://127.0.0.1:8780 mở thẳng **Studio** (viewport, cảnh trống → Nhập FBX / Mở nhân vật; trong Claude gõ `/studio [nhân vật] [mesh|rig|pose]`); **Home** (dự án → anim) ở http://127.0.0.1:8780/home, hoặc gõ `/project`.
+Bắt đầu làm việc: bấm đúp `tools/home/start.bat` → http://127.0.0.1:8780 mở thẳng **Studio** (viewport, cảnh trống → Nhập FBX / Mở nhân vật; trong Claude gõ `/studio [nhân vật] [general|rig|pose]`); **Home** (dự án → anim) ở http://127.0.0.1:8780/home, hoặc gõ `/project`.
 
 Quy trình chính: chuỗi Mesh → Rig → Pose → Review Lab trong Home (`docs/app_shell.md`, `docs/data_flow.md`); `docs/pipeline_v2.md` là thiết kế gốc (phần Blender đã ngừng dùng). Team không còn dùng Blender và Cascadeur.
 
@@ -33,6 +33,7 @@ Ghi chú 2026-10-27: các trang Pose / Review / Rig / Mesh của mọi anim dự
 
 | Đường dẫn | Nội dung |
 |---|---|
+| `tools/studio_cmd.py` | Cầu nối Claude ↔ Studio (2026-10-27): gửi lệnh có tên tới trang Studio đang mở (state, vis, select, joint, bindpose, ws, run, open); server `tools/home/studio_bridge.py` (long-poll /api/studio/*), trang `tools/studio/modules/bridge.js` |
 | `CLAUDE.md` | Quy tắc chung mọi phiên Claude đọc tự động (2026-10-27): chỉ chụp màn hình trình duyệt khi người dùng yêu cầu, kiểm trang bằng JS, trả lời tiếng Việt |
 | `.claude/skills/spine2d/` | Skill `/spine2d`: rig + anim Spine 2D (quy trình, luật rig/anim, export theo setting người dùng, bài học HandTut) |
 | `tools/spine/render_spine.py` | Xem trước anim Spine 4.2 → GIF + contact sheet, ghép lên ảnh UI (`--bg --at --scale`); lấy từ session SpineAI |
@@ -43,8 +44,8 @@ Ghi chú 2026-10-27: các trang Pose / Review / Rig / Mesh của mọi anim dự
 | `tools/push_source.py` | Đẩy mã nguồn lên GitHub `main` (skill `/push`): danh sách cho phép `ALLOW`, chỉ mục tạm, fast-forward, không force |
 | `docs/storage.md` | Kho dữ liệu chung của các Lab: Home server `/api/store`, `work/store/<ns>/...`, `tools/home/localdb.js`, nút Lưu trữ (xuất/mở file) |
 | `docs/app_shell.md` | Vỏ ứng dụng: Home chứa Rig/Pose/Review Lab trong một cửa sổ (thanh tab, iframe giữ trạng thái, route `/lab/...`) |
-| `docs/studio_design.md` | AI Anim Studio: gộp Mesh/Rig/Pose Lab thành một ứng dụng kiểu Maya (một viewport, menu chung, workspace cấu hình sẵn). Duyệt 2026-10-27, S1+S2 (vỏ + Mesh) và S3 (workspace Rig) xong, S4–S5 Pose còn lại |
-| `tools/studio/` | Mã Studio: `index.html` + `studio.css` (vỏ), `core/app.js` (lệnh, undo chung, kho, workspace), `core/viewport.js` (1/4 khung, Maya nav, gizmo chung), `core/ui.js` (menu, Outliner, Channel Box, F3), `modules/mesh.js` (Mesh Lab chuyển sang), `modules/skel.js` (xương: joint trong viewport, cây joint trong Outliner cột trái), `modules/fbx.js` (Tệp → Nhập FBX: thay / thêm mesh hoặc tạo nhân vật mới), `modules/rig.js` + `modules/rig_engine.js` (workspace Rig = lõi Rig Lab, sinh bằng `port_rig.py`, đừng sửa tay), `modules/later.js` (Pose tạm), `workspaces.js`. Home phục vụ ở `/studio/<nhân vật>`; đọc FBX ở `tools/home/fbx_import.py` (`/api/fbx/parse`, `/api/fbx/new-char`), dữ liệu rig ở `tools/home/rig_data.py` (`/api/rigdata/<id>`, `/api/rig/build`) |
+| `docs/studio_design.md` | AI Anim Studio: gộp Mesh/Rig/Pose Lab thành một ứng dụng kiểu Maya (một viewport, menu chung, workspace cấu hình sẵn). Duyệt 2026-10-27, S1+S2 (vỏ + Mesh) S3 (Rig) và S4 (Pose, gồm cả lõi vật lý / playblast) xong |
+| `tools/studio/` | Mã Studio: `index.html` + `studio.css` (vỏ), `core/app.js` (lệnh, undo chung, kho, workspace), `core/viewport.js` (1/4 khung, Maya nav, gizmo chung), `core/ui.js` (menu, Outliner, Channel Box, F3), `modules/mesh.js` (Mesh Lab chuyển sang), `modules/skel.js` (xương: joint trong viewport, cây joint trong Outliner cột trái), `modules/fbx.js` (Tệp → Nhập FBX: thay / thêm mesh hoặc tạo nhân vật mới), `modules/rig.js` + `modules/rig_engine.js` (workspace Rig = lõi Rig Lab, sinh bằng `port_rig.py`, đừng sửa tay), `modules/pose.js` + `modules/pose_engine.js` + `pose.css` (workspace Pose = lõi Pose Lab, sinh bằng `port_pose.py`, đừng sửa tay), `modules/later.js`, `workspaces.js`. Home phục vụ ở `/studio/<nhân vật>`; đọc FBX ở `tools/home/fbx_import.py` (`/api/fbx/parse`, `/api/fbx/new-char`), dữ liệu rig ở `tools/home/rig_data.py` (`/api/rigdata/<id>`, `/api/rig/build`), phiên bản Pose ở `tools/home/pose_data.py` (`/api/poses`) |
 | `docs/mesh_lab.md` | Mesh Lab: sửa mesh cơ bản (chọn điểm/mặt/khối, dời xoay scale mềm + đối xứng, tách gộp hàn dọn, đặt sàn/chiều cao, kiểm tra), `work/mesh_lab/` |
 | `docs/data_flow.md` | Nối dữ liệu Mesh → Rig → Pose → Review (mesh đã sửa, glTF rig sang Pose, playblast sang Review), nút ➤ / 🎞 trên vỏ |
 | `README.md` | Hướng dẫn team cài và dùng (repo GitHub haunguyen99/AI_Anim, nhánh `main` chỉ mã nguồn, đẩy từ nhánh local `source`). Tool trong Blender/Cascadeur đọc thư mục dự án từ `ROOT` hoặc env `AI_ANIM_ROOT`, không ghi cứng đường dẫn |
