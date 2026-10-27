@@ -131,7 +131,7 @@ button { cursor: pointer; }
 .transport .tool { width: 34px; }
 .fps { font-family: var(--font-num); font-size: 11px; color: var(--muted); padding: 0 6px; display: flex; align-items: center; gap: 4px; }
 .fps select { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; font-size: 11px; }
-.keys { font-size: 11px; color: var(--muted); margin-left: 12px; white-space: nowrap; }
+.keys { display: none; font-size: 11px; color: var(--muted); margin-left: 12px; white-space: nowrap; }
 
 @media (max-width: 1000px) { .main { grid-template-columns: minmax(0, 1fr) 280px; } .list { display: none; } }
 @media (max-width: 700px) {
@@ -144,6 +144,26 @@ button { cursor: pointer; }
   .keys { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/*IBTN*/
+.ibtn { font-size: 0 !important; line-height: 0; display: inline-flex; align-items: center; justify-content: center; padding: 0 !important; flex: none; }
+.ibtn::before { content: ''; width: 16px; height: 16px; background: currentColor; -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+.mini.ibtn { width: 26px; height: 22px; } .mini.ibtn::before { width: 14px; height: 14px; }
+.zoombox button.ibtn { min-width: 28px; }
+.submit.ibtn { width: 40px; height: 30px; } .submit.ibtn::before { width: 18px; height: 18px; }
+.aibtn.ibtn:not(.arm) { width: 40px; height: 30px; } .aibtn.ibtn:not(.arm)::before { width: 18px; height: 18px; }
+.aibtn.arm { font-size: 12px !important; line-height: 1.3 !important; }
+.aibtn.arm::before { content: none; }
+#keysHelp { margin-left: auto; color: var(--muted); }
+.item small { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+[data-ic="send"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2011l18-8-8%2018-2-8z%22/%3E%3C/svg%3E"); }
+[data-ic="minus"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%2012h14%22/%3E%3C/svg%3E"); }
+[data-ic="plus"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%205v14M5%2012h14%22/%3E%3C/svg%3E"); }
+[data-ic="trash"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%207h16M9%207V4h6v3M6%207l1%2013h10l1-13%22/%3E%3C/svg%3E"); }
+[data-ic="check"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%2012.5l4.5%204.5L19%207%22/%3E%3C/svg%3E"); }
+[data-ic="reset"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2012a8%208%200%20108-8%208%208%200%2000-5.7%202.4L4%209%22/%3E%3Cpath%20d=%22M4%204v5h5%22/%3E%3C/svg%3E"); }
+[data-ic="edit"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2020l4-1%2011-11-3-3L5%2016z%22/%3E%3Cpath%20d=%22M14%206l3%203%22/%3E%3C/svg%3E"); }
+[data-ic="close"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%206l12%2012M18%206L6%2018%22/%3E%3C/svg%3E"); }
+[data-ic="help"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%229%22/%3E%3Cpath%20d=%22M9.5%209.5a2.5%202.5%200%20114%202c-1%20.7-1.5%201.2-1.5%202.5M12%2017h.01%22/%3E%3C/svg%3E"); }
 </style>
 
 <div class="app">
@@ -189,11 +209,11 @@ button { cursor: pointer; }
       <div class="head"><h2>Ghi chú <span id="count">0</span></h2>
         <select class="filter" id="flt" aria-label="Lọc ghi chú"><option value="all">Tất cả</option><option value="open">Chưa sửa</option><option value="done">Đã sửa</option></select></div>
       <div class="round" id="round" data-s="none">
-        <div class="st"><i></i><span id="roundTxt">Vòng review đang mở: xem hết clip, ghi mọi lỗi rồi mới gửi một lần.</span></div>
+        <div class="st"><i></i><span id="roundTxt">Vòng review đang mở</span></div>
         <small id="roundSub"></small>
         <button class="aibtn" id="aiSend">Gửi feedback cho AI</button>
       </div>
-      <div class="notes" id="notes"><p class="empty">Chưa có ghi chú.<br>Hãy để lại ghi chú đầu tiên…</p></div>
+      <div class="notes" id="notes"><p class="empty">Chưa có ghi chú.</p></div>
       <div class="compose">
         <select id="part" aria-label="Bộ phận">
           <option>Toàn thân / timing</option><option>Đầu</option><option>Cổ · ngực</option><option>Hông</option>
@@ -224,7 +244,7 @@ button { cursor: pointer; }
     <button class="tool" id="nextN" title="Ghi chú sau (.)" aria-label="Ghi chú sau"><svg viewBox="0 0 24 24"><path d="M13 6l6 6-6 6M5 6l6 6-6 6"/></svg></button>
     <button class="tool on" id="loop" title="Lặp" aria-label="Lặp"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 014-4h12M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 01-4 4H4"/></svg></button>
     <span class="fps"><select id="speed" aria-label="Tốc độ phát"><option value="1">30fps</option><option value="0.5">15fps</option><option value="0.25">8fps</option></select></span>
-    <span class="keys">← → frame · Space phát · , . ghi chú · D bút · [ ] cỡ bút · lăn chuột zoom · H / chuột giữa kéo · A vừa khung</span>
+    <button class="tool" id="keysHelp" data-ic="help" title="Phím tắt: ← → frame · Space phát · , . ghi chú · D bút · [ ] cỡ bút · lăn chuột zoom · H / chuột giữa kéo · A vừa khung" aria-label="Phím tắt"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg></button>
   </div>
 </div>
 
@@ -766,7 +786,7 @@ function renderClips() {
     const im = document.createElement("img"); im.src = c.thumb; im.alt = ""; im.style.aspectRatio = (c.w || 768) + " / " + (c.h || 720);
     const t = document.createElement("div"); const bb = document.createElement("b"); bb.textContent = c.label;
     const n = notes.filter(x => x.clip === c.clip && x.version === c.version).length;
-    const sm = document.createElement("small"); sm.textContent = c.n + " frame · " + n + " ghi chú · " + c.note;
+    const sm = document.createElement("small"); sm.textContent = c.n + " frame · " + n + " ghi chú"; b.title = c.note || "";
     t.append(bb, sm); b.append(im, t);
     b.onclick = () => { if (c === C) return; C = c; N = c.n; frame = 1; $("fileName").textContent = c.label; loadFrames(); renderClips(); renderNotes(); renderRound(); };
     box.append(b);
@@ -886,7 +906,7 @@ async function renderRound() {
   let who = "";
   if (r && r.sentBy && user) { const ps = await user.profiles([r.sentBy]); who = ps[r.sentBy].name || ""; }
   const fr = [...new Set(open.map(n => n.frame))].sort((a, b) => a - b);
-  if (!r) { $("roundTxt").textContent = "Vòng review đang mở: xem hết clip, ghi mọi lỗi rồi mới gửi một lần (1 lượt gửi = 1 version sửa).";
+  if (!r) { $("roundTxt").textContent = "Vòng review đang mở";
             $("roundSub").textContent = open.length + " ghi chú chưa sửa" + (fr.length ? " · frame " + fr.join(", ") : ""); }
   else if (r.status === "sent") { $("roundTxt").textContent = "Đã gửi cho AI, đang chờ nhận việc";
             $("roundSub").textContent = (who ? who + " · " : "") + fmtTime(r.sentAt) + " · " + (r.noteCount || 0) + " ghi chú" + " · gõ /check_fb trong Claude để AI nhận việc"; }
@@ -949,5 +969,26 @@ loadFrames(); renderClips(); buildCells(); renderRound();
     rounds = {}; snap.docs.filter(s => s.exists).forEach(s => rounds[s.id] = s.data());
     renderRound();
   }, () => {});
+})();
+</script>
+<script>
+/* Nút là icon (docs/ui_guidelines.md): chữ ẩn bằng CSS và thành tooltip. Nút Gửi cho AI khi "armed" (xác nhận) hiện lại chữ. */
+(function () {
+  const BY_ID = { aiSend: "send", send: "send", zOut: "minus", zIn: "plus" };
+  const BY_TEXT = { "Đã sửa": "check", "Mở lại": "reset", "Sửa": "edit", "Xoá": "trash", "Lưu": "check", "Huỷ": "close" };
+  function sync(el) {
+    const t = el.textContent.replace(/\s+/g, " ").trim();
+    if (t && !el.dataset.t0) el.dataset.t0 = el.getAttribute("title") || "";
+    const tip = t ? (t + (el.dataset.t0 ? " - " + el.dataset.t0 : "")) : (el.dataset.t0 || "");
+    if (tip && el.title !== tip) el.title = tip;
+    if (t) el.setAttribute("aria-label", t);
+  }
+  function apply() {
+    for (const id in BY_ID) { const el = document.getElementById(id); if (el) { if (!el.dataset.ic) { el.dataset.ic = BY_ID[id]; el.classList.add("ibtn"); } sync(el); } }
+    document.querySelectorAll(".mini").forEach(el => { const ic = BY_TEXT[el.textContent.trim()]; if (ic && el.dataset.ic !== ic) { el.dataset.ic = ic; el.classList.add("ibtn"); } if (ic) sync(el); });
+  }
+  let q = 0; const sched = () => { if (!q) q = setTimeout(() => { q = 0; apply(); }, 20); };
+  new MutationObserver(sched).observe(document.body, { childList: true, subtree: true, characterData: true });
+  apply();
 })();
 </script>

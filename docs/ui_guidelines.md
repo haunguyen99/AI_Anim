@@ -40,7 +40,7 @@ Thêm icon mới cùng kiểu nét. Trang Lab là một file HTML độc lập �
 | Tool | Trạng thái |
 |---|---|
 | Home (`tools/home/`) | Xong 2026-10-26 |
-| Review Lab (`work/review_page/`) | Đã dùng icon cho thanh công cụ; còn vài nút chữ ("Gửi", "Gửi feedback cho AI") |
+| Review Lab (`work/review_page/`) | Xong 2026-10-27: nút Gửi, Gửi cho AI, thu phóng, Sửa / Xoá / Đã sửa trên ghi chú là icon; dòng phím tắt gom vào nút ?; nút Gửi cho AI khi xác nhận (armed) hiện lại câu hỏi bằng chữ |
 | Pose Lab (`work/pose_lab/`) | Xong 2026-10-26: 54 nút tĩnh + nút góc ref thành icon, mục vật lý gập lại, ghi chú version chỉ hiện ở bản đang mở, phím tắt gom vào nút ? |
 | Rig Lab (`work/rig_lab/`) | Xong 2026-10-26: bước, chế độ, camera, duyệt, xuất, skin đều là icon; chip trạng thái duyệt là icon; tên pose (Giơ tay, Gập khuỷu…) giữ chữ vì là tên lựa chọn |
 
@@ -55,3 +55,9 @@ Pose Lab có 60+ nút mà code JS gán `textContent` cho nhiều nút ("Vật l�
 ## Cách làm icon trong Rig Lab
 
 Nút Rig Lab được dựng lại bằng `innerHTML` mỗi lần đổi bước, nên `work/rig_lab/patch_ibtn.py` thêm một script cuối `template.html`: bảng bộ chọn → icon, gắn `data-ic` + class `ibtn` (chữ ẩn bằng CSS, thành tooltip) và gắn lại sau mỗi lần DOM đổi (`MutationObserver`, dùng `setTimeout` chứ không `requestAnimationFrame` vì tab ẩn không chạy rAF). Nút mới: thêm một dòng vào bảng `R` và một icon vào `I` rồi chạy lại patch trên template sạch (patch có chốt chặn `/*IBTN*/`).
+
+## Cách làm icon trong Review Lab
+
+Giống Pose Lab: chữ ẩn bằng CSS, icon bằng mask, script cuối trang gắn `data-ic` theo id (`aiSend`, `send`, `zOut`, `zIn`) hoặc theo chữ của nút ghi chú `.mini` (Đã sửa, Mở lại, Sửa, Xoá, Lưu, Huỷ), nên nút dựng bằng JS cũng được đổi. Riêng nút "Gửi feedback cho AI" có bước xác nhận: lúc đang chờ xác nhận (`.arm`) nó hiện lại chữ "Đã xem hết clip? Gửi N ghi chú…" thay cho icon, vì đó là câu hỏi cần đọc.
+
+Khi thử trang Review dựng sẵn bằng `http.server`, tiếng Việt bị lỗi font vì thiếu `<meta charset>` (claude.ai thêm khi đăng); để thử, nạp bằng `fetch` rồi `document.write('<meta charset="utf-8">' + html)`.
