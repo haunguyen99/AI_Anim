@@ -177,6 +177,7 @@ body.tm .ol{width:min(300px,calc(100% - 16px))}
 
 <header>
   <div><h1>__NAME__ Rig Lab</h1></div>
+  <button id="meshChip" class="tool" hidden></button>
   <label class="tmchk" id="tmLbl" title="Chế độ cảm ứng (iPad / điện thoại)"><input type="checkbox" id="tmChk" aria-label="Chế độ cảm ứng"><svg viewBox="0 0 24 24"><path d="M9 11V5a1.6 1.6 0 013.2 0v5l3.3.7a2 2 0 011.5 2.3L16.4 19a2 2 0 01-2 1.6H11a2 2 0 01-1.6-.8L6 14.6a1.5 1.5 0 012.2-1.9z"/></svg></label>
   <button class="tool" id="olBtn" title="Outliner: cây xương và các lớp mesh" aria-label="Outliner"><svg viewBox="0 0 24 24"><path d="M4 5h6M4 12h6M4 19h6M14 5h6M14 12h6"/><path d="M7 5v14"/></svg></button>
   <div class="steps" role="tablist" id="steps"></div>
@@ -199,7 +200,158 @@ body.tm .ol{width:min(300px,calc(100% - 16px))}
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
 <script>
-const DATA = /*DATA*/null;
+/*LOCALDB*/
+// Kho dữ liệu trên máy cho các Lab khi không có db của claude.ai: nói chuyện với Home server (tools/home/store.py), ghi file thật vào work/store/<ns>/.
+// Cùng giao diện với db của artifact (doc/collection, get/set/update/delete/add/onSnapshot) nên mã Lab không phải đổi.
+// Kèm nút "Lưu trữ" (xuất / mở file .json). Nguồn: tools/home/localdb.js, nhúng bằng work/patch_localdb.py.
+(function () {
+  const API = (window.LOCALDB_API || "http://127.0.0.1:8780") + "/api/store";
+  const slug = s => String(s || "page").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "page";
+  const NS = (new URLSearchParams(location.search).get("ns")) || slug(document.title);
+  const enc = encodeURIComponent;
+  async function call(method, path, body) {
+    const r = await fetch(API + "/" + path, { method, headers: body !== undefined ? { "Content-Type": "application/json" } : {}, body: body !== undefined ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error("store " + r.status);
+    return r.json();
+  }
+  const snapOf = (id, data) => ({ id, exists: data !== null && data !== undefined, data: () => data });
+  const watchers = {};   // col → { subs:Set, last:string, timer }
+  async function fetchCol(col) { const r = await call("GET", enc(NS) + "/" + enc(col)); return r.docs; }
+  const colSnap = docs => { const d = docs.map(x => snapOf(x.id, x.data)); return { docs: d, size: d.length, empty: !d.length, forEach: f => d.forEach(f) }; };
+  async function tick(col) {
+    const w = watchers[col]; if (!w || !w.subs.size) return;
+    try {
+      const docs = await fetchCol(col), sig = JSON.stringify(docs);
+      if (sig !== w.last) { w.last = sig; const sn = colSnap(docs); w.subs.forEach(f => { try { f(sn); } catch (e) { console.error(e); } }); }
+    } catch (e) {}
+  }
+  const poke = col => { if (watchers[col]) tick(col); };
+  function docRef(col, id) {
+    const base = () => enc(NS) + "/" + enc(col) + "/" + id.split("/").map(enc).join("/");
+    return {
+      id, path: col + "/" + id,
+      get: async () => { const r = await call("GET", base()); return snapOf(id, r.exists ? r.data : null); },
+      set: async d => { await call("PUT", base(), d); poke(col); },
+      update: async d => { await call("PATCH", base(), d); poke(col); },
+      delete: async () => { await call("DELETE", base()); poke(col); },
+    };
+  }
+  function colRef(col) {
+    return {
+      id: col, doc: id => docRef(col, id),
+      get: async () => colSnap(await fetchCol(col)),
+      add: async d => { const r = await call("POST", enc(NS) + "/" + enc(col), d); poke(col); return docRef(col, r.id); },
+      onSnapshot: cb => {
+        const w = watchers[col] || (watchers[col] = { subs: new Set(), last: null, timer: 0 });
+        w.subs.add(cb); w.last = null; tick(col);
+        if (!w.timer) w.timer = setInterval(() => tick(col), 2000);
+        return () => { w.subs.delete(cb); if (!w.subs.size) { clearInterval(w.timer); w.timer = 0; } };
+      },
+    };
+  }
+  const db = { isLocal: true, ns: NS, doc: path => { const [c, ...r] = path.split("/"); return docRef(c, r.join("/")); }, collection: colRef };
+  window.localDB = async function () {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1200);
+      const r = await fetch(API + "/_ping", { signal: ctl.signal }); clearTimeout(t);
+      if (!r.ok) return null; await r.json(); return db;
+    } catch (e) { return null; }
+  };
+
+  // ---- nút Lưu trữ: nơi lưu hiện tại, xuất / mở file .json
+  const ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.700 3.100 3 7 3s7-1.300 7-3V6M5 12v6c0 1.700 3.100 3 7 3s7-1.300 7-3v-6"/></svg>';
+  const css = document.createElement("style");
+  css.textContent = ".dbw{position:relative;display:inline-flex;align-items:center}.dbw>button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--panel,#1d2026));color:var(--fg,var(--text,#e6e9ee));cursor:pointer;position:relative}.dbw>button i{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;background:#3ab06f}.dbw>button.warn i{background:#e3a008}.dbm{position:fixed;z-index:60;min-width:250px;max-width:min(340px,calc(100vw - 16px));padding:10px;border-radius:10px;background:var(--panel,#1d2026);color:var(--fg,var(--text,#e6e9ee));border:1px solid var(--line,#2a2f38);box-shadow:0 8px 24px #0004;font:12px/1.4 system-ui,sans-serif;display:none}.dbm.show{display:block}.dbm b{display:block;font-size:12px;margin-bottom:2px}.dbm p{margin:0 0 8px;color:var(--mute,var(--muted,#8b93a0));word-break:break-all}.dbm .r{display:flex;gap:6px}.dbm button{flex:1;height:32px;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--bg,#14161a));color:inherit;cursor:pointer;font:inherit}.dbm .t{margin-top:8px;color:var(--accent,#4aa3ff)}body.tm .dbw>button{width:40px;height:40px}body.tm .dbm button{height:40px}";
+  document.head.appendChild(css);
+  window.dbWidget = function (o) {
+    const { db: d, cols, host } = o;
+    if (document.getElementById("dbW")) document.getElementById("dbW").remove();
+    const local = !!(d && d.isLocal), ok = !!d;
+    const where = local ? "Máy này: work/store/" + NS : ok ? "claude.ai: AI đọc được" : "Chỉ trình duyệt này (chưa nối kho)";
+    const w = document.createElement("span"); w.className = "dbw"; w.id = "dbW";
+    w.innerHTML = '<button type="button" title="Lưu trữ: xuất / mở file" aria-label="Lưu trữ" class="' + (ok ? "" : "warn") + '">' + ICON + '<i></i></button><div class="dbm" role="dialog"><b>Nơi lưu</b><p>' + where + '</p><div class="r"><button type="button" data-a="ex">Xuất file</button><button type="button" data-a="im">Mở file</button></div><div class="t" hidden></div><input type="file" accept=".json,application/json" hidden></div>';
+    const hostEl = (host && document.querySelector(host)) || null;
+    if (hostEl) hostEl.appendChild(w); else { w.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:50"; document.body.appendChild(w); }
+    const btn = w.querySelector("button"), menu = w.querySelector(".dbm"), msg = w.querySelector(".t"), file = w.querySelector("input");
+    const say = t => { msg.textContent = t; msg.hidden = !t; };
+    btn.onclick = e => { e.stopPropagation(); const on = !menu.classList.contains("show"); menu.classList.toggle("show", on); if (on) { const r = btn.getBoundingClientRect(); menu.style.top = Math.min(r.bottom + 6, innerHeight - menu.offsetHeight - 8) + "px"; menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + "px"; } };
+    document.addEventListener("click", e => { if (!w.contains(e.target)) menu.classList.remove("show"); });
+    w.addEventListener("click", async e => {
+      const a = e.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "im") { file.click(); return; }
+      if (!d) { say("Chưa có kho để xuất. Mở bằng Home hoặc trên claude.ai."); return; }
+      try {
+        const out = { format: "ddc-store-v1", ns: NS, title: document.title, at: new Date().toISOString(), collections: {} };
+        for (const c of cols) { const sn = await d.collection(c).get(); out.collections[c] = {}; sn.docs.forEach(s => { if (s.exists) out.collections[c][s.id] = s.data(); }); }
+        const n = Object.values(out.collections).reduce((s, c) => s + Object.keys(c).length, 0);
+        const name = NS + "_" + new Date().toISOString().slice(0, 10) + ".json", blob = new Blob([JSON.stringify(out)], { type: "application/json" });
+        let saved = false;
+        try { if (window.claude && window.claude.use) { const dl = await window.claude.use("downloads"); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } } catch (e2) {}
+        if (!saved) { const u = URL.createObjectURL(blob), an = document.createElement("a"); an.href = u; an.download = name; document.body.appendChild(an); an.click(); an.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+        say("Đã xuất " + n + " mục → " + name);
+      } catch (err) { say("Không xuất được: " + (err.message || err)); }
+    });
+    file.onchange = async () => {
+      const f = file.files[0]; file.value = ""; if (!f) return;
+      try {
+        const o2 = JSON.parse(await f.text());
+        if (o2.format !== "ddc-store-v1" || !o2.collections) throw new Error("không phải file lưu của Lab");
+        if (!d) throw new Error("chưa có kho để ghi");
+        let n = 0; for (const c in o2.collections) for (const id in o2.collections[c]) { await d.doc(c + "/" + id).set(o2.collections[c][id]); n++; }
+        say("Đã mở " + n + " mục từ " + f.name + (o2.ns && o2.ns !== NS ? " (nguồn: " + o2.ns + ")" : "") + ". Tải lại trang để thấy.");
+      } catch (err) { say("Không mở được: " + (err.message || err)); }
+    };
+  };
+})();
+</script>
+<script>
+/*MESHLINK*/
+(function () {
+  window.__meshAt = null; window.__meshT = null; window.__meshInfo = { state: "none" };
+  const slug = s => String(s || "page").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "page";
+  const ns = slug(document.title).replace(/rig_lab$/, "mesh_lab"), key = "rigmesh:" + ns;
+  let pref = null; try { pref = localStorage.getItem(key); } catch (e) {}
+  let ed = null;
+  try {
+    const x = new XMLHttpRequest(); x.open("GET", (window.LOCALDB_API || "http://127.0.0.1:8780") + "/api/store/" + encodeURIComponent(ns) + "/mesh/edit", false); x.send();
+    if (x.status === 200) { const j = JSON.parse(x.responseText); if (j.exists && j.data && j.data.meshes && j.data.meshes.length) ed = j.data; }
+  } catch (e) {}
+  if (!ed) return;
+  window.__meshInfo = { state: pref === "orig" ? "orig" : "edited", at: ed.at, ns, key };
+  if (pref === "orig") return;
+  const bbox = a => { const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9]; for (let i = 0; i < a.length; i += 3) for (let k = 0; k < 3; k++) { mn[k] = Math.min(mn[k], a[i + k]); mx[k] = Math.max(mx[k], a[i + k]); } return { mn, mx }; };
+  window.__meshApply = function (D) {
+    const by = {}; ed.meshes.forEach(m => { if (m.vis !== false) by[m.name] = m; });
+    const take = (o, m) => { o.verts = m.verts; o.tris = m.tris; };
+    const bn = D.body.name; let used = 0;
+    if (!bn || !by[bn]) { window.__meshInfo = { state: "nobody", at: ed.at, ns, key, note: "Mesh Lab không có mesh thân '" + bn + "' (ẩn hoặc đổi tên): giữ mesh gốc." }; return D; }
+    const o0 = bbox(D.body.verts), o1 = bbox(by[bn].verts), f = (o1.mx[1] - o1.mn[1]) / Math.max(1e-6, o0.mx[1] - o0.mn[1]);
+    const c0 = [(o0.mn[0] + o0.mx[0]) / 2, o0.mn[1], (o0.mn[2] + o0.mx[2]) / 2], c1 = [(o1.mn[0] + o1.mx[0]) / 2, o1.mn[1], (o1.mn[2] + o1.mx[2]) / 2];
+    const T = p => [c1[0] + (p[0] - c0[0]) * f, c1[1] + (p[1] - c0[1]) * f, c1[2] + (p[2] - c0[2]) * f];
+    const same = D.body.verts.length === by[bn].verts.length;
+    take(D.body, by[bn]); used++;
+    (D.clothes || []).forEach(c => { if (by[c.name]) { take(c, by[c.name]); used++; } });
+    (D.props || []).forEach(p => { if (by[p.name]) { take(p, by[p.name]); used++; } });
+    if (Math.abs(f - 1) > 1e-4 || c0.some((v, i) => Math.abs(v - c1[i]) > 1e-3)) {
+      for (const k in D.auto.landmarks) D.auto.landmarks[k] = T(D.auto.landmarks[k]).map(v => +v.toFixed(3));
+      if (D.auto.H) D.auto.H = +(D.auto.H * f).toFixed(3);
+      (D.ref || []).forEach(b => { if (b.pos) b.pos = T(b.pos); });
+      window.__meshT = { f, c0, c1 };
+    }
+    if (!same) D.refW = {};   // skin khách theo số điểm cũ: không còn khớp
+    const extra = ed.meshes.filter(m => m.vis !== false && !["body"].includes(m.name) && m.name !== bn && !(D.clothes || []).some(c => c.name === m.name) && !(D.props || []).some(p => p.name === m.name)).length;
+    window.__meshAt = ed.at; window.__meshInfo = { state: "edited", at: ed.at, ns, key, used, extra, same, scale: +f.toFixed(4) };
+    return D;
+  };
+  window.__meshLM = function (L) {   // landmark đã lưu theo mesh cũ → dịch theo phép biến đổi
+    const T = window.__meshT; if (!T) return L; const o = {};
+    for (const k in L) o[k] = Array.isArray(L[k]) && L[k].length === 3 ? [T.c1[0] + (L[k][0] - T.c0[0]) * T.f, T.c1[1] + (L[k][1] - T.c0[1]) * T.f, T.c1[2] + (L[k][2] - T.c0[2]) * T.f].map(v => +v.toFixed(3)) : L[k];
+    return o;
+  };
+})();
+</script>
+<script>
+const DATA = (window.__meshApply || (d => d))(/*DATA*/null);
 // báo lỗi JS lên màn hình để người dùng chụp gửi (trang chạy trong sandbox, không có console)
 window.__showErr = function (m) {
   let b = document.getElementById("errbar");
@@ -467,12 +619,14 @@ let lmTimer = null;
 function dirty() { dirtyFlag.v = true; saveMsg = "Đang lưu…"; renderPanelLight(); clearTimeout(lmTimer); lmTimer = setTimeout(saveLM, 1200); }
 async function initDb() {
   try { if (window.claude && window.claude.use) db = await window.claude.use("db"); } catch (e) { db = null; saveMsg = "db lỗi: " + (e.code || e.message); }
+  if (!db) { try { db = await window.localDB(); } catch (e) { db = null; } }   // không có db claude.ai: kho trên máy (Home server)
+  try { window.dbWidget({ db, cols: ["rig"], host: "header" }); } catch (e) { console.error(e); }
   if (!db) saveMsg = saveMsg || "Chưa nối được db: chỉ lưu trong trình duyệt này, AI không đọc được.";
   try {
     if (db) {
-      const a = await db.doc("rig/landmarks").get(); if (a.exists && a.data().lm) LM = completeLM(a.data().lm); if (a.exists && a.data().tw) TW = Object.assign(TW, a.data().tw);
+      const a = await db.doc("rig/landmarks").get(); if (a.exists && a.data().lm) { LM = completeLM(a.data().lm); if (window.__meshAt && a.data().meshAt !== window.__meshAt) { LM = completeLM(window.__meshLM(LM)); setTimeout(dirty, 800); } } if (a.exists && a.data().tw) TW = Object.assign(TW, a.data().tw);
       const g = await db.doc("rig/gates").get(); if (g.exists) gates = Object.assign(gates, g.data().g || {});
-      saveMsg = "Đã nối db: lưu cho AI đọc được.";
+      saveMsg = db.isLocal ? "Đã lưu vào dự án trên máy (work/store)." : "Đã nối db: lưu cho AI đọc được.";
       const sk = await db.doc("rig/skin").get(); if (sk.exists) loadSkinDoc(sk.data());
     } else {
       const a = localStorage.getItem("rig_lm"); if (a) LM = completeLM(JSON.parse(a)); try { const k = localStorage.getItem("rig_skin"); if (k) loadSkinDoc(JSON.parse(k)); } catch (e) {} const t = localStorage.getItem("rig_tw"); if (t) TW = Object.assign(TW, JSON.parse(t));
@@ -484,7 +638,7 @@ async function initDb() {
 }
 async function saveLM() {
   try {
-    if (db) await db.doc("rig/landmarks").set({ lm: LM, tw: TW, at: Date.now() }); else { localStorage.setItem("rig_lm", JSON.stringify(LM)); localStorage.setItem("rig_tw", JSON.stringify(TW)); }
+    if (db) await db.doc("rig/landmarks").set({ lm: LM, tw: TW, at: Date.now(), meshAt: window.__meshAt || null }); else { localStorage.setItem("rig_lm", JSON.stringify(LM)); localStorage.setItem("rig_tw", JSON.stringify(TW)); }
     dirtyFlag.v = false; saveMsg = db ? "Đã lưu" : "Đã lưu (chỉ trình duyệt này)";
   } catch (e) { saveMsg = "Không lưu được: " + (e.message || e.code || e); }
   renderPanelLight();
@@ -613,7 +767,7 @@ function renderPanel() {
   } else if (step === 2) {
     const rows = LM_ORDER.filter(k => showFing || !isFinger(k)).map(k => `<tr class="pick ${S.has(k) ? "sel" : ""}" data-k="${k}"><td><span class="ltxt" style="background:${lmColor(k)}"></span>${k}</td><td>${fix(LM[k][0])}</td><td>${fix(LM[k][1])}</td><td>${fix(LM[k][2])}</td></tr>`).join("");
     p.innerHTML = `<h2>Đặt khớp</h2>
-      <div class="row"><label class="t"><input type="checkbox" id="mir" ${mirror ? "checked" : ""}> Đối xứng R→L</label><button id="resetAuto">Về gợi ý</button></div>
+      <div class="row"><label class="t"><input type="checkbox" id="mir" ${mirror ? "checked" : ""}> Đối xứng R→L</label><button id="resetAuto">Về gợi ý</button>${guestJ() ? '<button id="useRefJ" title="Đặt mọi khớp theo xương có sẵn của mesh (vàng), khỏi đặt tay">Dùng xương khách</button>' : ""}</div>
       <div id="selbox"></div>
       ${more("m2", "Bảng toạ độ (" + LM_ORDER.filter(k => showFing || !isFinger(k)).length + " khớp)", `<table><thead><tr><th>Khớp</th><th>x</th><th>y</th><th>z</th></tr></thead><tbody id="lmrows">${rows}</tbody></table>`)}
       ${gateHtml(2)}`;
@@ -666,6 +820,7 @@ function wirePanel() {
   const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
   on("gOk", () => setGate(step, "ok")); on("gFix", () => setGate(step, "fix"));
   on("toStep2", () => go(2)); on("saveLM", saveLM); on("exportRig", exportRig);
+  on("useRefJ", () => adoptGuestJoints());
   on("resetAuto", () => { LM = JSON.parse(JSON.stringify(DATA.auto.landmarks)); initFingers(LM, true); syncScene(); dirty(); commit(); renderPanel(); });
   Object.keys(TW_SEG).forEach(st => { const e = $("tw_" + st); if (e) e.addEventListener("change", () => { TW[st] = +e.value; syncScene(); dirty(); commit(); renderPanel(); }); });
   document.querySelectorAll("[data-tw]").forEach(b => b.addEventListener("click", () => { Object.keys(TW).forEach(st => TW[st] = +b.dataset.tw); syncScene(); dirty(); commit(); renderPanel(); }));
@@ -826,7 +981,7 @@ function treeHops(B) {   // số bước giữa hai xương trên cây xương (
     const A = anc(a), C = anc(b); let h = 99; for (let i = 0; i < A.length; i++) { const j = C.indexOf(A[i]); if (j >= 0) { h = i + j; break; } } memo.set(key, h); return h; };
 }
 async function computeSkin() {
-  if (skinBusy) return; skinBusy = true; const t0 = performance.now(); renderPanel();
+  if (skinBusy) return; skinBusy = true; window.__adoptNote = ""; const t0 = performance.now(); renderPanel();
   await new Promise(r => setTimeout(r, 20));
   const B = buildSkeleton(LM), segs = boneSegments(B), nb = segs.length, C = 1.0;
   const dmin = new Float64Array(NV), near = new Int16Array(NV);
@@ -1141,19 +1296,21 @@ function renderSkinPanel(p) {
   if (!SK) {
     p.innerHTML = `<h2>Skin</h2><div class="sub">Tính trọng số tự động từ bộ xương, sau đó tô chỉnh.</div>
       <div class="row"><select id="skMode" aria-label="Cách tính skin"><option value="pro">Cấp cao (thông minh + giới hạn theo cây xương)</option><option value="smart">Thông minh (nhìn thấy xương, tách trái/phải)</option><option value="classic">Cổ điển (gần nhất)</option></select></div>
-      <div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính skin"}</button></div>${gateHtml(4)}`;
+      <div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính skin"}</button>${guestS() ? '<button id="useRefS" title="Lấy luôn skin có sẵn của mesh, không tính lại">Dùng skin khách</button>' : ""}</div>${gateHtml(4)}`;
     const sm = $("skMode"); if (sm) { sm.value = skinMode; sm.onchange = () => { skinMode = sm.value; }; }
     const b = $("doSkin"); if (b) b.onclick = computeSkin; return;
   }
   const stale = SK.LMsnap !== JSON.stringify({ LM, TW });
   const tools = [["pick", "Chọn joint (Q)"], ["brush", "Cọ tô (B)"], ["island", "Gán khối rời (I)"]].map(([t, n]) => `<button data-skt="${t}" ${skTool === t ? 'class="pri"' : ""}>${n}</button>`).join("");
   p.innerHTML = `<h2>Skin</h2>
-    ${stale ? `<div class="big warn">! Khớp hoặc twist đã đổi</div><div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính lại skin"}</button></div>` : ""}
+    ${stale ? `<div class="big warn">! Khớp hoặc twist đã đổi</div><div class="row"><button class="pri" id="doSkin" ${skinBusy ? "disabled" : ""}>${skinBusy ? "Đang tính…" : "Tính lại skin"}</button>${guestS() ? '<button id="useRefS" title="Lấy luôn skin có sẵn của mesh, không tính lại">Dùng skin khách</button>' : ""}</div>` : ""}
     ${testHtml()}
     <div class="row">${tools}</div>
-      <div class="row" id="skModeRow"><select id="skMode" aria-label="Cách tính skin"><option value="pro">Cấp cao</option><option value="smart">Thông minh</option><option value="classic">Cổ điển</option></select><button id="doSkin3" title="Tính lại skin theo cách đã chọn" aria-label="Tính lại skin">Tính lại</button>${SK_INFO ? `<span class="sub">lần tính: ${SK_INFO.mode}${SK_INFO.mode !== "classic" ? ", " + SK_INFO.visible + " đỉnh thấy xương, " + SK_INFO.fallback + " dự phòng" : ""}</span>` : ""}</div>
+    ${hammerHtml()}
+      ${window.__adoptNote ? `<div class="sub" style="color:var(--ok);margin:4px 0">✓ ${esc(window.__adoptNote)}</div>` : ""}
+      <div class="row" id="skModeRow"><select id="skMode" aria-label="Cách tính skin"><option value="pro">Cấp cao</option><option value="smart">Thông minh</option><option value="classic">Cổ điển</option></select><button id="doSkin3" title="Tính lại skin theo cách đã chọn" aria-label="Tính lại skin">Tính lại</button><button id="useRefS3" ${guestS() ? "" : "disabled"} title="${guestS() ? "Lấy luôn skin có sẵn của mesh (khách), không tính lại" : "Mesh này chưa có skin khách: cần nạp từ FBX đã rig"}">Dùng skin khách</button>${SK_INFO ? `<span class="sub">lần tính: ${SK_INFO.mode}${SK_INFO.mode !== "classic" ? ", " + SK_INFO.visible + " đỉnh thấy xương, " + SK_INFO.fallback + " dự phòng" : ""}</span>` : ""}</div>
     ${skTool === "island" ? '<div class="sub">Chọn joint, rồi click một khối rời của mesh để gán cả khối 100% cho joint đó.</div>' : ""}
-    ${skTool === "brush" ? `<div class="row"><select id="brMode" aria-label="Kiểu cọ"><option value="add" ${brush.mode === "add" ? "selected" : ""}>Cộng trọng số</option><option value="sub" ${brush.mode === "sub" ? "selected" : ""}>Trừ trọng số</option><option value="smooth" ${brush.mode === "smooth" ? "selected" : ""}>Làm mượt</option></select>
+    ${skTool === "brush" ? `<div class="row"><select id="brMode" aria-label="Kiểu cọ"><option value="add" ${brush.mode === "add" ? "selected" : ""}>Cộng trọng số</option><option value="sub" ${brush.mode === "sub" ? "selected" : ""}>Trừ trọng số</option><option value="smooth" ${brush.mode === "smooth" ? "selected" : ""}>Làm mượt</option><option value="hammer" ${brush.mode === "hammer" ? "selected" : ""}>Hammer (phá mảng nhọn)</option></select>
       <label class="t"><input type="checkbox" id="brMir" ${brush.mirror ? "checked" : ""}> Đối xứng</label></div>
       <div class="row" style="flex-wrap:nowrap"><label for="brR" style="width:70px;font-size:12px">Bán kính</label><input id="brR" type="range" min="2" max="40" step="1" value="${brush.r}" style="flex:1"><span id="brRv" class="sub" style="width:44px;text-align:right">${brush.r} cm</span></div>
       <div class="row" style="flex-wrap:nowrap"><label for="brS" style="width:70px;font-size:12px">Cường độ</label><input id="brS" type="range" min="0.05" max="1" step="0.05" value="${brush.str}" style="flex:1"><span id="brSv" class="sub" style="width:44px;text-align:right">${brush.str}</span></div>` : ""}
@@ -1164,11 +1321,11 @@ function renderSkinPanel(p) {
     ${poseSection()}
     ${more("m4stats", "Thống kê và xuất", (() => { const q = skinStats(); return `<div class="kv"><span>Xương có skin</span><span>${SK.names.length}</span><span>Xương / đỉnh</span><span>${fix(q.infl, 2)}</span><span>Trùng skin khách</span><span>${fix(q.same * 100)}%</span><span>Lệch TB</span><span>${fix(q.l1 * 100)}%</span></div>
       <table><thead><tr><th>Lệch nhiều nhất</th><th>lệch</th><th>đỉnh</th></tr></thead><tbody>${q.worst.map(w => `<tr><td>${w[0]}</td><td>${fix(w[1] * 100)}%</td><td>${w[2]}</td></tr>`).join("")}</tbody></table>
-      <div class="row"><button id="doSkin2">Tính lại skin</button><button id="expW">Xuất weights.json</button></div>`; })())}
+      <div class="row"><button id="doSkin2">Tính lại skin</button><button id="expW">Xuất weights.json</button><button id="expGltf" title="glTF có skin để mở trong Pose Lab">Xuất glTF</button>${guestS() ? '<button id="useRefS2" title="Lấy luôn skin có sẵn của mesh">Dùng skin khách</button>' : ""}</div>`; })())}
     ${gateHtml(4)}`;
   const on = (id, f) => { const e = $(id); if (e) e.addEventListener("click", f); };
   on("doTest", () => { const b = $("doTest"); if (b) { b.disabled = true; b.textContent = "Đang kiểm…"; } setTimeout(runSelfTest, 30); });
-  on("doSkin", computeSkin); on("doSkin2", computeSkin); on("doSkin3", computeSkin); on("expW", exportWeights);
+  on("doSkin", computeSkin); on("doSkin2", computeSkin); on("doSkin3", computeSkin); on("expW", exportWeights); on("expGltf", () => exportGltf()); on("useRefS", () => adoptGuestSkin()); on("useRefS3", () => adoptGuestSkin()); on("useRefS2", () => adoptGuestSkin());
   { const sm = $("skMode"); if (sm) { sm.value = skinMode; sm.onchange = () => { skinMode = sm.value; }; } }
   const v = $("skView"); if (v) { v.value = skinView; v.onchange = () => { skinView = v.value; paintSkin(); }; }
   const b = $("skBone"); if (b) b.onchange = () => { skinBone = b.value; paintSkin(); };
@@ -1179,7 +1336,7 @@ function renderSkinPanel(p) {
   const bx = $("brMir"); if (bx) bx.onchange = () => brush.mirror = bx.checked;
   const br = $("brR"); if (br) br.oninput = () => { brush.r = +br.value; $("brRv").textContent = brush.r + " cm"; };
   const bs = $("brS"); if (bs) bs.oninput = () => { brush.str = +bs.value; $("brSv").textContent = brush.str; };
-  wirePoseSection();
+  wirePoseSection(); wireHammer();
 }
 async function exportWeights() {
   if (!SK) return;
@@ -1201,6 +1358,7 @@ function renderPosePanel(p) {
     <div class="row"><label class="t"><input type="checkbox" id="pTw" ${poseOpt.twist ? "checked" : ""}> Dẫn động twist</label><label class="t"><input type="checkbox" id="pStr" ${strainOn ? "checked" : ""}> Tô biến dạng</label></div>
     <div class="big ${pct > 5 ? "warn" : "ok"}">Co/căng quá 25%: ${fix(pct)}%</div>
     ${sm && sm.worst.length && pct > 1 ? `<div class="sub">Vùng xấu: ${sm.worst.map(w => w[0]).join(", ")}</div>` : ""}
+    ${hammerHtml()}
     ${more("m5bat", "Bộ pose căng", `<div class="row"><button id="pBat">Chạy bộ pose căng</button></div>${bl ? `<table><thead><tr><th>Pose</th><th>quá 25%</th><th>vùng xấu</th></tr></thead><tbody>${bl}</tbody></table>` : ""}`)}
     ${more("m5bone", "Chọn xương từ danh sách", `<div class="row"><select id="pBone" aria-label="Chọn xương xoay">${buildSkeleton(LM).filter(b => !b.twist && b.name !== "root").map(b => `<option ${b.name === poseBone ? "selected" : ""}>${b.name}</option>`).join("")}</select><button id="pClr">Về 0</button></div>`)}
     ${gateHtml(5)}`;
@@ -1212,6 +1370,7 @@ function renderPosePanel(p) {
   $("pTw").onchange = e => { poseOpt.twist = e.target.checked; applyPose(); renderPanel(); };
   $("pStr").onchange = e => { strainOn = e.target.checked; paintSkin(); };
   on("pBat", () => { battery = batteryRun(); OPEN.m5bat = true; renderPanel(); });
+  wireHammer();
 }
 
 // ================================================================ M3 sớm: chọn joint trong viewport + cọ tô skin
@@ -1259,6 +1418,65 @@ function setVec(i, v) {
   for (let j = 0; j < SK.nb; j++) SK.full[j * NV + i] = 0;
   for (let k = 0; k < 4; k++) { if (k < idx.length) { const j = idx[k]; SK.I[i * 4 + k] = j; SK.W[i * 4 + k] = v[j] / s; SK.full[j * NV + i] = v[j] / s; } else { SK.I[i * 4 + k] = 0; SK.W[i * 4 + k] = 0; } }
 }
+// ---- Hammer: trọng số đỉnh := (1-m)·cũ + m·trung bình cotan của lân cận (đỉnh ngoài tập đóng vai neo)
+function hammerVerts(ids, iters, mixOf) {
+  for (let it = 0; it < iters; it++) {
+    const out = new Map();
+    for (const i of ids) {
+      const v = new Float64Array(SK.nb); let sw = 0;
+      for (let e = LAP.start[i]; e < LAP.start[i + 1]; e++) { const w = LAP.nw[e], nb = LAP.nb[e]; sw += w; for (let j = 0; j < SK.nb; j++) v[j] += w * SK.full[j * NV + nb]; }
+      if (!sw) continue;
+      const cur = getVec(i), m = Math.max(0, Math.min(1, mixOf(i)));
+      for (let j = 0; j < SK.nb; j++) v[j] = (1 - m) * cur[j] + m * v[j] / sw;
+      out.set(i, v);
+    }
+    out.forEach((v, i) => setVec(i, v));
+  }
+}
+const snap4 = i => [Array.from(SK.I.slice(i * 4, i * 4 + 4)), Array.from(SK.W.slice(i * 4, i * 4 + 4))];
+function lapMag(arr) {   // độ lệch của mỗi đỉnh so với trung bình cotan của lân cận (cm): lớn = mảng nhọn/gập gãy
+  const o = new Float32Array(NV);
+  for (let i = 0; i < NV; i++) { let sw = 0, cx = 0, cy = 0, cz = 0; for (let e = LAP.start[i]; e < LAP.start[i + 1]; e++) { const w = LAP.nw[e], j = LAP.nb[e]; sw += w; cx += w * arr[3 * j]; cy += w * arr[3 * j + 1]; cz += w * arr[3 * j + 2]; }
+    o[i] = sw ? Math.hypot(arr[3 * i] - cx / sw, arr[3 * i + 1] - cy / sw, arr[3 * i + 2] - cz / sw) : 0; }
+  return o;
+}
+const HAM_REST = lapMag(Float32Array.from(DATA.body.verts)), HAM_SPIKE = 2.0;   // mesh sạch: ≤ 1,8 cm ở mọi pose thử (trừ đáy chậu ~2,7); lỗi nách Zom1 3,9 cm
+function strainedSet(thr) {   // đỉnh căng > thr, hoặc nhọn thêm > HAM_SPIKE cm so với lúc đứng yên, ở pose hiện tại + 1 vòng lân cận
+  poseSkin(); const set = new Set(), D = lapMag(skinGeo.attributes.position.array);
+  for (let i = 0; i < NV; i++) if (STR[i] > thr || D[i] - HAM_REST[i] > HAM_SPIKE) { set.add(i); for (let e = LAP.start[i]; e < LAP.start[i + 1]; e++) set.add(LAP.nb[e]); }
+  return set;
+}
+function hammerFinish(snap, msg) {
+  skinUndo.push(snap); if (skinUndo.length > 60) skinUndo.shift(); skinRedo = [];
+  scheduleSkinSave(); scheduleSelfTest(); applyPose(); paintSkin(); saveMsg = msg; renderPanel();
+}
+const spikeMax = () => { const D = lapMag(skinGeo.attributes.position.array); let m = 0; for (let i = 0; i < NV; i++) m = Math.max(m, D[i] - HAM_REST[i]); return m; };
+function hammerCurrent() {
+  if (!SK) return; const set = strainedSet(0.25), n0 = strainSummary().pct, spikeMax0 = spikeMax();
+  if (!set.size) { saveMsg = "Pose hiện tại không có đỉnh căng hoặc nhọn bất thường: chọn pose có lỗi rồi Hammer."; return renderPanelLight(); }
+  const snap = new Map(); set.forEach(i => snap.set(i, snap4(i)));
+  hammerVerts([...set], 3, () => 0.8); poseSkin();
+  hammerFinish(snap, `Hammer pose hiện tại: ${set.size} đỉnh (căng hoặc nhọn); căng quá 25% ${fix(n0)}% → ${fix(strainSummary().pct)}%, nhọn tối đa ${fix(spikeMax0)} → ${fix(spikeMax())} cm.`);
+}
+function hammerAuto() {
+  if (!SK) return; const keep = JSON.stringify(POSE), kt = poseOpt.twist; poseOpt.twist = true;
+  const snap = new Map(), pct = () => { let w = 0; for (const p of Object.values(PRESETS)) { for (const k in POSE) delete POSE[k]; for (const k in p) POSE[k] = p[k].slice(); poseSkin(); w = Math.max(w, strainSummary().pct); } return w; };
+  const spk = () => { let w = 0; for (const p of Object.values(PRESETS)) { for (const k in POSE) delete POSE[k]; for (const k in p) POSE[k] = p[k].slice(); poseSkin(); w = Math.max(w, spikeMax()); } return w; };
+  const before = pct(), spike0 = spk(); let rounds = 0, touched = new Set();
+  for (; rounds < 4; rounds++) {
+    const union = new Set();
+    for (const p of Object.values(PRESETS)) { for (const k in POSE) delete POSE[k]; for (const k in p) POSE[k] = p[k].slice(); strainedSet(0.25).forEach(i => union.add(i)); }
+    if (!union.size) break;
+    union.forEach(i => { if (!snap.has(i)) snap.set(i, snap4(i)); touched.add(i); });
+    hammerVerts([...union], 2, () => 0.7);
+  }
+  const after = pct(), spike1 = spk();
+  for (const k in POSE) delete POSE[k]; Object.assign(POSE, JSON.parse(keep)); poseOpt.twist = kt; poseSkin();
+  if (!snap.size) { saveMsg = "Hammer tự động: không có đỉnh căng quá 25% ở bộ pose."; return renderPanelLight(); }
+  hammerFinish(snap, `Hammer tự động: ${rounds} vòng, ${touched.size} đỉnh; căng quá 25% (pose xấu nhất) ${fix(before)}% → ${fix(after)}%, nhọn tối đa ${fix(spike0)} → ${fix(spike1)} cm.`);
+}
+const hammerHtml = () => `<div class="row"><button id="hammerNow" title="Làm phẳng trọng số quanh đỉnh đang căng quá 25% ở pose hiện tại">Hammer pose hiện tại</button><button id="hammerAuto" title="Lặp bộ pose, hammer các đỉnh căng tới khi hết (tối đa 4 vòng)">Hammer tự động</button></div>`;
+const wireHammer = () => { const a = $("hammerNow"), b = $("hammerAuto"); if (a) a.onclick = hammerCurrent; if (b) b.onclick = hammerAuto; };
 function dab(i, j, a, mode) {
   const v = getVec(i), wj = v[j]; let nw;
   if (mode === "add") nw = Math.min(1, wj + a);
@@ -1285,9 +1503,17 @@ function brushHitFull(e) {
   return ray.intersectObject(skinMesh, false)[0] || null;
 }
 function paintAt(e) {
-  if (!SK || !skinBone || SK.idx[skinBone] === undefined) return;
+  if (!SK || (brush.mode !== "hammer" && (!skinBone || SK.idx[skinBone] === undefined))) return;
   const pt = brushHit(e); if (!pt) return;
   const PP = skinGeo.attributes.position.array, j = SK.idx[skinBone], jm = SK.idx[mirName(skinBone)], mi = brush.mirror && jm !== undefined && mirName(skinBone) !== skinBone ? getMirror() : null;
+  if (brush.mode === "hammer") {   // không phụ thuộc xương đang chọn
+    const mx = new Map(), M2 = brush.mirror ? getMirror() : null;
+    for (let i = 0; i < NV; i++) { const d = Math.hypot(PP[3 * i] - pt.x, PP[3 * i + 1] - pt.y, PP[3 * i + 2] - pt.z); if (d > brush.r) continue; const m = Math.min(1, brush.str * (1 - (d / brush.r) ** 2) ** 2 * 1.6);
+      mx.set(i, Math.max(mx.get(i) || 0, m)); if (M2) mx.set(M2[i], Math.max(mx.get(M2[i]) || 0, m)); }
+    mx.forEach((_, i) => { if (!stroke.has(i)) stroke.set(i, snap4(i)); });
+    hammerVerts([...mx.keys()], 1, i => mx.get(i)); paintSkin(); dirtySkin = true; return;
+  }
+  if (!SK || j === undefined) return;
   for (let i = 0; i < NV; i++) {
     const d = Math.hypot(PP[3 * i] - pt.x, PP[3 * i + 1] - pt.y, PP[3 * i + 2] - pt.z); if (d > brush.r) continue;
     const f = (1 - (d / brush.r) ** 2) ** 2, a = brush.str * f * 0.5;
@@ -1555,4 +1781,98 @@ renderVbar(); resize(); setView("front"); syncScene(); renderAll(); frame(); res
   const saved = store.get(KEY);
   show(saved === null ? innerWidth > 900 : saved === "1");
 })();
+
+/*MESHLINK*/
+(function () {
+  const I = window.__meshInfo || { state: "none" }, b = document.getElementById("meshChip"); if (!b || I.state === "none") return;
+  const when = I.at ? String(I.at).slice(0, 16).replace("T", " ") : "";
+  b.hidden = false;
+  if (I.state === "edited") { b.textContent = "Mesh đã sửa"; b.title = "Đang dùng mesh sửa trong Mesh Lab (" + when + ")" + (I.same ? "" : ", số điểm đã đổi nên skin cần tính lại") + (I.scale && Math.abs(I.scale - 1) > 1e-3 ? ", scale ×" + I.scale : "") + (I.extra ? ", " + I.extra + " mesh mới chưa dùng" : "") + ". Bấm để dùng mesh gốc."; }
+  else if (I.state === "orig") { b.textContent = "Mesh gốc"; b.title = "Mesh Lab có bản đã sửa (" + when + "). Bấm để dùng bản đã sửa."; }
+  else { b.textContent = "Mesh gốc"; b.title = I.note || ""; b.disabled = true; }
+  b.style.cssText = "font-size:12px;padding:3px 8px;border-radius:6px;" + (I.state === "edited" ? "background:var(--accent);color:var(--accent-fg);border-color:var(--accent)" : "");
+  b.onclick = () => { if (I.state === "nobody") return; try { localStorage.setItem(I.key, I.state === "edited" ? "orig" : "edited"); } catch (e) {} location.reload(); };
+})();
+
+/*POSEEXPORT*/
+// glTF skinned: nút xương = joint (translation theo cha, mét), thân + quần áo skin theo SK, prop gắn cứng vào Weapon. Pose Lab đọc bằng GLTFLoader.
+function buildGltf() {
+  if (!SK) throw new Error("Cần tính skin (bước 4) trước khi xuất cho Pose Lab.");
+  const S = 0.01, B = buildSkeleton(LM), byN = {}, jIdx = {}; B.forEach((b, i) => { byN[b.name] = b; jIdx[b.name] = i; });
+  const nodes = B.map(b => ({ name: b.name, translation: (b.parent ? b.pos.map((v, k) => (v - byN[b.parent].pos[k]) * S) : b.pos.map(v => v * S)) }));
+  B.forEach((b, i) => { if (b.parent) (nodes[jIdx[b.parent]].children = nodes[jIdx[b.parent]].children || []).push(i); });
+  const rootIdx = B.findIndex(b => !b.parent), chunks = [], views = [], acc = []; let off = 0;
+  const addView = (ta, target) => { const bytes = new Uint8Array(ta.buffer, ta.byteOffset, ta.byteLength), pad = (4 - (bytes.length % 4)) % 4, buf = new Uint8Array(bytes.length + pad); buf.set(bytes);
+    chunks.push(buf); views.push(Object.assign({ buffer: 0, byteOffset: off, byteLength: bytes.length }, target ? { target } : {})); off += buf.length; return views.length - 1; };
+  const addAcc = (ta, type, comp, count, extra) => { acc.push(Object.assign({ bufferView: addView(ta, extra && extra.target), componentType: comp, count, type }, extra && extra.mm ? { min: extra.mm[0], max: extra.mm[1] } : {})); return acc.length - 1; };
+  const meshes = [], meshNodes = [];
+  const bakeMesh = (name, verts, tris, jw) => {   // jw[i] = [[jointIdx, w] ...] (tối đa 4)
+    const n = verts.length / 3, pos = new Float32Array(n * 3), nrm = new Float32Array(n * 3), J = new Uint16Array(n * 4), W = new Float32Array(n * 4);
+    const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9];
+    for (let i = 0; i < n; i++) for (let k = 0; k < 3; k++) { const v = verts[3 * i + k] * S; pos[3 * i + k] = v; mn[k] = Math.min(mn[k], v); mx[k] = Math.max(mx[k], v); }
+    const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(pos, 3)); g.setIndex(Array.from(tris)); g.computeVertexNormals(); nrm.set(g.attributes.normal.array); g.dispose();
+    for (let i = 0; i < n; i++) { const L = (jw(i) || []).filter(x => x[1] > 0).slice(0, 4); let t = L.reduce((a, x) => a + x[1], 0);
+      if (!L.length || t <= 0) { J[4 * i] = rootIdx; W[4 * i] = 1; continue; } L.forEach(([j, w], k) => { J[4 * i + k] = j; W[4 * i + k] = w / t; }); }
+    const big = n > 65535, I = big ? Uint32Array.from(tris) : Uint16Array.from(tris);
+    const prim = { attributes: { POSITION: addAcc(pos, "VEC3", 5126, n, { target: 34962, mm: [mn, mx] }), NORMAL: addAcc(nrm, "VEC3", 5126, n, { target: 34962 }), JOINTS_0: addAcc(J, "VEC4", 5123, n, { target: 34962 }), WEIGHTS_0: addAcc(W, "VEC4", 5126, n, { target: 34962 }) },
+      indices: addAcc(I, "SCALAR", big ? 5125 : 5123, tris.length, { target: 34963 }), material: 0, mode: 4 };
+    meshes.push({ name, primitives: [prim] }); meshNodes.push({ name, mesh: meshes.length - 1, skin: 0 });
+  };
+  const toJ = n => jIdx[n];
+  bakeMesh(DATA.body.name || "Body", DATA.body.verts, DATA.body.tris, i => { const o = []; for (let k = 0; k < 4; k++) { const w = SK.W[i * 4 + k]; if (w > 0 && toJ(SK.names[SK.I[i * 4 + k]]) !== undefined) o.push([toJ(SK.names[SK.I[i * 4 + k]]), w]); } return o; });
+  (DATA.clothes || []).forEach((c, ci) => { const CW = clothWeights(ci); bakeMesh(c.name || "Cloth" + ci, c.verts, c.tris, i => CW[i].filter(([b]) => toJ(SK.names[b]) !== undefined).map(([b, w]) => [toJ(SK.names[b]), w])); });
+  const propJ = jIdx.Weapon !== undefined ? jIdx.Weapon : (jIdx.Prop_M !== undefined ? jIdx.Prop_M : jIdx.Chest_M);
+  (DATA.props || []).forEach(p => bakeMesh(p.name || "Prop", p.verts, p.tris, () => [[propJ, 1]]));
+  const ibm = new Float32Array(B.length * 16); B.forEach((b, i) => { const m = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -b.pos[0] * S, -b.pos[1] * S, -b.pos[2] * S, 1]; ibm.set(m, i * 16); });
+  const ibmAcc = addAcc(ibm, "MAT4", 5126, B.length);
+  const tIn = new Float32Array([1 / 30]), tOut = new Float32Array(nodes[rootIdx].translation);
+  const inAcc = addAcc(tIn, "SCALAR", 5126, 1, { mm: [[1 / 30], [1 / 30]] }), outAcc = addAcc(tOut, "VEC3", 5126, 1);
+  const all = nodes.concat(meshNodes), meshStart = nodes.length;
+  const bin = new Uint8Array(off); let o2 = 0; chunks.forEach(c => { bin.set(c, o2); o2 += c.length; });
+  let b64 = ""; for (let i = 0; i < bin.length; i += 0x8000) b64 += String.fromCharCode.apply(null, bin.subarray(i, i + 0x8000));
+  return {
+    asset: { version: "2.0", generator: "Rig Lab " + CFG.name }, scene: 0, scenes: [{ name: "Scene", nodes: [rootIdx].concat(meshNodes.map((_, i) => meshStart + i)) }],
+    nodes: all, meshes, skins: [{ name: "Armature", joints: B.map((_, i) => i), inverseBindMatrices: ibmAcc, skeleton: rootIdx }],
+    materials: [{ name: "Base", doubleSided: true, pbrMetallicRoughness: { baseColorFactor: [0.62, 0.66, 0.72, 1], metallicFactor: 0, roughnessFactor: 0.85 } }],
+    animations: [{ name: "Rest", samplers: [{ input: inAcc, output: outAcc, interpolation: "LINEAR" }], channels: [{ sampler: 0, target: { node: rootIdx, path: "translation" } }] }],
+    accessors: acc, bufferViews: views, buffers: [{ byteLength: bin.length, uri: "data:application/octet-stream;base64," + btoa(b64) }]
+  };
+}
+window.DDC = window.DDC || {};
+window.DDC.rigGltf = async function () { return { name: CFG.name, gltf: buildGltf() }; };
+async function exportGltf() {
+  try {
+    const text = JSON.stringify(buildGltf()), name = CFG.name + "_rig.gltf", blob = new Blob([text], { type: "model/gltf+json" });
+    try { if (window.claude && window.claude.use) { const d = await window.claude.use("downloads"); if (d) { await d.save({ filename: name, data: blob }); saveMsg = "Đã xuất " + name; return renderPanelLight(); } } } catch (e) {}
+    const u = URL.createObjectURL(blob), a = document.createElement("a"); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+    saveMsg = "Đã xuất " + name + " (" + Math.round(text.length / 1024) + " KB).";
+  } catch (e) { saveMsg = e.message || String(e); }
+  renderPanelLight();
+}
+
+/*ADOPTRIG*/
+// Rig có sẵn (xương + skin khách) đi kèm mesh: dùng thẳng thay vì rig lại. DATA.ref = xương khách (tên, cha, vị trí), DATA.refW = trọng số khách theo xương.
+function guestJ() { return (DATA.ref || []).filter(b => b.pos && LM_ORDER.includes(b.name)).length >= 10; }
+function guestS() { return guestJ() && Object.keys(DATA.refW || {}).length > 5; }
+function adoptGuestJoints() {
+  const by = {}; (DATA.ref || []).forEach(b => { if (b.pos) by[b.name] = b.pos; });
+  let n = 0; for (const k of LM_ORDER) if (by[k]) { LM[k] = by[k].slice(); n++; }
+  initFingers(LM, false); syncScene(); dirty(); commit(); saveMsg = "Đã đặt " + n + " khớp theo xương khách."; renderPanel();
+}
+function adoptGuestSkin() {
+  const B = buildSkeleton(LM), segs = boneSegments(B), names = segs.map(x => x.name), idx = Object.fromEntries(names.map((n, i) => [n, i])), nb = names.length;
+  const I = new Uint16Array(NV * 4), W = new Float32Array(NV * 4); let bare = 0, kept = 0;
+  const fall = idx.Root_M !== undefined ? idx.Root_M : 0;
+  for (let i = 0; i < NV; i++) {
+    const a = Object.entries(REFW[i] || {}).filter(([b, w]) => idx[b] !== undefined && w > 0).sort((p, q) => q[1] - p[1]).slice(0, 4), t = a.reduce((x, p) => x + p[1], 0);
+    if (!a.length || t <= 0) { I[i * 4] = fall; W[i * 4] = 1; bare++; continue; }
+    a.forEach(([b, w], k) => { I[i * 4 + k] = idx[b]; W[i * 4 + k] = w / t; }); kept++;
+  }
+  SK = { names, idx, I, W, full: null, nb, LMsnap: JSON.stringify({ LM, TW }) };
+  SK.full = denseFrom(I, W, nb); skinUndo = []; skinRedo = []; skinStale = false; skinBusy = false; if (!skinBone) skinBone = names[0]; setTimeout(scheduleSkinSave, 0);
+  try { SK_TEST = skinSelfTest(); } catch (e) { SK_TEST = { rows: [["warn", "Tự kiểm lỗi", String(e.message || e)]], leaks: [], t: Date.now() }; }
+  window.__adoptNote = "Đang dùng skin khách (" + kept + " đỉnh có trọng số" + (bare ? ", " + bare + " đỉnh gán Root_M" : "") + "). Tính lại skin sẽ thay nó.";
+  saveMsg = "Đã dùng skin khách (" + kept + " đỉnh có trọng số" + (bare ? ", " + bare + " đỉnh không có nên gán Root_M" : "") + ").";
+  paintSkin(); syncScene(); renderPanel();
+}
 </script>

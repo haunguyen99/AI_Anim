@@ -20,7 +20,7 @@ w = pos["Wrist_R"]; tip = -oldL * .995; fingers = {}
 for f in cfg["fingers"]:
     fingers[f] = [[round(abs(pos[f"{f}Finger{i}_R"][0] - w[0]) / abs(tip - w[0]), 4), round((pos[f"{f}Finger{i}_R"][1] - w[1]) / abs(tip - w[0]), 4),
                    round((pos[f"{f}Finger{i}_R"][2] - w[2]) / abs(tip - w[0]), 4)] for i in range(1, cfg.get("fseg", 3) + 1)]
-data = dict(body=dict(verts=body["verts"], tris=body["tris"]), props=[],
+data = dict(body=dict(name=body["name"], verts=body["verts"], tris=body["tris"]), props=[],
             clothes=[dict(name=byn[n]["name"], verts=byn[n]["verts"], tris=byn[n]["tris"]) for n in C.get("clothes", [])],
             auto=auto, fingers=fingers, cfg=cfg, ref=[dict(name=s["name"], parent=s["parent"], pos=None) for s in sk], refW={})
 html = open(f"{R}/template.html", encoding="utf8").read().replace("/*DATA*/null", json.dumps(data, separators=(",", ":"))).replace("__NAME__", C["name"])

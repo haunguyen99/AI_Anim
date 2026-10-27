@@ -1,0 +1,20 @@
+# Kho dữ liệu chung của các Lab
+
+Bước 1 của kế hoạch gộp Rig / Pose / Review thành một ứng dụng: các Lab lưu vào **file thật trong dự án** thay vì chỉ vào db của artifact claude.ai.
+
+## Cách hoạt động
+
+- **Home server** (`tools/home/server.py`, cổng 8780) phục vụ `/api/store/...` (`tools/home/store.py`). Dữ liệu nằm ở `work/store/<ns>/<collection>/<id>.json`; `<ns>` là tên trang (tiêu đề, vd `gaygor_walk_pose_lab`; đổi bằng `?ns=`).
+- **Lớp `localdb.js`** (`tools/home/localdb.js`) giả giao diện db của artifact (`doc` / `collection`, `get` `set` `update` `delete` `add` `onSnapshot`), nên mã Lab không phải đổi. Nhúng vào ba master bằng `work/patch_localdb.py` (`--refresh` khi sửa `localdb.js`).
+- **Thứ tự chọn nơi lưu:** db claude.ai (khi mở trên claude.ai) → kho trên máy (khi Home server đang chạy) → trình duyệt / tải file `.json` như cũ.
+- **Nút Lưu trữ** (icon cơ sở dữ liệu, góc trên phải mỗi Lab): cho biết nơi lưu đang dùng (chấm xanh = có kho, vàng = chưa), **Xuất file** (`<ns>_<ngày>.json`, định dạng `ddc-store-v1`) và **Mở file** (ghi lại vào kho; tải lại trang để thấy). Hoạt động cả khi lưu bằng db claude.ai.
+
+## Cho Claude
+
+Ghi chú review và vòng gửi của `/check_fb` khi chạy cục bộ nằm ở `work/store/<ns>/notes/` và `rounds/`; Pose Lab ở `adjusts/`, `keys/`, `anims/`, `rounds/`; Rig Lab ở `rig/` (`landmarks`, `skin`, `gates`). Đọc trực tiếp các file đó.
+
+## Chưa làm
+
+- Vỏ ứng dụng một cửa sổ, nối dữ liệu Mesh → Rig → Pose → Review, trang Mesh (bước 2–4).
+- Xuất FBX/GLB từ kho (Pose Lab đã tự xuất FBX riêng).
+- `localStorage` của Rig Lab cho cấu hình không qua kho (chỉ landmarks, skin, gates qua kho).

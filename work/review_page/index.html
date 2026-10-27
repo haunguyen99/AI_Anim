@@ -74,6 +74,7 @@ button { cursor: pointer; }
 #ink { cursor: default; }
 #ink.draw { cursor: crosshair; }
 .loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+.cprog { position: absolute; left: 8px; bottom: 8px; z-index: 4; font: 11px/1 var(--font-num, ui-monospace, monospace); color: var(--muted); background: color-mix(in srgb, var(--panel, #1a202a) 85%, transparent); padding: 3px 7px; border-radius: 6px; pointer-events: none; }
 .zoomtag { position: absolute; top: 10px; left: 50%; translate: -50% 0; font-size: 12px; background: #000a; padding: 3px 10px; border-radius: 4px; color: var(--ink); pointer-events: none; white-space: nowrap; z-index: 2; }
 
 .side { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; }
@@ -196,6 +197,7 @@ button { cursor: pointer; }
         <canvas id="img" width="768" height="720"></canvas>
         <canvas id="ink" width="768" height="720" aria-label="Vùng vẽ ghi chú"></canvas>
         <div class="loading" id="loading">Đang tải frame…</div>
+        <div class="cprog" id="cprog" hidden title="Đang giải mã video thành từng frame để tua mượt (xem được ngay)"></div>
       </div>
       <div class="zoomtag" id="zoomTag">front · left / back · top</div>
       <div class="zoombox" role="group" aria-label="Thu phóng">
@@ -249,9 +251,118 @@ button { cursor: pointer; }
 </div>
 
 <script>
+/*LOCALDB*/
+// Kho dữ liệu trên máy cho các Lab khi không có db của claude.ai: nói chuyện với Home server (tools/home/store.py), ghi file thật vào work/store/<ns>/.
+// Cùng giao diện với db của artifact (doc/collection, get/set/update/delete/add/onSnapshot) nên mã Lab không phải đổi.
+// Kèm nút "Lưu trữ" (xuất / mở file .json). Nguồn: tools/home/localdb.js, nhúng bằng work/patch_localdb.py.
+(function () {
+  const API = (window.LOCALDB_API || "http://127.0.0.1:8780") + "/api/store";
+  const slug = s => String(s || "page").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "page";
+  const NS = (new URLSearchParams(location.search).get("ns")) || slug(document.title);
+  const enc = encodeURIComponent;
+  async function call(method, path, body) {
+    const r = await fetch(API + "/" + path, { method, headers: body !== undefined ? { "Content-Type": "application/json" } : {}, body: body !== undefined ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error("store " + r.status);
+    return r.json();
+  }
+  const snapOf = (id, data) => ({ id, exists: data !== null && data !== undefined, data: () => data });
+  const watchers = {};   // col → { subs:Set, last:string, timer }
+  async function fetchCol(col) { const r = await call("GET", enc(NS) + "/" + enc(col)); return r.docs; }
+  const colSnap = docs => { const d = docs.map(x => snapOf(x.id, x.data)); return { docs: d, size: d.length, empty: !d.length, forEach: f => d.forEach(f) }; };
+  async function tick(col) {
+    const w = watchers[col]; if (!w || !w.subs.size) return;
+    try {
+      const docs = await fetchCol(col), sig = JSON.stringify(docs);
+      if (sig !== w.last) { w.last = sig; const sn = colSnap(docs); w.subs.forEach(f => { try { f(sn); } catch (e) { console.error(e); } }); }
+    } catch (e) {}
+  }
+  const poke = col => { if (watchers[col]) tick(col); };
+  function docRef(col, id) {
+    const base = () => enc(NS) + "/" + enc(col) + "/" + id.split("/").map(enc).join("/");
+    return {
+      id, path: col + "/" + id,
+      get: async () => { const r = await call("GET", base()); return snapOf(id, r.exists ? r.data : null); },
+      set: async d => { await call("PUT", base(), d); poke(col); },
+      update: async d => { await call("PATCH", base(), d); poke(col); },
+      delete: async () => { await call("DELETE", base()); poke(col); },
+    };
+  }
+  function colRef(col) {
+    return {
+      id: col, doc: id => docRef(col, id),
+      get: async () => colSnap(await fetchCol(col)),
+      add: async d => { const r = await call("POST", enc(NS) + "/" + enc(col), d); poke(col); return docRef(col, r.id); },
+      onSnapshot: cb => {
+        const w = watchers[col] || (watchers[col] = { subs: new Set(), last: null, timer: 0 });
+        w.subs.add(cb); w.last = null; tick(col);
+        if (!w.timer) w.timer = setInterval(() => tick(col), 2000);
+        return () => { w.subs.delete(cb); if (!w.subs.size) { clearInterval(w.timer); w.timer = 0; } };
+      },
+    };
+  }
+  const db = { isLocal: true, ns: NS, doc: path => { const [c, ...r] = path.split("/"); return docRef(c, r.join("/")); }, collection: colRef };
+  window.localDB = async function () {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1200);
+      const r = await fetch(API + "/_ping", { signal: ctl.signal }); clearTimeout(t);
+      if (!r.ok) return null; await r.json(); return db;
+    } catch (e) { return null; }
+  };
+
+  // ---- nút Lưu trữ: nơi lưu hiện tại, xuất / mở file .json
+  const ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.700 3.100 3 7 3s7-1.300 7-3V6M5 12v6c0 1.700 3.100 3 7 3s7-1.300 7-3v-6"/></svg>';
+  const css = document.createElement("style");
+  css.textContent = ".dbw{position:relative;display:inline-flex;align-items:center}.dbw>button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--panel,#1d2026));color:var(--fg,var(--text,#e6e9ee));cursor:pointer;position:relative}.dbw>button i{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;background:#3ab06f}.dbw>button.warn i{background:#e3a008}.dbm{position:fixed;z-index:60;min-width:250px;max-width:min(340px,calc(100vw - 16px));padding:10px;border-radius:10px;background:var(--panel,#1d2026);color:var(--fg,var(--text,#e6e9ee));border:1px solid var(--line,#2a2f38);box-shadow:0 8px 24px #0004;font:12px/1.4 system-ui,sans-serif;display:none}.dbm.show{display:block}.dbm b{display:block;font-size:12px;margin-bottom:2px}.dbm p{margin:0 0 8px;color:var(--mute,var(--muted,#8b93a0));word-break:break-all}.dbm .r{display:flex;gap:6px}.dbm button{flex:1;height:32px;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--bg,#14161a));color:inherit;cursor:pointer;font:inherit}.dbm .t{margin-top:8px;color:var(--accent,#4aa3ff)}body.tm .dbw>button{width:40px;height:40px}body.tm .dbm button{height:40px}";
+  document.head.appendChild(css);
+  window.dbWidget = function (o) {
+    const { db: d, cols, host } = o;
+    if (document.getElementById("dbW")) document.getElementById("dbW").remove();
+    const local = !!(d && d.isLocal), ok = !!d;
+    const where = local ? "Máy này: work/store/" + NS : ok ? "claude.ai: AI đọc được" : "Chỉ trình duyệt này (chưa nối kho)";
+    const w = document.createElement("span"); w.className = "dbw"; w.id = "dbW";
+    w.innerHTML = '<button type="button" title="Lưu trữ: xuất / mở file" aria-label="Lưu trữ" class="' + (ok ? "" : "warn") + '">' + ICON + '<i></i></button><div class="dbm" role="dialog"><b>Nơi lưu</b><p>' + where + '</p><div class="r"><button type="button" data-a="ex">Xuất file</button><button type="button" data-a="im">Mở file</button></div><div class="t" hidden></div><input type="file" accept=".json,application/json" hidden></div>';
+    const hostEl = (host && document.querySelector(host)) || null;
+    if (hostEl) hostEl.appendChild(w); else { w.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:50"; document.body.appendChild(w); }
+    const btn = w.querySelector("button"), menu = w.querySelector(".dbm"), msg = w.querySelector(".t"), file = w.querySelector("input");
+    const say = t => { msg.textContent = t; msg.hidden = !t; };
+    btn.onclick = e => { e.stopPropagation(); const on = !menu.classList.contains("show"); menu.classList.toggle("show", on); if (on) { const r = btn.getBoundingClientRect(); menu.style.top = Math.min(r.bottom + 6, innerHeight - menu.offsetHeight - 8) + "px"; menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + "px"; } };
+    document.addEventListener("click", e => { if (!w.contains(e.target)) menu.classList.remove("show"); });
+    w.addEventListener("click", async e => {
+      const a = e.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "im") { file.click(); return; }
+      if (!d) { say("Chưa có kho để xuất. Mở bằng Home hoặc trên claude.ai."); return; }
+      try {
+        const out = { format: "ddc-store-v1", ns: NS, title: document.title, at: new Date().toISOString(), collections: {} };
+        for (const c of cols) { const sn = await d.collection(c).get(); out.collections[c] = {}; sn.docs.forEach(s => { if (s.exists) out.collections[c][s.id] = s.data(); }); }
+        const n = Object.values(out.collections).reduce((s, c) => s + Object.keys(c).length, 0);
+        const name = NS + "_" + new Date().toISOString().slice(0, 10) + ".json", blob = new Blob([JSON.stringify(out)], { type: "application/json" });
+        let saved = false;
+        try { if (window.claude && window.claude.use) { const dl = await window.claude.use("downloads"); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } } catch (e2) {}
+        if (!saved) { const u = URL.createObjectURL(blob), an = document.createElement("a"); an.href = u; an.download = name; document.body.appendChild(an); an.click(); an.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+        say("Đã xuất " + n + " mục → " + name);
+      } catch (err) { say("Không xuất được: " + (err.message || err)); }
+    });
+    file.onchange = async () => {
+      const f = file.files[0]; file.value = ""; if (!f) return;
+      try {
+        const o2 = JSON.parse(await f.text());
+        if (o2.format !== "ddc-store-v1" || !o2.collections) throw new Error("không phải file lưu của Lab");
+        if (!d) throw new Error("chưa có kho để ghi");
+        let n = 0; for (const c in o2.collections) for (const id in o2.collections[c]) { await d.doc(c + "/" + id).set(o2.collections[c][id]); n++; }
+        say("Đã mở " + n + " mục từ " + f.name + (o2.ns && o2.ns !== NS ? " (nguồn: " + o2.ns + ")" : "") + ". Tải lại trang để thấy.");
+      } catch (err) { say("Không mở được: " + (err.message || err)); }
+    };
+  };
+})();
+</script>
+<script>
 // Each entry is one reviewable clip version; frames live in <dir>f001.jpg.. (add new versions here when republishing).
 // Optional per clip: w/h = frame size of the WebM (default 768x720), views = what the grid shows (zoom tag).
 const CLIPS = [
+  { clip: "Attack_50_Blocking", version: "pb4", label: "gaygor_attack_50_blocking · playblast từ Pose Lab (pb4)", src: "clips/gaygor_attack_50_blocking_pb4.webm", thumb: "clips/gaygor_attack_50_blocking_pb4.jpg", n: 68, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front | top", note: "Quay trong Pose Lab." },
+  { clip: "Attack_50_Blocking", version: "pb3", label: "gaygor_attack_50_blocking · playblast từ Pose Lab (pb3)", src: "clips/gaygor_attack_50_blocking_pb3.webm", thumb: "clips/gaygor_attack_50_blocking_pb3.jpg", n: 68, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front | top", note: "Quay trong Pose Lab." },
+  { clip: "Attack_50_Blocking", version: "pb2", label: "gaygor_attack_50_blocking · playblast từ Pose Lab (pb2)", src: "clips/gaygor_attack_50_blocking_pb2.webm", thumb: "clips/gaygor_attack_50_blocking_pb2.jpg", n: 68, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front | top", note: "Quay trong Pose Lab." },
+  { clip: "Attack_50_Blocking", version: "pb1", label: "gaygor_attack_50_blocking · playblast từ Pose Lab (pb1)", src: "clips/gaygor_attack_50_blocking_pb1.webm", thumb: "clips/gaygor_attack_50_blocking_pb1.jpg", n: 68, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front | top", note: "Quay trong Pose Lab." },
   { clip: "Walk", version: "spline_b16", label: "Gaygor Walk · spline b16 (đùi phải xoay mượt khi vung chân)", src: "clips/gaygor_walk_spline_b16.webm", thumb: "clips/gaygor_walk_spline_b16.jpg", n: 57, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front · 3/4 · top", note: "Sửa 'check lại rotate của đùi phải'. Ở b15, đoạn chỉnh tay F23–F28 (gối phải xoay vào khi vung chân) chỉ có ở 6 frame đó, nên đùi phải xoắn tụt 30° trong 4 frame (F22–F26) và dạng đùi có khấc chữ V 34,5° → 19,6° → 38,8° (nhảy 10–11°/frame). b16: giữ ý gối hướng ra trước khi vung chân, nhưng trải độ xoắn ra cả đoạn F17–F37 thành đường cong mượt (xoay đùi quanh trục hông → cổ chân, bàn chân + đường cổ chân giữ nguyên). Bước tối đa của đùi phải 10,6 → 5,4°/frame, gia tốc 11 → 7,4. Chỉ đổi đùi + cổ chân phải; vật lý vẫn tắt như bạn đặt." },
   { clip: "Walk", version: "spline_b15", label: "Gaygor Walk · spline b15 (hông đúng nhịp bước chân)", src: "clips/gaygor_walk_spline_b15.webm", thumb: "clips/gaygor_walk_spline_b15.jpg", n: 57, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front · 3/4 · top", note: "Sửa 'anim chủ hông đang lệch nhịp so với bước chân'. Đo ở phys_v1: hông thấp nhất F17/F46, cao nhất F34/F2, trong khi gót chạm đất ~F14 (trái) / ~F41 (phải) → trễ 3–6 frame; xoay hông ±15° NGƯỢC pha với chân (lúc gót trái chạm đất, hông phải lại ở trước 7,5 cm). b15: (1) nhịp nhún dời sớm 3 frame: thấp nhất F14/F43 đúng lúc gót chạm, cao nhất F31/F55 (ref F14/F42, F26/F56); (2) xoay hông cùng pha với chân (bên chân bước ra trước), ±8,5° thay vì ±15°; (3) lắc ngang giữ nguyên (đã khớp ref); (4) thân trên giữ đúng hướng cũ (pháo, vai không đổi, cột sống bớt xoắn 35° → 22°); (5) chân giải lại: bàn chân đứng đúng chỗ, gối giữ hướng (kể cả chân phải F23–F28 bạn vừa chỉnh). Vật lý đang tắt như bạn đặt trên Pose Lab." },
   { clip: "Walk", version: "phys_v1", label: "Gaygor Walk · phys_v1 (vật lý Pose Lab: đầu, cổ, vạt khố, tay khiên, chùy)", src: "clips/gaygor_walk_phys_v1.webm", thumb: "clips/gaygor_walk_phys_v1.jpg", n: 57, fps: 30, w: 1800, h: 600, views: "right (ingame) | left | front · 3/4 · top", note: "Từ b14 (gối trái đã sửa). Lớp vật lý của Pose Lab thay cho overlap dựng tay của b13 ở đầu, cổ, vạt khố trước/sau: key giữ phần chuyển động chính (vạt khố bị đùi đẩy, đầu cân bằng) nhưng dời sớm lên 1–2 frame, lò xo tự tạo lại độ trễ + vượt + lắng. Vạt khố đung đưa 38–40° (b14: 33–35°), cùng nhịp với b14; đầu lắc ~3° như cũ. Tay khiên + chùy giữ thiết lập vật lý bạn bật sáng 26/10. Nối vòng F56→F1 liền, không thêm chỗ xuyên (chỉ còn chùy chạm ngực 4 cm ở F20 như b14). Thân, hông, chân giữ nguyên b14." },
@@ -566,19 +677,19 @@ async function buildCache(url) {
   await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; }).catch(() => null);
   if (job !== cacheJob || v.readyState < 2) return;
   for (let f = 1; f <= N; f++) {
-    await new Promise(ok => { v.onseeked = ok; v.currentTime = (f - 0.5) / C.fps; });
+    await new Promise(ok => { const t = setTimeout(ok, 2500); v.onseeked = () => { clearTimeout(t); ok(); }; v.currentTime = (f - 0.5) / C.fps; });   // quá 2,5 s không tua được thì bỏ qua frame này
     if (job !== cacheJob) return;
     try { cache[f] = await createImageBitmap(v); }
     catch { const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(v, 0, 0, W, H); cache[f] = c; }
     cacheN = f;
-    $("loading").hidden = false; $("loading").textContent = `Đang chuẩn bị frame ${f}/${N}… (đã tua được)`;
+    $("loading").hidden = true; $("cprog").hidden = false; $("cprog").textContent = f + " / " + N;
   }
-  $("loading").hidden = true;
+  $("loading").hidden = true; $("cprog").hidden = true;
   if (playing && !vid.paused) { vid.pause(); acc = 0; last = 0; }   // hand playback over to the cache
   draw();
 }
 function loadFrames() {
-  cacheJob++; cache = []; cacheN = 0; setFrameSize(C); applyZoom();
+  cacheJob++; cache = []; cacheN = 0; setFrameSize(C); applyZoom(); $("cprog").hidden = true;
   $("loading").hidden = false; $("loading").textContent = "Đang tải video…";
   // load the whole (small) WebM into memory: a blob is always seekable, whatever the server does with Range requests
   const want = C.src;
@@ -955,9 +1066,13 @@ window.addEventListener("hashchange", () => setProject(decodeURIComponent(locati
 $("fileName").textContent = C.label;
 loadFrames(); renderClips(); buildCells(); renderRound();
 (async () => {
-  if (!window.claude || !window.claude.use) { renderNotes(); return; }
-  const [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  const hasClaude = !!(window.claude && window.claude.use);
+  let d = null, u = null, cm = null;
+  if (hasClaude) [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  if (!d) d = await window.localDB();   // không có db claude.ai: dùng kho trên máy (Home server)
   db = d; user = u; comments = cm;
+  try { window.dbWidget({ db, cols: ["notes", "rounds"], host: ".top" }); } catch (e) { console.error(e); }
+  if (!hasClaude && !db) { renderNotes(); return; }
   if (user) { myId = await user.id(); if ((await user.can("data.write")) === false) { canWrite = false; $("send").disabled = true;
     $("status").textContent = "Bạn đang ở quyền chỉ xem: xem được ghi chú nhưng không gửi được."; } }
   if (!db) { $("send").disabled = true; renderNotes(); return; }

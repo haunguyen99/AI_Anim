@@ -13,7 +13,7 @@ for f in ["Middle", "Thumb", "Index", "Ring", "Pinky"]:
     fingers[f] = [[round(abs(pos[f"{f}Finger{i}_R"][0] - w[0]) / ln, 4), round((pos[f"{f}Finger{i}_R"][1] - w[1]) / ln, 4),
                    round((pos[f"{f}Finger{i}_R"][2] - w[2]) / ln, 4)] for i in (1, 2, 3)]
 r2 = lambda a: [round(x, 3) for x in a]
-data = dict(body=dict(verts=mesh[0]["verts"], tris=mesh[0]["tris"]),
+data = dict(body=dict(name=mesh[0]["name"], verts=mesh[0]["verts"], tris=mesh[0]["tris"]),
             props=[dict(name=m["name"], verts=m["verts"], tris=m["tris"]) for m in mesh[1:]],
             auto=auto, fingers=fingers,
             ref=[dict(name=s["name"], parent=s["parent"], pos=r2(s["bind_pos"] or [0, 0, 0])) for s in skel],

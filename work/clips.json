@@ -220,6 +220,27 @@
     "title": "Gaygor Die Pose Lab",
     "url": "https://claude.ai/artifact/UyfeSWGCBgju4nQnFgv5XG"
    }
+  },
+  {
+   "id": "gaygor_attack_10_blocking",
+   "character": "Gaygor",
+   "stage": "analysis",
+   "note": "Attack 68F: nạp Bloking10.fbx (8 key) vào Pose Lab để review, chờ khớp file",
+   "review": {
+    "key": "gaygor_attack_10_blocking",
+    "clip": "Attack 10 Blocking",
+    "title": "Gaygor Attack 10 Blocking Review Lab",
+    "crumb": "Gaygor · anim",
+    "name": "Attack 10 Blocking",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "gaygor_attack_10_blocking",
+    "clip": "Gaygor_Attack 10 Blocking",
+    "title": "Gaygor Attack 10 Blocking Pose Lab",
+    "url": "https://claude.ai/artifact/CQzVF3trnyHg6Ga9EgNKcZ"
+   }
   }
  ],
  "projects": [

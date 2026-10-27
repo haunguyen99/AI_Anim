@@ -332,6 +332,10 @@ body.tm input[type=range] { min-height: 32px; }
 body.tm, body.tm * { -webkit-tap-highlight-color: transparent; }
 body.tm .viewer, body.tm #vp { touch-action: none; -webkit-user-select: none; user-select: none; }
 body.tm .mini { min-height: 34px; min-width: 34px; }
+
+/*PLAYBLAST*/
+#bPB{--ic:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Crect%20x=%223%22%20y=%226%22%20width=%2213%22%20height=%2212%22%20rx=%222%22/%3E%3Cpath%20d=%22M16%2010l5-3v10l-5-3z%22/%3E%3C/svg%3E")}
+#pbMsg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#000b;color:#fff;padding:10px 16px;border-radius:10px;z-index:20;font-size:13px}
 </style>
 
 <div class="app">
@@ -351,6 +355,7 @@ body.tm .mini { min-height: 34px; min-width: 34px; }
       <button class="ibtn tool" id="tTrail" title="Quỹ đạo của khớp đang chọn qua cả clip (T). Đường xanh lơ = kết quả đang thấy (có vật lý / AutoPhysics), đường xám nét đứt = pose key gốc. Mỗi chấm là một frame: chấm thưa = nhanh, dày = chậm; chấm to = frame đang xem">Quỹ đạo <kbd>T</kbd></button>
       <button class="ibtn tool on" id="tRef" hidden title="Ảnh ref của frame đang xem, cạnh model (G)">Ref <kbd>G</kbd></button>
       <span class="vsep"></span>
+      <button class="ibtn tool" id="bPB" title="Quay playblast (nhiều camera) và tải .webm">Quay playblast</button>
       <button class="ibtn tool" id="undo" title="Hoàn tác (Ctrl+Z)">Hoàn tác</button>
       <button class="ibtn tool" id="resetAll" title="Trả cả pose về bản gốc">Về pose gốc</button>
       <span class="vsep"></span>
@@ -535,6 +540,111 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
 <script src="fbxexport.js"></script>
 <script>
+/*LOCALDB*/
+// Kho dữ liệu trên máy cho các Lab khi không có db của claude.ai: nói chuyện với Home server (tools/home/store.py), ghi file thật vào work/store/<ns>/.
+// Cùng giao diện với db của artifact (doc/collection, get/set/update/delete/add/onSnapshot) nên mã Lab không phải đổi.
+// Kèm nút "Lưu trữ" (xuất / mở file .json). Nguồn: tools/home/localdb.js, nhúng bằng work/patch_localdb.py.
+(function () {
+  const API = (window.LOCALDB_API || "http://127.0.0.1:8780") + "/api/store";
+  const slug = s => String(s || "page").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "page";
+  const NS = (new URLSearchParams(location.search).get("ns")) || slug(document.title);
+  const enc = encodeURIComponent;
+  async function call(method, path, body) {
+    const r = await fetch(API + "/" + path, { method, headers: body !== undefined ? { "Content-Type": "application/json" } : {}, body: body !== undefined ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error("store " + r.status);
+    return r.json();
+  }
+  const snapOf = (id, data) => ({ id, exists: data !== null && data !== undefined, data: () => data });
+  const watchers = {};   // col → { subs:Set, last:string, timer }
+  async function fetchCol(col) { const r = await call("GET", enc(NS) + "/" + enc(col)); return r.docs; }
+  const colSnap = docs => { const d = docs.map(x => snapOf(x.id, x.data)); return { docs: d, size: d.length, empty: !d.length, forEach: f => d.forEach(f) }; };
+  async function tick(col) {
+    const w = watchers[col]; if (!w || !w.subs.size) return;
+    try {
+      const docs = await fetchCol(col), sig = JSON.stringify(docs);
+      if (sig !== w.last) { w.last = sig; const sn = colSnap(docs); w.subs.forEach(f => { try { f(sn); } catch (e) { console.error(e); } }); }
+    } catch (e) {}
+  }
+  const poke = col => { if (watchers[col]) tick(col); };
+  function docRef(col, id) {
+    const base = () => enc(NS) + "/" + enc(col) + "/" + id.split("/").map(enc).join("/");
+    return {
+      id, path: col + "/" + id,
+      get: async () => { const r = await call("GET", base()); return snapOf(id, r.exists ? r.data : null); },
+      set: async d => { await call("PUT", base(), d); poke(col); },
+      update: async d => { await call("PATCH", base(), d); poke(col); },
+      delete: async () => { await call("DELETE", base()); poke(col); },
+    };
+  }
+  function colRef(col) {
+    return {
+      id: col, doc: id => docRef(col, id),
+      get: async () => colSnap(await fetchCol(col)),
+      add: async d => { const r = await call("POST", enc(NS) + "/" + enc(col), d); poke(col); return docRef(col, r.id); },
+      onSnapshot: cb => {
+        const w = watchers[col] || (watchers[col] = { subs: new Set(), last: null, timer: 0 });
+        w.subs.add(cb); w.last = null; tick(col);
+        if (!w.timer) w.timer = setInterval(() => tick(col), 2000);
+        return () => { w.subs.delete(cb); if (!w.subs.size) { clearInterval(w.timer); w.timer = 0; } };
+      },
+    };
+  }
+  const db = { isLocal: true, ns: NS, doc: path => { const [c, ...r] = path.split("/"); return docRef(c, r.join("/")); }, collection: colRef };
+  window.localDB = async function () {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1200);
+      const r = await fetch(API + "/_ping", { signal: ctl.signal }); clearTimeout(t);
+      if (!r.ok) return null; await r.json(); return db;
+    } catch (e) { return null; }
+  };
+
+  // ---- nút Lưu trữ: nơi lưu hiện tại, xuất / mở file .json
+  const ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.700 3.100 3 7 3s7-1.300 7-3V6M5 12v6c0 1.700 3.100 3 7 3s7-1.300 7-3v-6"/></svg>';
+  const css = document.createElement("style");
+  css.textContent = ".dbw{position:relative;display:inline-flex;align-items:center}.dbw>button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--panel,#1d2026));color:var(--fg,var(--text,#e6e9ee));cursor:pointer;position:relative}.dbw>button i{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;background:#3ab06f}.dbw>button.warn i{background:#e3a008}.dbm{position:fixed;z-index:60;min-width:250px;max-width:min(340px,calc(100vw - 16px));padding:10px;border-radius:10px;background:var(--panel,#1d2026);color:var(--fg,var(--text,#e6e9ee));border:1px solid var(--line,#2a2f38);box-shadow:0 8px 24px #0004;font:12px/1.4 system-ui,sans-serif;display:none}.dbm.show{display:block}.dbm b{display:block;font-size:12px;margin-bottom:2px}.dbm p{margin:0 0 8px;color:var(--mute,var(--muted,#8b93a0));word-break:break-all}.dbm .r{display:flex;gap:6px}.dbm button{flex:1;height:32px;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--bg,#14161a));color:inherit;cursor:pointer;font:inherit}.dbm .t{margin-top:8px;color:var(--accent,#4aa3ff)}body.tm .dbw>button{width:40px;height:40px}body.tm .dbm button{height:40px}";
+  document.head.appendChild(css);
+  window.dbWidget = function (o) {
+    const { db: d, cols, host } = o;
+    if (document.getElementById("dbW")) document.getElementById("dbW").remove();
+    const local = !!(d && d.isLocal), ok = !!d;
+    const where = local ? "Máy này: work/store/" + NS : ok ? "claude.ai: AI đọc được" : "Chỉ trình duyệt này (chưa nối kho)";
+    const w = document.createElement("span"); w.className = "dbw"; w.id = "dbW";
+    w.innerHTML = '<button type="button" title="Lưu trữ: xuất / mở file" aria-label="Lưu trữ" class="' + (ok ? "" : "warn") + '">' + ICON + '<i></i></button><div class="dbm" role="dialog"><b>Nơi lưu</b><p>' + where + '</p><div class="r"><button type="button" data-a="ex">Xuất file</button><button type="button" data-a="im">Mở file</button></div><div class="t" hidden></div><input type="file" accept=".json,application/json" hidden></div>';
+    const hostEl = (host && document.querySelector(host)) || null;
+    if (hostEl) hostEl.appendChild(w); else { w.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:50"; document.body.appendChild(w); }
+    const btn = w.querySelector("button"), menu = w.querySelector(".dbm"), msg = w.querySelector(".t"), file = w.querySelector("input");
+    const say = t => { msg.textContent = t; msg.hidden = !t; };
+    btn.onclick = e => { e.stopPropagation(); const on = !menu.classList.contains("show"); menu.classList.toggle("show", on); if (on) { const r = btn.getBoundingClientRect(); menu.style.top = Math.min(r.bottom + 6, innerHeight - menu.offsetHeight - 8) + "px"; menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + "px"; } };
+    document.addEventListener("click", e => { if (!w.contains(e.target)) menu.classList.remove("show"); });
+    w.addEventListener("click", async e => {
+      const a = e.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "im") { file.click(); return; }
+      if (!d) { say("Chưa có kho để xuất. Mở bằng Home hoặc trên claude.ai."); return; }
+      try {
+        const out = { format: "ddc-store-v1", ns: NS, title: document.title, at: new Date().toISOString(), collections: {} };
+        for (const c of cols) { const sn = await d.collection(c).get(); out.collections[c] = {}; sn.docs.forEach(s => { if (s.exists) out.collections[c][s.id] = s.data(); }); }
+        const n = Object.values(out.collections).reduce((s, c) => s + Object.keys(c).length, 0);
+        const name = NS + "_" + new Date().toISOString().slice(0, 10) + ".json", blob = new Blob([JSON.stringify(out)], { type: "application/json" });
+        let saved = false;
+        try { if (window.claude && window.claude.use) { const dl = await window.claude.use("downloads"); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } } catch (e2) {}
+        if (!saved) { const u = URL.createObjectURL(blob), an = document.createElement("a"); an.href = u; an.download = name; document.body.appendChild(an); an.click(); an.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+        say("Đã xuất " + n + " mục → " + name);
+      } catch (err) { say("Không xuất được: " + (err.message || err)); }
+    });
+    file.onchange = async () => {
+      const f = file.files[0]; file.value = ""; if (!f) return;
+      try {
+        const o2 = JSON.parse(await f.text());
+        if (o2.format !== "ddc-store-v1" || !o2.collections) throw new Error("không phải file lưu của Lab");
+        if (!d) throw new Error("chưa có kho để ghi");
+        let n = 0; for (const c in o2.collections) for (const id in o2.collections[c]) { await d.doc(c + "/" + id).set(o2.collections[c][id]); n++; }
+        say("Đã mở " + n + " mục từ " + f.name + (o2.ns && o2.ns !== NS ? " (nguồn: " + o2.ns + ")" : "") + ". Tải lại trang để thấy.");
+      } catch (err) { say("Không mở được: " + (err.message || err)); }
+    };
+  };
+})();
+</script>
+<script>
 // ---------------------------------------------------------------- data
 // One entry per VERSION, newest first, like CLIPS on the playblast review page. This master keeps every clip;
 // work/pose_lab/split_pages.py writes one page per animation (own artifact + own db), so map2 and map06 never mix.
@@ -545,6 +655,7 @@ Channel Box: kéo ngang tên kênh để chỉnh (Shift chậm, Ctrl nhanh) ho�
 // contacts = default planted frames per foot ("15-45", cycle frames); ref = sprite sheets of the reference video
 // (work/pose_lab/make_ref_sprites.py), offset = ref frame - anim frame.
 const POSES = [
+  { clip: "Gaygor_Attack 10 Blocking", project: "Gaygor", version: "b10_v1", date: "2026-10-27", frames: 68, fps: 30, keys: [1, 15, 21, 28, 33, 55, 65, 68], mode: "keys", label: "Bloking10 của team (8 key, bậc thang)", note: "Nạp thẳng Bloking10.fbx, giữ nguyên pose và timing của file; chờ user duyệt Khớp file.", glb: "models/gaygor_attack_10_blocking_b10_v1.json" },
   { clip: "Gaygor_Die", project: "Gaygor", version: "goal_v1", date: "2026-10-26", frames: 72, fps: 30, keys: [1, 72], mode: "keys", interp: "spline", label: "Die - thử Về đích (2 key)", note: "Thử tính năng Ragdoll Về đích (v3, theo note 'không cần giữ đúng pose cuối 100%, đang kéo cứng như tượng đá đổ'): chỉ 2 key, F1 Idle và F72 pose nằm. Cơ mất sức nhanh (Sức 70% F4 → 15% F8 → 0 F14), chân, tay và đầu gần như buông: gối khuỵu, người sụp xuống rồi ngã ngửa, đầu ngoẹo theo, chân hất lên khi lưng chạm sàn; sau đó chỉ một lực kéo nhẹ về dáng cuối, không giữ trương lực, đầu tự ngoẹo sang bên. Frame cuối giống key cuối 50% (thanh Khớp pose cuối, kéo 0-100%). Tìm cú đổ: hông lệch 0,8 cm, thân 4,8°.", glb: "models/gaygor_die_goal_v1.json" },
   { clip: "Gaygor_Die", project: "Gaygor", version: "polish_v2", date: "2026-10-26", frames: 72, fps: 30, keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72], mode: "keys", interp: "spline", label: "Die - polish v2 (tay và chùy mềm)", note: "Theo yêu cầu 'làm mềm tay và chùy F1-19 như Hit v4-v7'. Trên polish_v1: tay phải mềm như Hit v4 (bả vai 5°, vai 8°, khuỷu 15°, cổ tay 12°); tay trái như Hit v5 (bả vai trễ, khuỷu đung đưa 15°, tay vẫn nắm cán); chùy như Hit v7 (trễ theo thân, văng quá rồi lắng, trễ tới 23° ở F8 và F17, vai là đệm mềm, khe >= 7,8 cm). Các lớp tắt dần F17-F22 để nối êm vào ragdoll; F23-72 như polish_v1.", glb: "models/gaygor_die_polish_v2.json" },
   { clip: "Gaygor_Die", project: "Gaygor", version: "polish_v1", date: "2026-10-26", frames: 72, fps: 30, keys: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72], mode: "keys", interp: "spline", label: "Die - polish v1 (72 frame)", note: "Bước C6 trên phys_v1 đã duyệt. Tay trái bám cán chùy tới lúc buông (IK, trước lệch tới 2 cm); chân cắm F1-20 khóa (trượt < 1 cm); làm mượt chân phải F38-48 (cú đẩy gối F42); lò xo phụ vạt khố trước/sau và vòng ngực (cùng thông số Hit, giới hạn mềm 15°): vạt khố văng khi giật F3, khi buông chùy và khi lưng sập F30-40, vòng ngực rung một nhịp F27-35. Tay khiên không thêm lắc (tay nặng có giáp đi theo thân). QA: không pop, không jitter, không gập ngược, không xuyên sàn.", glb: "models/gaygor_die_polish_v1.json" },
@@ -4520,10 +4631,16 @@ function loop(now) {
 setCam("right"); resize(); loop(); renderPoses(); openPose(POSES[0]);
 
 (async () => {
-  if (!window.claude || !window.claude.use) { $("status").textContent = "Đây là bản chạy thử trên máy: nút Lưu sẽ tải file .json. Mở trang trên claude.ai để lưu thẳng cho AI."; return; }
-  const [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  const hasClaude = !!(window.claude && window.claude.use);
+  let d = null, u = null, cm = null;
+  if (hasClaude) [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  if (!d) d = await window.localDB();   // không có db claude.ai: dùng kho trên máy (Home server)
   db = d; user = u; comments = cm;
-  if (!db) { $("status").textContent = "Đăng nhập claude.ai để lưu điều chỉnh. Bạn vẫn chỉnh thử được trên model."; refresh(); return; }
+  try { window.dbWidget({ db, cols: ["adjusts", "rounds", "keys", "anims"], host: ".tools" }); } catch (e) { console.error(e); }
+  if (!db) {
+    if (!hasClaude) { $("status").textContent = "Đây là bản chạy thử trên máy: nút Lưu sẽ tải file .json. Mở Home (tools/home) để lưu vào dự án, hoặc mở trang trên claude.ai."; return; }
+    $("status").textContent = "Đăng nhập claude.ai để lưu điều chỉnh. Bạn vẫn chỉnh thử được trên model."; refresh(); return;
+  }
   if (user) { myId = await user.id().catch(() => null); if ((await user.can("data.write").catch(() => null)) === false) canWrite = false; }
   if (!canWrite) $("status").textContent = "Bạn đang ở quyền chỉ xem: chỉnh thử được nhưng không lưu được.";
   db.collection("adjusts").onSnapshot(snap => { adjs = snap.docs.filter(s => s.exists).map(s => ({ id: s.id, ...s.data() })); renderAdjs(); renderRound(); renderPoses(); refresh(); });
@@ -4601,4 +4718,92 @@ setCam("right"); resize(); loop(); renderPoses(); openPose(POSES[0]);
   chk.checked = saved === null ? matchMedia("(pointer:coarse)").matches : saved === "1";
   apply();
 })();
+
+/*PLAYBLAST*/
+// Quay playblast: mỗi frame goto(f) rồi vẽ N camera cạnh nhau (chỉ scene, không overlay) vào canvas ghép, MediaRecorder thu theo nhịp fps.
+window.DDC = window.DDC || {};
+window.DDC.playblast = async function (opt) {
+  opt = opt || {};
+  if (!ready || !model) throw new Error("Model chưa tải xong.");
+  const cams = opt.cams || ["right", "left", "front", "top"], cw = opt.cw || 450, ch = opt.ch || 600, dist = opt.dist || 1, n = P.frames || 1, fps = P.fps || 30;
+  const mime = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
+  if (!mime) throw new Error("Trình duyệt không quay được video (MediaRecorder).");
+  const wasFrame = frame, wasCam = curCam, wasGhost = ghost && ghost.visible, wasSize = renderer.getSize(new THREE.Vector2()), prog = opt.onProgress || (() => {});
+  const out = document.createElement("canvas"); out.width = cw * cams.length; out.height = ch;
+  const ctx = out.getContext("2d"), stream = out.captureStream(0), track = stream.getVideoTracks()[0];
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8e6 }), chunks = [];
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  const done = new Promise(r => rec.onstop = r);
+  const msg = document.createElement("div"); msg.id = "pbMsg"; $("viewer").appendChild(msg);
+  stopPlay(); if (ghost) ghost.visible = false; gizmo.detach();
+  const clear = css("--view") || "#101218", bg = new THREE.Color(0x15181f);
+  let thumb = null; const mid = Math.max(1, Math.round(n / 2));
+  try {
+    rec.start();
+    for (let f = 1; f <= n; f++) {
+      msg.textContent = "Đang quay playblast " + f + " / " + n; prog(f, n);
+      goto(f); model.updateMatrixWorld(true);
+      renderer.setSize(cw, ch, false); camera.aspect = cw / ch; camera.updateProjectionMatrix();
+      ctx.fillStyle = "#15181f"; ctx.fillRect(0, 0, out.width, ch);
+      cams.forEach((k, i) => { setCam(k); if (dist !== 1) { const t = orbit.target; camera.position.sub(t).multiplyScalar(dist).add(t); camera.lookAt(t); } renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, camera); ctx.drawImage(renderer.domElement, i * cw, 0, cw, ch); });
+      if (f === mid) thumb = await new Promise(r => out.toBlob(r, "image/jpeg", 0.85));
+      track.requestFrame();
+      await new Promise(r => setTimeout(r, 1000 / fps));
+    }
+    await new Promise(r => setTimeout(r, 200)); rec.stop(); await done;
+  } finally {
+    msg.remove(); if (ghost) ghost.visible = wasGhost; renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
+  }
+  return { webm: new Blob(chunks, { type: "video/webm" }), thumb, n, fps, w: cw * cams.length, h: ch, views: cams.map(k => CAMS[k].label.toLowerCase()).join(" | ") };
+};
+$("bPB").addEventListener("click", async () => {
+  try { const o = await window.DDC.askPlayblast(); if (!o) return; const r = await window.DDC.playblast(o); const u = URL.createObjectURL(r.webm), a = document.createElement("a"); a.href = u; a.download = idOf(P.clip, P.version) + ".webm"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); $("status").textContent = "Đã quay playblast " + r.n + " frame."; }
+  catch (e) { $("status").textContent = "Không quay được: " + (e.message || e); }
+});
+
+/*PLAYBLAST2*/
+// Hộp thoại cài đặt playblast: chọn camera (thứ tự ghép = thứ tự tick), cỡ mỗi ô; nhớ lựa chọn trong trình duyệt.
+window.DDC.askPlayblast = function () {
+  return new Promise(res => {
+    let saved = {}; try { saved = JSON.parse(localStorage.getItem("poselab:pb") || "{}"); } catch {}
+    const wasCam = curCam; let dist = saved.dist >= 0.3 && saved.dist <= 3 ? saved.dist : 1;
+    const order = ["right", "left", "front", "back", "top", "bottom", "persp"], on = new Set(saved.cams || ["right", "left", "front", "top"]);
+    const sizes = { s: [300, 400, "Nhỏ"], m: [450, 600, "Vừa"], l: [600, 800, "Lớn"] }; let sz = saved.size && sizes[saved.size] ? saved.size : "m";
+    const ov = document.createElement("div");
+    ov.style.cssText = "position:fixed;inset:0;z-index:100;background:#0008;display:flex;align-items:center;justify-content:center;padding:12px";
+    ov.innerHTML = '<div style="background:var(--panel,#1a1e26);color:var(--ink,#e6e9ee);border:1px solid var(--line,#2c3441);border-radius:12px;padding:16px;width:min(360px,100%);font:13px/1.45 system-ui,sans-serif">'
+      + '<b style="font-size:14px">Quay playblast</b><div style="color:var(--muted,#8d97a8);margin:2px 0 10px">Chọn camera ghép thành một hàng trong video (xem trên Review Lab).</div>'
+      + '<div id="pbCams" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"></div>'
+      + '<div style="margin:12px 0 6px;color:var(--muted,#8d97a8)">Cỡ mỗi ô</div><div id="pbSz" style="display:flex;gap:6px"></div>'
+      + '<div style="margin:12px 0 4px;color:var(--muted,#8d97a8);display:flex;justify-content:space-between"><span>Khoảng cách camera tới nhân vật</span><b id="pbDv" style="color:var(--ink,#e6e9ee)"></b></div>'
+      + '<input id="pbD" type="range" min="0.3" max="2.5" step="0.05" style="width:100%"><div style="display:flex;justify-content:space-between;color:var(--muted,#8d97a8);font-size:11px"><span>Gần</span><span>Xa</span></div>'
+      + '<div id="pbInfo" style="margin-top:10px;color:var(--muted,#8d97a8);font-size:12px"></div>'
+      + '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button id="pbNo" style="padding:7px 14px;border-radius:8px;border:1px solid var(--line,#2c3441);background:transparent;color:inherit;cursor:pointer">Huỷ</button><button id="pbGo" style="padding:7px 16px;border-radius:8px;border:0;background:var(--accent,#2fb67d);color:#fff;font-weight:600;cursor:pointer">Quay</button></div></div>';
+    document.body.appendChild(ov);
+    const cams = ov.querySelector("#pbCams"), szb = ov.querySelector("#pbSz"), info = ov.querySelector("#pbInfo"), go = ov.querySelector("#pbGo");
+    const dEl = ov.querySelector("#pbD"), dv = ov.querySelector("#pbDv");
+    const prev = () => {   // xem thử khoảng cách ngay trên viewport (camera đầu tiên đã chọn)
+      const k = order.find(x => on.has(x)) || wasCam; setCam(k); if (dist !== 1) { const t = orbit.target; camera.position.sub(t).multiplyScalar(dist).add(t); camera.lookAt(t); }
+    };
+    dEl.value = dist; dv.textContent = "×" + dist.toFixed(2);
+    dEl.addEventListener("input", () => { dist = +dEl.value; dv.textContent = "×" + dist.toFixed(2); prev(); });
+    const refresh = () => {
+      prev();
+      cams.innerHTML = order.map(k => `<label style="display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line,#2c3441);border-radius:8px;cursor:pointer;${on.has(k) ? "background:color-mix(in srgb,var(--accent,#2fb67d) 18%,transparent)" : ""}"><input type="checkbox" data-k="${k}" ${on.has(k) ? "checked" : ""}> ${CAMS[k].label}</label>`).join("");
+      szb.innerHTML = Object.entries(sizes).map(([k, v]) => `<button data-s="${k}" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--line,#2c3441);cursor:pointer;color:inherit;background:${k === sz ? "var(--accent,#2fb67d)" : "transparent"}">${v[2]}<br><small>${v[0]}×${v[1]}</small></button>`).join("");
+      const [w, h] = sizes[sz], n = on.size; info.textContent = n ? "Video " + (w * n) + "×" + h + " · " + (P.frames || 1) + " frame · " + (P.fps || 30) + " fps" : "Chọn ít nhất một camera.";
+      go.disabled = !n; go.style.opacity = n ? 1 : .5;
+    };
+    ov.addEventListener("click", e => {
+      const c = e.target.closest("input[data-k]"), b = e.target.closest("button[data-s]");
+      if (c) { c.checked ? on.add(c.dataset.k) : on.delete(c.dataset.k); refresh(); } else if (b) { sz = b.dataset.s; refresh(); }
+      else if (e.target.closest("#pbNo") || e.target === ov) { ov.remove(); setCam(wasCam); res(null); }
+      else if (e.target.closest("#pbGo") && on.size) {
+        const list = order.filter(k => on.has(k)); try { localStorage.setItem("poselab:pb", JSON.stringify({ cams: list, size: sz, dist })); } catch {}
+        ov.remove(); setCam(wasCam); res({ cams: list, cw: sizes[sz][0], ch: sizes[sz][1], dist });
+      }
+    });
+    refresh();
+  });
+};
 </script>
