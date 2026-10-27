@@ -56,6 +56,30 @@ def _cfg_from_skeleton(names, body):
             "headEnd": "HeadEnd_M" in n, "dress": "DressFront_M" in n, "prop": "Prop_M" in n, "weapon": "Weapon" in n}
 
 
+def _restore_ref(cid, C):
+    """Thiếu work/rig_lab/ref_<id> (dữ liệu không có trong repo): mesh có skin weights thì dựng lại xương khách
+    (skel_from_weights.py, khớp đặt theo vùng chuyển trọng số); không có weights thì chỉ chép mesh, rig như model tĩnh."""
+    cf = os.path.join(RIG, "chars", cid + ".json")
+    mp = os.path.join(RIG, "chars", cid, "mesh_cm.json")
+    if not os.path.isfile(mp):
+        raise ValueError("thiếu mesh của " + cid + " (work/rig_lab/chars/" + cid + "/mesh_cm.json): nhập lại FBX bằng Tệp → Nhập FBX")
+    meshes = json.load(open(mp))
+    body = next((m for m in meshes if m["name"] == C["body"]), None)
+    C["ref_dir"] = C.get("ref_dir") or "ref_" + cid
+    if body and body.get("weights"):
+        r = subprocess.run([sys.executable, "-I", os.path.join(RIG, "skel_from_weights.py"), cid], cwd=ROOT, capture_output=True, text=True,
+                           encoding="utf8", errors="replace", timeout=300)
+        if r.returncode:
+            raise ValueError("dựng lại xương từ skin lỗi: " + (r.stderr.strip().splitlines() or ["?"])[-1])
+        C["names_from"] = C["ref_dir"]; C["auto_from_ref"] = True
+    else:
+        ref = os.path.join(RIG, C["ref_dir"]); os.makedirs(ref, exist_ok=True)
+        sc = C.get("scale", 1) or 1
+        json.dump([dict(m, verts=[round(v / sc, 4) for v in m["verts"]]) for m in meshes], open(os.path.join(ref, "ref_mesh.json"), "w"), separators=(",", ":"))
+        C["names_from"] = ""
+    json.dump(C, open(cf, "w", encoding="utf8"), ensure_ascii=False, indent=1)
+
+
 def build(cid):
     _ok(cid)
     cf = os.path.join(RIG, "chars", cid + ".json")
@@ -63,11 +87,16 @@ def build(cid):
         raise ValueError("chưa có work/rig_lab/chars/" + cid + ".json (nhập FBX bằng Tệp → Nhập FBX trước)")
     C = json.load(open(cf, encoding="utf8"))
     sk_path = os.path.join(RIG, C.get("names_from") or C["ref_dir"], "ref_skeleton.json")
+    if not os.path.isfile(sk_path) or not os.path.isfile(os.path.join(RIG, C["ref_dir"], "ref_mesh.json")):
+        _restore_ref(cid, C)   # máy không có FBX gốc: dựng lại xương khách từ skin weights (hoặc chỉ mesh nếu là model tĩnh)
+        C = json.load(open(cf, encoding="utf8"))
+        sk_path = os.path.join(RIG, C.get("names_from") or C["ref_dir"], "ref_skeleton.json")
     names = [s["name"] for s in json.load(open(sk_path))] if os.path.isfile(sk_path) else []
-    if not names or "Wrist_R" not in names:
-        raise ValueError("chưa có xương khách đặt tên kiểu Advanced Skeleton (Wrist_R…) để làm mẫu ngón: dựng rig cho model tĩnh chưa hỗ trợ trong Studio")
     if "fingers" not in C.get("cfg", {}):
-        C["cfg"] = {**_cfg_from_skeleton(names, C["body"]), **C.get("cfg", {})}
+        # có xương kiểu Advanced Skeleton thì theo tên xương; model tĩnh thì bàn tay mặc định 5 ngón × 3 đốt
+        C["cfg"] = {**(_cfg_from_skeleton(names, C["body"]) if "Wrist_R" in names else
+                       {"name": C["body"], "fingers": ["Middle", "Thumb", "Index", "Ring", "Pinky"], "fseg": 3, "toes": True, "toesEnd": False,
+                        "fingerEnd": False, "headEnd": True, "dress": False, "prop": False, "weapon": False}), **C.get("cfg", {})}
         C.pop("note", None)
         json.dump(C, open(cf, "w", encoding="utf8"), ensure_ascii=False, indent=1)
     r = subprocess.run([sys.executable, "-I", os.path.join(RIG, "build_char.py"), cid], cwd=ROOT, capture_output=True, text=True,

@@ -25,5 +25,6 @@
   "prop": false,
   "weapon": false
  },
- "source": "Studio Nhập FBX 2026-10-27: Boss_Gragas.fbx"
+ "source": "Studio Nhập FBX 2026-10-27: Boss_Gragas.fbx",
+ "auto_from_ref": true
 }
