@@ -2,12 +2,15 @@
 
 Bộ công cụ làm anim game cho nhân vật 3D cùng Claude Code. Đầu vào có thể là video ref, file blocking FBX của team, hoặc chỉ một yêu cầu bằng lời. Đầu ra là FBX cho Unity.
 
-Mỗi anim đi qua các trang web:
-- **Rig Lab:** dựng khớp và skin cho nhân vật.
+Mọi thứ chạy trong **Home**, một ứng dụng web trên máy bạn (http://127.0.0.1:8780) với thanh tab. Mỗi anim đi qua các trang:
+- **Mesh Lab:** sửa mesh cơ bản (chọn điểm / mặt / khối, dời xoay scale, Channel Box, Free Transform, hàn, tách, dọn, đặt sàn, chiều cao).
+- **Rig Lab:** dựng khớp và skin cho nhân vật (có Outliner; dùng luôn xương và skin có sẵn của mesh).
 - **Pose Lab:** dựng pose, key, spline, vật lý, xuất FBX.
 - **Review Lab:** xem playblast và ghi note theo từng frame.
 
-Claude làm phần dựng và sửa theo note duyệt của bạn.
+Dữ liệu đi từ trang này sang trang sau ngay trong Home: Rig Lab tự dùng mesh đã sửa, nút ➤ gửi rig sang Pose Lab (glTF có skin), nút 🎞 quay playblast nhiều camera sang Review Lab. Mọi Lab lưu vào file thật trong `work/store/` (nút Lưu trữ ở góc trên để xuất / mở `.json`). Chi tiết: `docs/app_shell.md`, `docs/data_flow.md`, `docs/storage.md`, `docs/mesh_lab.md`.
+
+Claude làm phần dựng và sửa theo note duyệt của bạn. Hỗ trợ cả iPad / điện thoại: tick ô hình bàn tay ở Pose Lab, Rig Lab, Mesh Lab.
 
 Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã của các trang Lab. Model nhân vật, video ref, playblast, file Blender/Cascadeur và lịch sử duyệt không nằm trong repo (xem mục [Dữ liệu không có trong repo](#dữ-liệu-không-có-trong-repo)).
 
@@ -29,6 +32,7 @@ Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã củ
    ```
    Lệnh này tạo `.venv` và cài các thư viện trong `requirements.txt`.
 4. **Mở thư mục trong Claude Code.** Các skill trong `.claude/skills` tự có sẵn, không cần cài thêm.
+5. **Mở Home:** gõ `/project` trong Claude Code, hoặc bấm đúp `tools\home\start.bat` rồi mở http://127.0.0.1:8780. Các Lab cần mạng (tải three.js từ CDN). ffmpeg có thì playblast được nén lại để tua mượt; không có thì vẫn dùng được.
 
 ## Bắt đầu dùng
 
@@ -58,6 +62,7 @@ Các trang Lab được dựng từ bản gốc trong repo:
 - `work/pose_lab/index.html`
 - `work/review_page/index.html`
 - `work/rig_lab/template.html`
+- `work/mesh_lab/template.html`
 
 Lệnh `tools/clip_registry.py build` tạo trang cho từng clip, rồi Claude đăng thành trang trên claude.ai. Trang thuộc về tài khoản đã đăng nó. Muốn người khác xem hoặc ghi note, chủ trang mở trang và bấm **Share**.
 
@@ -112,7 +117,8 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 | `tools/spine/` | `render_spine.py`: xem trước anim Spine thành GIF + contact sheet (xương, alpha slot, region, mesh có weight; không IK/clipping) |
 | `legacy/` | Tool cũ: Blender (`blender/`, `blender_tools/`) và mediapipe, chỉ để dựng lại clip cũ |
 | `docs/` | Quy trình (`pipeline_v2.md`), thiết kế Rig Lab, vật lý Pose Lab |
-| `work/pose_lab/`, `work/review_page/`, `work/rig_lab/` | Mã các trang Lab (bản gốc + script dựng trang), đọc/ghi FBX (`work/pose_lab/fbx/`) |
+| `work/pose_lab/`, `work/review_page/`, `work/rig_lab/`, `work/mesh_lab/` | Mã các trang Lab (bản gốc + script dựng trang), đọc/ghi FBX (`work/pose_lab/fbx/`) |
+| `work/store/` | Kho dữ liệu Lab trên máy (ghi chú, key, skin, mesh đã sửa), mỗi máy một bản, **không** có trong repo |
 | `work/clips.json` | Sổ clip: dự án, nhân vật, clip, giai đoạn, link trang |
 | `MAP.md` | Bản đồ file và trạng thái từng clip. Đọc trước khi tạo file mới, cập nhật sau khi thêm hoặc dời file |
 
@@ -120,6 +126,9 @@ Không tìm thấy thư mục (không có `MAP.md`) thì script báo lỗi ngay,
 
 - Model nhân vật đã xuất cho Pose Lab (`work/pose_lab/models/`), ảnh ref (`work/pose_lab/refs/`), trang đã dựng (`pages/`).
 - Video ref, playblast (`work/review_page/clips/`), FBX đã xuất, file `.blend` / `.casc`.
+- Mesh gốc của nhân vật (vd `work/rig_lab/ref_gaygor/`): thiếu thì Mesh Lab và Rig Lab của nhân vật đó không dựng lại được (`work/mesh_lab/build_mesh.py <nhân vật>`, `work/rig_lab/build_char.py <id>`). Trang Pose / Review của anim cũ cũng cần model và video gốc; Home vẫn liệt kê anim từ `work/clips.json` và mở link claude.ai nếu chưa có trang trên máy.
+- `work/store/`: dữ liệu làm việc của riêng mỗi máy. Muốn chuyển sang máy khác thì xuất file `.json` bằng nút Lưu trữ rồi mở lại ở máy kia.
+- `.mcp.json` (server Blender / Cascadeur / Spine của máy bạn): tự tạo theo máy, xem `tools/spine_mcp/README.md` cho Spine.
 
 Muốn làm tiếp clip của người khác thì xin họ thư mục `work/<clip>/` và model tương ứng. Làm nhân vật mới thì bắt đầu bằng `/rig` hoặc `/new_clip` với FBX nhân vật của bạn.
 
