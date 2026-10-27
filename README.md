@@ -44,6 +44,7 @@ Trong Claude Code, gõ:
 | `/new_clip` | Tạo anim mới và đăng ký vào sổ `work/clips.json`. Claude hỏi một lần những gì còn thiếu (nhân vật, số frame, ref…) rồi chọn quy trình. |
 | `/rig` | Rig Lab: dựng khớp và skin cho nhân vật mới. |
 | `/spine2d` | Rig và làm anim 2D bằng Spine (order của GD → thiết kế → rig → anim → GIF trên UI → export) |
+| `/push` | Đẩy mã nguồn (skill, tool, quy trình, tài liệu, mã các Lab) lên GitHub `main` bằng `tools/push_source.py`; không đẩy dữ liệu, không force. |
 | `/check_fb` | Sau khi bạn ghi note trên Review Lab hoặc Pose Lab và bấm gửi, gõ `/check_fb` (có thể kèm tên clip) để Claude sửa **mọi** note của đợt đó trong một version mới. |
 
 Có thể nói chuyện tự nhiên bằng tiếng Việt, ví dụ "làm anim Gaygor bị đánh 32 frame".
@@ -90,7 +91,7 @@ Project Spine nằm ở `work/spine/<game>/<anim>/`, ví dụ `work/spine/G-Pira
 
 | Thư mục | Nội dung |
 |---|---|
-| `.claude/skills/` | Skill của Claude: `animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `check_fb`, `project`, `rig`, `spine2d` (rig + anim Spine 2D) |
+| `.claude/skills/` | Skill của Claude: `animation` (kiến thức animator, `knowledge/CORE.md` + `details/`), `new_clip`, `check_fb`, `push`, `project`, `rig`, `spine2d` (rig + anim Spine 2D) |
 | `tools/` | Tool Python: sổ clip `clip_registry.py`, Home `tools/home/`, so sánh hình, sửa FBX (`fbx_remove_mesh.py`, `fbx_replace_mesh.py`), vật lý `physics_sim.py`; `tools/cascadeur/` chạy trong Cascadeur |
 | `tools/spine_mcp/` | MCP server Spine 2D (Spine CLI + sửa skeleton JSON) |
 | `tools/spine/` | `render_spine.py`: xem trước anim Spine thành GIF + contact sheet (xương, alpha slot, region, mesh có weight; không IK/clipping) |

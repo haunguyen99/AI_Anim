@@ -13,7 +13,7 @@ Mọi clip nằm trong **sổ clip** `work/clips.json` (đọc/ghi bằng `tools
 |---|---|---|---|
 | rig (mỗi nhân vật một lần) | Rig Lab (`/rig`) | khớp, skin, `rig.json` | `set-url char:<Tên> rig <url>` |
 | analysis, p0 | `animation` (phân tích → P0 theo mức) | `work/<job>/analysis.md`, P0 | `stage <id> p0` |
-| blocking → spline → polish | Pose Lab (và Blender nếu clip cũ) | version trên Pose Lab | `pose-version`, `build`, `set-url <id> pose` |
+| blocking → spline → polish | Pose Lab | version trên Pose Lab | `pose-version`, `build`, `set-url <id> pose` |
 | duyệt | Review Lab (`/check_fb` đọc note) | video playblast, note theo frame | `review-version`, `build`, `set-url <id> review` |
 | export | `export_clip.py` / Pose Lab Xuất FBX | FBX Unity | `stage <id> export` |
 

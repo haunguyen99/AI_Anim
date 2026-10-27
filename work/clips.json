@@ -224,7 +224,7 @@
   {
    "id": "gaygor_attack_10_blocking",
    "character": "Gaygor",
-   "stage": "analysis",
+   "stage": "blocking",
    "note": "Attack 68F: nạp Bloking10.fbx (8 key) vào Pose Lab để review, chờ khớp file",
    "review": {
     "key": "gaygor_attack_10_blocking",
