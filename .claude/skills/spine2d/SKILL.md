@@ -9,6 +9,20 @@ Claude làm như một animator 2D Spine. Người dùng là animator, nhận or
 
 Không điều khiển được cửa sổ Spine đang mở. Mọi việc đi qua **file JSON** (do script dựng hoặc tool MCP sửa) và **Spine CLI**.
 
+Để người dùng thấy ngay mỗi lần sửa: trang **Spine Live** `http://127.0.0.1:8780/spine?json=<work/...json>` (Home phải đang chạy). Trang dùng spine-player chính thức nên vẽ đủ IK, mesh, deform, draw order, và tự nạp lại khi JSON / atlas / ảnh đổi, giữ nguyên anim và thời điểm đang xem. Đầu việc, gửi người dùng link này; sửa xong chỉ cần báo đã ghi file, không cần nhắc họ mở lại Spine.
+
+**Làm việc trước mắt người dùng (người dùng 2026-10-28: "tôi không thấy được quá trình bạn làm việc trên Spine Live"):** mỗi bước đáng xem thì đẩy lên trang bằng `tools/spine_live_cmd.py`, trang ở chế độ **Theo Claude** tự nhảy theo:
+```bash
+.venv/Scripts/python.exe -I tools/spine_live_cmd.py show work/<game>/spine/<anim>/<x>.json --anim tap --frame 8 --bones --weight wrist --say "đang làm gì, cần nhìn chỗ nào"
+.venv/Scripts/python.exe -I tools/spine_live_cmd.py say "kết quả đo / bước tiếp"
+.venv/Scripts/python.exe -I tools/spine_live_cmd.py status   # trang có mở và đang Theo Claude không
+```
+- Người dùng muốn **xem quá trình dựng** (2026-10-28), không chỉ kết quả: sau khi dựng/sửa rig hoặc anim, chạy `tools/spine_live_replay.py <json> --anim <a> [--delay 3] [--ui <tên>] [--only rig|anim]`: trang dựng lại từng bước (ảnh → từng xương → lưới mesh → weight từng xương → từng key blocking stepped → spline), mỗi bước có chú thích. Kiểm `spine_live_cmd.py status` trước: không có trang nào mở thì báo người dùng mở trang rồi mới chạy.
+- Bản thử tạm (bẻ thử khớp, so phương án) ghi vào `work/<game>/spine/<anim>/_live/`, không để trong scratchpad: trang chỉ thấy file trong thư mục anim.
+- Dùng `show` khi đổi file / anim / frame / lớp xem (xương, lưới, weight); `say` cho kết quả đo và bước tiếp. Câu `--say` nói cái cần nhìn, ví dụ "đầu ngón phải nằm đúng dấu + đỏ".
+- Contact sheet (`render_spine.py`) vẫn dùng để tự kiểm; Spine Live là nơi người dùng theo dõi.
+- Ghép lên UI game trên Spine Live: `work/<game>/spine/<anim>/ui/<tên>.json` = `{"name", "image" (PNG cạnh file), "at": [x, y] px ảnh (y xuống) = gốc skeleton / điểm chạm, "scale": px ảnh mỗi đơn vị Spine}`; trang có ô "UI: <tên>", lệnh `show … --ui <tên>`. HandTut: `ui/equipment.json` (at 110,660, scale 0.55 như GIF đã duyệt).
+
 ## Công cụ
 
 | Việc | Công cụ |
@@ -17,6 +31,8 @@ Không điều khiển được cửa sổ Spine đang mở. Mọi việc đi qu
 | Đọc JSON | `skeleton_summary`, `skeleton_bone_tree`, `skeleton_get`, `slot_list`, `animation_get` |
 | Sửa nhỏ JSON | `bone_add`, `bone_update`, `slot_update`, `animation_create/rename/delete/scale_time`, `keyframe_set_bone`, `keyframe_set_slot`, `keyframe_remove`, `skeleton_set` (mỗi lần sửa có backup trong `.spine_mcp_backups/`) |
 | Dựng rig + anim có tính toán (mesh, weight, FK, đặt điểm chạm) | Script `work/<game>/spine/<anim>/build_<anim>.py` sinh JSON (mẫu: `work/pirate_goldrush/spine/HandTut/build_handtut.py`) |
+| Xem trực tiếp (người dùng) | Spine Live: Home `/spine` (`tools/spine_live/`, `tools/home/spine_live.py`); skeleton chỉ có `images/` thì server tự sinh atlas `images/_auto.atlas`; lớp xem rig (xương, lưới, weight, dấu + gốc) |
+| Cho người dùng thấy bước đang làm | `tools/spine_live_cmd.py show/say/status` → trang ở chế độ Theo Claude nhảy theo; bản thử để trong `_live/` |
 | Xem trước | `tools/spine/render_spine.py skel.json images_dir anim out_prefix [--bg ui.png --at X Y --scale S] [--cross] [--frames 0,4,8]` → `<out>.gif` + `<out>_frames.png` |
 
 `render_spine.py` là bản xem gần đúng. Nó chỉ hỗ trợ translate/rotate/scale của xương, alpha của slot, region và mesh (có hoặc không weight). Nó **không** vẽ IK, path, clipping, deform timeline hay draw order. Anim dùng những thứ đó phải mở trong Spine để kiểm, và phải nói rõ với người dùng như vậy.
@@ -125,3 +141,18 @@ Thêm game hoặc anim mới thì ghi một dòng vào `MAP.md`.
   - Góp ý "bàn tay nghiêng về bên trái nhiều quá" → đổi góc `dir` (các bản thử -170/-182/-194/-206). Chốt mức 2 (-194).
   - "Thêm 1 anim bàn tay xoay sang phải" → `tap_right` = `dir` đối xứng theo trục nhìn (lệch -53.64°).
   - Export theo mặc định CLI bị lỗi → export theo setting của người dùng (mục Quy trình, bước 8).
+- 2026-10-28 BallBounceRoll (bài test: bóng nảy 5 lần bằng nhau rồi lăn phải ra khỏi khung), người dùng duyệt "Pass".
+  - Curve Spine 4.2 ghi **thời gian (giây) và giá trị tuyệt đối**, không phải tỉ lệ 0–1; key xoay dùng `value`, không phải `angle`. Bản `_v1` sai cả hai chỗ. Hàm `curve()` và `timeline()` chuyển từ curve chuẩn hoá có trong `work/test/spine/BallBounceRoll/build_bounceroll.py`.
+  - Vật lăn: chỗ sáng/bóng tối để slot riêng trên xương không xoay, nếu không đèn sẽ xoay theo. Góc lăn = -quãng / bán kính, dùng chung curve với x để không trượt.
+  - Bóng đổ và độ cao tỉ lệ tuyến tính với nhau thì dùng chung curve cho scale + alpha của bóng đổ.
+  - Setting export trên máy này để atlas `scale: 1.8` (atlas phóng to). Báo người dùng mỗi lần export.
+- 2026-10-28 Soldier (rig lính cầm súng từ PSD, bài trainee), người dùng duyệt "Rig OK". Script mẫu `work/test/spine/Soldier/build_soldier.py`.
+  - PSD → rig: `psd-tools` (đã cài trong `.venv`) tách mỗi layer một PNG theo bbox; thứ tự layer trong PSD (dưới → trên) là thứ tự slot. Đo khớp bằng trọng tâm alpha ở dải đầu và cuối mỗi part, rồi vẽ xương đè lên ảnh PSD để tự kiểm trước khi gửi.
+  - Kiểm tư thế gốc: render JSON ở scale 1, trừ với ảnh PSD ghép sẵn, lệch chỉ ở viền là đặt đúng.
+  - Nhân vật cầm súng: cả hai bàn tay là con của xương `gun`, mỗi tay một IK 2 xương với target là bàn tay. Súng thành ctrl kéo cả hai tay. Nếu tư thế gốc khác PSD (vd tay buông → nắm báng súng) thì gắn ảnh theo tư thế PSD, giải IK cho xương ở tư thế mới.
+  - Chân: target IK ở cổ chân, nằm dưới `root`; bàn chân là con của target.
+  - Mesh vải (khăn, áo choàng): người dùng muốn **bám sát viền như Trace nhưng ít điểm**. Bản được duyệt: hull `approxPolyDP` eps 3.5–4.5 px trên alpha nới 2 px, cạnh hull ≤ 110–140 px, điểm trong khoảng 1 điểm mỗi đốt xương (khăn dài 4 đốt: 24 viền + 4 trong). Bản lưới đều phủ cả ảnh và bản 70 đỉnh đều bị trả lại.
+  - Xương phụ kiện (lưỡi lê): đầu xương đặt ở chốt gắn thật trên ảnh (chốt vàng), xương con bắt đầu ở chuôi và chạy dọc lưỡi.
+  - `render_spine.py` không tính IK: tay chân tách rời trong GIF là bình thường, nói rõ với người dùng và nhờ thử trong Spine.
+- 2026-10-28 Spine Live: người dùng hỏi "có chạy trực tiếp trên bản đang mở không". Spine editor không có API điều khiển từ ngoài, nên làm trang Spine Live (spine-player 4.2) tự nạp lại khi file đổi. Pane trình duyệt của Claude bị ẩn thì player không vẽ (không có requestAnimationFrame), kiểm dữ liệu bằng `spine.SkeletonJson` trong JS thay vì chờ `success`. Test 2026-10-28 trên HandTut: nạp lại giữ anim/thời điểm/dừng; JSON hỏng thì spine-player không gọi `error()` mà treo, nên trang tự đọc thử JSON + atlas trước khi dựng player.
+- 2026-10-28 HandTut v5 cổ tay (user: "rig thêm cổ tay thay vì chỉ có ngón"): đặt khớp ở ranh giới da/cổ áo đo bằng màu điểm ảnh (đường x+y≈205), weight chuyển `hand`→`wrist` trong ~12 px qua mép đó. Thử bẻ ±25° trước để kiểm mesh và tìm chiều: góc âm = ngón gật vào nút. 6° không thấy ở cỡ 164 px, cần ~10°. Đo đầu ngón trên Spine Live phải dùng skeleton riêng (player đang trộn anim cho số sai).
