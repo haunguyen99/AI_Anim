@@ -29,7 +29,7 @@
   C({ id: "win.reset", menu: "Window", label: "Bố cục mặc định của workspace", icon: "reset", keep: true, run: () => { ["ui:", "size:", "tabs:"].forEach(k => ST.pref.set(k + ST.ws, null)); applyLayout(); } });
   // mọi panel mở được ở mọi workspace: bật / tắt tab trong dock của workspace đang dùng (lưu theo workspace)
   ST.on("init", () => Object.entries(ST.PANELS || {}).forEach(([id, p], i) => C({ id: "panel." + id, menu: "Window", sep: i === 0, head: i === 0 ? "Panel trong dock" : undefined, label: p.label, keep: true,
-    check: () => tabList().includes(id), run: () => { const L = tabList(), on = L.includes(id); ST.pref.set("tabs:" + ST.ws, on ? L.filter(x => x !== id) : L.concat(id)); if (!on) { ST.pref.set("tab:" + ST.ws, id); if (p.mod) ST.setFocus(p.mod); } ST.refresh(); } })));
+    check: () => tabList().includes(id), run: () => { const L = tabList(), on = L.includes(id); ST.pref.set("tabs:" + ST.ws, on ? L.filter(x => x !== id) : L.concat(id)); if (!on) { ST.pref.set("tab:" + ST.ws, id); if (p.mod && !p.nofocus) ST.setFocus(p.mod); } ST.refresh(); } })));
   // lớp: cảnh (mesh + xương), rig, anim — bật một lớp thì hai lớp kia ẩn
   [["scene", "Lớp Nhân vật (mesh + xương + rig)"], ["anim", "Lớp Anim"]].forEach(([k, label], i) => C({ id: "layer." + k, menu: "Display", sep: i === 0, label, icon: "eye", keep: true, check: () => ST.layerOn[k], on: () => k === "anim" ? !!(ST.char || ST.clip) : !!ST.char, run: () => ST.showLayer(k, !ST.layerOn[k]) }));
   C({ id: "help.keys", global: true, menu: "Help", label: "Phím tắt", icon: "keys", key: "f1", run: showKeys });
@@ -173,14 +173,14 @@
     if (!force && attrB.contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
     if (!t) { fill(attrB, '<div class="sub" style="padding:10px">Không có panel. Cửa sổ → Panel để thêm.</div>'); attrB.dataset.key = ""; attrB.dataset.mod = ""; return; }
     if (t === "channel") { park(attrB); attrB.dataset.key = ""; attrB.dataset.mod = ""; return chRender(); }
-    const { m, mid, sub } = panelOf(t); attrB.dataset.mod = mid; if (!m) return;
+    const { m, mid, sub } = panelOf(t); attrB.dataset.mod = ST.PANELS[t].nofocus ? "" : mid; if (!m) return;
     if (m.panelNode) { const n = m.panelNode(sub); if (n) { mount(attrB, n); attrB.dataset.key = ""; return; } }
     const key = t + ":" + (m.panelKey ? m.panelKey() : "");
     if (m.panelStatic && !force && attrB.dataset.key === key) return;   // module tự vẽ lại panel của nó (vd lõi Rig)
     fill(attrB, m.panel ? m.panel(sub) : ""); attrB.dataset.key = key;
     if (m.panelMounted) m.panelMounted(sub);
   }
-  $("attrTabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; ST.pref.set("tab:" + ST.ws, b.dataset.t); const p = ST.PANELS[b.dataset.t]; if (p && p.mod) ST.setFocus(p.mod); renderAttr(true); });
+  $("attrTabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; ST.pref.set("tab:" + ST.ws, b.dataset.t); const p = ST.PANELS[b.dataset.t]; if (p && p.mod && !p.nofocus) ST.setFocus(p.mod); renderAttr(true); });
   ["click", "change", "input"].forEach(ev => attrB.addEventListener(ev, e => { const t = curTab(); if (t === "channel") return; const { m, sub } = panelOf(t), f = m && m["panel_" + ev]; if (f) f.call(m, e, sub); }));
   focusFrom(attrB); focusFrom($("shelf")); focusFrom($("timeline"));
 

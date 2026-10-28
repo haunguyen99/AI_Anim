@@ -30,6 +30,9 @@ Capabilities đã khai: `db`, `user`, `downloads` (publish lại thì bỏ trố
 
 ### 2. Đọc phản hồi từ db (không polling)
 
+**Studio (nhân vật mới, 2026-10-28):** ghi chú cổng duyệt ở `work/store/<id>_rig_lab/rig/gates.json`; ghi chú vẽ (nút ✎ góc viewport) đọc bằng `.venv/Scripts/python.exe -I tools/studio_cmd.py notes <id> --out <scratchpad>`: mở từng ảnh, xem khớp bị khoanh + `ctx` (bước Rig, khớp đang chọn, góc camera) rồi mới sửa; xong thì `note-done <id>`. Phần dưới là Rig Lab cũ trên claude.ai.
+
+
 Dữ liệu nằm trong db của artifact (`ArtifactData`, nạp bằng ToolSearch `select:ArtifactData` nếu chưa có), collection `rig`:
 
 | doc | nội dung |
@@ -57,6 +60,12 @@ Cách làm:
 6. **Giữ cổng duyệt từng bước.** Không sang bước sau khi bước trước chưa duyệt.
 
 ## Bẫy đã gặp (đừng lặp lại)
+
+- **Nhân vật mới giờ làm trong Studio** (2026-10-28, Zom2 Map3): `/api/fbx/new-char` (= Tệp → Nhập FBX → nhân vật mới) → nếu có rig Unity cùng mesh thì lấy xương của nó làm gợi ý khớp + tên (`ref_<id>_unity/ref_skeleton.json`, `names_from` + `auto_from_ref` trong `chars/<id>.json`; dời cho khớp mesh: so trung bình đỉnh hai bản) → `/api/rig/build` → Studio Rig bước 2–5. Điều khiển qua `studio_cmd.py --cid <trang>`.
+- `lbs_test.py` cần `rig/landmarks.json` trong kho: chưa đổi khớp nào thì Studio chưa lưu, ghi lại một khớp đúng vị trí cũ (`rig lm Root_M x,y,z`) để lưu.
+- **Đặt khớp theo giải phẫu mesh**, không chỉ "nằm giữa": đo hồ sơ mặt cắt dọc tay / chân / thân (độ rộng, chỗ thắt, chỗ lồi): gối ở bánh chè (đùi dài hơn ống chân ~1,25×), hông trên đũng ~6 cm, cột sống ở ~40% độ dày tính từ lưng, khuỷu ở u khuỷu, cổ tay ở chỗ thắt trước bàn tay, Toes ở ụ bàn chân sát đất. Bộ khớp của rig cũ (thân khác) không dùng nguyên được (Zom2 Map3, user: "Các khớp chưa đúng vị trí").
+- Làm sạch skin dọc tay theo luật "hai xương kề nhau" (đã thử 2026-10-28 trên mesh 507 đỉnh): khuỷu gập sâu đỡ nhưng góc 60–90° xấu đi rõ, giữ skin tự động + Hammer. So bằng `lbs_test.py --wire KHỚP TRỤC ĐỘ` ở góc hay dùng, không chỉ bảng góc cực.
+- **Hammer tự động chỉ sửa bên phải** (bộ pose căng chỉ giơ tay phải): chạy xong thì chép skin phải → trái bằng `work/rig_lab/mirror_skin.py <id>` (đóng trang Rig trước, không thì trang ghi đè skin cũ trong bộ nhớ), rồi đo lại bằng `lbs_test.py`.
 
 - Sửa template bằng script Python: viết script ra file rồi chạy, không dùng heredoc Python trong Bash có ngoặc kép lồng (đã hỏng hai lần).
 - `javascript_tool` trên preview: trang có thể cache bản cũ, `navigate` lại trước khi thử.

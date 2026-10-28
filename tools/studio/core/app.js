@@ -20,6 +20,7 @@
 
   // ---- icon (nét 24×24, cùng kiểu với các Lab)
   ST.IC = {
+    pen: '<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
     obj: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
     vert: '<circle cx="6" cy="6" r="1.8"/><circle cx="18" cy="8" r="1.8"/><circle cx="10" cy="18" r="1.8"/><path d="M7.5 7l9 .8M17 9.5l-6 7M8.5 16.5L6.5 8" opacity=".5"/>',
     face: '<path d="M4 19L12 4l8 15z"/>',
@@ -135,7 +136,7 @@
   // W3c: một khớp dùng chung. Module có curJoint() / hasJoint(n) / selectJoint(n); ST.jsel = khớp đang chọn, mang sang chế độ mới.
   ST.jsel = null;
   ST.setFocus = id => {
-    if (!ST.mods[id] || id === ST.focus) return;
+    if (!ST.mods[id] || !ST.LAYER_OF[id] || id === ST.focus) return;   // chỉ mesh / rig / pose là chế độ sửa
     const old = ST.mod(); try { const j = old.curJoint && old.curJoint(); if (j) ST.jsel = j; } catch (e) {}
     if (old.focusOut) old.focusOut();
     ST.focus = id;

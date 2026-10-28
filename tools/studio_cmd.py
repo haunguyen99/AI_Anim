@@ -11,12 +11,14 @@
   python tools/studio_cmd.py cmds [chữ cần tìm]            # mọi lệnh: id, nhãn, module, phím, dùng được ngay không
 Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace nào (run tự focus sang module của lệnh).
 
-  Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] | snap [file.png]   (ảnh viewport để AI tự kiểm)
+  Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] | snap [file.png] [WxH]   (ảnh viewport để AI tự kiểm)
   Rig:    rig lms | rig lm Elbow_R x,y,z | rig sel Elbow_R Wrist_R | rig step 4
   Anim:   anim clips | anim clip gaygor_walk (đổi anim: trang tải lại) | anim info | anim joints | anim read [khớp…] | anim select khớp… | anim frame 12 | anim play on|off
           anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
           anim pos Root_M 0,0,-5              # dời thêm (cm, trục Blender, Z lên); hông / cổ chân / cổ tay theo IK
           anim key [f] | anim unkey [f] | anim versions | anim version v3
+  Ghi chú vẽ (nút ✎ trong viewport): notes [chữ trong tên kho] [--all] [--out DIR]   # in ghi chú đang mở + ghi ảnh (đọc thẳng work/store/*_studio)
+          note-done <id> [--open]                                                    # đánh dấu đã sửa (hoặc mở lại)
   Rig / anim tự focus, bật lớp và chờ lõi nạp (lần đầu vài giây). Sửa khớp ở bản dạng key thì Auto key đặt key luôn.
 Chỉ có các lệnh có tên (không chạy mã tuỳ ý trong trang).
 Nhiều lệnh một lần (nhanh hơn: Python chỉ khởi động một lần):  studio_cmd.py vis A off ";" select joint B ";" state
@@ -45,6 +47,61 @@ def vec(s):
     return [float(x) for x in s.split(",")]
 
 
+def strokes_world(d, img):
+    """Khung trực giao (front / side / top): mỗi nét → điểm đầu, cuối, tâm (cm, trục Studio: x phải nhân vật âm, y lên, z trước).
+    Khung phối cảnh: không đổi được (thiếu độ sâu), trả None."""
+    v = (d.get("ctx") or {}).get("view") or {}
+    if v.get("pane") not in ("front", "side", "top") or not d.get("strokes"): return None
+    asp = v.get("aspect")
+    if not asp and img:
+        try:
+            from PIL import Image
+            w, h = Image.open(img).size; asp = w / h
+        except Exception: return None
+    x, y, z, w = v["quat"]
+    right = (1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w)); up = (2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w))
+    zh = 2 / (v.get("zoom") or 1); zw = zh * asp; t = v["target"]
+    P = lambda p: [round((t[k] + right[k] * (p[0] - 0.5) * zw + up[k] * (0.5 - p[1]) * zh) * 100, 1) for k in range(3)]
+    out = []
+    for s in d["strokes"]:
+        pts = s.get("pts") or []
+        if not pts: continue
+        c = [sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts)]
+        out.append({"color": s.get("c"), "n": len(pts), "start": P(pts[0]), "end": P(pts[-1]), "center": P(c)})
+    return out
+
+
+def notes_cmd(op, rest):
+    """Ghi chú vẽ lưu ở work/store/<nhân vật>_studio/notes/<id>.json (+ noteimg/<id>.json: ảnh JPEG data URL)."""
+    import base64, glob, tempfile
+    store = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "work", "store")
+    docs = []
+    for f in glob.glob(os.path.join(store, "*_studio", "notes", "*.json")) + glob.glob(os.path.join(store, "*_notes", "notes", "*.json")):
+        d = json.load(open(f, encoding="utf8")); d = d.get("data", d) if isinstance(d, dict) and "data" in d and isinstance(d["data"], dict) else d
+        docs.append((f, d))
+    if op == "note-done":
+        nid = rest[0]; hit = [x for x in docs if x[1].get("id") == nid]
+        if not hit: print(json.dumps({"ok": False, "error": "không có ghi chú " + nid}, ensure_ascii=False)); return 1
+        f, d = hit[0]; d["status"] = "open" if "--open" in rest else "done"
+        raw = json.load(open(f, encoding="utf8")); (raw["data"] if "data" in raw and isinstance(raw["data"], dict) else raw).update(d)
+        json.dump(raw, open(f, "w", encoding="utf8"), ensure_ascii=False); print(json.dumps({"ok": True, "id": nid, "status": d["status"]}, ensure_ascii=False)); return 0
+    out = rest[rest.index("--out") + 1] if "--out" in rest else os.path.join(tempfile.gettempdir(), "studio_notes")
+    flt = next((x for x in rest if not x.startswith("--") and x != out), "")
+    os.makedirs(out, exist_ok=True); res = []
+    for f, d in sorted(docs, key=lambda x: x[1].get("at", "")):
+        ns = os.path.basename(os.path.dirname(os.path.dirname(f)))
+        if flt and flt.lower() not in ns.lower(): continue
+        if d.get("status") == "done" and "--all" not in rest: continue
+        img = os.path.join(os.path.dirname(os.path.dirname(f)), "noteimg", os.path.basename(f)); path = None
+        if os.path.isfile(img):
+            j = json.load(open(img, encoding="utf8")); j = j.get("data", j); u = j.get("img", "")
+            if u.startswith("data:"):
+                path = os.path.join(out, ns + "_" + d["id"] + ".jpg"); open(path, "wb").write(base64.b64decode(u.split(",", 1)[1]))
+        res.append({"ns": ns, "id": d.get("id"), "at": d.get("at"), "status": d.get("status"), "sent": d.get("sent"), "text": d.get("text"), "ctx": d.get("ctx"),
+                    "strokes": len(d.get("strokes") or []), "strokes_cm": strokes_world(d, path), "image": path})
+    print(json.dumps({"ok": True, "result": res}, ensure_ascii=False, indent=1)); return 0
+
+
 def main(argv):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -68,6 +125,8 @@ def main(argv):
         return 2
     op, rest = argv[0].lower(), argv[1:]
     t0 = time.perf_counter()
+    if op in ("notes", "note-done"):
+        return notes_cmd(op, rest)
     if op == "clients":
         with urllib.request.urlopen(BASE + "/api/studio/clients", timeout=5) as r:
             res = {"ok": True, "result": json.loads(r.read())}
@@ -103,7 +162,9 @@ def main(argv):
             elif x in ("all", "sel"): a["frame"] = x
         res = call("view", a)
     elif op == "snap":
-        res = call("snap", timeout=20)
+        size = next((x for x in rest if "x" in x and x.replace("x", "").isdigit()), None)   # snap [file] [2400x2400]
+        rest = [x for x in rest if x != size]
+        res = call("snap", dict(zip(("w", "h"), map(int, size.split("x")))) if size else {}, timeout=30)
         if res.get("ok"):
             import base64, tempfile
             out = rest[0] if rest else os.path.join(tempfile.gettempdir(), "studio_snap_%d.png" % int(time.time()))

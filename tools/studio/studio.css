@@ -209,3 +209,18 @@ body.tm input{font-size:16px}
 .jbox[hidden]{display:none}
 .jbox .jhead{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px}
 .jbox .jrow{display:flex;align-items:center;gap:8px}.jbox .jrow label{width:70px}.jbox .jrow input{flex:1;min-width:0}.jbox .jrow span{width:40px;text-align:right;font-family:var(--mono)}
+/* ---- vẽ ghi chú lên viewport (modules/notes.js) */
+#noteCv{position:absolute;inset:0;z-index:6;pointer-events:none}
+body.noting #noteCv{pointer-events:auto;cursor:crosshair}
+#noteBar{position:absolute;left:10px;bottom:10px;z-index:7;display:flex;align-items:center;gap:6px;padding:4px;border-radius:10px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);max-width:calc(100% - 20px)}
+#noteBar button{display:inline-flex;align-items:center;gap:4px}
+#noteBar .sw{width:22px;height:22px;padding:0;border-radius:50%;border:2px solid transparent}
+#noteBar .sw.on{border-color:var(--fg)}
+#noteBar input{min-width:120px;flex:1 1 220px}
+#noteBar .sub{max-width:40ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.notes{display:flex;flex-direction:column;gap:8px;padding:0 10px 10px}
+.notes .nt{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.notes .nt.done{opacity:.55}
+.notes .nt img{display:block;width:100%;cursor:pointer}
+.notes .nb{display:flex;flex-direction:column;gap:4px;padding:6px 8px}
+.notes .nb small{color:var(--mute)}

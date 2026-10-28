@@ -1,0 +1,29 @@
+{
+ "id": "zom2_map3",
+ "name": "Zom2 Map3",
+ "ref_dir": "ref_zom2_map3",
+ "scale": 1,
+ "body": "EN_zom1_map1_V2_Body",
+ "clothes": [
+  "EN_zom1_map1_V2_QA"
+ ],
+ "extra": [],
+ "names_from": "ref_zom2_map3_unity",
+ "cfg": {
+  "name": "EN_zom1_map1_V2_Body",
+  "fingers": [
+   "Middle"
+  ],
+  "fseg": 2,
+  "toes": true,
+  "toesEnd": false,
+  "fingerEnd": false,
+  "headEnd": true,
+  "dress": false,
+  "prop": false,
+  "weapon": false,
+  "clothSkirt": true
+ },
+ "source": "Studio Nhập FBX 2026-10-28: EN_zom2_map3_NEW.fbx",
+ "auto_from_ref": true
+}

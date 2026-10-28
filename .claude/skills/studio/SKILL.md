@@ -17,7 +17,8 @@ Studio là tool chính: mở `http://127.0.0.1:8780` là vào thẳng viewport v
    - Có tên anim (id trong `work/clips.json`) → mở nhân vật của anim đó, thêm `&clip=<anim>`.
    `navigate` tới trang đó trong tab preview.
 3. **Kiểm nhanh:** `javascript_tool` đọc `ST.char.name`, `ST.ws`, `ST.focus`, `ST.layerOn`, số mesh `ST.mods.mesh.objects().length` (đợi tới khi > 0, tối đa ~5 s); lỗi thì xem `read_console_messages` và `preview_logs`.
-4. **Báo:** một dòng: đã mở nhân vật nào, workspace nào, link `http://127.0.0.1:8780` (người dùng mở được trong trình duyệt của họ khi server còn chạy). Workspace chỉ là bố cục: Rig / Anim bật trong Outliner (nút Rig, Anim) hoặc Cửa sổ → Panel ngay trong General.
+4. **Bộ canh ghi chú:** `.venv/Scripts/python.exe -I tools/notes_watch.py --status`; `stopped` thì chạy `.venv/Scripts/python.exe -I tools/notes_watch.py` bằng Bash `run_in_background` (hook dự án cũng nhắc việc này khi có trang Studio mở). Khi nó thoát: làm theo `/check_fb` phần Studio, rồi bật lại.
+5. **Báo:** một dòng: đã mở nhân vật nào, workspace nào, link `http://127.0.0.1:8780` (người dùng mở được trong trình duyệt của họ khi server còn chạy). Workspace chỉ là bố cục: Rig / Anim bật trong Outliner (nút Rig, Anim) hoặc Cửa sổ → Panel ngay trong General.
 
 ## Quy tắc
 

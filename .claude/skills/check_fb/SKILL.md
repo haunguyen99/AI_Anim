@@ -7,7 +7,16 @@ description: The user has left review notes on a playblast review page and types
 
 Người dùng gõ `/check_fb` khi đã ghi xong note **và** bấm "Gửi feedback cho AI" trên trang review. Không còn polling / CronCreate (người dùng bỏ 2026-10-22). Trả lời bằng tiếng Việt.
 
-## Trang Review Lab (tên cũ: trang review; mỗi anim một artifact, db collections `rounds` + `notes`)
+## Studio: ghi chú vẽ (nút ✎ trong viewport, 2026-10-28)
+
+Người dùng vẽ khoanh trên viewport Studio (General / Rig / Anim), bấm **Gửi cho AI** trong panel "Ghi chú vẽ". Nếu phiên chat đang chạy nền `tools/notes_watch.py` (bật mỗi khi người dùng duyệt trong Studio: chỉ canh thư mục, không tốn lượt AI), Claude được gọi dậy ngay khi có ghi chú gửi; không thì người dùng gõ `/check_fb`. Sửa xong thì bật lại bộ canh. Làm **trước** phần Review Lab bên dưới:
+1. `.venv\Scripts\python.exe -I tools\studio_cmd.py notes [nhân vật] --out <scratchpad>
+otes`: ghi chú đang mở (đã gửi hoặc chưa), ảnh JPEG khung nhìn + nét, `ctx` (chế độ, bước Rig, anim + frame, khớp đang chọn, camera) và `strokes_cm` (khung trước / bên / trên: điểm đầu, cuối, tâm của mỗi nét theo cm, trục Studio). Rig: đọc thêm `work/store/<id>_rig_lab/rig/gates.json`.
+2. Xem từng ảnh, đọc nét theo `strokes_cm` (vạch ngang trên một đường = vị trí khớp mong muốn, mũi tên = chỗ khớp phải tới, dấu X = bỏ vị trí cũ), nêu cách hiểu trong chat. Không rõ thì hỏi một lần, gộp.
+3. Sửa trên trang Studio đang mở của người dùng qua cầu nối (`studio_cmd.py clients` để lấy `--cid`; Rig: `rig lm`, rồi tính lại skin; Anim: `anim rot/pos/key`). Tự kiểm bằng `snap` cùng góc với ghi chú.
+4. `note-done <id>` cho từng ghi chú đã sửa; báo ngắn đã sửa gì, số đo trước / sau.
+
+ mỗi anim một artifact, db collections `rounds` + `notes`)
 
 **Danh sách trang lấy từ sổ clip** (không còn bảng viết tay): chạy `.venv\Scripts\python.exe -I tools\clip_registry.py urls` (cột Review Lab, kèm Pose Lab và Rig Lab) hoặc đọc `work/clips.json`. Trang mới được đăng ký bằng `/new_clip` (`clip_registry.py set-url`).
 

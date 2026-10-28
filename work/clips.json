@@ -14,6 +14,9 @@
   },
   "Boss_Gragas": {
    "rig_url": ""
+  },
+  "Zom2 Map3": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -303,11 +306,13 @@
    "desc": "Game bắn súng, mỗi map một nhân vật",
    "characters": [
     "SDR",
-    "SDR06"
+    "SDR06",
+    "Zom2 Map3"
    ],
    "labels": {
     "SDR": "map2 · lính La Mã",
-    "SDR06": "map06 · gangster + Thompson"
+    "SDR06": "map06 · gangster + Thompson",
+    "Zom2 Map3": "Zombie 2 map03 (EN_zom2_map3_NEW)"
    }
   },
   {

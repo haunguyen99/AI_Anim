@@ -9,7 +9,7 @@ ST.PANELS = {
   "rig:s4": { label: "Rig 4 · Skin", short: "4 Skin", mod: "rig" }, "rig:s5": { label: "Rig 5 · Thử khớp", short: "5 Thử", mod: "rig" },
   "rig:s6": { label: "Rig 6 · Vật lý", short: "6 Vật lý", mod: "rig" },
   "pose:joint": { label: "Pose · Khớp", short: "Khớp", mod: "pose" }, "pose:phys": { label: "Pose · Vật lý", short: "Vật lý", mod: "pose" },
-  "pose:notes": { label: "Pose · Ghi chú", short: "Ghi chú", mod: "pose" }, "pose:versions": { label: "Pose · Phiên bản", short: "Phiên bản", mod: "pose" },
+  "pose:notes": { label: "Pose · Ghi chú", short: "Ghi chú", mod: "pose" }, "notes:list": { label: "Ghi chú vẽ", short: "Ghi chú vẽ", mod: "notes", nofocus: true }, "pose:versions": { label: "Pose · Phiên bản", short: "Phiên bản", mod: "pose" },
 };
 ST.WS_ALIAS = { mesh: "general" };   // link / pref cũ ?ws=mesh
 ST.WS = {
@@ -18,8 +18,8 @@ ST.WS = {
     tools: ["tool.sel", "tool.move", "tool.rot", "tool.scl", "tool.free"],
     modes: ["mesh.mode.o", "mesh.mode.v", "mesh.mode.f", "mesh.mode.i"],
     shelf: ["selmask.joint", "selmask.mesh", "|", "edit.undo", "edit.redo", "|", "mesh.delete", "mesh.separate", "mesh.merge", "mesh.dup", "|", "mesh.flip", "mesh.smooth", "mesh.flipx", "mesh.weld", "mesh.clean", "|",
-      "mesh.ground", "mesh.height", "|", "mesh.pivEdit", "mesh.pivCenter", "|", "sel.sym", "sel.soft", "sel.front", "|", "mesh.wire", "view.toggle4", "view.frameAll", "view.frameSel", "|", "file.fbx", "file.save", "edit.search"],
-    tabs: ["channel", "mesh:tool", "mesh:check"],
+      "mesh.ground", "mesh.height", "|", "mesh.pivEdit", "mesh.pivCenter", "|", "sel.sym", "sel.soft", "sel.front", "|", "mesh.wire", "view.toggle4", "view.frameAll", "view.frameSel", "|", "notes.draw", "file.fbx", "file.save", "edit.search"],
+    tabs: ["channel", "mesh:tool", "mesh:check", "notes:list"],
     ui: { outliner: true, dock: true, shelf: true, timeline: false },
   },
   rig: {
@@ -27,8 +27,8 @@ ST.WS = {
     tools: ["tool.sel", "tool.move", "tool.rot", "tool.scl"],
     modes: ["rig.step1", "rig.step2", "rig.step3", "rig.step4", "rig.step5"],
     shelf: ["edit.undo", "edit.redo", "|", "rig.mirror", "rig.guestJ", "rig.reset", "|", "skin.compute", "skin.brush", "skin.island", "skin.hammer", "skin.test", "|",
-      "rig.toPose", "rig.export", "|", "view.toggle4", "view.frameAll", "view.frameSel", "|", "edit.search"],
-    tabs: ["rig:s1", "rig:s2", "rig:s3", "rig:s4", "rig:s5", "rig:s6", "channel"],
+      "rig.toPose", "rig.export", "|", "view.toggle4", "view.frameAll", "view.frameSel", "|", "notes.draw", "edit.search"],
+    tabs: ["rig:s1", "rig:s2", "rig:s3", "rig:s4", "rig:s5", "rig:s6", "channel", "notes:list"],
     size: { dockW: 360 },
     ui: { outliner: true, dock: true, shelf: true, timeline: false },
   },
