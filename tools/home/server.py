@@ -209,6 +209,7 @@ def lab_html(kind, id_):
     if kind == "pose":
         html = html.replace('src="fbxexport.js"', 'src="fbx/fbxexport.js"')   # file nằm ở work/pose_lab/fbx/
     tag = '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="%s">' % base
+    tag += "<script>window.LOCALDB_API = location.origin;</script>"   # mở từ máy khác (--lan): lưu vào server này, không vào 127.0.0.1 của máy đó
     return (tag + html).encode("utf8")
 
 
@@ -658,5 +659,13 @@ class H(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     load()
+    lan = "--lan" in sys.argv   # --lan (tools/home/start_lan.bat): máy khác cùng mạng mở được; không có mật khẩu, chỉ dùng trong mạng tin cậy
     print(f"Home: http://127.0.0.1:{PORT}")
-    ThreadingHTTPServer(("127.0.0.1", PORT), H).serve_forever()
+    if lan:
+        import socket
+        try:
+            s_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s_.connect(("10.255.255.255", 1)); ip = s_.getsockname()[0]; s_.close()
+        except OSError:
+            ip = "<IP may nay>"
+        print(f"May khac cung mang: http://{ip}:{PORT}  (ai trong mang cung mo va sua duoc: dong cua so nay khi xong)")
+    ThreadingHTTPServer(("0.0.0.0" if lan else "127.0.0.1", PORT), H).serve_forever()

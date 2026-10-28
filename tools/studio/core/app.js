@@ -132,12 +132,16 @@
   ST.LAYER_OF = { mesh: "scene", rig: "scene", pose: "anim" };
   ST.MOD_OF = { scene: "mesh", anim: "pose" };
   ST.LAYER_ALIAS = { rig: "scene" };   // link / lệnh cũ
+  // W3c: một khớp dùng chung. Module có curJoint() / hasJoint(n) / selectJoint(n); ST.jsel = khớp đang chọn, mang sang chế độ mới.
+  ST.jsel = null;
   ST.setFocus = id => {
     if (!ST.mods[id] || id === ST.focus) return;
-    const old = ST.mod(); if (old.focusOut) old.focusOut();
+    const old = ST.mod(); try { const j = old.curJoint && old.curJoint(); if (j) ST.jsel = j; } catch (e) {}
+    if (old.focusOut) old.focusOut();
     ST.focus = id;
     const L = ST.LAYER_OF[id]; if (L && !ST.layerOn[L]) ST.showLayer(L, true);   // không sửa được lớp đang ẩn
     const m = ST.mod(); if (m.focusIn) m.focusIn();
+    if (ST.jsel && m.selectJoint) Promise.resolve(m.selectJoint(ST.jsel, true)).catch(() => {}).then(() => ST.refresh());
     ST.emit("focus", id); ST.refresh();
   };
   // ---- lớp: ba bản của cùng nhân vật (cảnh mesh + xương, rig đang dựng, model của anim). Bật một lớp thì hai lớp kia ẩn (solo),

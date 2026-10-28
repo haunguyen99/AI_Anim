@@ -20,7 +20,7 @@
     const p = { id, label, target: new THREE.Vector3(0, 0.9, 0), rect: { x: 0, y: 0, w: 1, h: 1 } };
     if (id === "persp") { p.cam = new THREE.PerspectiveCamera(30, 1, 0.01, 200); p.cam.position.set(1.6, 1.5, 4.6); }
     else {
-      p.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, -100, 100);
+      p.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.05, 200);   // chỉ vẽ phía trước camera (đặt cách tâm 20 m): near âm vẽ cả tấm ref / đồ sau lưng camera đè kín khung
       if (id === "top") p.cam.up.set(0, 0, -1);
       p.cam.position.copy(p.target).add(new THREE.Vector3(...AX[id]).multiplyScalar(20));
     }
@@ -73,7 +73,7 @@
     if (!box || box.isEmpty()) return;
     const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
     (panes || [V.active]).forEach(p => {
-      const cam = p.cam, asp = p.rect.w / Math.max(1, p.rect.h);
+      const cam = p.cam, asp = p.rect.h >= 2 && p.rect.w >= 2 ? p.rect.w / p.rect.h : 16 / 9;   // trang ẩn (khung 0 px): khung 16:9 như ảnh snap
       if (cam.isPerspectiveCamera) {
         const d = Math.max(s.y, s.x / asp, 0.3) / Math.tan(cam.fov * Math.PI / 360) * 0.62 + s.z;
         const dir = keepDir ? cam.position.clone().sub(p.target).normalize() : new THREE.Vector3(0.33, 0.1, 1).normalize();

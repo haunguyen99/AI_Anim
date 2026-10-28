@@ -628,6 +628,10 @@
 
   // ---------------------------------------------------------------- focus (đang sửa mesh / xương)
   M.focusIn = () => { placePivot(); };
+  // W3c: khớp dùng chung (xương của Cảnh)
+  M.curJoint = () => ST.mods.skel && ST.mods.skel.sel ? ST.mods.skel.sel() : null;
+  M.hasJoint = n => !!(ST.mods.skel && ST.mods.skel.has && ST.mods.skel.has(n));
+  M.selectJoint = (n, carry) => { const sk = ST.mods.skel; if (!sk || !sk.has(n)) return; if (carry && (selO.size || selV.size || selF.size)) return; sk.select(n); };
   M.focusOut = () => { V.gizmo.detach(); pivHold = false; buildFree(); };
 
   // ---------------------------------------------------------------- lệnh (menu, shelf, phím)

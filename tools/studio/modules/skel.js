@@ -103,6 +103,7 @@
     S.select(n);
   };
   S.isMine = id => typeof id === "string" && id.startsWith("j:");
+  S.has = n => !!byName[n];
   S.bounds = () => { if (!sel) return null; const p = new THREE.Vector3(...byName[sel].pos).applyMatrix4(V.cm.matrixWorld); return new THREE.Box3().setFromCenterAndSize(p, new THREE.Vector3(0.3, 0.3, 0.3)); };
 
   // ---------------------------------------------------------------- chọn + sửa joint (focus mesh, lớp Cảnh hiện)

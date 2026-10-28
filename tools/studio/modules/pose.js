@@ -152,6 +152,12 @@
     if (tcSaved) { tc.setSpace(tcSaved.space || "world"); tc.setSize(tcSaved.size || 0.85); tcSaved = null; }
   };
   M.loaded = () => !!eng && !!eng.get().model;
+  M.clipList = async () => (await loadClips()).map(c => ({ id: c.id, name: c.name, character: c.character, stage: c.stage, versions: c.versions, open: !!(clipInfo && c.id === clipInfo.id) }));
+  M.goClip = id => goClip(id);   // tải lại trang với ?clip=…
+  // W3c: khớp dùng chung (khớp có chấm chọn của model anim)
+  M.curJoint = () => eng ? eng.get().sel : null;
+  M.hasJoint = n => !!(eng && eng.get().markers[n]);
+  M.selectJoint = async n => { if (!(await M.whenReady())) return; if (eng.get().markers[n]) eng.select(n); };
   // chờ lõi nạp xong (cầu nối AI gọi lệnh ngay sau khi focus)
   M.whenReady = async () => {
     ensure(); const busy = () => ["none", "loading"].includes(state) || (state === "ready" && !(eng && eng.get().model));
@@ -183,9 +189,21 @@
     return { joint: parts.joint, phys: parts.phys, notes: parts.notes, versions: parts.versions }[t] || parts.joint;
   };
   M.info = () => { if (!eng) return "Pose · " + ({ loading: "đang nạp", noclip: "chưa có anim", error: "lỗi" }[state] || ""); const g = eng.get(); return (clipInfo ? clipInfo.name : "") + " · " + (g.P ? g.P.version : "") + (eng.isLive() ? " · nhân vật hiện tại" : "") + " · F" + g.frame + "/" + (g.P ? g.P.frames : 1) + (g.sel ? " · " + g.sel : ""); };
-  M.frameAll = () => { if (!eng || !eng.frameAll || !eng.get().model) return false; eng.frameAll(); return true; };   // khung theo lõi Pose (hộp bao model có đồ phụ to)
+  M.frameAll = () => { if (!eng || !eng.frameAll || !eng.get().model || !V.active.cam.isPerspectiveCamera) return false; eng.frameAll(); return true; };   // khung phối cảnh theo lõi Pose; khung trực giao dùng bounds
   M.undo = () => eng && eng.undo(); M.canUndo = () => !!eng && eng.canUndo();
-  M.bounds = () => { if (!eng || !eng.get().model) return null; return new THREE.Box3().setFromObject(eng.get().model); };
+  M.bounds = selOnly => {   // vùng chọn: theo khớp; toàn bộ: lấy mẫu đỉnh mesh đã pose (đồ cầm tay như chùy vươn xa ngoài khớp)
+    if (!eng || !eng.get().model) return null; const g = eng.get(), b = new THREE.Box3(), w = new THREE.Vector3();
+    if (selOnly && g.selSet.size) { [...g.selSet].forEach(n => { const m = g.markers[n]; if (m) b.expandByPoint(m.getWorldPosition(w)); }); return b.isEmpty() ? null : b.expandByScalar(0.25); }
+    g.model.updateMatrixWorld(true);
+    g.model.traverse(o => {
+      if (!o.isMesh || !o.visible) return;
+      const pos = o.geometry.attributes.position; if (!pos) return;
+      if (o.isSkinnedMesh) { const st = Math.max(1, Math.floor(pos.count / 2500)); for (let i = 0; i < pos.count; i += st) { w.fromBufferAttribute(pos, i); o.boneTransform(i, w); b.expandByPoint(w.applyMatrix4(o.matrixWorld)); } }
+      else b.expandByObject(o);
+    });
+    if (b.isEmpty()) Object.values(g.markers).forEach(m => b.expandByPoint(m.getWorldPosition(w)));
+    return b.isEmpty() ? null : b.expandByScalar(0.05);
+  };
 
   // ---- Outliner: cây khớp của model (khớp có điểm chọn), bấm để chọn, Shift để thêm
   M.outline = () => {

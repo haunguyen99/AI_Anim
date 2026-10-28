@@ -148,6 +148,16 @@
   ST.on("layer", () => { if (root) root.visible = act(); });
   ST.on("ws", () => { if (eng) syncTab(step()); });   // đổi workspace: tab Rig theo bước đang làm, không kéo lõi về bước của tab cũ
   M.loaded = () => !!eng;
+  // W3c: khớp dùng chung — bước 2 = khớp (landmark), bước 4–5 = xương
+  const boneNames = () => eng ? eng.buildSkeleton().map(b => b.name) : [];
+  M.curJoint = () => { if (!eng) return null; const g = eng.get(); return g.step === 2 ? g.sel : g.step >= 4 ? (g.step === 5 ? g.poseBone || g.jointSel : g.jointSel) : null; };
+  M.hasJoint = n => { if (!eng) return false; const g = eng.get(); return g.step === 2 ? Array.isArray(g.LM[n]) : boneNames().includes(n); };
+  M.selectJoint = async n => {
+    if (!(await M.whenReady())) return; const g = eng.get();
+    if (g.step === 2) { if (Array.isArray(g.LM[n])) eng.applySel([n], {}); }
+    else if (g.step >= 4 && boneNames().includes(n)) eng.selectBoneByName(n);
+    eng.syncScene();
+  };
   // chờ lõi nạp xong (cầu nối AI gọi lệnh ngay sau khi focus)
   M.whenReady = async () => {
     if (!ST.char) return false; ensure(); const busy = () => ["none", "loading", "building"].includes(state);
@@ -247,7 +257,7 @@
 
   // ---- lệnh
   const C = o => ST.cmd(Object.assign({ mod: "rig" }, o)), R = () => !!eng;
-  ["1 Mesh", "2 Khớp", "3 Xương", "4 Skin", "5 Thử khớp"].forEach((l, i) => C({ id: "rig.step" + (i + 1), menu: "Rig", sep: i === 0, icon: "s" + (i + 1), label: "Bước " + l, key: String(i + 1), on: R, check: () => step() === i + 1, run: () => { syncTab(i + 1); eng.go(i + 1); ST.refresh(); } }));
+  ["1 Mesh", "2 Khớp", "3 Xương", "4 Skin", "5 Thử khớp"].forEach((l, i) => C({ id: "rig.step" + (i + 1), menu: "Rig", sep: i === 0, icon: "s" + (i + 1), label: "Bước " + l, key: String(i + 1), on: R, check: () => step() === i + 1, run: () => { syncTab(i + 1); eng.go(i + 1); if (ST.jsel && !M.curJoint()) M.selectJoint(ST.jsel); ST.refresh(); } }));   // W3c: bước có chọn khớp lấy khớp dùng chung
   C({ id: "rig.mirror", menu: "Rig", sep: true, label: "Đối xứng R → L", icon: "sym", on: R, check: () => eng && eng.get().mirror, run: () => eng.set("mirror", !eng.get().mirror) });
   C({ id: "rig.reset", menu: "Rig", label: "Khớp về gợi ý tự động", icon: "reset", on: R, run: () => { const g = eng.get(); for (const k in g.DATA.auto.landmarks) g.LM[k] = g.DATA.auto.landmarks[k].slice(); eng.initFingers(g.LM, true); eng.syncScene(); eng.dirty(); eng.commit(); eng.renderPanel(); } });
   // FBX đã có xương + skin: dùng luôn làm rig (đặt khớp theo xương khách + dùng skin khách), không cần đặt khớp / tô skin lại

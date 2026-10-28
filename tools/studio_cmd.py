@@ -13,14 +13,14 @@ Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace 
 
   Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] | snap [file.png]   (ảnh viewport để AI tự kiểm)
   Rig:    rig lms | rig lm Elbow_R x,y,z | rig sel Elbow_R Wrist_R | rig step 4
-  Anim:   anim info | anim joints | anim read [khớp…] | anim select khớp… | anim frame 12 | anim play on|off
+  Anim:   anim clips | anim clip gaygor_walk (đổi anim: trang tải lại) | anim info | anim joints | anim read [khớp…] | anim select khớp… | anim frame 12 | anim play on|off
           anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
           anim pos Root_M 0,0,-5              # dời thêm (cm, trục Blender, Z lên); hông / cổ chân / cổ tay theo IK
           anim key [f] | anim unkey [f] | anim versions | anim version v3
   Rig / anim tự focus, bật lớp và chờ lõi nạp (lần đầu vài giây). Sửa khớp ở bản dạng key thì Auto key đặt key luôn.
 Chỉ có các lệnh có tên (không chạy mã tuỳ ý trong trang).
 Nhiều lệnh một lần (nhanh hơn: Python chỉ khởi động một lần):  studio_cmd.py vis A off ";" select joint B ";" state
-Thêm --time để in thời gian khứ hồi. Cổng: HOME_PORT (mặc định 8780). Server: tools/home/studio_bridge.py; trang: tools/studio/modules/bridge.js.
+Thêm --time để in thời gian khứ hồi; --cid <id> để gửi tới đúng một trang (studio_cmd.py clients liệt kê) khi đang mở nhiều trang Studio. Cổng: HOME_PORT (mặc định 8780). Server: tools/home/studio_bridge.py; trang: tools/studio/modules/bridge.js.
 """
 import json
 import os
@@ -31,8 +31,11 @@ import urllib.request
 BASE = f"http://127.0.0.1:{os.environ.get('HOME_PORT', '8780')}"
 
 
+CID = None   # --cid <id>: gửi tới đúng trang này (xem "clients"), không thì tới trang đang hiện gần nhất
+
+
 def call(op, args=None, timeout=10):
-    body = json.dumps({"op": op, "args": args or {}, "timeout": timeout}).encode()
+    body = json.dumps({"op": op, "args": args or {}, "timeout": timeout, **({"cid": CID} if CID else {})}).encode()
     req = urllib.request.Request(BASE + "/api/studio/cmd", body, {"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout + 5) as r:
         return json.loads(r.read())
@@ -55,7 +58,10 @@ def main(argv):
             else:
                 cur.append(a)
         return max(main(g) for g in groups)
+    global CID
     show_time = "--time" in argv
+    if "--cid" in argv:
+        i = argv.index("--cid"); CID = argv[i + 1]; argv = argv[:i] + argv[i + 2:]
     argv = [a for a in argv if a != "--time"]
     if not argv:
         print(__doc__)
@@ -118,6 +124,7 @@ def main(argv):
         elif d == "play": a = {"on": (r[0] if r else "on").lower() != "off"}
         elif d in ("key", "unkey") and r: a = {"f": int(r[0])}
         elif d == "version": a = {"v": r[0]}
+        elif d == "clip": a = {"id": r[0]}
         res = call("anim", dict(a, do=d), timeout=90)
     elif op == "cmds":
         res = call("cmds", {"q": " ".join(rest)})

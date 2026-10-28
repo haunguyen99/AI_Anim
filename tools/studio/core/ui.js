@@ -97,18 +97,26 @@
   $("wstabs").addEventListener("click", e => { const b = e.target.closest("[data-ws]"); if (b) ST.setWS(b.dataset.ws); });
 
   // ---------------------------------------------------------------- Outliner (module trả các dòng)
-  // dòng = mesh + xương (module mesh) ở cấp đầu, rồi nút Rig và Anim (mắt = bật lớp, gập được); mỗi dòng mang module của nó
+  // dòng = mesh + cây khớp của nhân vật ở cấp đầu, rồi nút Rig và Anim. W3c: cây khớp dùng chung cho General / Rig / Anim
+  // (bấm khớp = chọn ở chế độ đang sửa); nút Rig / Anim không lặp lại cây riêng (Anim có cây riêng khi không có nhân vật).
   let renaming = null, olRows = [];
   const LAYER_NODES = [["rig", "rig", "Rig", "rig"], ["anim", "pose", "Anim", "pose"]];
   function outlineRows() {
     const rows = [], ms = ST.mods.mesh;
-    if (ms && ms.outline) ms.outline().forEach(r => rows.push(Object.assign({}, r, { m: "mesh", dim: !ST.layerOn.scene })));
+    const fm = ST.mod(), jointMode = ST.focus !== "mesh" && fm.hasJoint, cur = jointMode && fm.curJoint ? fm.curJoint() : null;
+    if (ms && ms.outline) ms.outline().forEach(r => {
+      const j = typeof r.id === "string" && r.id.startsWith("j:") ? r.id.slice(2) : null;
+      if (j && jointMode) rows.push(Object.assign({}, r, { m: "mesh", sel: cur === j, dim: !fm.hasJoint(j), del: false }));   // khớp: theo chế độ đang sửa
+      else rows.push(Object.assign({}, r, { m: "mesh", dim: !ST.layerOn.scene }));
+    });
+    const sharedTree = !!(ST.mods.skel && ST.mods.skel.joints.length);
     LAYER_NODES.forEach(([L, mid, label, icon]) => {
       const m = ST.mods[mid]; if (!m || !(L === "anim" ? (ST.char || ST.clip) : ST.char)) return;
       const open = ST.pref.get("ol:open:" + L, false), lay = ST.LAYER_OF[mid], on = ST.layerOn[lay];
-      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, fold: open ? 0 : 1, act: ST.focus === mid,
+      const ownTree = !(sharedTree || L === "rig");   // W3c: chỉ Anim không có nhân vật mới có cây riêng
+      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, fold: ownTree ? (open ? 0 : 1) : undefined, act: ST.focus === mid,
         tip: L === "rig" ? "Bấm: sửa rig của nhân vật (khớp, skin, thử khớp)" : "Bấm: làm việc với lớp " + label + " · mắt: bật lớp (Shift: hiện chồng)" });
-      if (!open) return;
+      if (!open || !ownTree) return;
       const kids = m.loaded && m.loaded() && m.outline ? m.outline() : null;
       if (kids) kids.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: (r.d || 0) + 1, dim: !on })));
       else rows.push({ id: "@" + L + ":hint", m: mid, d: 1, label: m.loadMsg ? m.loadMsg() : "Chưa nạp: bấm mắt để nạp", grp: true });
@@ -137,6 +145,12 @@
       ST.refresh(); return;
     }
     const m = ST.mods[r.m]; if (!m) return;
+    const j = r.m === "mesh" && typeof r.id === "string" && r.id.startsWith("j:") ? r.id.slice(2) : null;
+    if (j && a === "pick" && ST.focus !== "mesh" && ST.mod().selectJoint) {   // W3c: khớp trong cây chung → chọn ở chế độ đang sửa
+      const fm = ST.mod();
+      if (fm.hasJoint(j)) { ST.jsel = j; Promise.resolve(fm.selectJoint(j)).then(() => ST.refresh()); return; }
+      ST.toast(j + " không có ở " + ({ rig: "bước Rig này", pose: "model anim này" }[ST.focus] || ST.focus) + " (dòng mờ). Bấm một mesh để về General."); return;
+    }
     if (a !== "vis" && a !== "fold" && a !== "lock") ST.setFocus(r.m);
     if (m.olAct) m.olAct(r.id, a, e); ST.refresh();
   });

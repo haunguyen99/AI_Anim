@@ -245,3 +245,20 @@ Lõi Rig vẽ mesh theo kiểu riêng từng bước (thân mờ khi đặt kh�
 - Còn lại: lõi Rig vẫn giữ bản dữ liệu mesh riêng để tính (cọ, biến dạng) và dựng lại khi mesh đổi (lần focus Rig sau). W3c: một khớp dùng chung giữa General và Rig.
 
 Đã thử (kho thử, đã xoá): Gaygor General ↔ Rig ↔ Pose, mesh / xương / rig hiện đúng một bản; ẩn vũ khí ở General thì Rig cũng ẩn, hiện lại từ Outliner lúc đang ở Rig thì Rig hiện ngay; cầu nối `layer rig on` + `focus rig`.
+
+### W3c: một bộ khớp dùng chung (2026-10-28, user: "Tiếp đi")
+- **Một cây khớp trong Outliner**: cây xương của nhân vật (khớp của Rig nếu đã rig, chưa thì xương khách) ở cấp đầu, một lần. Nút Rig / Anim không lặp lại cây riêng; chỉ anim không có nhân vật (vd SDR) mới có cây riêng dưới nút Anim.
+- **Chọn khớp dùng chung**: bấm khớp trong cây = chọn ở chế độ đang sửa (General: xương Cảnh; Rig: khớp ở bước 2, xương ở bước 4–5; Anim: khớp của model). Khớp chế độ đó không có thì dòng mờ, bấm thì báo, không đổi chế độ. Đổi chế độ (`ST.setFocus`) thì khớp đang chọn đi theo (`ST.jsel`; module có `curJoint / hasJoint / selectJoint`).
+- Vai trò giữ như kiểu Maya: General = xoay / dời thử (mesh skin đi theo, không key), Rig = vị trí khớp gốc (bind), Anim = pose có key. (Đề xuất cũ ghi "General sửa bind": đổi lại vì General đang là chỗ thử pose có skin.)
+- Cầu nối: `state` có `jointSel` (khớp đang chọn của chế độ đang sửa).
+
+Đã thử (kho thử, đã xoá): Gaygor chọn Elbow_R ở General → Rig bước 2 → Anim vẫn là Elbow_R; ở Anim bấm Head_M trong cây chung → chọn Head_M, vẫn ở Anim; 6 khớp model anim không có (vd `root`) mờ, bấm chỉ báo.
+
+### Chạy thử trọn vòng Gaygor qua cầu nối (2026-10-28, user: "hãy chạy thử một nhân vật với app mới xem sao")
+Bản sao kho Gaygor, General (xoay vai có skin, bind pose) → Rig (bước 2 chọn khớp, tính skin, bước 5) → Anim (Walk, Hit: đọc, xoay + key, hoàn tác, phát / dừng, đổi anim) → chọn khớp đi theo. Lệnh trong trang 3–300 ms, Rig nạp lần đầu ~2 s, Anim ~5 s. Lỗi tìm ra và đã sửa:
+- `snap` ra ảnh 0×0 khi trang ẩn (khung trình duyệt thu nhỏ): giờ tự vẽ ra 1280×720 (`offscreen: true`) rồi trả canvas như cũ; "nhìn toàn bộ" khi khung 0 px dùng tỉ lệ 16:9.
+- Camera trực giao (trên / trước / bên) vẽ cả vật sau lưng (near −100): tấm ref của Pose đè kín khung thành màu cam. Near 0,05, far 200.
+- Anim "nhìn toàn bộ": khung trực giao dùng bounds; bounds lấy mẫu đỉnh mesh đã pose (chùy vươn 1,5 m ngoài khớp), vùng chọn theo khớp.
+- Cầu nối thiếu đổi anim: thêm `anim clips`, `anim clip <id>`. `open` / `anim clip` từng tải lại trang trước khi gửi kết quả (báo hết giờ): giờ gửi xong mới đổi trang.
+- Hai trang Studio cùng mở: cầu nối gửi tới trang đang hiện, có thể không phải trang định thử: thêm `--cid` (xem `clients`).
+- `select joint` không chạy khi đang ở Anim: giờ tự về General. Rig vào bước 2 / 4–5 mà chưa chọn khớp thì lấy khớp dùng chung.

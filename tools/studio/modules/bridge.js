@@ -29,7 +29,7 @@
     state() {
       const m = M(), s = S();
       return {
-        char: ST.char ? ST.char.id : null, name: ST.char ? ST.char.name : null, ws: ST.ws, focus: ST.focus, layers: Object.assign({}, ST.layerOn), tool: ST.tool, tab: ST.curTab ? ST.curTab() : null,
+        char: ST.char ? ST.char.id : null, name: ST.char ? ST.char.name : null, ws: ST.ws, focus: ST.focus, jointSel: (() => { try { return ST.mod().curJoint ? ST.mod().curJoint() : null; } catch (e) { return null; } })(), layers: Object.assign({}, ST.layerOn), tool: ST.tool, tab: ST.curTab ? ST.curTab() : null,
         meshes: m.objects().map(o => ({ name: o.name, vis: o.vis, lock: o.lock, tris: o.idx.length / 3, skin: !!o.skin })),
         joints: s.joints.length, joint: s.sel ? s.sel() : null, posed: s.posed ? s.posed() : false, save: (ST.$("stSave") || {}).textContent || "",
         undo: ST.hist.U.length ? ST.hist.U[ST.hist.U.length - 1].label : null, info: (ST.$("stInfo") || {}).textContent || "",
@@ -43,6 +43,7 @@
       return list.map(o => ({ name: o.name, vis: o.vis }));
     },
     select({ mesh, joint }) {
+      ST.setFocus("mesh");   // mesh / xương của Cảnh (General); khớp ở Rig / Anim: rig sel, anim select
       if (joint !== undefined) { need(!joint || S().joints.some(j => j.name === joint), "Không có joint " + joint); S().select(joint || null); return { joint: S().sel() }; }
       const o = mesh ? M().byName(mesh) : null; need(!mesh || o, "Không có mesh " + mesh);
       if (S().sel()) S().select(null);
@@ -65,9 +66,23 @@
       if (frame === "all") V.frameAll(); else if (frame === "sel") V.frameSel();
       return { layout: V.layout, cam: V.single };
     },
-    snap() {   // ảnh viewport (như đang thấy) để AI tự kiểm; vẽ lại ngay rồi đọc canvas trong cùng lượt
-      const cv = ST.$("cv"); ST.view.renderNow();
-      const url = cv.toDataURL("image/png"); return { w: cv.width, h: cv.height, png: url.slice(url.indexOf(",") + 1) };
+    snap({ w, h } = {}) {   // ảnh viewport để AI tự kiểm; vẽ lại ngay rồi đọc canvas trong cùng lượt
+      const V = ST.view, cv = ST.$("cv");
+      if (cv.width >= 2 && cv.height >= 2 && !w) { V.renderNow(); const url = cv.toDataURL("image/png"); return { w: cv.width, h: cv.height, png: url.slice(url.indexOf(",") + 1) }; }
+      // trang đang ẩn (khung 0 px) hoặc xin cỡ riêng: vẽ khung đang dùng ra cỡ W×H rồi trả canvas về như cũ
+      const W = w || 1280, H = h || 720, R = V.renderer, cam = V.active.cam, X = V.extra, keep = cam.isPerspectiveCamera ? cam.aspect : [cam.left, cam.right, cam.top, cam.bottom];
+      try {
+        R.setSize(W, H, false);
+        if (cam.isPerspectiveCamera) cam.aspect = W / H; else { cam.left = -W / H; cam.right = W / H; cam.top = 1; cam.bottom = -1; }
+        cam.updateProjectionMatrix();
+        R.setClearColor(getComputedStyle(document.documentElement).getPropertyValue("--view").trim() || "#15191f");
+        R.autoClear = false; R.clear(); if (X) R.render(X.scene, cam); R.render(V.scene, cam); if (X) { R.clearDepth(); R.render(X.overlay, cam); }
+        const url = cv.toDataURL("image/png"); return { w: W, h: H, offscreen: true, png: url.slice(url.indexOf(",") + 1) };
+      } finally {
+        R.autoClear = true;
+        if (cam.isPerspectiveCamera) cam.aspect = keep; else [cam.left, cam.right, cam.top, cam.bottom] = keep;
+        cam.updateProjectionMatrix(); V.resize();
+      }
     },
     async rig({ do: d, name, xyz, names, n }) {
       await want("rig"); const e = rigEng(), g = e.get();
@@ -78,6 +93,11 @@
       throw new Error("rig: lms | lm | sel | step");
     },
     async anim(a) {
+      if (a.do === "clips") return ST.mods.pose.clipList();
+      if (a.do === "clip") {   // đổi anim = tải lại trang (một anim mỗi trang); lệnh sau đợi trang mới kết nối lại
+        const L = await ST.mods.pose.clipList(), c = L.find(x => x.id === a.id) || L.find(x => (x.name || "").toLowerCase() === String(a.id || "").toLowerCase());
+        need(c, "Không có anim " + a.id + " (anim clips để xem danh sách)"); B.after = () => ST.mods.pose.goClip(c.id); return { opening: c.id };
+      }
       await want("pose"); const A = poseEng().ai;
       switch (a.do || "info") {
         case "info": return A.info();
@@ -93,7 +113,7 @@
         case "versions": return A.versions();
         case "version": return A.version(a.v);
       }
-      throw new Error("anim: info | joints | read | select | rot | pos | frame | play | key | unkey | versions | version");
+      throw new Error("anim: clips | clip | info | joints | read | select | rot | pos | frame | play | key | unkey | versions | version");
     },
     ws({ id }) { need(ST.WS[id], "Không có workspace " + id); ST.setWS(id); return { ws: ST.ws, focus: ST.focus }; },
     focus({ id }) { need(ST.mods[id] && ST.LAYER_OF[id], "Focus là mesh, rig hoặc pose"); ST.setFocus(id); return { focus: ST.focus, layers: Object.assign({}, ST.layerOn) }; },
@@ -111,7 +131,7 @@
       need(ST.cmdOn(c), "Lệnh " + id + " chưa dùng được lúc này (thiếu dữ liệu hoặc vùng chọn)");
       ST.run(id, ...(args || [])); return { ran: id, focus: ST.focus };
     },
-    open({ char, ws }) { const u = new URL("/studio/" + encodeURIComponent(char), location.origin); u.searchParams.set("ws", ws || ST.ws || "general"); setTimeout(() => { location.href = u; }, 50); return { opening: u.pathname + u.search }; },
+    open({ char, ws }) { const u = new URL("/studio/" + encodeURIComponent(char), location.origin); u.searchParams.set("ws", ws || ST.ws || "general"); B.after = () => { location.href = u; }; return { opening: u.pathname + u.search }; },
   };   // chỉ các lệnh có tên ở trên, không chạy mã tuỳ ý
 
   async function loop() {
@@ -130,6 +150,7 @@
         } catch (e) { out = { id: c.id, ok: false, error: String(e && e.message || e) }; }
         B.n++;
         await fetch("/api/studio/result", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(out) });
+        if (B.after) { const f = B.after; B.after = null; f(); }   // đổi trang (open, anim clip) sau khi đã trả kết quả
       } catch (e) { wait = Math.min(10000, (wait || 500) * 2); await new Promise(r => setTimeout(r, wait)); }   // không có server Home: thử lại thưa dần
     }
   }
