@@ -1,0 +1,13 @@
+Concept key pose for a friendly mobile tower-defense game: the hero "Ninja" in his IDLE combat-ready stance. Toy-like stylized game character and prop.
+
+KEEP THE CHARACTER DESIGN EXACTLY AS IN THE REFERENCE RENDERS: chibi proportions (huge round head about one quarter of the body height, short arms, short legs), smooth white low-poly body with flat shading, no face details, a red scarf wrapped around the neck with TWO long red scarf tails. Same low-poly flat-shaded 3D look as the references.
+The kunai must match the kunai reference exactly: dark steel diamond-shaped blade, red wrapped grip, small dark ring at the pommel. It is big for the character: the blade is about as long as the whole arm.
+
+POSE (one frozen key pose, the bottom of a calm breath):
+- Stance: slightly crouched ninja guard, knees clearly bent, feet wider than the hips, the character's LEFT foot a little forward pointing toward the enemy, RIGHT foot behind and turned out about 30 degrees. Weight centered, feet flat on the ground.
+- Body turned a little so the LEFT shoulder leads toward the enemy. Torso leaning forward about 12 degrees from the hips, back gently curved, not hunched. Head looking straight ahead at the enemy, chin slightly down, alert.
+- LEFT hand (the character's own left) holds the kunai in REVERSE GRIP (icepick grip): fist in front of the chest at chest height, about a forearm's length in front of the body. The blade comes out of the pinky side of the fist and lies back along the outside of the left forearm, angled down about 30 degrees, the tip pointing back, down and outward past the elbow. The elbow is bent and slightly out to the side.
+- RIGHT hand is EMPTY, loosely curled as if holding an invisible second kunai in reverse grip. The right arm is pushed BACK behind the hip, elbow slightly bent, hand about a hand-width away from the body behind the hip.
+- Scarf tails flow back behind the character in a soft S-curve, drooping a little, the two tails slightly apart.
+
+CAMERA AND FRAMING: three-quarter front view from slightly above (like a 3/4 game camera), the character facing toward the lower-left of the image, full body visible with some margin, feet on an implied ground plane. Plain flat medium-grey background, soft even lighting, no shadows on the background, no text, no frame, no extra characters, no extra weapons.

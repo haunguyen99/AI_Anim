@@ -70,3 +70,9 @@ Không có. Clip loop; Attack và các skill sau sẽ bắt đầu và kết th�
 - [?] Hướng địch trong game: nhân vật đứng quay mặt về phía nào so với camera (địch đến từ trên màn hình xuống)? Mặc định:
   nhân vật quay mặt về phía trên màn hình, camera thấy lưng chéo 3/4. Nếu camera thấy mặt thì pose phải mở ra camera hơn.
 - [?] Cầm kunai: K1 / K2 / K3 (mục C).
+
+
+## I. Ảnh key pose (giai đoạn 0, G4) — chốt 2026-10-28
+- User: "cái pose idle đang xấu quá … nhờ Codex ren cho cái ảnh concept key pose idle" → `keys/k1_v1.png`, vẽ lại 2 lượt → **chốt `keys/k1r2_v1.png`** (user: "Chốt k1r2_v1").
+- Ref = render model thật (`tools/render_fbx_tex.py`, `keys/ref/`), prompt `keys/k1_prompt.txt`, `k1r_prompt.txt`, `k1r2_prompt.txt`.
+- So với thiết kế mục C: tấn sâu và rộng hơn, thân thẳng hơn, nắm tay kunai sát ngực trên (dưới khăn), khuỷu trái mở ra ngoài-xuống; tay phải nắm bên hông (ảnh chưa lùi hẳn ra sau như yêu cầu).
