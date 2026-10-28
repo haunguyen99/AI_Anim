@@ -124,22 +124,66 @@ refLines.renderOrder = 7; scene.add(refLines);
   refLines.geometry.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
 }
 
-let start = null;
+// Gizmo mọi bước: bước 2–3 dời / xoay / scale khớp (xoay thì khớp con quay theo, như Maya);
+// bước 4–5 xoay = pose thử của xương đang chọn (POSE, không sửa rig), dời = dời khớp (rig đổi, cần tính lại skin).
+let start = null, gzBone = null;
 function centroid() { const c = new THREE.Vector3(); S.forEach(k => c.add(new THREE.Vector3(...LM[k]))); return c.multiplyScalar(1 / Math.max(S.size, 1)); }
-function gzStart() { start = {}; S.forEach(k => start[k] = new THREE.Vector3(...LM[k])); }
+const gzJoint = () => step >= 4 ? (step === 5 ? (poseBone || jointSel) : jointSel) : null;
+function lmKids(keys) {   // các khớp con cháu (có landmark) của nhóm khớp
+  const kids = {}; buildSkeleton(LM).forEach(b => { if (b.parent && !b.twist) (kids[b.parent] = kids[b.parent] || []).push(b.name); });
+  const out = new Set(), st = [...keys];
+  while (st.length) { const n = st.pop(); for (const c of kids[n] || []) if (Array.isArray(LM[c]) && !keys.has(c) && !out.has(c)) { out.add(c); st.push(c); } }
+  return out;
+}
+function gzPlace() {
+  if (mode === "select") return null;
+  if (step === 2 || step === 3) return S.size ? centroid() : null;
+  const j = gzJoint(); if (!j || !Array.isArray(LM[j]) && mode !== "rotate") return null;
+  if (mode === "rotate") { if (!SK) return null; const p = posedBones(buildSkeleton(LM))[j]; return p ? new THREE.Vector3(...p) : null; }
+  return new THREE.Vector3(...LM[j]);
+}
+function gzStart(md) {   // md: ép kiểu thao tác (Channel Box nhập số = dời)
+  md = md || mode; start = null; gzBone = null;
+  if (step >= 4) {
+    const j = gzJoint(); if (!j) return;
+    if (md === "rotate" && SK) {
+      const B = buildSkeleton(LM), W = poseMats(B), b = B.find(x => x.name === j); if (!b) return;
+      gzBone = { j, b, W0: W[j].clone(), Wpi: (b.parent && W[b.parent] ? W[b.parent].clone() : new THREE.Matrix4()).invert(), F: boneFrames(B)[j] };
+      return;
+    }
+    if (Array.isArray(LM[j])) { start = { [j]: new THREE.Vector3(...LM[j]) }; start.__one = j; }
+    return;
+  }
+  start = {}; S.forEach(k => start[k] = new THREE.Vector3(...LM[k]));
+  if (md === "rotate") lmKids(S).forEach(k => start[k] = new THREE.Vector3(...LM[k]));
+}
 function gzChange(M) {
+  if (gzBone) {
+    const g = gzBone, p = new THREE.Vector3(...g.b.pos), T = (x, y, z) => new THREE.Matrix4().makeTranslation(x, y, z);
+    const loc = g.Wpi.clone().multiply(M).multiply(g.W0);
+    const R = g.F.clone().invert().multiply(T(-p.x, -p.y, -p.z)).multiply(loc).multiply(T(p.x, p.y, p.z)).multiply(g.F);
+    const e = new THREE.Euler().setFromRotationMatrix(R, "XYZ");
+    POSE[g.j] = [e.x, e.y, e.z].map(v => Math.round(THREE.MathUtils.radToDeg(v) * 10) / 10);
+    poseSkin(); if (strainOn) paintSkin(); syncScene(true); return;
+  }
   if (!start) return;
-  for (const k in start) { const v = start[k].clone().applyMatrix4(M); LM[k] = [v.x, v.y, v.z]; }
+  const one = start.__one, keys = Object.keys(start).filter(k => k !== "__one");
+  for (const k of keys) { const v = start[k].clone().applyMatrix4(M); LM[k] = [v.x, v.y, v.z]; }
   if (mirror) {
-    for (const k of S) {
+    for (const k of keys) {
       const m = mirrorKey(k);
       if (!m) { LM[k][0] = 0; continue; }
-      if (sideOf(k) === "R" || !S.has(m)) LM[m] = [-LM[k][0], LM[k][1], LM[k][2]];
+      if (sideOf(k) === "R" || !start[m]) LM[m] = [-LM[k][0], LM[k][1], LM[k][2]];
     }
   }
+  if (one && SK) { poseSkin(); }
   syncScene(true); dirty();
 }
-function gzEnd() { start = null; syncScene(); commit(); }
+function gzEnd() {
+  if (gzBone) { gzBone = null; syncScene(); renderJointBox(); if (step === 5) renderPanel(); return; }
+  const one = start && start.__one; start = null; syncScene(); commit();
+  if (one && SK) ST.toast("Đã dời khớp " + one + ": bấm Tính skin để skin theo khớp mới.");
+}
 
 
 function lmColor(k) { return css(sideOf(k) === "R" ? "--right" : sideOf(k) === "L" ? "--left" : "--mid"); }
@@ -148,7 +192,7 @@ function syncScene(dragging) {
     const m = lmMesh[k]; if (!Array.isArray(LM[k])) { LM = completeLM(LM); } m.position.set(...LM[k]);
     m.material.color.set(lmColor(k));
     m.scale.setScalar(S.has(k) ? 1.5 : 1);
-    m.visible = step === 2 && (showFing || !isFinger(k));
+    m.visible = (step === 2 || step === 3) && (showFing || !isFinger(k));
     if (isFinger(k)) m.scale.setScalar(S.has(k) ? 1.2 : 0.6);
     m.material.color.set(S.has(k) ? css("--accent") : lmColor(k));
   }
@@ -168,7 +212,7 @@ function syncScene(dragging) {
   propMeshes.forEach((m, i) => m.visible = vis.props[i]);
   clothMeshes.forEach(m => { m.visible = vis.cloth; m.material.opacity = step >= 4 ? 0.35 : 0.4; m.userData.wire.visible = showWire; });
   bodyMesh.userData.wire.visible = showWire; propMeshes.forEach(m => m.userData.wire.visible = showWire);
-  if (!dragging) host.placeGizmo(S.size && step === 2 && mode !== 'select' ? centroid() : null, mode);
+  if (!dragging) host.placeGizmo(gzPlace(), mode);
 }
 
 // ---- thao tác kiểu Maya

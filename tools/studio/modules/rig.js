@@ -150,11 +150,11 @@
   M.loaded = () => !!eng;
   // W3c: khớp dùng chung — bước 2 = khớp (landmark), bước 4–5 = xương
   const boneNames = () => eng ? eng.buildSkeleton().map(b => b.name) : [];
-  M.curJoint = () => { if (!eng) return null; const g = eng.get(); return g.step === 2 ? g.sel : g.step >= 4 ? (g.step === 5 ? g.poseBone || g.jointSel : g.jointSel) : null; };
-  M.hasJoint = n => { if (!eng) return false; const g = eng.get(); return g.step === 2 ? Array.isArray(g.LM[n]) : boneNames().includes(n); };
+  M.curJoint = () => { if (!eng) return null; const g = eng.get(); return (g.step === 2 || g.step === 3) ? g.sel : g.step >= 4 ? (g.step === 5 ? g.poseBone || g.jointSel : g.jointSel) : null; };
+  M.hasJoint = n => { if (!eng) return false; const g = eng.get(); return (g.step === 2 || g.step === 3) ? Array.isArray(g.LM[n]) : boneNames().includes(n); };
   M.selectJoint = async n => {
     if (!(await M.whenReady())) return; const g = eng.get();
-    if (g.step === 2) { if (Array.isArray(g.LM[n])) eng.applySel([n], {}); }
+    if ((g.step === 2 || g.step === 3)) { if (Array.isArray(g.LM[n])) eng.applySel([n], {}); }
     else if (g.step >= 4 && boneNames().includes(n)) eng.selectBoneByName(n);
     eng.syncScene();
   };
@@ -171,17 +171,17 @@
   ST.on("rig:cleared", () => { dispose(); raw = {}; state = "none"; if (ST.focus === "rig") ensure(); });   // xoá / khôi phục xương ở General: dựng lại lõi Rig
 
   // ---- chuột (viewport gọi)
-  M.canBox = () => step() === 2;
+  M.canBox = () => (step() === 2 || step() === 3);
   // click trúng khớp (bước 2) hoặc mesh của rig → viewport chuyển focus sang Rig
   M.hit = (x, y, p) => {
     if (!eng || !root || !root.visible) return false;
     const g = eng.get(), w = new THREE.Vector3(), R = V.TM && V.TM.on ? 26 : 12;
-    if (step() === 2 && Object.values(g.LM).some(q => { if (!Array.isArray(q)) return false; const s = V.toScreen(w.set(q[0], q[1], q[2]).applyMatrix4(V.cm.matrixWorld), p); return Math.hypot(s.x - x, s.y - y) < R; })) return true;
+    if ((step() === 2 || step() === 3) && Object.values(g.LM).some(q => { if (!Array.isArray(q)) return false; const s = V.toScreen(w.set(q[0], q[1], q[2]).applyMatrix4(V.cm.matrixWorld), p); return Math.hypot(s.x - x, s.y - y) < R; })) return true;
     const ms = []; root.traverse(o => { if (o.isMesh && o.visible) ms.push(o); });
     return V.raycaster(x, y, p).intersectObjects(ms, false).length > 0;
   };
-  M.pick = (x, y, e, p) => { if (!eng) return; const s = step(); if (s === 2) eng.pickLM(x, y, e, p); else if (s >= 4) eng.pickJoint(e); };
-  M.box = (x0, y0, x1, y1, e, p) => { if (eng && step() === 2) eng.boxLM(x0, y0, x1, y1, e, p); };
+  M.pick = (x, y, e, p) => { if (!eng) return; const s = step(); if (s === 2 || s === 3) eng.pickLM(x, y, e, p); else if (s >= 4) eng.pickJoint(e); };
+  M.box = (x0, y0, x1, y1, e, p) => { if (eng && (step() === 2 || step() === 3)) eng.boxLM(x0, y0, x1, y1, e, p); };
   M.pointerDown = (e, p) => { if (!eng || !eng.wantsSkinPointer(e)) return false; live.downL.forEach(f => f(e)); return true; };
   M.gzStart = () => eng && eng.gzStart(); M.gzChange = Mx => eng && eng.gzChange(Mx); M.gzEnd = () => eng && eng.gzEnd();
   M.bounds = selOnly => {
@@ -196,11 +196,11 @@
   M.channel = {
     unit: "cm",
     title: () => { if (!eng) return ""; const g = eng.get(); return g.S.size > 1 ? g.S.size + " khớp" : g.sel || ""; },
-    vals() { if (!eng || step() !== 2) return null; const g = eng.get(); if (!g.S.size) return null; const c = g.S.size === 1 ? g.LM[g.sel] : eng.centroid().toArray(); return { t: c.slice(), r: [0, 0, 0], s: [1, 1, 1] }; },
+    vals() { if (!eng || ![2, 3].includes(step())) return null; const g = eng.get(); if (!g.S.size) return null; const c = g.S.size === 1 ? g.LM[g.sel] : eng.centroid().toArray(); return { t: c.slice(), r: [0, 0, 0], s: [1, 1, 1] }; },
     apply(vals, push) {
       const cur = this.vals(); if (!cur) return;
       const d = vals.t.map((x, i) => x - cur.t[i]); if (d.every(x => Math.abs(x) < 1e-6)) return;
-      eng.gzStart(); eng.gzChange(new THREE.Matrix4().makeTranslation(d[0], d[1], d[2])); if (push) eng.gzEnd();
+      eng.gzStart("translate"); eng.gzChange(new THREE.Matrix4().makeTranslation(d[0], d[1], d[2])); if (push) eng.gzEnd();
     },
     begin() {}, reset() {},
   };
@@ -211,7 +211,7 @@
     if (!open) open = new Set(ST.pref.get("rig:open:" + ST.char.id, null) || ["root", "Root_M", "Spine1_M", "Chest_M"]);
     const g = eng.get(), rows = [];   // W3b: mesh chỉ có một dòng (ở cấp đầu, của Cảnh); dưới nút Rig là cây xương đang dựng
     const B = eng.buildSkeleton(), kids = {}; B.forEach(b => (kids[b.parent || ""] || (kids[b.parent || ""] = [])).push(b));
-    const s = g.step, on = n => s === 2 ? g.S.has(n) : s >= 4 ? (n === g.skinBone && s === 4) || n === g.jointSel || (s === 5 && n === g.poseBone) : false;
+    const s = g.step, on = n => s === 2 || s === 3 ? g.S.has(n) : s >= 4 ? (n === g.skinBone && s === 4) || n === g.jointSel || (s === 5 && n === g.poseBone) : false;
     const walk = (list, d) => list.forEach(b => { const k = kids[b.name] || []; rows.push({ id: "j:" + b.name, d, label: b.name, icon: "joint", sel: on(b.name), fold: k.length ? (open.has(b.name) ? 0 : 1) : undefined, count: d === 0 ? B.length : undefined }); if (k.length && open.has(b.name)) walk(k, d + 1); });
     walk(kids[""] || [], 0);
     return rows;
@@ -222,7 +222,7 @@
     const n = id.slice(2);
     if (a === "fold") { open.has(n) ? open.delete(n) : open.add(n); ST.pref.set("rig:open:" + ST.char.id, [...open]); return; }
     const s = step();
-    if (s === 2) { if (eng.LM_ORDER.includes(n)) eng.applySel([n], { shiftKey: ST.addSel(e), ctrlKey: e && e.ctrlKey, metaKey: e && e.metaKey }); }
+    if (s === 2 || s === 3) { if (eng.LM_ORDER.includes(n)) eng.applySel([n], { shiftKey: ST.addSel(e), ctrlKey: e && e.ctrlKey, metaKey: e && e.metaKey }); }
     else if (s >= 4) eng.selectBoneByName(n);
     else ST.toast("Chọn khớp ở tab 2 Khớp, chọn xương ở tab 4 Skin / 5 Thử khớp");
   };

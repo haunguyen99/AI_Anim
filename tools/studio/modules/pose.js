@@ -119,6 +119,8 @@
       state = "ready"; fillPicker();
       if (!ST.char) { const e = $("empty"); if (e) e.hidden = true; ST.$("charName").textContent = clipInfo.name; }
       else ST.$("charName").textContent = ST.char.name + " · " + clipInfo.name;
+      // công cụ chung của Studio (Q / W / E ở hộp công cụ) ↔ chế độ gizmo của lõi Pose, hai chiều
+      ["mSel", "mMove", "mRot"].forEach((id, i) => { const b = $(id); if (b) b.addEventListener("click", () => { const t = ["sel", "move", "rot"][i]; if (ST.tool !== t) { ST.tool = t; ST.refresh(); } }); });
       applyLayer(ST.layerOn.anim); if (ST.focus === "pose") M.focusIn();
     } catch (e) { console.error(e); state = "error"; err = e.message || String(e); }
     ST.refresh();
@@ -144,9 +146,16 @@
     refreshLive();
     const tc = V.gizmo.tc; if (!tcSaved) tcSaved = { space: tc.space, size: tc.size };
     V.gizmo.detach(); tc.setSpace($("mSpace") && /world/.test($("mSpace").textContent) ? "world" : "local");
+    const md = POSE_MODE[ST.tool]; if (md && md !== eng.get().mode) eng.setMode(md);   // giữ công cụ đang chọn khi chuyển sang Pose
     const g = eng.get(); if (g.sel) eng.setSelection([...g.selSet], g.sel);   // gắn lại gizmo vào khớp đang chọn
     ST.refresh();
   };
+  const POSE_MODE = { sel: "select", move: "translate", rot: "rotate" };
+  addEventListener("keydown", e => {   // Q / W / E trong lõi Pose → đánh dấu đúng công cụ ở hộp công cụ Studio
+    if (ST.focus !== "pose" || !eng || e.ctrlKey || e.metaKey || e.altKey || /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || "")) return;
+    const t = { q: "sel", w: "move", e: "rot" }[e.key.toLowerCase()]; if (t && ST.tool !== t) setTimeout(() => { ST.tool = t; ST.refresh(); }, 0);
+  });
+  ST.on("tool", t => { if (ST.focus !== "pose" || !eng || !eng.get().model) return; if (t === "scl") { ST.toast("Rig không cho scale khớp: dùng W (dời) hoặc E (xoay)."); return; } const md = POSE_MODE[t]; if (md && md !== eng.get().mode) eng.setMode(md); });
   M.focusOut = () => {
     const tc = V.gizmo.tc; tc.detach();
     if (tcSaved) { tc.setSpace(tcSaved.space || "world"); tc.setSize(tcSaved.size || 0.85); tcSaved = null; }

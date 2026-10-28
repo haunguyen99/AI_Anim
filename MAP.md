@@ -36,6 +36,7 @@ Ghi chú 2026-10-27: các trang Pose / Review / Rig / Mesh của mọi anim dự
 |---|---|
 | `tools/notes_watch.py` | Canh ghi chú vẽ Studio đã bấm "Gửi cho AI" (chạy nền trong phiên chat, không tốn lượt AI khi chờ): thoát khi có ghi chú mới để gọi Claude dậy, đánh dấu `picked` |
 | `tools/notes_watch_hook.py` | Hook Claude Code (`.claude/settings.json`, SessionStart + UserPromptSubmit): Studio đang mở mà không có bộ canh (nhịp tim `work/store/_sys/watch/notes.json` cũ > 10 s) → nhắc Claude bật `notes_watch.py` nền |
+| `tools/codex_img.py` | Tạo ảnh qua Codex CLI đi kèm app Codex (gói ChatGPT, không tốn API; 2026-10-28): `prompt --out x.png [--ref ảnh_nhân_vật] [-n 3]`, ~80–120 s/ảnh. Dùng cho giai đoạn 0 (GDD → phân tích → ảnh key pose làm ref blocking) |
 | `tools/studio_cmd.py` | Cầu nối Claude ↔ Studio (2026-10-27): gửi lệnh có tên tới trang Studio đang mở (state, vis, select, joint, bindpose, ws, focus, layer, cmds, run, open; W2: undo, redo, save, view, snap, rig lms/lm/sel/step, anim info/read/rot/pos/frame/play/key/unkey/versions/version; run / rig / anim chờ lõi nạp xong); server `tools/home/studio_bridge.py` (long-poll /api/studio/*), trang `tools/studio/modules/bridge.js` |
 | `CLAUDE.md` | Quy tắc chung mọi phiên Claude đọc tự động (2026-10-27): chỉ chụp màn hình trình duyệt khi người dùng yêu cầu, kiểm trang bằng JS, trả lời tiếng Việt |
 | `.claude/skills/spine2d/` | Skill `/spine2d`: rig + anim Spine 2D (quy trình, luật rig/anim, export theo setting người dùng, bài học HandTut) |
@@ -106,7 +107,7 @@ Ghi chú 2026-10-27: các trang Pose / Review / Rig / Mesh của mọi anim dự
 | Thư mục dự án | Gồm |
 |---|---|
 | `work/boss_gaygor/` | attack, idle, idle_front, idle_breath, idle_look, walk, gaygor_attack_10_blocking, gaygor_attack_50_blocking, gaygor_hit, gaygor_die, boss, eye, naenae, `blender/` (file `.blend` cũ) |
-| `work/shoot_die_repeat/` | sdr (map2), sdr06 (map06), zom1, zom2, zom2_map3, map3_props, `blender/` (file `.blend` cũ) |
+| `work/shoot_die_repeat/` | gdd (GDD + danh sách anim), sdr (map2), sdr03 (map3 nỏ), sdr06 (map06), zom1, zom2, zom2_map3, map3_props, `blender/` (file `.blend` cũ) |
 | `work/pirate_goldrush/` | `spine/HandTut/` (Spine 2D) |
 | `work/test/`, `work/fdsfdsf/` | dự án thử tạo từ Home, còn trống |
 
@@ -120,6 +121,8 @@ Ghi chú 2026-10-27: các trang Pose / Review / Rig / Mesh của mọi anim dự
 | `work/boss_gaygor/attack/` | Job Attack: `analysis.md` (bản hiện hành), `anatomy_v*.json`, `pose_f13/f25/f31.py`, công cụ so sánh riêng (`cmp.py`, `batch_cmp.py`, `crop_cmp.py`, `contact.py`, `rulers.py`), ghi chú `v*notes`, video `review_blocking_v*` |
 | `work/shoot_die_repeat/sdr/` | Job Shoot Die Repeat: `attack_analysis.md`, `attack_events.json`, `p0_pose.py`, `p0_run.py`, `playblast_attack.py`, `strip.py`, các bản playblast `pb_*`, `export/` |
 | `work/shoot_die_repeat/sdr06/` | Job SDR map06 (Shoot + Reload): `analysis.md` (Duyệt 1), `p0_shoot.py` (P0 theo mức + giải tay lên súng `hand_on`), `p0_run.py` (build P0 headless), `blocking.py` (key stepped cả 2 clip, render frame), `spline.py` (spline Reload), `spline_shoot.py` (spline Shoot: kernel giật liên tục + trễ lẻ frame, bake vòng lặp), `playblast.py` (video review), `review_<clip>_<ver>.mp4/.webm`, `pb_<clip>_<ver>/`, `ref_frames/` (tấm frame ref YouTube 1:25–1:32), `look/` (render rest + close-up súng) |
+| `work/shoot_die_repeat/gdd/` | **Giai đoạn 0** (2026-10-28): GDD Die Loop tải về (`GDD_die_loop_2026-10-28.xlsx`, chữ `gdd_cells.txt`, ảnh `img/`), `anim_list.md` (G1 danh sách anim mọi MC/enemy + G2 câu hỏi GD cấp dự án). Đọc bằng `tools/gdd_read_xlsx.py`, `tools/gdd_xlsx_images.py` |
+| `work/shoot_die_repeat/sdr03/` | Job SDR map3 (người bộ tộc + nỏ; Idle/Shoot/Reload), làm theo giai đoạn 0: `analysis.md` (G3, Duyệt 1 chờ), `concept.png`, `keys/` (G4: `make_prompts.py` → `prompts/*.txt` → ảnh key pose `k1..k5.png` qua `tools/codex_img.py`), `review/index.html` (G5 trang duyệt, artifact). Rig: `../map3_props/export/MC_char_map3_Rig.fbx` |
 | `work/boss_gaygor/gaygor_attack_50_blocking/` | **Quy trình B mẫu** (blocking của team → pose chuyển tiếp → polish → FBX, không Blender; `knowledge/details/user_blocking.md`): `fbxanim.py` + `make_model.py` (FBX → Pose Lab, RotationOrder), `measure.py` → `analysis.md`, `fix_v3.py`, `breakdowns_v4.py`, `weight_v5.py`, `shoulder_v6.py`, `polish_v1/2/3.py`, QA `check_v4.py` + `check_polish.py`, `arc_plot.py`, `weight_plot.py`, playblast `pb_capture.js` + `pb_bounds.py` + `save_srv.py` (launch `pb-save`) → `pb_polish_vN/`, `export_fbx.py` → `export/` + `export/anim_only/` |
 | `work/shoot_die_repeat/zom1/` | Zombie SDR map01: `export/EN_zom1_map1_Rig.fbx` (bỏ mesh máu, 2026-10-26) |
 | `work/review_page/` | **Review Lab** (trang review, đổi tên 2026-10-23, tiêu đề mỗi trang dạng `<anim> Review Lab` trong `split_pages.py`): `index.html` là bản master, `split_pages.py` tách thành mỗi anim một artifact (`pages/`), `clips/` chứa webm và jpg của từng version |

@@ -170,8 +170,9 @@ Lõi Rig Lab chạy thẳng trong viewport Studio, không viết lại thuật t
 
 `tools/studio/modules/rig.js` nối lõi vào Studio:
 - 5 bước của Rig Lab = 5 tab dock (1 Mesh · 2 Khớp · 3 Xương · 4 Skin · 5 Thử) + tab Channel; phím 1–5, nút số ở hộp công cụ; cổng Duyệt / Cần sửa giữ nguyên.
-- Bước 2: click / kéo khung chọn khớp (khung nào cũng được), Q/W/E/R + gizmo chung, đối xứng R→L, Channel Box nhập toạ độ khớp (cm).
-- Bước 4–5: click joint trong viewport, cọ / khối rời chặn chọn khung, thanh xoay joint nằm đầu panel.
+- Bước 2–3: click / kéo khung chọn khớp (khung nào cũng được), Q/W/E/R + gizmo chung, đối xứng R→L, Channel Box nhập toạ độ khớp (cm). E xoay quanh khớp (một khớp) hoặc tâm nhóm: khớp con cháu quay theo như Maya; W chỉ dời khớp đang chọn.
+- Bước 4–5: click joint trong viewport, cọ / khối rời chặn chọn khung, thanh xoay joint nằm đầu panel. Gizmo: E xoay = pose thử của xương đang chọn (ghi vào POSE, cùng ba thanh Roll / Gập A / Gập B, không sửa rig); W dời = dời khớp (rig đổi, báo bấm Tính skin).
+- Công cụ Q/W/E dùng được ở mọi chế độ: General (mesh, joint), Rig mọi bước có khớp, Pose (hộp công cụ chung ↔ nút Chọn / Dời / Xoay của Pose, hai chiều; R trong Pose báo rig không cho scale). Gizmo ở `port_rig.py` (gzPlace / gzStart / gzChange / gzEnd) và `modules/pose.js` (POSE_MODE).
 - Undo chung: khớp / twist và từng nét tô skin là một bước trong Sửa → Hoàn tác.
 - Outliner: mesh của rig (ẩn / hiện) + cây xương đang dựng (bấm để chọn khớp ở bước 2, chọn xương ở bước 4–5).
 - Mesh: dùng mesh đang sửa ở workspace General (thay theo tên, dời landmark nếu thân đổi cỡ), như MESHLINK của Rig Lab.
