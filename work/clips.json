@@ -293,10 +293,10 @@
   {
    "id": "ninja_idle",
    "character": "Ninja",
-   "stage": "p0",
-   "note": "Pose chính k10_v1 (F1 đáy thở, F17 đỉnh hít) trong Studio, chờ duyệt",
+   "stage": "blocking",
+   "note": "Blocking b50_v1 (loop 41F, overlap thân, sóng khăn) trong Studio, chờ duyệt",
    "dir": "work/infinite_defense/ninja_idle",
-   "frames": 40,
+   "frames": 41,
    "fps": 30,
    "ref": "Không có video ref của rig. Ref dáng: https://www.reddit.com/r/PixelArt/comments/1tnpj6v/ninja_idle/ ; hạ trọng tâm: https://www.reddit.com/r/blender/comments/woha4h/ninja_idle_animation/",
    "desc": "[GDD] Ninja đứng thủ thế hơi khom người, tay phải cầm ngược kunai trước ngực, tay trái thả lỏng. Khăn quàng bay nhẹ theo nhịp thở. Khoảng mỗi 4–6 giây xoay kunai một vòng trong tay (optional). Animation loop liền mạch.\n\n[GDD] Ref: tay duỗi kiếm trong ref là tay không của ninja, tay kia là tay cầm kunai, tư thế hơi khom người một chút.\n\nNguồn: FDD Hero Ninja v1.1 (work/infinite_defense/gdd/ninja_fdd_v1.1.txt, https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k).\nModel: C:/Users/Admin/Documents/Ngoc/EndlessKicker/Hero_Ninja/Rig/MC_Ninja.fbx (mesh body_ninja, weapon, weapon_explode; chưa có xương). Texture T_Colorpalette.tga.",
