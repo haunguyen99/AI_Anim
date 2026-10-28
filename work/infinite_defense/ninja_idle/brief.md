@@ -13,3 +13,10 @@
 
 Nguồn: FDD Hero Ninja v1.1 (work/infinite_defense/gdd/ninja_fdd_v1.1.txt, https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k).
 Model: C:/Users/Admin/Documents/Ngoc/EndlessKicker/Hero_Ninja/Rig/MC_Ninja.fbx (mesh body_ninja, weapon, weapon_explode; chưa có xương). Texture T_Colorpalette.tga.
+
+## Intake (2026-10-28, quy trình C)
+- Frame: **40 @ 30 fps**, loop, chỉ thở; **bỏ xoay kunai** ("bỏ xoay kunai, thở 40f thôi").
+- Tay: kunai **tay trái**, tay phải là tay không ("tay ở đấy đúng rồi").
+- Tay không: "trông như nắm hờ 1 kunai nữa vô hình, tay đẩy về phía sau".
+- Camera game: chéo từ trên (3/4).
+- Pose đầu/cuối: F1 = F41 (loop). Tại chỗ, không root motion.
