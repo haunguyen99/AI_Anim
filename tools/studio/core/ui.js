@@ -88,10 +88,15 @@
     document.body.classList.toggle("shelf-mod", !!sm);
     if (sm) { const n = sm.shelfNode && sm.shelfNode(); if (n) mount($("shelf"), n); else fill($("shelf"), '<span class="sub" style="padding:0 10px">' + esc(sm.shelfMsg ? sm.shelfMsg() : "") + "</span>"); $("shelf").dataset.mod = w.shelf.slice(1); }
     else { fill($("shelf"), strip(w.shelf)); $("shelf").dataset.mod = ""; }
-    $("toolbox").innerHTML = strip(w.tools) + (w.modes ? '<span class="gap"></span>' + strip(w.modes) : "");
+    // tab dọc cho cột trái (Outliner + panel ws.left), user 2026-10-28: "để dạng tab ở cạnh này"
+    const lt = leftTabs(), cur = curLeft();
+    const vt = lt.length > 1 ? (w.tools && w.tools.length ? '<span class="gap"></span>' : "") + lt.map(id => `<button class="vtab ${id === cur ? "on" : ""}" role="tab" aria-selected="${id === cur}" data-lt="${esc(id)}" title="${esc(id === "outliner" ? "Outliner" : ST.PANELS[id].label)}">${esc(id === "outliner" ? "Outliner" : ST.PANELS[id].short || ST.PANELS[id].label)}</button>`).join("") : "";
+    $("toolbox").innerHTML = strip(w.tools) + (w.modes ? '<span class="gap"></span>' + strip(w.modes) : "") + vt;
+    $("outliner").classList.toggle("lt-panel", lt.length > 1 && cur !== "outliner");
     $("wstabs").innerHTML = Object.values(ST.WS).map(x => `<button role="tab" aria-selected="${x.id === ST.ws}" class="${x.id === ST.ws ? "on" : ""}" data-ws="${x.id}" title="Workspace ${esc(x.label)}">${ic(x.icon)}<span>${esc(x.label)}</span></button>`).join("");
   }
   ["shelf", "toolbox"].forEach(k => $(k).addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b && !b.disabled) ST.run(b.dataset.c); }));
+  $("toolbox").addEventListener("click", e => { const b = e.target.closest("[data-lt]"); if (!b) return; ST.pref.set("ltab:" + ST.ws, b.dataset.lt); ST.refresh(); });
   // bấm vào khối của module (shelf / timeline / panel dock) = làm việc với module đó → focus
   const focusFrom = el => el.addEventListener("pointerdown", () => { const m = el.dataset.mod; if (m && ST.focus !== m) ST.setFocus(m); }, true);
   $("wstabs").addEventListener("click", e => { const b = e.target.closest("[data-ws]"); if (b) ST.setWS(b.dataset.ws); });
@@ -162,14 +167,52 @@
   // ---------------------------------------------------------------- dock: tab Channel Box + panel của module
   const attrB = $("attrBody");
   // tab = panel trong ST.PANELS ("<module>:<tab>"); danh sách mặc định của workspace, Cửa sổ → Panel để thêm / bớt
-  const tabList = () => (ST.pref.get("tabs:" + ST.ws, null) || (ST.WS[ST.ws] || {}).tabs || []).filter(id => ST.PANELS[id] && (!ST.PANELS[id].mod || ST.mods[ST.PANELS[id].mod]));
+  // ws.merge: tab cũ → tab gộp (pref đã lưu của người dùng tự đổi theo); ws.left: panel đặt dưới Outliner, không nằm ở dock
+  const tabList = () => {
+    const ws = ST.WS[ST.ws] || {}, merge = ws.merge || {}, left = ws.left || [], drop = ws.drop || [], def = ws.tabs || [];
+    const pref = (ST.pref.get("tabs:" + ST.ws, null) || def).map(id => merge[id] || id);
+    // tab mặc định luôn theo thứ tự của workspace (bố cục cũ đã lưu không đẩy tab mới như "Rig 6" ra cuối, user 2026-10-28
+    // "Sao bước 6 lại tận ngoài này"); tab người dùng tự thêm (Cửa sổ → Panel) nối sau; ws.drop bỏ hẳn (vd Channel Box ở Rig)
+    const L = def.filter(id => pref.includes(id)).concat(pref.filter(id => !def.includes(id)));
+    return L.filter((id, i) => L.indexOf(id) === i && !left.includes(id) && !drop.includes(id) && ST.PANELS[id] && (!ST.PANELS[id].mod || ST.mods[ST.PANELS[id].mod]));
+  };
+  // ---- cột trái: Outliner + panel ws.left, chọn bằng tab dọc ở #toolbox (user 2026-10-28: "Pose phiên bản đặt sang phía cùng
+  // với outliner", rồi "để dạng tab ở cạnh này đi"): mỗi lúc một tab, đủ chiều cao.
+  function leftTabs() {
+    const ws = ST.WS[ST.ws] || {}, ids = (ws.left || []).filter(id => ST.PANELS[id] && (!ST.PANELS[id].mod || ST.mods[ST.PANELS[id].mod]));
+    return ids.length ? ["outliner"].concat(ids) : [];
+  }
+  function curLeft() { const L = leftTabs(), t = ST.pref.get("ltab:" + ST.ws, "outliner"); return L.includes(t) ? t : "outliner"; }
+  function renderLeft() {
+    const cur = curLeft(), ids = cur === "outliner" ? [] : [cur];
+    let box = $("olLeft");
+    const unpark = () => box && box.querySelectorAll(".olsec > .body > [data-park]").forEach(c => { const s = document.getElementById(c.dataset.park); if (s) s.appendChild(c); });
+    if (!ids.length) { if (box) { unpark(); box.replaceChildren(); box.hidden = true; } return; }
+    if (!box) { box = document.createElement("div"); box.id = "olLeft"; $("outliner").appendChild(box); }
+    box.hidden = false;
+    if (box.contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    const frag = document.createElement("div");
+    ids.forEach(id => {
+      const { m, sub } = panelOf(id), sec = document.createElement("section");
+      sec.className = "olsec"; sec.innerHTML = `<header>${esc(ST.PANELS[id].label)}</header>`;
+      const body = document.createElement("div"); body.className = "body"; sec.appendChild(body);
+      const n = m && m.panelNode ? m.panelNode(sub) : null;
+      if (n) body.appendChild(n); else body.innerHTML = m && m.panel ? m.panel(sub) : "";
+      frag.appendChild(sec);
+    });
+    unpark(); box.replaceChildren(...frag.childNodes);
+  }
   const curTab = () => { const L = tabList(), t = ST.pref.get("tab:" + ST.ws, L[0]); return L.includes(t) ? t : L[0]; };
   const panelOf = t => { const p = ST.PANELS[t] || {}; return { m: p.mod ? ST.mods[p.mod] : null, mid: p.mod || "", sub: t && t.includes(":") ? t.slice(t.indexOf(":") + 1) : t }; };
   ST.tabs = tabList; ST.curTab = curTab;
   ST.showTab = id => { if (tabList().includes(id) && curTab() !== id) { ST.pref.set("tab:" + ST.ws, id); ST.refresh(); } };   // module chọn tab của nó nếu workspace đang có
   function renderAttr(force) {
     const L = tabList(), t = curTab(), mixed = new Set(L.map(x => ST.PANELS[x].mod || "")).size > 1;
-    $("attrTabs").innerHTML = L.map(id => { const p = ST.PANELS[id]; return `<button role="tab" data-t="${esc(id)}" class="${id === t ? "on" : ""}" title="${esc(p.label)}">${esc(mixed && p.mod ? p.label : p.short || p.label)}</button>`; }).join("");
+    $("attrTabs").innerHTML = L.map(id => { const p = ST.PANELS[id]; return `<button role="tab" data-t="${esc(id)}" class="${id === t ? "on" : ""}${p.tab ? " num" : ""}" title="${esc(p.label)}">${esc(p.tab || (mixed && p.mod ? p.label : p.short || p.label))}</button>`; }).join("");
+    // tiêu đề panel (PANELS[id].title) giữa hàng tab và nội dung, vd "Bước 1 · Mesh" khi tab chỉ ghi "1"
+    let ttl = $("attrTitle");
+    if (!ttl) { ttl = document.createElement("div"); ttl.id = "attrTitle"; attrB.parentNode.insertBefore(ttl, attrB); }
+    const tp = t && ST.PANELS[t]; ttl.textContent = tp && tp.title ? tp.title : ""; ttl.hidden = !(tp && tp.title);
     if (!force && attrB.contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
     if (!t) { fill(attrB, '<div class="sub" style="padding:10px">Không có panel. Cửa sổ → Panel để thêm.</div>'); attrB.dataset.key = ""; attrB.dataset.mod = ""; return; }
     if (t === "channel") { park(attrB); attrB.dataset.key = ""; attrB.dataset.mod = ""; return chRender(); }
@@ -285,7 +328,7 @@
 
   // ---------------------------------------------------------------- vẽ lại khi có thay đổi
   let rq = 0;
-  ST.on("ui", () => { if (rq) return; rq = setTimeout(() => { rq = 0; renderBars(); renderOutliner(); renderAttr(); renderTimeline(); renderStatus(); if (openMenu) showMenu(openMenu); }, 0); });
+  ST.on("ui", () => { if (rq) return; rq = setTimeout(() => { rq = 0; renderBars(); renderOutliner(); renderAttr(); renderLeft(); renderTimeline(); renderStatus(); if (openMenu) showMenu(openMenu); }, 0); });
   // ---------------------------------------------------------------- cảnh trống: ô gợi ý giữa viewport
   ST.on("empty", async () => {
     const el = $("empty"); el.hidden = false;

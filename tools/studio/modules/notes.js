@@ -82,7 +82,7 @@
     try {
       const put = (col, data) => fetch(api(col, id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => { if (!r.ok) throw new Error(r.status); });
       if (img) await put("noteimg", { img }); await put("notes", Object.assign(doc, { img: !!img }));
-      ST.toast("Đã lưu ghi chú. Nhắn Claude để sửa (Claude đọc được ảnh + nét vẽ)."); list = null; stop(); ST.showTab && ST.showTab("notes:list"); ST.refresh();
+      ST.toast("Đã lưu ghi chú. Nhắn Claude để sửa (Claude đọc được ảnh + nét vẽ)."); list = null; stop(); ST.showTab && ST.showTab(ST.tabs && ST.tabs().includes("pose:feedback") ? "pose:feedback" : "notes:list"); ST.refresh();
     } catch (e) { ST.toast("Không lưu được ghi chú (Home server?): " + (e.message || e)); }
   }
 
@@ -148,15 +148,18 @@
     ST.toast("Đã gửi " + L.length + " ghi chú cho AI."); ST.refresh();
   }
   N.reload = () => { list = null; ST.refresh(); };
+  N.sendAll = send;   // tab "Góp ý cho AI" của Pose: một nút gửi cả ghi chú vẽ lẫn điều chỉnh key
+  N.unsentCount = () => (list || []).filter(n => n.status !== "done" && !n.sent).length;
+  const myTab = () => ST.curTab && ["notes:list", "pose:feedback"].includes(ST.curTab());
   // ghi chú đã gửi, chưa xong: đọc lại mỗi 4 s khi panel đang mở, để thấy "AI đã nhận" / "AI đã sửa" ngay
-  setInterval(() => { if (ST.curTab && ST.curTab() === "notes:list" && list && list.some(n => n.sent && n.status !== "done") && document.visibilityState === "visible") load(); }, 4000);
+  setInterval(() => { if (myTab() && list && list.some(n => n.sent && n.status !== "done") && document.visibilityState === "visible") load(); }, 4000);
   // nhịp tim bộ canh (tools/notes_watch.py ghi work/store/_sys/watch/notes.json mỗi 2 s)
   let watching = false;
   async function watchBeat() {
     if (document.visibilityState !== "visible") return;
     let w = false;
     try { const j = await (await fetch("/api/store/_sys/watch/notes")).json(); w = !!(j.data && Date.now() / 1000 - j.data.beat < 10); } catch (e) {}
-    if (w !== watching) { watching = w; if (ST.curTab && ST.curTab() === "notes:list") ST.refresh(); }
+    if (w !== watching) { watching = w; if (myTab()) ST.refresh(); }
   }
   watchBeat(); setInterval(watchBeat, 4000);
   N.watching = () => watching;

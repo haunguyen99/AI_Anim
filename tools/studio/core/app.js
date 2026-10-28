@@ -42,6 +42,7 @@
     sym: '<path d="M12 3v18" stroke-dasharray="2 2"/><path d="M9 8l-5 4 5 4zM15 8l5 4-5 4z"/>', soft: '<circle cx="12" cy="12" r="2.5"/><circle cx="12" cy="12" r="6" opacity=".6"/><circle cx="12" cy="12" r="9.5" opacity=".3"/>',
     front: '<path d="M4 12h16"/><path d="M12 4a8 8 0 010 16" opacity=".5"/><circle cx="12" cy="12" r="2"/>',
     view4: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
+    send: '<path d="M21 3L3 10.5l7 2.5 2.5 7z"/><path d="M10 13l11-10"/>',
     image: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="9" cy="10" r="1.8"/><path d="M3 17l5-5 4 4 3-3 6 6"/>',
     view1: '<rect x="3" y="3" width="18" height="18" rx="1.5"/>', grid: '<path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>', touch: '<path d="M9 11V5a1.6 1.6 0 013.2 0v5l3.3.7a2 2 0 011.5 2.3L16.4 19a2 2 0 01-2 1.6H11a2 2 0 01-1.6-.8L6 14.6a1.5 1.5 0 012.2-1.9z"/>',
     mesh: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>', rig: '<circle cx="12" cy="5" r="2.3"/><path d="M12 8v7M6.5 10.5L12 8l5.5 2.5M9 21l3-6 3 6"/>',
