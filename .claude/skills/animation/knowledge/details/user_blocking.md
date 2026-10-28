@@ -2,7 +2,7 @@
 
 Người dùng duyệt quy trình này ngày 2026-10-23 ("oki cập nhật vào quy trình. Khi người dùng cũng cấp blocking và AI thêm
 các pose chuyển tiếp rồi sau đó polish"). Clip mẫu đã đi hết quy trình: **Gaygor Attack 50 Blocking**. Bộ script mẫu nằm
-ở `work/gaygor_attack_50_blocking/`; Pose Lab https://claude.ai/artifact/8WqsypJBEfDsbXY4Bc3wdz; Review Lab
+ở `work/boss_gaygor/gaygor_attack_50_blocking/`; Pose Lab https://claude.ai/artifact/8WqsypJBEfDsbXY4Bc3wdz; Review Lab
 https://claude.ai/artifact/CAn8A5JiGjJXYjTNFbKKwX; FBX ở `export/` và `export/anim_only/`.
 
 Dùng quy trình này khi người dùng hoặc team đưa một **FBX đã có blocking** của chính rig đó (vd `Bloking10/25/50.fbx`:
@@ -48,7 +48,7 @@ Sau mỗi cổng: `git commit` kèm câu của user, tag bản duyệt (`<nv>-<c
   Đăng trang phải khai báo `sample: {images: true}` cùng `db, user, comments, downloads, assets`.
 
 ## Dùng lại cho clip sau
-Chép `work/gaygor_attack_50_blocking/` làm mẫu (`work/<id>/`). Những chỗ phải đổi trong từng script:
+Chép `work/boss_gaygor/gaygor_attack_50_blocking/` làm mẫu (`work/<dự án>/<id>/`). Những chỗ phải đổi trong từng script:
 - `make_model.py`: `SRC_GLTF` = model Pose Lab cùng rig (mesh/skin). Rig khác thì xuất model đó trước.
 - `fix_v3.py`: đường dẫn FBX nguồn, danh sách key cần sửa (`LOW_TARGET`, chân).
 - `breakdowns_v4.py` / `weight_v5.py`: `PLAN` (frame, key A/B, t, offsets, lý do). Đây là phần sáng tạo, viết theo bản phân tích.

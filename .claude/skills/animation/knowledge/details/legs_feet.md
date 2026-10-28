@@ -24,7 +24,7 @@
 - **Gối vặn lúc nhấc chân (2026-10-26, Gaygor Walk spline_b13 F43, user: "chân trái bước lên khớp đầu gối đang xoay vặn khá nhiều").**
   Ảnh nhỏ không thấy, phải đo. Lỗi gồm hai chuyển động ngược chiều trong cùng một đoạn nhấc gót (mũi chân còn lướt sàn): gối xoay
   ra ngoài so với hông 29° → 50°, và bàn chân xoắn ngược 17° quanh ống chân (mũi chân quay ra tới 72° nhìn từ trên). Đo bằng
-  `work/walk/fb_b13/knee_scan.py`. Đo `knee_yaw` (hướng gối so với hướng hông) và `foot_tw` (bàn chân so với mặt phẳng gối, quanh
+  `work/boss_gaygor/walk/fb_b13/knee_scan.py`. Đo `knee_yaw` (hướng gối so với hướng hông) và `foot_tw` (bàn chân so với mặt phẳng gối, quanh
   trục ống chân), không đo "gối so mũi chân" (sai khi bàn chân chúc dốc). Lúc đứng trụ `foot_tw` ~15°; khi nhấc chân không được lệch
   quá vài độ so với giá trị đó.
   Sửa (`fix_b14.py`), cổ chân giữ nguyên chỗ:
@@ -39,14 +39,14 @@
 
 - **Đùi giật sau một đoạn chỉnh tay ngắn (2026-10-26, Gaygor Walk b16, user: "check lại rotate của đùi phải").** User xoay gối phải vào
   ở F23–F28 lúc vung chân, nhưng F22 và F29 vẫn giữ giá trị cũ. Kết quả: xoắn đùi tụt 30° trong 4F, dạng đùi có khấc chữ V (nhảy
-  10–11°/F). Đo bằng `work/walk/fb_b13/thigh_scan.py`: gập, dạng, xoắn so với hông, kèm bước và gia tốc mỗi frame.
+  10–11°/F). Đo bằng `work/boss_gaygor/walk/fb_b13/thigh_scan.py`: gập, dạng, xoắn so với hông, kèm bước và gia tốc mỗi frame.
   Sửa: giữ ý của user (hướng gối) nhưng trải đều ra cả pha vung. Đặt mục tiêu xoắn = bản làm mượt (binomial 5 điểm × 3), hòa vào
   ở hai đầu cửa sổ, đạt bằng cách xoay đùi quanh trục hông → cổ chân (`fix_rthigh.py`). Cổ chân giữ nguyên chỗ, nên khấc ở phần dạng
   đùi tự hết. Sau mỗi lần user chỉnh tay một đoạn, quét ngay bước/gia tốc ở hai mép đoạn đó.
 
 ## hip-height
 - **Nhịp hông so với bước chân (2026-10-26, Gaygor Walk b15, user: "anim chủ hông đang lệch nhịp so với bước chân").** Đo bằng
-  `work/walk/fb_b13/hip_scan.py` (Root_M thế giới so với độ mở hai chân `ankleL.y − ankleR.y`, tương quan chéo):
+  `work/boss_gaygor/walk/fb_b13/hip_scan.py` (Root_M thế giới so với độ mở hai chân `ankleL.y − ankleR.y`, tương quan chéo):
   - Nhún: đáy phải trùng lúc gót chạm đất, đỉnh lúc chân vung qua chân trụ. Bản cũ trễ 3–6F.
   - Xoay hông: phải cùng pha với chân, tức bên chân đang ra trước thì hông bên đó ra trước, đỉnh ở lúc gót chạm. Bản cũ ngược pha
     (gót trái chạm mà hông phải ở trước 7,5 cm), dù số đo biên độ và độ mượt đều "đẹp". Nhìn từ trên thì thân che hông, nên phải đo.
@@ -65,5 +65,5 @@
   (`keys/plant.json`) (Cascadeur).
 - Kiểm nhanh: đầu ngón chân Y≈0 (`qa_anatomy.md#anatomy-check`).
 - Đặt bàn chân phẳng bằng cách lăn bàn chân (roll) làm mũi chân xuyên sàn 8–9 cm (Attack v10 f49/52/53). Dùng `plant_p0(side)`
-  (`work/attack/v10/fixes.py`): lấy hướng bàn chân P0, chỉ xoay yaw theo hướng thân hiện tại, cổ chân ở độ cao P0 (0,16) → gót + mũi chạm đất.
+  (`work/boss_gaygor/attack/v10/fixes.py`): lấy hướng bàn chân P0, chỉ xoay yaw theo hướng thân hiện tại, cổ chân ở độ cao P0 (0,16) → gót + mũi chạm đất.
 - Dời bàn chân IK đi xa mà không nghiêng nó = ống chân giãn (0,364 > 0,344) và gối lệch 83° so mũi chân (f28): bước ngắn hơn, không pitch.

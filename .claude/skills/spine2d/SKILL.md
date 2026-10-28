@@ -16,7 +16,7 @@ Không điều khiển được cửa sổ Spine đang mở. Mọi việc đi qu
 | CLI: thông tin, export, import, pack/unpack atlas, clean up | MCP `spine`: `spine_project_info`, `spine_export`, `spine_import`, `spine_pack_atlas`, `spine_unpack_atlas`, `spine_clean_animations` (code `tools/spine_mcp/`) |
 | Đọc JSON | `skeleton_summary`, `skeleton_bone_tree`, `skeleton_get`, `slot_list`, `animation_get` |
 | Sửa nhỏ JSON | `bone_add`, `bone_update`, `slot_update`, `animation_create/rename/delete/scale_time`, `keyframe_set_bone`, `keyframe_set_slot`, `keyframe_remove`, `skeleton_set` (mỗi lần sửa có backup trong `.spine_mcp_backups/`) |
-| Dựng rig + anim có tính toán (mesh, weight, FK, đặt điểm chạm) | Script `work/spine/<game>/<anim>/build_<anim>.py` sinh JSON (mẫu: `work/spine/G-PirateGoldrush/HandTut/build_handtut.py`) |
+| Dựng rig + anim có tính toán (mesh, weight, FK, đặt điểm chạm) | Script `work/<game>/spine/<anim>/build_<anim>.py` sinh JSON (mẫu: `work/pirate_goldrush/spine/HandTut/build_handtut.py`) |
 | Xem trước | `tools/spine/render_spine.py skel.json images_dir anim out_prefix [--bg ui.png --at X Y --scale S] [--cross] [--frames 0,4,8]` → `<out>.gif` + `<out>_frames.png` |
 
 `render_spine.py` là bản xem gần đúng. Nó chỉ hỗ trợ translate/rotate/scale của xương, alpha của slot, region và mesh (có hoặc không weight). Nó **không** vẽ IK, path, clipping, deform timeline hay draw order. Anim dùng những thứ đó phải mở trong Spine để kiểm, và phải nói rõ với người dùng như vậy.
@@ -28,7 +28,7 @@ MCP `spine` khai báo trong `.mcp.json` (cần session mới sau khi thêm). N�
 
 ## Thư mục mỗi anim
 
-`work/spine/<Game>/<Anim>/`:
+`work/<game>/spine/<Anim>/` (vd `work/pirate_goldrush/spine/HandTut/`):
 - `images/`: ảnh gốc, mỗi attachment một PNG (tên = tên attachment).
 - `build_<anim>.py`: dựng skeleton JSON.
 - `<anim>.json` → `<Anim>.spine`: project mới import từ JSON.
@@ -62,7 +62,7 @@ Thêm game hoặc anim mới thì ghi một dòng vào `MAP.md`.
 7. **Import:** dùng `spine_import` từ JSON ra **file `.spine` mới** trong thư mục anim. Không import đè project gốc của người dùng.
 8. **Export:** luôn theo setting người dùng đã lưu trong Spine, không dùng mặc định của CLI:
    - đọc lại `C:\Users\HLC_2021\Spine\settings\editor-2.json`, khóa `export.json`;
-   - dựng file setting CLI (`"class": "export-json"`), mẫu ở `work/spine/G-PirateGoldrush/HandTut/export_settings.json`. Setting hiện tại: atlas `.atlas.txt`, `premultiplyAlpha` false, pot + square, `cleanUp` true, `nonessential` true, `packTarget` perskeleton.
+   - dựng file setting CLI (`"class": "export-json"`), mẫu ở `work/pirate_goldrush/spine/HandTut/export_settings.json`. Setting hiện tại: atlas `.atlas.txt`, `premultiplyAlpha` false, pot + square, `cleanUp` true, `nonessential` true, `packTarget` perskeleton.
 
    Ngày 2026-10-26, bản export theo mặc định của CLI (`.atlas`, PMA, tên theo project) bị báo lỗi trong game.
 9. **Kiểm bản export:**

@@ -2,24 +2,24 @@
 Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệt ("oki rồi" trên version mới nhất) = xuất.
 
 ## export-clip
-- Xuất SDR (2026-10-20): `legacy/blender/export_clip.py` chạy headless trên sdr_attack.blend / sdr_p0.blend → work/sdr/export/
+- Xuất SDR (2026-10-20): `legacy/blender/export_clip.py` chạy headless trên sdr_attack.blend / sdr_p0.blend → work/shoot_die_repeat/sdr/export/
   SDR_MC_Attack.fbx (26F) + SDR_MC_Idle.fbx (1 pose, 2F) + SDR_MC_Attack_events.json. Đọc lại lệch ≤ 0,02 cm. Dao bay được
   nướng vào xương slingshot_0 (con của Wrist_R).
 - Exporter đặt tên take theo **tên scene** → export_clip.py giờ đặt sc.name = take trước khi xuất (trước đó take ra "Scene").
 - Importer Blender lệch 1 frame (F1 → F2) là bình thường.
 
 - **Xuất không Blender, giữ nguyên file của team** (Gaygor Attack 50 Blocking, 2026-10-23,
-  `work/gaygor_attack_50_blocking/export_fbx.py`): đọc FBX nhị phân có giữ kiểu từng property, chỉ thay đường cong
+  `work/boss_gaygor/gaygor_attack_50_blocking/export_fbx.py`): đọc FBX nhị phân có giữ kiểu từng property, chỉ thay đường cong
   Lcl T/R/S của mọi xương (68 key linear, Euler theo đúng RotationOrder của từng xương sau khi bỏ PreRotation), đổi tên
   AnimationStack + Takes, ghi lại FBX 7.4 bằng `work/pose_lab/fbx/fbxbin.py` (thêm kiểu Y/F/C byte/S raw/mảng b, nén zlib).
   Kiểm: chạy `--roundtrip` (ghi lại file gốc không đổi → cây giống hệt), tự kiểm Euler 6 thứ tự, đọc lại FBX xuất ra
   so polish từng xương từng frame (0,00001 cm), xem bước Euler lớn nhất/frame để chắc không có lật 360°.
   `--anim-only` (user cần, 2026-10-23): bỏ Geometry/Model Mesh/Deformer/Pose/Material/Texture/Video + liên kết tới chúng,
-  đếm lại Definitions (giống mẫu work/sdr/export/anim_only) → export/anim_only/; kiểm: 59 xương, 0 liên kết hỏng, lệch 0,00001 cm.
+  đếm lại Definitions (giống mẫu work/shoot_die_repeat/sdr/export/anim_only) → export/anim_only/; kiểm: 59 xương, 0 liên kết hỏng, lệch 0,00001 cm.
 
 ## anim-only
 - Xuất "chỉ joint + anim" (dev đã có model): `legacy/blender/export_skeleton_only.py` chạy trên file *_baked.blend
-  (object_types={"ARMATURE"}, take = tên scene). SDR: work/sdr/export/anim_only/*.fbx, 23 xương, khớp bản có mesh 0,0006 cm.
+  (object_types={"ARMATURE"}, take = tên scene). SDR: work/shoot_die_repeat/sdr/export/anim_only/*.fbx, 23 xương, khớp bản có mesh 0,0006 cm.
   Mặc định hỏi/đoán: team Unity thường chỉ cần anim-only khi model đã import từ trước.
 
 ## variants
@@ -29,7 +29,7 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 
 ## loop-and-hold
 - Clip loop (SDR06 Shoot 12F): xuất F1–F(N+1) với F(N+1) = F1 để Unity loop time khớp (SDR06_MC_Shoot.fbx F1–F13).
-- Idle "chỉ là một pose" (SDR06 2026-10-22, 10F): lấy pose F1 của clip đã duyệt dùng chung P0 (Shoot = Reload F1) để chuyển clip không giật; key F1 và F10 giống hệt, CONSTANT (`work/sdr06/make_idle.py` chạy trên *_baked.blend), xuất bản có mesh + anim_only, đọc lại lệch 0,001 cm.
+- Idle "chỉ là một pose" (SDR06 2026-10-22, 10F): lấy pose F1 của clip đã duyệt dùng chung P0 (Shoot = Reload F1) để chuyển clip không giật; key F1 và F10 giống hệt, CONSTANT (`work/shoot_die_repeat/sdr06/make_idle.py` chạy trên *_baked.blend), xuất bản có mesh + anim_only, đọc lại lệch 0,001 cm.
 - Xuất bản stepped theo yêu cầu (SDR06 Reload lhand_b6, 2026-10-22): vẫn xuất được, nhưng đo bước nhảy cổ tay mỗi frame trước khi xuất và báo người dùng (ở đây tay trái nhảy tới 35 cm/F) — Unity sẽ chạy đúng y như vậy.
 
 ## reparent-prop
@@ -52,8 +52,8 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 - Test loop without Node: tiny python http.server with a POST /save endpoint + Claude browser pane running the JS, compare the saved file in Blender.
 - Keys mode (2026-10-23): the page keys/splines/foot-locks the clip itself and the FBX samples that (0.000 cm vs page) -> review_process.md#pose-lab-3d. Walk keys f8..f50 still to block.
 
-## FBX from a team source of another length (2026-10-24, Gaygor Hit 32F from Bloking50.fbx 68F, `work/gaygor_hit/export_fbx.py`)
-- Reuse `work/gaygor_attack_50_blocking/export_fbx.py` (typed reader, fbxbin writer patch, euler_from, strip_to_anim_only);
+## FBX from a team source of another length (2026-10-24, Gaygor Hit 32F from Bloking50.fbx 68F, `work/boss_gaygor/gaygor_hit/export_fbx.py`)
+- Reuse `work/boss_gaygor/gaygor_attack_50_blocking/export_fbx.py` (typed reader, fbxbin writer patch, euler_from, strip_to_anim_only);
   the per-clip script only swaps the pose source and the length.
 - Length: set GlobalSettings TimeSpanStop, AnimationStack LocalStop/ReferenceStop and Takes LocalTime/ReferenceTime to
   (NF-1)*DT (the source uses 67 for 68F). 5 values in all.

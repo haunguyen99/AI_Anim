@@ -1,7 +1,7 @@
 # Thay hình + skin của mesh trong FBX binary bằng mesh lấy từ FBX khác; mọi thứ còn lại giữ nguyên từng byte.
 # Giữ: Model (tên, transform, cha), Geometry id, Skin, Cluster (bone, Transform, TransformLink), bind pose, material.
 # Đổi:  Vertices, PolygonVertexIndex, Edges, Normals(+W), UV, UVIndex của Geometry; Indexes + Weights của từng Cluster.
-# Thư viện (dùng từ script riêng của từng việc, xem work/map3_props/replace_props.py); `--selftest` ghi lại file không đổi gì.
+# Thư viện (dùng từ script riêng của từng việc, xem work/shoot_die_repeat/map3_props/replace_props.py); `--selftest` ghi lại file không đổi gì.
 import os, struct, sys
 import numpy as np
 sys.path.insert(0, os.path.dirname(__file__))

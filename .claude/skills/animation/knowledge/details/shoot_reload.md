@@ -22,10 +22,10 @@ xoắn → `arms_hands.md#shoulder-compression`; spline tay IK, review từ phí
 
 ## Shoot and Reload share one P0 (2026-10-22)
 - User: "Lấy F đầu tiên của Anim reload sang, vì trước đó chúng ta đã sửa lại Keypose" — when a key pose is hand-fixed in one clip (Reload F1 via Pose Lab), every clip that starts from that pose must take it over, or the in-game blend between clips pops (old Shoot P0 was 5 cm off at the gun, 9–12 cm at the left hand).
-- Method (spline_shoot.py `Retarget`, data from `dump_reload_p0.py` → `work/sdr06/p0_reload_f1.json`): keep the recoil as a delta of the gun from the old P0 (`Gn = G0n @ G0o⁻¹ @ Gf`), scapulae as delta loc/rot on top of the new P0, arm locals = new P0, then IK both wrists to `Gn @ rel` (rel = new P0 wrist in gun space). IK must start from the new P0 arm (no twist), then scan every frame (seam, twist, slip, anatomy, gun_inside).
+- Method (spline_shoot.py `Retarget`, data from `dump_reload_p0.py` → `work/shoot_die_repeat/sdr06/p0_reload_f1.json`): keep the recoil as a delta of the gun from the old P0 (`Gn = G0n @ G0o⁻¹ @ Gf`), scapulae as delta loc/rot on top of the new P0, arm locals = new P0, then IK both wrists to `Gn @ rel` (rel = new P0 wrist in gun space). IK must start from the new P0 arm (no twist), then scan every frame (seam, twist, slip, anatomy, gun_inside).
 
 ## Stepped prop-hand → spline (SDR06 Reload lspline_v1, 2026-10-22)
-- Keys = first frame of every hold; drop the hold frames, Bezier AUTO_CLAMPED, quat_filter (`work/sdr06/spline_lhand.py`).
+- Keys = first frame of every hold; drop the hold frames, Bezier AUTO_CLAMPED, quat_filter (`work/shoot_die_repeat/sdr06/spline_lhand.py`).
 - Holds where only the prop turns in the hand (wrist + prop position unchanged, Pose Lab F17/F18/F22) are NOT path keys: otherwise the whole move lands in 1 frame (F22→F23 35 cm). Keep only the prop rotation key there.
 - Hand + prop while the prop moves: arm keeps its local spline, prop rides in the hand (hand-space offset interpolated over all keys). IK of the hand onto a moving prop gave an elbow/wrist twist spike (F22 E 34°/W −25°). Prop still in the gun: IK hand onto the prop.
 - End boundary 3 frames after the last key (F28 → F31), else the return to the base lands in 1 frame (17.8 cm).

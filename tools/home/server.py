@@ -320,7 +320,11 @@ def new_clip(b):
         pr["characters"].append(ch)
     stage = "analysis" if d["characters"][ch].get("rig_url") else "rig"
     pretty = clip.replace("_", " ")
+    # mỗi dự án một thư mục: work/<dự án>/<anim>
+    pr = pr or next((p for p in d["projects"] if ch in p.get("characters", [])), None)
+    rel_dir = "work/" + (pr["id"] + "/" if pr else "") + cid
     entry = {"id": cid, "character": ch, "stage": stage, "note": "Mới tạo từ Home: chờ /new_clip " + cid,
+             "dir": rel_dir,
              "frames": int(b["frames"]) if str(b.get("frames", "")).isdigit() else None,
              "fps": int(b["fps"]) if str(b.get("fps", "")).isdigit() else 30,
              "ref": b.get("ref", ""), "desc": b.get("desc", ""), "created": date.today().isoformat(),
@@ -330,7 +334,7 @@ def new_clip(b):
              "pose": {"key": cid, "clip": f"{ch}_{clip}", "title": f"{ch} {pretty} Pose Lab", "url": ""}}
     d["clips"].append(entry)
     save(d)
-    folder = os.path.join(ROOT, "work", cid)
+    folder = os.path.join(ROOT, *rel_dir.split("/"))
     os.makedirs(folder, exist_ok=True)
     brief = os.path.join(folder, "brief.md")
     if not os.path.exists(brief):

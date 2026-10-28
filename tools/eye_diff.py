@@ -1,6 +1,6 @@
 """Two-colour difference overlay of a render (eye_views.py RGBA) vs the reference: white = both, red = ref only
 (anim is missing something there), cyan = anim only (anim has something extra). Shows WHERE the silhouette is off.
-python tools/eye_diff.py WORK FRAME TAG [--dir work/attack/look_v4] [--h 360]"""
+python tools/eye_diff.py WORK FRAME TAG [--dir work/boss_gaygor/attack/look_v4] [--h 360]"""
 import argparse, json, os
 import cv2, numpy as np
 

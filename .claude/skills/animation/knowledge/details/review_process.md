@@ -47,7 +47,7 @@ Sở thích của người duyệt (animator lead):
   cụ thể: `attack.md#cascadeur-keys`.
 
 ## self-review-sheet
-- "chưa được, tự view lại bằng mắt" (Blender Attack v7): bảng REF|ANIM 4 view mỗi key (`work/attack/v7rev/sheet.py`, crop theo
+- "chưa được, tự view lại bằng mắt" (Blender Attack v7): bảng REF|ANIM 4 view mỗi key (`work/boss_gaygor/attack/v7rev/sheet.py`, crop theo
   người) lộ lỗi KHỐI LỚN mà IoU không thấy (`torso_head.md#square-body`).
 
 ## circled-notes
@@ -68,7 +68,7 @@ Sở thích của người duyệt (animator lead):
   ra đúng pose họ muốn nhanh hơn mọi lời mô tả (2026-10-22).
 
 ## no-ref-clips
-- Clip không ref: viết bản mô tả trước (work/sdr/attack_analysis.md, nguồn [concept]/[đối thủ]/[quyết định]/[thiết kế]) -> duyệt
+- Clip không ref: viết bản mô tả trước (work/shoot_die_repeat/sdr/attack_analysis.md, nguồn [concept]/[đối thủ]/[quyết định]/[thiết kế]) -> duyệt
   -> blocking cả clip.
 - Đọc ở camera ingame, thiết kế theo silhouette của camera game, không theo giải phẫu/hành động thật (SDR Attack: follow-through
   chui ra sau thân ở góc right -> vung xuống trước thân).
@@ -82,7 +82,7 @@ Sở thích của người duyệt (animator lead):
 - **Duyệt ("oki rồi" trên version mới nhất) = xuất** bằng `export_clip.py` (`export.md`).
 
 ## pose-lab-3d
-- **Playblast Walk từ Pose Lab trên máy (2026-10-26):** `work/walk/pb_capture.js`, chép vào `work/pose_lab/fbx/out/` rồi nạp bằng
+- **Playblast Walk từ Pose Lab trên máy (2026-10-26):** `work/boss_gaygor/walk/pb_capture.js`, chép vào `work/pose_lab/fbx/out/` rồi nạp bằng
   thẻ script. Các bước: mở `/index.html` (trang riêng `pages/<clip>/` không tải được model trên máy); `openPose(Walk anim_v1)`; nạp key + đặt
   `ANIM`/`CT` giống doc `anims` trong db (vật lý, điểm tiếp đất); `__pbw(frames, true, name)` gửi ảnh tới `save_srv.py` (launch
   `pb-save`, cổng 8125; cổng 8124 có thể đang bị server cũ giữ).
@@ -139,7 +139,7 @@ Reload lhand_b2.
     crop = union silhouette +10 %, 360 px cells), POSES `ref.cams` maps page camera -> ref view. Gaygor: page Right
     camera = ref "left" view (refs.json naming), Front = front, Top = top; G toggles, click = size.
   - Camera presets scale with the highest joint (camFit = top/1.75 m); Gaygor ~1.26.
-  - **Import a hand-made FBX into Pose Lab, no Blender** (2026-10-23, Gaygor Attack 50% blocking): `work/gaygor_attack_50_blocking/make_model.py <in.fbx> <out.json>`
+  - **Import a hand-made FBX into Pose Lab, no Blender** (2026-10-23, Gaygor Attack 50% blocking): `work/boss_gaygor/gaygor_attack_50_blocking/make_model.py <in.fbx> <out.json>`
     reads curves with key times (`fbxanim.py`; KeyAttrFlags 2 = constant = stepped). **Apply each bone's RotationOrder**
     (enum 0 XYZ,1 XZY,2 YZX,3 YXZ,4 ZXY,5 ZYX; "XYZ" = X first = Rz@Ry@Rx; Pre/PostRotation always XYZ): AdvancedSkeleton
     sets ZYX/ZXY/XZY on 20 bones (neck, head, arms, legs); b50_v1 ignored it and the user rejected it ("nhiều pose lỗi,
@@ -150,7 +150,7 @@ Reload lhand_b2.
     Rotation + Lcl Translation, root bone gets Rx(-90); samples every frame at t = f/30 (1-based). Check: bone worlds
     vs FBX 0.003 mm. POSES: `mode: "keys", interp: "step", keys: [key frames + 1]` -> page seeds the db keys from it.
     Publish with files models/<x>.json + fbxexport.js (the page 404s on Xuất FBX without it).
-  - **Fixing an imported blocking without the page** (b50_v3, `work/gaygor_attack_50_blocking/fix_v3.py`): edit FBX-space
+  - **Fixing an imported blocking without the page** (b50_v3, `work/boss_gaygor/gaygor_attack_50_blocking/fix_v3.py`): edit FBX-space
     locals per key, `make_model.write(models, local_fn, nf, out)`. Prop under the floor -> turn the prop about the
     hands' midpoint (bisection on the lowest mesh point), then two-bone IK (hinge = Elbow/Knee local Z in this rig)
     so each wrist keeps its prop-space transform. Measure contacts on the TOES, not the ankle: the file already pinned
@@ -179,7 +179,7 @@ Reload lhand_b2.
     it on the shoulder and the left hand on its grip, in edits and on every spline frame (relations blended between keys).
   - "So cạnh nhau" in the ref panel = model through the calibrated ref camera next to the ref (grey, like the playblast).
   - Browser pane hidden -> timers throttle: fits run 25 s/key instead of 3 s; poll a window.JOB object, short calls.
-  - Gaygor Walk block_b1 (8 keys F1..F50, stepped) written to db keys via ArtifactData batch (work/walk/block_b1/).
+  - Gaygor Walk block_b1 (8 keys F1..F50, stepped) written to db keys via ArtifactData batch (work/boss_gaygor/walk/block_b1/).
     Known: left foot keeps P0's raised heel on some keys (F22, F42), body ~10-20 deg more open to the camera than the ref
     (from the approved P0); F1 legs were re-fitted (right foot 10 cm back to the ref).
   - block_b2 (user: "chân trái ... đang lỗi"): every key's LEFT foot was rolled 18-24 deg about its long axis (sole
@@ -198,7 +198,7 @@ Reload lhand_b2.
   in the file every channel had 2 samples and the gun lay on the floor.
 - Blender's glTF clip starts at t = F1/fps, not 0: the page offsets by the first key time. Check after every export:
   `toBl(wp(B[n]))` on the page == Blender world head at the same frame (F14 matched to 0.1 mm).
-- Back to Blender: adjust docs → `work/sdr06/pose_lab_apply.py` (apply_adjust on its frame, CONSTANT key, local
+- Back to Blender: adjust docs → `work/shoot_die_repeat/sdr06/pose_lab_apply.py` (apply_adjust on its frame, CONSTANT key, local
   channels into cache/lhand/manual.json); `lhand.build()` re-keys manual.json over the solve. Bones driven by
   constraints (SDR06 gun slingshot_0) cannot be edited this way.
 - Controls (user 2026-10-22, "làm giống maya", "làm thêm channelbox"): Q select / W move / E rotate / R = scale (locked,
@@ -213,7 +213,7 @@ Reload lhand_b2.
   them (frame, createdAt).
 - Saving needs the claude.ai artifact (db). On the local preview (localhost:8771) the button is "Tải file điều chỉnh"
   and downloads the same adjust docs as .json (user 2026-10-22 edited on localhost and could not save). Put such
-  files in work/sdr06/pose_lab_adjusts/ and run pose_lab_apply.py on them. Always send the user the claude.ai link,
+  files in work/shoot_die_repeat/sdr06/pose_lab_adjusts/ and run pose_lab_apply.py on them. Always send the user the claude.ai link,
   never the localhost tab, for edits that must be kept.
 - Twisted inbetweens on IK-held frames (SDR06 Reload lhand_b4 → b5, 2026-10-22, user: "áp dụng Euler Filter cho vai và cánh tay"): when a hand is pinned by IK on a prop while the base arm swings toward another pose, start the IK from the held pose's arm (F1), not the base arm — otherwise the bend plane is the swinging one (elbow twist −70°, wrist bent 120–170°). Then run `quat_filter` (sign continuity = Euler Filter for quaternion bones). Check with per-frame local twist/swing about the bone Y axis (scratchpad inspect_twist.py idea): elbow twist should stay near its rest value, per-frame change ≤ ~10°.
 - Pose Lab edits on non-key frames (lhand_b5 round: drum on F17/F18/F22) become new holds; lhand.build now applies manual.json in frame order so an earlier hold never overwrites a later edit. Pose Lab "local.q" is three.js order [x, y, z, w]; "bones.dq" is [w, x, y, z] — compare accordingly in checks.
@@ -241,5 +241,5 @@ hoặc preview `home`, http://127.0.0.1:8780), một người dùng, dữ liệu
 - Đổi tên (2026-10-26): anim → nút "Sửa / đổi tên", ghi khóa `title` của clip (chỉ tên hiện trên Home; id, thư mục, trang Lab
   giữ nguyên, để trống = tên gốc `review.name`); dự án → nút "Sửa dự án" (tên + mô tả, id/URL `#/p/<id>` giữ nguyên).
   Tên nhân vật chưa đổi được trên Home (dùng ở sổ, Rig Lab, file).
-- "+ Animation mới" trên Home đã đăng ký clip (giống `clip_registry.py new`) và viết `work/<id>/brief.md`; khi user gõ
+- "+ Animation mới" trên Home đã đăng ký clip (giống `clip_registry.py new`) và viết `work/<dự án>/<id>/brief.md`; khi user gõ
   `/new_clip <id>` thì đọc brief đó, đừng hỏi lại những gì đã có, rồi làm tiếp từ bước 3 (rig) hoặc 5 (phân tích).

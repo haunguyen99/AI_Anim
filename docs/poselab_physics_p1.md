@@ -81,7 +81,7 @@ Thêm thẻ **Vật lý** trong bảng bên phải:
 
 - Thông số lưu cùng thiết lập anim của version (db `anims`, trường `phys`). AI đọc được để làm tiếp hoặc chạy lại bằng Python.
 - Mức có sẵn theo nhân vật lưu trong `work/<nv>/phys_presets.json`, để clip sau của Gaygor dùng lại.
-- Một bản Python dùng cùng công thức (tách từ `work/gaygor_hit/polish_v7.py`) để kiểm chéo: cùng thông số phải ra cùng kết quả, sai lệch dưới 0,1°.
+- Một bản Python dùng cùng công thức (tách từ `work/boss_gaygor/gaygor_hit/polish_v7.py`) để kiểm chéo: cùng thông số phải ra cùng kết quả, sai lệch dưới 0,1°.
 
 ## 8. Nghiệm thu
 

@@ -942,7 +942,7 @@ def compare(dump, out, bones):
 
 if __name__ == "__main__":
     dump = json.load(open(sys.argv[1], encoding="utf8"))
-    sys.path.insert(0, "work/gaygor_hit")
+    sys.path.insert(0, "work/boss_gaygor/gaygor_hit")
     import io, contextlib
     with contextlib.redirect_stdout(io.StringIO()): import pose_build as pb
     par = {n: pb.PAR.get(n) for n in dump["base"]["1"]}

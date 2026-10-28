@@ -34,7 +34,7 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
   từ MỘT đường giật liên tục mỗi phát (lên gắt ~0,35F, về exp(-0,75t)·cos(0,6t): 1 / 0,39 / 0,08 / -0,02 = có chút quá đà rồi
   lắng), mỗi bộ phận lấy mẫu với độ trễ LẺ frame (súng 0, vai 0,4F, ngực 0,8F, đầu 1,6F), cộng các phát của vòng trước/sau
   để F13 = F1 tuyệt đối; chuẩn hoá từng bộ phận để đỉnh trên frame nguyên = blocking đã duyệt (giữ độ mạnh)
-  (`work/sdr06/spline_shoot.py`). Súng + tay LINEAR (giật gắt), cột sống/cổ/đầu/scapula Bezier có key F0 = F12, F13 = F1.
+  (`work/shoot_die_repeat/sdr06/spline_shoot.py`). Súng + tay LINEAR (giật gắt), cột sống/cổ/đầu/scapula Bezier có key F0 = F12, F13 = F1.
 
 ## spacing
 - Cú ném (SDR): tay đi ~1,1 m từ sau đầu tới điểm thả; dồn vào 1 frame (F5→F6) là "nhảy". Đặt F5 = 40% đường ném (tay qua đỉnh
@@ -65,7 +65,7 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
   overlap ramp về 0 trước IDLE_FROM; prop hiện lại trong tay cùng lúc. Kiểm pixel F_IDLE_FROM..F_last == Idle.
 
 
-## breakdowns-procedural (2026-10-23, Gaygor Attack b75_v1, `work/gaygor_attack_50_blocking/breakdowns_v4.py`)
+## breakdowns-procedural (2026-10-23, Gaygor Attack b75_v1, `work/boss_gaygor/gaygor_attack_50_blocking/breakdowns_v4.py`)
 Breakdowns on a stepped blocking without changing its keys/timing:
 - One per gap of >= 3 F (two in the longest gap); consecutive frames (F31-32-33) cannot take one.
 - Per-bone slerp of the two neighbour keys with a favour weight t per gap + group offsets: LEAD (hip +.12, spine
@@ -98,7 +98,7 @@ Measure first (prop head speed per frame + hip height per key), name each spot, 
   bounces back (42), then settles (40) while the body rises. Check the prop really touches: haft-to-Shoulder joint gap
   = the rest gap (6 cm); the first build pressed the shoulder with the haft still 22 cm above it.
 
-## polish-bake-no-blender (2026-10-23, Gaygor Attack polish_v1, `work/gaygor_attack_50_blocking/polish_v1.py`)
+## polish-bake-no-blender (2026-10-23, Gaygor Attack polish_v1, `work/boss_gaygor/gaygor_attack_50_blocking/polish_v1.py`)
 - Spline: per-channel PCHIP (flat at peaks, no overshoot, zero end slopes) on sign-aligned local quaternions and
   translations through the keys; approved keys copied exactly; bake every frame.
 - Constraints per frame on top of the spline: prop in chest space (world when on the floor at both segment ends),
@@ -132,7 +132,7 @@ Measure first (prop head speed per frame + hip height per key), name each spot, 
 - A designed "shake the head clear" built as alternating 1-frame breakdowns (+6 / -3.5 / +6.5 deg yaw) = 10 deg/F direction
   flips = jitter, not a shake. A shake needs >= 3-4 F per swing and decaying amplitude: F12 0, +3, +5, +3, 0, -2, -3, -2, 0
   (<= 3 deg/F). Check the curve of the part named in a note before anything else.
-- QA (`work/gaygor_hit/polish_check.py`): "jitter" = rotation direction reversing on 2+ consecutive frames with both steps
+- QA (`work/boss_gaygor/gaygor_hit/polish_check.py`): "jitter" = rotation direction reversing on 2+ consecutive frames with both steps
   > 3 deg (the speed-spike "pops" test cannot see it: same speed every frame); "sharp_turns" = a single fast reversal at the
   peak of a big move (snap/whip extremes, foot lift) - list them for the reviewer, usually intended.
 
@@ -140,7 +140,7 @@ Measure first (prop head speed per frame + hip height per key), name each spot, 
 - Over-correcting a swinging arm ("tay khiên dao động mạnh" → arm locked to the chest) gives the opposite note: shoulder,
   elbow and wrist turned by the SAME angle every frame (one stiff piece) and froze relative to the chest after F14.
   Measure each joint relative to its parent, not only the hand's path.
-- Fix without new keys (`work/gaygor_hit/polish_v3.py`): damped spring on the WORLD rotation toward the animated pose, per
+- Fix without new keys (`work/boss_gaygor/gaygor_hit/polish_v3.py`): damped spring on the WORLD rotation toward the animated pose, per
   joint down the chain - shoulder (k .45, damping .42, <= 8 deg), elbow hinge-only (local Z part, <= 8), wrist (k .32,
   damping .38, <= 12), heavy prop about the gripping hand (k .35, damping .40, <= 8) with the arm re-IK'd onto it. Clamp the
   spring STATE, near-critical damping, blend back over the last 6 F. Result: own motion shoulder 8.5 / elbow 1-5 / wrist
@@ -156,7 +156,7 @@ Measure first (prop head speed per frame + hip height per key), name each spot, 
 - polish_v5 (user on v4: "oki đấy giờ áp dụng với tay còn lại và chùy đi" - right-arm springs approved as the reference):
   for the arm whose hand holds the prop, the "wrist" softness IS the prop's spring (hand pinned to it): mace k .28 damping
   .32 <= 14 deg (= the approved right shoulder), left elbow swing k .24 damping .30 <= 15, left scapula like the right
-  (re-IK the hand onto the haft after it). Spring set for this rig = these numbers (`work/gaygor_hit/polish_v5.py`; arms OK, but the mace was jerky -> see prop-path-smoothing).
+  (re-IK the hand onto the haft after it). Spring set for this rig = these numbers (`work/boss_gaygor/gaygor_hit/polish_v5.py`; arms OK, but the mace was jerky -> see prop-path-smoothing).
 - Clearance guard must use the PRE-layer pose as its floor: a lagging scapula moves the shoulder toward the prop before the
   prop's own spring runs (F2 gap 7.8 cm vs rest 8.5); clip the scapula lag per frame where it crowds the prop.
 
@@ -184,7 +184,7 @@ Measure first (prop head speed per frame + hip height per key), name each spot, 
   (F22-F26), rest on the shoulder from F28; smoothstep onto the pose over the last 8 F (F32 = Idle F1).
 - Shoulder contact INSIDE the simulation as a soft pad (margin 2.5 cm, push k .08 rad/F^2 per cm, damping on the speed into
   the shoulder). Hard projection popped 25 deg in one frame; a post-pass push + re-smooth moved F2 by 11 deg and undid the
-  overlap. With the pad no post push is needed (keep it only as a safety net, no re-smooth). `work/gaygor_hit/polish_v7.py`.
+  overlap. With the pad no post push is needed (keep it only as a safety net, no re-smooth). `work/boss_gaygor/gaygor_hit/polish_v7.py`.
 
 ## poselab-physics (2026-10-24, Pose Lab vật lý giai đoạn 1, docs/poselab_physics_p1.md)
 - The springs of Hit polish_v3..v7 are now a live layer on Pose Lab (thẻ Vật lý): joint / hinge / prop / elbow swing,

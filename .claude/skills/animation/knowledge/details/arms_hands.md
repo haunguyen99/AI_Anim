@@ -10,7 +10,7 @@
   chấm lại trên da thật (`arm_strain`); tay gần thẳng mới với tới thì xoay/nghiêng thân (vai) chứ không bẻ tay
   (SKILL.md quy tắc 10).
 - **Ngay khi rig xong** (đề xuất của người duyệt: "cần thêm bước giới hạn góc xoay, trục xoay của các khớp theo từng model"):
-  khai báo trục và giới hạn góc xoay từng khớp theo model (`work/<job>/joint_limits.json`), mọi pose phải qua
+  khai báo trục và giới hạn góc xoay từng khớp theo model (`work/<dự án>/<job>/joint_limits.json`), mọi pose phải qua
   `joint_limits.py` = 0 vi phạm.
 - **Quy tắc:** không bao giờ ép hướng/vị trí bàn tay (hay bàn chân) bằng cách bẻ chuỗi khớp - dời gốc chuỗi (vai, hông,
   thân) hoặc điểm tiếp xúc trước. Ưu tiên giải phẫu hơn khớp silhouette/ref.
@@ -109,7 +109,7 @@ User 2026-10-22: "tạo giới hạn cho các joint để tránh các lỗi bẻ
 - Dấu đã kiểm trên rest: gập về lòng bàn tay +, lệch về ngón út +, sấp (pronation, ngón cái xuống) +; T-pose lòng úp = 0.
 - `hand_on_limited`: mỗi lần thử reset Shoulder/Elbow/Wrist về cùng basis (arm_plane cần khuỷu không xoắn; quên reset → cổ tay lệch 33 cm). Xoay pole quanh trục vai→điểm cầm theo danh sách `swivels`; cổ tay vượt giới hạn thì nắn hướng bàn tay vào vùng cho phép (lòng tay vẫn đặt đúng điểm cầm). Chọn: vi phạm ít nhất → hướng tay đổi ít nhất (`hand_clamped`) → gần pole yêu cầu.
 - `limit_fail` còn lại (thường elbow_flex = với không tới) → sửa spec key (đưa vật lại gần), không ép tay.
-- Giới hạn SDR: work/sdr06/joint_limits.json; nới để P0 đã duyệt qua được (L pronation -111, wrist_dev +44.5).
+- Giới hạn SDR: work/shoot_die_repeat/sdr06/joint_limits.json; nới để P0 đã duyệt qua được (L pronation -111, wrist_dev +44.5).
 - Phát hiện đầu tiên: key cầm trống Reload b1 gập cổ tay 120–178° (hướng tay trong arm_target không hợp với cẳng tay) — đây là lỗi "tay chưa tốt" F23; `hand_clamped` lớn (~90°) = hướng tay của mode đó sai, nên sửa mode chứ không chỉ kẹp.
 - Khuỷu chìm vào thân (user 2026-10-22 "Khuỷu tay đang bị chìm vào trong cơ thể", b2q2): solver xoay pole –120° để tránh nhăn vai → khuỷu ép sát sườn, lùi ra sau; nhìn trước thì bắp tay khuất, cẳng tay như mọc ra từ áo. Thử nghiệm "điểm trong mesh" (tia ra/vào) KHÔNG bắt được vì mesh low-poly hở (áo 1 lớp). Đo đúng = `elbow_gap`: khe ngang giữa da khuỷu và da thân/áo cùng độ cao + độ sâu; P0 = 7+ cm, chìm = âm. Đưa vào cost (10/cm dưới GAP_MIN 6 cm) cùng `elbow_covered` và nhăn vai. Luôn render cả góc TRÊN để kiểm khuỷu với thân.
 
@@ -131,4 +131,4 @@ rút kinh nghiệm từ đó"). Nguyên lý: Solid Drawing (khối tay/chân đ�
      người duyệt, đừng để mỗi vòng review sửa một thứ.
   4. Solver chỉ dò pole quanh hướng trong spec (±30°), không quét ±180°.
 - Gaygor Attack v9 (audit 2026-10-22): gối phải f13–f21 41–46°, f25/f26/f28 99/107/176°, f31 36°; gối trái f32 50°; roll tay trái
-  nhảy 82–152° ở f8, f13, f21, f25, f31, f64 → sửa trong v10 cùng các lỗi pose (`work/attack/v10rev/defects_v9.md`).
+  nhảy 82–152° ở f8, f13, f21, f25, f31, f64 → sửa trong v10 cùng các lỗi pose (`work/boss_gaygor/attack/v10rev/defects_v9.md`).

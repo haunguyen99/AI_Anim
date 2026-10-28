@@ -20,7 +20,7 @@ Công thức idle thở (đã duyệt: Gaygor Idle_Front v14):
 Biến thể từ clip đã duyệt (Idle_Front: bỏ liếc, 60F, các chu kỳ khác nhau rõ): SKILL.md Polish rules.
 
 ## params
-- **Gaygor Idle 133F** (idle có diễn xuất, theo 100% ref, polish v5, duyệt 2026-10-20): xem `work/idle/`, sai số khớp TB ~7 cm so với FBX gốc.
+- **Gaygor Idle 133F** (idle có diễn xuất, theo 100% ref, polish v5, duyệt 2026-10-20): xem `work/boss_gaygor/idle/`, sai số khớp TB ~7 cm so với FBX gốc.
 - **Gaygor Idle_Front 60F v14** (duyệt 2026-10-20): `legacy/blender/idle_front_build.py` -> `IDLE_FRONT` (giá trị ở `#breath-recipe`).
 - **SDR Idle 1 pose**: `#sdr-one-pose`.
 
@@ -75,7 +75,7 @@ Idle 1 pose (SDR - lính La Mã ném dao, camera ingame = góc right, không ref
 - Muốn ngực quay về camera: **xoắn eo/ngực** (Spine1 -25, Chest -30), hông vẫn gần hướng mục tiêu (-35°) để chân là
   lunge dọc. Xoay hông -60..-80° làm đùi dạng ngang = dáng ếch/sumo, váy bè phẳng (v2-v5).
 - Pole gối theo hướng gối mong muốn, không theo mũi chân xoay ngoài (gối sau bị đẩy về camera).
-- Tham số v7: work/sdr/p0_pose.py (P0), kiểm tra sdr_lib.anatomy (da váy: `qa_anatomy.md#anatomy-check`).
+- Tham số v7: work/shoot_die_repeat/sdr/p0_pose.py (P0), kiểm tra sdr_lib.anatomy (da váy: `qa_anatomy.md#anatomy-check`).
 - Hướng lòng bàn tay cầm dao (v10): `arms_hands.md#palm-dir`.
 - Tấn ngắm 1 pose phải **đứng được lâu**: SDR v12 (hông hạ 13 cm, bước chân 0,72 m) bị góp ý "đẩy hông cao hơn, thu hai chân gần
   nhau để đứng thoải mái hơn" → v13 hạ hông 6 cm, bước 0,50 m, gối gập ~40°. Tấn sâu đẹp ở ảnh tĩnh nhưng nhìn mỏi khi giữ suốt

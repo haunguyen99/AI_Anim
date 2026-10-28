@@ -12,7 +12,7 @@ Mọi clip nằm trong **sổ clip** `work/clips.json` (đọc/ghi bằng `tools
 | Giai đoạn | Công cụ | Ra gì | Lệnh sổ |
 |---|---|---|---|
 | rig (mỗi nhân vật một lần) | Rig Lab (`/rig`) | khớp, skin, `rig.json` | `set-url char:<Tên> rig <url>` |
-| analysis, p0 | `animation` (phân tích → P0 theo mức) | `work/<job>/analysis.md`, P0 | `stage <id> p0` |
+| analysis, p0 | `animation` (phân tích → P0 theo mức) | `work/<dự án>/<job>/analysis.md`, P0 | `stage <id> p0` |
 | blocking → spline → polish | Pose Lab | version trên Pose Lab | `pose-version`, `build`, `set-url <id> pose` |
 | duyệt | Review Lab (`/check_fb` đọc note) | video playblast, note theo frame | `review-version`, `build`, `set-url <id> review` |
 | export | `export_clip.py` / Pose Lab Xuất FBX | FBX Unity | `stage <id> export` |
@@ -21,7 +21,7 @@ Rig Lab chưa xuất FBX có skin và Pose Lab chưa đọc `rig.json` hay xươ
 
 ## Home
 
-Người dùng bắt đầu từ Home (`tools/home/start.bat`, http://127.0.0.1:8780): dự án theo game (khóa `projects` trong sổ), nút **+ Animation mới** đã đăng ký clip và ghi `work/<id>/brief.md` (frame, fps, ref, mô tả). Gõ `/new_clip <id>` sau khi tạo trên Home: đọc brief, bỏ qua bước 2 và 4 cho phần đã có, làm tiếp từ bước 3/5. Clip mới tạo bằng lệnh thì thêm nhân vật vào đúng dự án trong `projects` nếu chưa có. Giữ `note` ngắn, có chữ "chờ" khi đợi góp ý, để Home hiện đúng trạng thái.
+Người dùng bắt đầu từ Home (`tools/home/start.bat`, http://127.0.0.1:8780): dự án theo game (khóa `projects` trong sổ), nút **+ Animation mới** đã đăng ký clip và ghi `work/<dự án>/<id>/brief.md` (frame, fps, ref, mô tả). Gõ `/new_clip <id>` sau khi tạo trên Home: đọc brief, bỏ qua bước 2 và 4 cho phần đã có, làm tiếp từ bước 3/5. Clip mới tạo bằng lệnh thì thêm nhân vật vào đúng dự án trong `projects` nếu chưa có. Giữ `note` ngắn, có chữ "chờ" khi đợi góp ý, để Home hiện đúng trạng thái.
 
 ## Khi gõ /new_clip
 

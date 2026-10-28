@@ -1,6 +1,6 @@
 # Spine MCP server
 
-Chuyển từ `E:\SpineAI` vào AI_Anim ngày 2026-10-26. Project Spine (vd HandTut của G-PirateGoldrush) nằm ở `work/spine/<game>/<anim>/`.
+Chuyển từ `E:\SpineAI` vào AI_Anim ngày 2026-10-26. Project Spine (vd HandTut của G-PirateGoldrush) nằm ở `work/<game>/spine/<anim>/`.
 
 MCP server cho Spine 2D (editor 4.2.43). Cho phép Claude:
 - gọi **Spine CLI**: export, import, xem thông tin, pack/unpack atlas, clean up animation;

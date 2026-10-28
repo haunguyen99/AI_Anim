@@ -45,7 +45,7 @@
   (`scene.blendermcp_port`, `blendermcp_auto_start_server`), mỗi cửa sổ tự bật server khi mở file; thêm một server vào
   `.mcp.json` cho mỗi cổng (Idle 9876 = `blender`, Attack 9877 = `blender_attack`), khởi động lại phiên Claude Code để nạp.
   Nhờ vậy cửa sổ đang có thay đổi chưa lưu của clip khác không bị đụng tới. Việc dựng file nặng thì chạy `blender -b` (nền).
-- **Đầu ra:** `work/<job>/intake.json`.
+- **Đầu ra:** `work/<dự án>/<job>/intake.json`.
 
 ### Bước 2 — Phân tích ref chi tiết đến từng bộ phận  ▸ **DUYỆT 1**
 Đây không còn là một bản brief ngắn. AI đọc ref như một animator đang *break down* shot: xem từng bộ phận ở mọi góc, qua từng đoạn của clip.
@@ -115,7 +115,7 @@ Mỗi bộ phận ghi theo cùng một mẫu:
   - prop có follow space chuyển được (vai, ngực, tay, world);
   - tay nắm prop dùng IK tới điểm grip nằm trên prop;
   - ẩn helper, tô màu control, gom bone collection (Body / IK / Prop / FK).
-- **Khai báo trục và giới hạn khớp cho từng model** (đề xuất của người dùng, bắt buộc ngay sau khi dựng rig), lưu ở `work/<job>/joint_limits.json`:
+- **Khai báo trục và giới hạn khớp cho từng model** (đề xuất của người dùng, bắt buộc ngay sau khi dựng rig), lưu ở `work/<dự án>/<job>/joint_limits.json`:
   - **Trục:** trục dọc xương, trục bản lề, trục phụ. Với rig FBX kiểu Maya này, trục dọc là −X, khuỷu/gối là bản lề quanh **Z** (đo lại ở Attack: phần xoay thêm của khuỷu
     nằm đúng trục Z), ngón cong quanh Y; trục Y của Blender **không** nằm dọc xương. Gập khuỷu trái là −Z, khuỷu phải +Z.
   - **Giới hạn mỗi khớp:** xoắn (twist), gập theo trục bản lề, gập theo trục phụ. Ví dụ: khuỷu là bản lề, xoắn ±50, gập phụ ±10; cổ tay gập ±75, lệch ngang ±45, xoắn ±50; gối là bản lề.
@@ -144,7 +144,7 @@ Mỗi bộ phận ghi theo cùng một mẫu:
    và không có quaternion 0 trước khi lưu.
 
 ### Bước 4 — Blocking (interpolation CONSTANT)  ▸ **DUYỆT 2**
-- **P0 dựng từ dưới lên: thế đứng trước.** Đo vị trí từng bàn chân (trước/sau, trong/ngoài), hướng hông và hướng ngực ở góc top và góc nghiêng, rồi mới tới cột sống, đầu, tay, prop. Không mặc định là đứng chính diện. Bài học Idle: bản gốc xoay hông 20°, chân so le 50 cm, còn P0 của mình đứng chính diện, nên mọi sửa chữa sau đó chỉ là bù sai (xem `work/idle/original/report.md`).
+- **P0 dựng từ dưới lên: thế đứng trước.** Đo vị trí từng bàn chân (trước/sau, trong/ngoài), hướng hông và hướng ngực ở góc top và góc nghiêng, rồi mới tới cột sống, đầu, tay, prop. Không mặc định là đứng chính diện. Bài học Idle: bản gốc xoay hông 20°, chân so le 50 cm, còn P0 của mình đứng chính diện, nên mọi sửa chữa sau đó chỉ là bù sai (xem `work/boss_gaygor/idle/original/report.md`).
 - Key pose gốc P0 trước, đối chiếu overlay ở 4 góc (`live_render` + `blender_overlay`).
 - Key các *extreme* và *breakdown* theo `analysis.json` (từng bộ phận, từng pha), để **stepped**: người dùng thấy rõ từng pose và timing, chưa bị spline che lỗi.
 - Playblast stepped kèm ref ở bên cạnh → người dùng duyệt pose và timing.
@@ -161,7 +161,7 @@ Mỗi bộ phận ghi theo cùng một mẫu:
 - **Chế độ dựng pose:** trong lúc dựng, action được tháo ra để không gì ghi đè pose chưa key (render, đo, đổi frame đều làm
   Blender tính lại animation). `goto(f)` đọc pose đã key thẳng từ f-curve; `key_pose(f)` gắn action, key, tháo lại;
   `unkey(f)` xoá key (và curve rỗng); `done()` ở cuối **mỗi** lần gọi MCP để trả file về trạng thái bình thường cho người dùng.
-  Mỗi pose là một hàm dựng (`work/attack/pose_fNN.py`) bắt đầu bằng `from_p0(f)` (frame f nhưng mang pose P0), vì các phép
+  Mỗi pose là một hàm dựng (`work/boss_gaygor/attack/pose_fNN.py`) bắt đầu bằng `from_p0(f)` (frame f nhưng mang pose P0), vì các phép
   xoay/dời đều tương đối: dựng trên pose đã key sẽ cộng dồn. Kiểm tra: dựng lại = pose đã key (lệch 0).
 - **Thứ tự** (mỗi bước so REF | ANIM 5 góc bằng `eye()` + `tools/eye_side.py`, có `--band` để zoom chân; ảnh chồng 2 màu
   `tools/eye_diff.py` cho biết HƯỚNG sai, `tools/extent_cmp.py` cho biết sai bao nhiêu mét theo từng hàng/cột):
@@ -244,7 +244,7 @@ timing. AI không dựng lại pose mà làm tiếp từ đó:
 ```
 
 Chi tiết từng bước, lệnh và các luật rút ra: `.claude/skills/animation/knowledge/details/user_blocking.md`. Clip mẫu:
-Gaygor Attack 50 Blocking (`work/gaygor_attack_50_blocking/`). Không dùng Blender: Pose Lab là nơi xem và chỉnh pose,
+Gaygor Attack 50 Blocking (`work/boss_gaygor/gaygor_attack_50_blocking/`). Không dùng Blender: Pose Lab là nơi xem và chỉnh pose,
 Review Lab là nơi xem chuyển động, FBX được ghi bằng cách thay đường cong trong chính file của team.
 
 ## 2C. Quy trình C — chỉ có yêu cầu bằng lời (thêm 2026-10-24)
@@ -295,14 +295,14 @@ tools/sweep_score.py  (Attack)     chấm các thử nghiệm render thấp phâ
 work/blender/attack_pose.py (Attack) chế độ dựng pose: goto/key_pose/unkey/done, eye, closeup, body_top, set_weapon,
                       solve_grip/apply_grip, arm_strain, clean_scales — dùng lại cho clip mới (đổi ACTS)
 work/blender/build_attack_v4.py, rig_attack_v4*.py  dựng scene + sửa rig cho clip mới từ file đã duyệt
-work/<job>/ intake.json, analysis.md, analysis.json, rig_profile.json, qa.json, review.mp4
+work/<dự án>/<job>/ intake.json, analysis.md, analysis.json, rig_profile.json, qa.json, review.mp4
 ```
 
 Các công cụ cũ (keyanim, fit/*, viewer three.js) được giữ làm lưu trữ, không còn nằm trong quy trình chính.
 
 ## 5. Áp dụng ngay cho Boss Idle
 
-0. Làm lại Bước 2 cho ref Idle theo mẫu mới: tổng quan hành động + phân tích từng bộ phận (`work/idle/analysis.md`, `analysis.json`) → Duyệt 1.
+0. Làm lại Bước 2 cho ref Idle theo mẫu mới: tổng quan hành động + phân tích từng bộ phận (`work/boss_gaygor/idle/analysis.md`, `analysis.json`) → Duyệt 1.
 1. Idle_Breath hiện có → tách thành lớp NLA `Breath_cycle` (Additive + Cycles modifier).
 2. Viết `qa_report.py` và chạy trên Idle_Breath để có số liệu nền (trượt chân, xuyên chùy, nối loop).
 3. Nhận góp ý của bạn cho Idle_Breath, rồi sửa bằng `direct.py`.

@@ -14,7 +14,7 @@ Người dùng nói tiếng Việt: trả lời bằng tiếng Việt. Ref là *
 ## Ba quy trình: chọn theo nguồn vào
 Cả ba chạy trên Pose Lab. Đăng ký clip và nối các trang bằng `/new_clip`; Rig Lab bằng `/rig`; đọc note review bằng `/check_fb`.
 - **A — từ video ref** (mặc định): phân tích ref → P0 → blocking → spline → polish (xem phần dưới và `docs/pipeline_v2.md` §2, bỏ phần Blender).
-- **B — từ blocking của người dùng** (FBX đã có key của chính rig, vd `Bloking50.fbx`): nạp vào Pose Lab, khớp file → phân tích nhân vật + đòn từ blocking → sửa lỗi blocking → AI thêm pose chuyển tiếp → trọng lượng → spline + polish nướng từng frame → FBX từ chính file của team. Bước, cổng duyệt, lệnh, luật: `knowledge/details/user_blocking.md`; bộ script mẫu `work/gaygor_attack_50_blocking/` (duyệt 2026-10-23).
+- **B — từ blocking của người dùng** (FBX đã có key của chính rig, vd `Bloking50.fbx`): nạp vào Pose Lab, khớp file → phân tích nhân vật + đòn từ blocking → sửa lỗi blocking → AI thêm pose chuyển tiếp → trọng lượng → spline + polish nướng từng frame → FBX từ chính file của team. Bước, cổng duyệt, lệnh, luật: `knowledge/details/user_blocking.md`; bộ script mẫu `work/boss_gaygor/gaygor_attack_50_blocking/` (duyệt 2026-10-23).
 - **C — chỉ có yêu cầu bằng lời** (không ref, không blocking): intake gộp → bản thiết kế + bảng timing (duyệt) → pose kể chuyện 10% trên Pose Lab, người dùng chỉnh được (duyệt) → blocking 25–50% (duyệt) → đi tiếp nhánh B từ bước 3. `knowledge/details/text_brief.md`.
 
 Mọi quy trình có **cổng duyệt**: không sang bước sau khi người dùng chưa duyệt bước trước.
@@ -26,7 +26,7 @@ Mesh Lab (sửa mesh) → Rig Lab (khớp, skin, Outliner; dùng luôn xương/s
 1. **Mắt trước.** Mọi lỗi/feedback: đặt REF cạnh ANIM ở mọi view (cả top và view game), gọi tên lỗi bằng lời (bộ phận nào, hướng nào), rồi sửa thẳng vào pose. Bộ giải số chỉ cho bài toán nhỏ, rõ ràng. Một bộ tối ưu silhouette toàn thân từng ra tư thế hỏng (tay giãn) - không lặp lại.
 2. **Camera trước mọi thứ.** Ref có lưới nền thì hiệu chỉnh theo lưới (px/ô = px/mét, gốc ở giao điểm lưới, sàn = đường lưới). **Mỗi clip hiệu chỉnh riêng** (playblast Attack khác camera Idle; Attack v3 dùng lại camera Idle nên mọi độ cao đều sai). **Camera game là top-down** (Gaygor): đánh giá độ đọc được từ trên xuống.
 3. **Dựng P0 từ chân lên**, từng đoạn, mỗi đoạn người dùng duyệt: chân + hông (thế đứng!) → cột sống/đầu → tay tự do → prop → bàn tay trên prop. Không mặc định thế đứng chính diện.
-4. **Trục khớp và giới hạn theo từng rig** (`work/<job>/joint_limits.json`); mọi pose kiểm theo giới hạn. Rig FBX này: trục dọc xương = local -X, khuỷu/gối gập quanh local Z, ngón cuộn quanh local Y.
+4. **Trục khớp và giới hạn theo từng rig** (`work/<dự án>/<job>/joint_limits.json`); mọi pose kiểm theo giới hạn. Rig FBX này: trục dọc xương = local -X, khuỷu/gối gập quanh local Z, ngón cuộn quanh local Y.
 5. **Giải phẫu hơn là khớp hình.** Xoắn cẳng tay chia giữa vai và cổ tay (khuỷu chỉ là bản lề); không ép hướng bàn tay làm xoắn cẳng tay. Tấm giáp trên cẳng tay đi theo roll của cánh tay trên.
 6. **View ngang giấu chiều sâu.** Bàn tay trông như ở trước vật có thể ở sau nó - xác nhận bằng view top.
 7. **Đáp án (FBX gốc), nếu người dùng đưa, chỉ để chấm điểm.** Nếu nó ảnh hưởng lựa chọn thì nói ra và ghi vào báo cáo.
@@ -47,7 +47,7 @@ Mesh Lab (sửa mesh) → Rig Lab (khớp, skin, Outliner; dùng luôn xương/s
 - Tay tự do cứng trong nhịp thở: dùng IK, nâng bàn tay nhiều hơn vai lúc hít (khuỷu gập ra/sau ~15°), giữ bản lề trong giới hạn twist/bend.
 
 ## Blocking hàng loạt (nhiều key)
-Khi các key khó nhất đã làm tay (thô → tinh), phần còn lại có thể fit hàng loạt: trộn key hai bên → chân đã chạm sàn khoá theo lịch tiếp xúc → bám prop (đỉnh prop chiếu so mặt nạ ref) → fit silhouette theo bậc thân → thân trên → đầu → tay `solve_grip` (không trượt dọc prop) → kiểm chiều dài cẳng tay → **kiểm mắt từng key theo lô** (`work/attack/batch_cmp.py`). Fit silhouette không bao giờ thay kiểm mắt.
+Khi các key khó nhất đã làm tay (thô → tinh), phần còn lại có thể fit hàng loạt: trộn key hai bên → chân đã chạm sàn khoá theo lịch tiếp xúc → bám prop (đỉnh prop chiếu so mặt nạ ref) → fit silhouette theo bậc thân → thân trên → đầu → tay `solve_grip` (không trượt dọc prop) → kiểm chiều dài cẳng tay → **kiểm mắt từng key theo lô** (`work/boss_gaygor/attack/batch_cmp.py`). Fit silhouette không bao giờ thay kiểm mắt.
 
 ## Review với đồng nghiệp
 Review Lab là trang mỗi clip một artifact + một kho riêng (`docs/storage.md`): playlist | viewer | ghi chú, vẽ lên frame, ghi chú theo frame, nút Gửi feedback cho AI tạo vòng review. Người dùng gõ `/check_fb` để bạn nhận **mọi** note của vòng, sửa trong **một** version, tự kiểm bằng render nhanh rồi đăng. Quy trình chi tiết ở skill `check_fb`; không polling.

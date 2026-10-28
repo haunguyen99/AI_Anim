@@ -4,12 +4,12 @@ Bài học dùng được cho mọi loại đã chuyển sang các file chủ đ
 và con trỏ tới chỗ mới.
 
 ## status
-> Gaygor Attack (68F, cửa sổ `work/blender/boss_attack_v4.blend`, bản lưu `boss_attack_v6.blend`, cổng MCP 9877).
+> Gaygor Attack (68F, cửa sổ `work/boss_gaygor/blender/boss_attack_v4.blend`, bản lưu `boss_attack_v6.blend`, cổng MCP 9877).
 > Blocking v9 (27 key, 2026-10-21, bản lưu `boss_attack_v9.blend`) đã lên trang review. Nạp môi trường mỗi lệnh MCP:
 > `exec(open(ROOT + "/work/blender/attack_load.py", encoding="utf8").read())` (ROOT = thư mục dự án).
 > Sau đó (2026-10-21) Gaygor Attack chuyển sang Cascadeur: `#cascadeur-keys` (tới casc_blocking_v4).
-> 2026-10-22 user quay lại Blender: "làm tiếp Attack với blender", chọn tiếp từ `boss_attack_v9.blend` (bỏ bản Cascadeur). Lỗi v9 tự soi: `work/attack/v10rev/defects_v9.md`.
-> Blocking v10 (2026-10-22, `boss_attack_v10.blend`, sửa trong `work/attack/v10/fixes.py`: mỗi `fixNN()` bắt đầu bằng `goto_v9(NN)` nên chạy lại
+> 2026-10-22 user quay lại Blender: "làm tiếp Attack với blender", chọn tiếp từ `boss_attack_v9.blend` (bỏ bản Cascadeur). Lỗi v9 tự soi: `work/boss_gaygor/attack/v10rev/defects_v9.md`.
+> Blocking v10 (2026-10-22, `boss_attack_v10.blend`, sửa trong `work/boss_gaygor/attack/v10/fixes.py`: mỗi `fixNN()` bắt đầu bằng `goto_v9(NN)` nên chạy lại
 > được) đã lên trang review: f8 f17 f21 f28 f49 f52 f53 f58 sửa, IoU view left +0,03–0,11. Còn: f25 chỉnh nhẹ, f58 nắm tay cần xa thân
 > thêm ~20 cm (xoay ngực), f17 cổ tay phải sát giới hạn, xoay cánh tay trên nhảy giữa các key (xử lý lúc spline).
 
@@ -34,7 +34,7 @@ và con trỏ tới chỗ mới.
 Chưa duyệt - mốc tạm:
 - Camera Attack Gaygor: 231.3 px/m, sàn y 910, gốc x front 1056.5 / back 862.5 / `_right.mov` 953.5 / `_left.mov` 965.5,
   top (1056.5, 545.5); `_left.mov` = camera bên PHẢI nhân vật.
-- f13 v2 Blender (`work/attack/pose_f13.py`, `look_v4/grip_f13b.json`): chân trái dời (0.17, -0.15) m, xoay 15°; hông xoay trái 85°,
+- f13 v2 Blender (`work/boss_gaygor/attack/pose_f13.py`, `look_v4/grip_f13b.json`): chân trái dời (0.17, -0.15) m, xoay 15°; hông xoay trái 85°,
   không hạ; ngực xoắn phải -45° (Spine1 -18, Chest -27), cổ/đầu ngẩng 35°; chùy trục (0.18, 1, 0) giữa (0.87, 0.72, 1.02);
   tay trái đỡ dưới (s 0.15, phi 210), tay phải trên đầu tròn (s -0.6, phi 0). IoU 0.69-0.78, đỉnh đầu 1.89 m (ref 1.88).
   **Bị thay bởi f13 Cascadeur (2026-10-21):** hông ~60°, KHÔNG xoay 85° (góc back mất vạt sau) - xem `#cascadeur-keys`.
@@ -82,7 +82,7 @@ Riêng mỗi pose blocking Attack (checklist chung: `qa_anatomy.md#pre-send-chec
 playblast có ref: `attack_pose.playblast_frames` + `legacy/blender_tools/playblast_ref.py` (REF | ANIM, đánh dấu KEY / hold).
 Fit/sửa: `attack_fit.py` (fit theo bóng 5 view), `anatomy_check.py` + `anatomy_fix.py`, `mace_measure.py` (tam giác hoá điểm
 chùy từ pixel 2 view, cho phép toạ độ None), `mace_refix.py` (`refix` khoá chùy đo được rồi fit thân, `regrip` đặt lại điểm
-nắm), `sym_fix.py` (đường hông/vai/cột sống về đích), `work/attack/v7rev/sheet.py` (bảng rà mỗi key), `work/attack/crop_cmp.py`
+nắm), `sym_fix.py` (đường hông/vai/cột sống về đích), `work/boss_gaygor/attack/v7rev/sheet.py` (bảng rà mỗi key), `work/boss_gaygor/attack/crop_cmp.py`
 (REF | ANIM cắt cùng pixel, chạy bằng `.venv/Scripts/python.exe`), `hand_contact.py` (`palm_seat`, `wrap_mesh`); một dòng nạp `attack_load.py`.
 
 ## cascadeur-keys

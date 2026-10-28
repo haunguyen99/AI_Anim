@@ -13,7 +13,7 @@ Home là cửa vào của người dùng: Home → dự án (theo game) → anim
    Có tên dự án thì `navigate` tới `http://localhost:8780/home#/p/<id dự án>` (id trong `projects` của sổ, vd `boss_gaygor`, `shoot_die_repeat`).
 2. **Đọc trạng thái:** `curl -s http://127.0.0.1:8780/api/state` (hoặc đọc `work/clips.json` nếu server không lên). Mỗi clip có `status` (working / waiting / done / paused = tạm dừng), `status_manual` (người dùng chọn tay), `stage`, `note`, `review_latest`/`pose_latest`, `continue` (trang mở khi bấm Tiếp tục).
 3. **Báo ngắn gọn theo dự án:** số anim, xong / chờ góp ý / đang làm / tạm dừng; liệt kê anim chưa xong với giai đoạn, bản mới nhất, việc tiếp theo (chờ góp ý → `/check_fb <clip>`; chưa có trang → `/new_clip <id>`; nhân vật chưa có rig → `/rig`).
-4. **Thay đổi người dùng vừa làm trên Home:** `git diff work/clips.json`. Có thay đổi thì nêu lại (anim nào, đổi gì) và commit kèm lý do (`Home: user set ...`). Clip mới tạo từ Home (note "Mới tạo từ Home", có `work/<id>/brief.md`) → nhắc gõ `/new_clip <id>`.
+4. **Thay đổi người dùng vừa làm trên Home:** `git diff work/clips.json`. Có thay đổi thì nêu lại (anim nào, đổi gì) và commit kèm lý do (`Home: user set ...`). Clip mới tạo từ Home (note "Mới tạo từ Home", có `work/<dự án>/<id>/brief.md`) → nhắc gõ `/new_clip <id>`.
 5. **So với MAP:** nếu sổ lệch với bảng "Đang làm gì" của `MAP.md` (vd bản mới nhất trên Review Lab cũ hơn bản MAP ghi) thì nói ra, không tự sửa trang Lab.
 
 ## Quy tắc

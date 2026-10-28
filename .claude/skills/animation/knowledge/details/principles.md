@@ -54,7 +54,7 @@ Ký hiệu trạng thái: **[đã kiểm chứng]** có ví dụ được duyệ
     không bắt được vì vạt khố chạm đùi quá nông.
   - Cách làm: giữ chuyển động chính trong key nhưng dời sớm đúng bằng độ trễ của lò xo (vạt khố +2F với mức "Vừa"), để lò xo trả lại
     độ trễ và thêm vượt + lắng. Kết quả: cùng nhịp với bản tay, biên độ +13%.
-  - Đo độ trễ bằng tương quan chéo trên trục xoay chính (`work/walk/phys_v1/make_keys.py` ghi số đo). Không dùng tổng góc lệch theo
+  - Đo độ trễ bằng tương quan chéo trên trục xoay chính (`work/boss_gaygor/walk/phys_v1/make_keys.py` ghi số đo). Không dùng tổng góc lệch theo
     từng mức dời, vì sai do biên độ lấn át.
   - Đầu là lò xo giữ hướng trong thế giới, nên nhịp gần như không theo key. Chỉ dời 1F, biên độ ~3° như cũ.
 

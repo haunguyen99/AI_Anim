@@ -18,8 +18,8 @@ bằng ảnh tĩnh cùng bảng timing thật sớm → `review_process.md#no-re
 
 | # | Bước | Ra gì | Cổng |
 |---|---|---|---|
-| C1 | **Intake: hỏi gộp một lần**, chỉ những gì chưa biết: nhân vật; tên clip; độ dài (số frame @ fps, hoặc để AI đề xuất); loop hay một lần; tại chỗ hay có root motion; camera trong game (góc nhìn chính); sự kiện gameplay (frame trúng đòn, lúc được huỷ đòn); prop và khớp cha của prop; pose đầu và cuối (mặc định là F1 của Idle đã duyệt của nhân vật để chuyển clip không giật). | `work/<id>/brief.md` | — |
-| C2 | **Bản thiết kế** (thay cho phân tích ref). Gồm: đặc tính nhân vật lấy từ rig (`measure.py`: tỉ lệ, prop, xương phụ) và từ các clip đã duyệt (tính cách, tư thế đứng); ý đồ hành động theo từng pha có frame; **bảng timing** (danh sách key, đánh dấu tầng 10/25/50%: pose kể chuyện → pose chuyển chính → breakdown); từng bộ phận; chuyển động phụ; sự kiện game. Mỗi ý ghi nguồn: [yêu cầu] / [nhân vật] / [thiết kế] / [game]. Yêu cầu mơ hồ thì đưa 2–3 phương án ngắn để người dùng chọn → `review_process.md#still-options`. | `work/<id>/analysis.md` | **Duyệt thiết kế** |
+| C1 | **Intake: hỏi gộp một lần**, chỉ những gì chưa biết: nhân vật; tên clip; độ dài (số frame @ fps, hoặc để AI đề xuất); loop hay một lần; tại chỗ hay có root motion; camera trong game (góc nhìn chính); sự kiện gameplay (frame trúng đòn, lúc được huỷ đòn); prop và khớp cha của prop; pose đầu và cuối (mặc định là F1 của Idle đã duyệt của nhân vật để chuyển clip không giật). | `work/<dự án>/<id>/brief.md` | — |
+| C2 | **Bản thiết kế** (thay cho phân tích ref). Gồm: đặc tính nhân vật lấy từ rig (`measure.py`: tỉ lệ, prop, xương phụ) và từ các clip đã duyệt (tính cách, tư thế đứng); ý đồ hành động theo từng pha có frame; **bảng timing** (danh sách key, đánh dấu tầng 10/25/50%: pose kể chuyện → pose chuyển chính → breakdown); từng bộ phận; chuyển động phụ; sự kiện game. Mỗi ý ghi nguồn: [yêu cầu] / [nhân vật] / [thiết kế] / [game]. Yêu cầu mơ hồ thì đưa 2–3 phương án ngắn để người dùng chọn → `review_process.md#still-options`. | `work/<dự án>/<id>/analysis.md` | **Duyệt thiết kế** |
 | C3 | **Pose kể chuyện (10%)**: 3–8 pose chính dựng trên rig theo cấp thô → tinh (chân/hông → thân/đầu → prop → tay → bàn tay, `review_process.md#coarse-to-fine`). Đưa lên Pose Lab (mode keys, interp step), kèm ảnh tĩnh ở camera game và góc trên. Người dùng có thể **tự chỉnh pose ngay trên Pose Lab**. AI đọc key trong db, đối chiếu trước khi sửa, không ghi đè phần người dùng đã chỉnh. | version `k10_vN` | **Duyệt pose chính** |
 | C4 | **Blocking 25–50%**: thêm anticipation, contact, extreme theo bảng timing; stepped; dùng các luật dựng pose của nhánh A (`CORE.md`: tầm với, pole, cột sống, chân không đứt…). Kiểm khớp mọi key (`check_v4.py`). | version `b50_vN` | **Duyệt blocking** (tương đương "khớp file" của nhánh B) |
 | C5–C8 | **Đi tiếp đúng nhánh B từ bước 3**: sửa lỗi (sàn, trượt chân) → pose chuyển tiếp → trọng lượng → spline + polish nướng từng frame + QA + playblast Review Lab → xuất FBX (+ anim_only). | như nhánh B | **Duyệt 75%**, **duyệt polish** |
@@ -36,14 +36,14 @@ Giai đoạn trong sổ: `analysis` → `p0` → `blocking` → `polish` → `ex
 - **Mọi con số đặt ra đều kiểm lại được:** độ cao đỉnh đầu, tầm với, chân chạm đất. Đo trên rig rồi mới đưa cho người dùng.
 
 ## Còn thiếu (làm ở clip đầu tiên của nhánh C)
-1. ~~`pose_build.py`~~ **ĐÃ CÓ** (2026-10-24, Gaygor Hit): `work/gaygor_hit/pose_build.py`. Idle F1 đổi sang hệ xương rig chính
+1. ~~`pose_build.py`~~ **ĐÃ CÓ** (2026-10-24, Gaygor Hit): `work/boss_gaygor/gaygor_hit/pose_build.py`. Idle F1 đổi sang hệ xương rig chính
    xác (bind pose của file Blender xuất và file team trùng 0 cm / 0,02°). Lớp `Pose` có `hips`, `spine`, `head`, `shrug`, `foot`,
    `hand` (IK, giữ hướng cổ tay), `arm_fk` (xoay cả tay ở vai, giữ khuỷu: dùng cho tay tự do bị trễ), `fist`. Chân tự khóa, chùy theo
    tay trái. `measure()` so với Idle; `selfcheck()` kiểm chiều (pitch > 0 = ngả sau). Ảnh duyệt: `stills.js` (mỗi key một hàng:
    cam game, trên, trước) qua `save_srv.py`. Bài học: đo độ ngả thân từ hông tới **cổ** (khớp ngực không dời khi ngực xoay quanh
    nó); giữ tay tự do đứng yên bằng IK khi ngực lùi làm khuỷu duỗi thẳng 178° → dùng `arm_fk`.
 2. **Đọc key người dùng chỉnh trên Pose Lab về Python:** db `keys/<clip>-<version>-F<f>` lưu local three.js `[qx,qy,qz,qw,px,py,pz]`. Local của model Pose Lab chính là local FBX (cm), riêng xương `root` thêm Rx(−90) (ngược lại với `make_model.py`). Viết hàm đổi ngược và kiểm bằng phép đi một vòng (FBX → trang → FBX).
-3. **FBX nguồn để xuất:** `export_fbx.py` thay đường cong trong một FBX có sẵn. Cần một FBX của rig có đường cong cho mọi xương, vd một clip đã xuất của chính nhân vật đó (Gaygor: `work/gaygor_attack_50_blocking/export/EN_M11_Boss_Gaygor_Attack.fbx`), rồi đổi số frame và tên take. Nếu nhân vật chỉ có FBX rig không có animation thì phải tạo AnimationCurveNode/Curve mới; phần này chưa làm.
+3. **FBX nguồn để xuất:** `export_fbx.py` thay đường cong trong một FBX có sẵn. Cần một FBX của rig có đường cong cho mọi xương, vd một clip đã xuất của chính nhân vật đó (Gaygor: `work/boss_gaygor/gaygor_attack_50_blocking/export/EN_M11_Boss_Gaygor_Attack.fbx`), rồi đổi số frame và tên take. Nếu nhân vật chỉ có FBX rig không có animation thì phải tạo AnimationCurveNode/Curve mới; phần này chưa làm.
 - Gaygor Hit b50_v1 (2026-10-24, bước C4): pose 25–50% dựng theo thiết kế (không nội suy), giữ nguyên 6 pose đã duyệt.
   Bài học: (1) nâng prop "khỏi vai" bằng dời tay theo thế giới không đủ, vì vai cũng nhô theo ngực (F5 chùy còn ép sát
   vai hơn, 6,9 cm). Đo và đặt khoảng hở so với vai: `Pose.mace_gap(cm)` (lúc nghỉ 8,5; F5 17 → F6 14 → F8 11 → F10 8,5 →
@@ -60,10 +60,10 @@ Giai đoạn trong sổ: `analysis` → `p0` → `blocking` → `polish` → `ex
   phải văng ra sau 26 cm rồi vung ngược ra trước 25 cm "giữ thăng bằng" (17 cm/F). Tay nặng có giáp/khiên phải ĐI THEO THÂN:
   đo chuyển động riêng của tay trong không gian ngực, giữ ≤ ~10 cm, một chiều (trễ rồi lắng), không đảo chiều; nhún vai
   nhỏ và đều (6° → 0 trong 3 F làm tay giật 10 cm). Rule for designs: chi nặng/có giáp không dùng để "giữ thăng bằng".
-- File Idle đã duyệt `work/idle/export/EN_M11_Boss_Gaygor_Idle.fbx` có Wrist_R scale không đều (1,026/0,935/1,012) suốt clip.
+- File Idle đã duyệt `work/boss_gaygor/idle/export/EN_M11_Boss_Gaygor_Idle.fbx` có Wrist_R scale không đều (1,026/0,935/1,012) suốt clip.
   `pose_build.idle_f1` bỏ phần scale (giữ xoay, lệch 0,5° so với trước). Phép đo góc giả định ma trận thuần xoay: ma trận có
   scale tự báo "lệch 12,5°" với chính nó, nên trực chuẩn hoá trước khi đo.
-- Gaygor Hit polish_v1 (2026-10-24, bước C6): polish viết lại trên `pose_build` (`work/gaygor_hit/polish_v1.py`, QA
+- Gaygor Hit polish_v1 (2026-10-24, bước C6): polish viết lại trên `pose_build` (`work/boss_gaygor/gaygor_hit/polish_v1.py`, QA
   `polish_check.py`), cùng công thức polish Attack đã duyệt nhưng dùng được cho mọi clip của rig: PCHIP + chùy theo ngực +
   tay trái IK + chân khóa + đế ≥ mức của Idle + lò xo phụ. Kết quả đầu tiên sạch (IK 0,002 cm, không pop, không gập
   ngược, chân trượt 0,2 cm, lò xo ≤ 12°): vì blocking 75% đã kiểm kỹ ở từng key nên polish ít lỗi hơn hẳn Attack.

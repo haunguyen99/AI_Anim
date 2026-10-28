@@ -22,8 +22,8 @@ legacy/mediapipe/models/*.task
 *.npz
 
 # Large generated data (per-frame joint/vertex dumps, Pose Lab models)
-work/idle/original/
-work/idle/export/*_joints.json
+work/boss_gaygor/idle/original/
+work/boss_gaygor/idle/export/*_joints.json
 work/pose_lab/models/
 
 # Logs, locks
