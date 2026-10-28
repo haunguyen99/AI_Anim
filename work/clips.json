@@ -294,7 +294,7 @@
    "id": "ninja_idle",
    "character": "Ninja",
    "stage": "p0",
-   "note": "Thiết kế Idle 40F đã duyệt (K1); đang dựng pose chính F1/F17",
+   "note": "Pose chính k10_v1 (F1 đáy thở, F17 đỉnh hít) trong Studio, chờ duyệt",
    "dir": "work/infinite_defense/ninja_idle",
    "frames": 40,
    "fps": 30,
