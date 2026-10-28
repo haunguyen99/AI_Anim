@@ -74,6 +74,10 @@
   let RIGSKIN = null;   // skin đã dựng ở workspace Rig (doc rig/skin): dùng cho mesh thân thay skin khách của FBX
   function skinOf(name, n) {   // weights của FBX: {xương: [[đỉnh], [w]]} → 4 ảnh hưởng mạnh nhất mỗi đỉnh, chuẩn hoá
     if (RIGSKIN && RIGSKIN.nv === n && RIGSKIN.names) return { bones: RIGSKIN.names, B: Uint16Array.from(RIGSKIN.I), W: Float32Array.from(RIGSKIN.W) };
+    if (RIGSKIN && RIGSKIN.props && RIGSKIN.props[name]) {   // prop rời (kunai Ninja): bind cứng 100% vào một khớp (doc rig/skin.props)
+      const B = new Uint16Array(n * 4), W = new Float32Array(n * 4); for (let i = 0; i < n; i++) W[4 * i] = 1;
+      return { bones: [RIGSKIN.props[name]], B, W };
+    }
     if (ST.rigState && ST.rigState.source !== "guest") return null;   // đã xoá xương (mesh tĩnh) hoặc đã rig nhưng chưa có skin: không dùng skin của FBX
     const m = (ORIG || []).find(x => x.name === name && x.weights); if (!m || m.verts.length / 3 !== n) return null;
     const bones = Object.keys(m.weights), per = Array.from({ length: n }, () => []);
