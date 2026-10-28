@@ -115,8 +115,8 @@ pcss += """
 .pz.pzdock { display: block; }
 .pz.pzdock .side, .pz.pzdock .list { border: 0; display: block; overflow: visible; max-height: none; }
 .pz.pzdock .side > div:first-child { max-height: none; overflow: visible; }
-body.ws-pose #timeline { height: auto; display: block; padding: 0; }
-body.ws-pose #shelf { height: auto; min-height: 38px; }
+body.tl-mod:not(.notl) #timeline { height: auto; display: block; padding: 0; }
+body.shelf-mod:not(.noshelf) #shelf { height: auto; min-height: 38px; }
 """
 open(OUT_CSS, "w", encoding="utf8", newline=chr(10)).write("/* SINH TỰ ĐỘNG bởi tools/studio/port_pose.py từ work/pose_lab/index.html — đừng sửa tay. */\n" + pcss)
 

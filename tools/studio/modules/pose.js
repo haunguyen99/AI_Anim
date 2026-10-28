@@ -1,7 +1,9 @@
-// AI Anim Studio — workspace Pose (S4): lõi Pose Lab (modules/pose_engine.js, sinh bằng port_pose.py) chạy trong viewport chung.
+// AI Anim Studio — module Pose (S4, lớp Anim): lõi Pose Lab (modules/pose_engine.js, sinh bằng port_pose.py) chạy trong viewport chung.
 // Giao diện Pose Lab dựng lại từ HTML gốc rồi đặt vào vỏ Studio: thanh công cụ → shelf, Khớp / Vật lý / Ghi chú / Phiên bản → tab dock,
 // timeline (key, lane, Timing, transport) → vùng timeline, HUD / camera / ref / vẽ ghi chú → lớp phủ viewport. Một anim mỗi lần
 // (đổi anim = tải lại với ?clip=…), lưu cùng kho với Pose Lab cũ (<tiêu đề trang>_pose_lab).
+// W1: dùng được ở mọi workspace. Lớp Anim hiện = vẽ cảnh Pose + chạy khung hình; focus Pose = nhận chuột / phím / gizmo.
+// Khối giao diện (data-park) khi không gắn vào vùng nào thì nằm trong #poseStash: lõi tìm phần tử theo id nên chúng phải luôn trong trang.
 (function () {
   const V = ST.view, esc = ST.esc, ic = ST.ic, $ = ST.$;
   const M = ST.mods.pose = { id: "pose", ownKeys: true };
@@ -20,13 +22,13 @@
     const L = await loadClips(), want = q.get("clip") || ST.clip || ST.pref.get(prefKey(), null);
     return (L.find(c => c.id === want) || L[0] || {}).id || null;
   }
-  const goClip = id => { const u = new URL(location.href); u.searchParams.set("clip", id); u.searchParams.set("ws", "pose"); ST.pref.set(prefKey(), id); location.href = u; };
+  const goClip = id => { const u = new URL(location.href); u.searchParams.set("clip", id); if (ST.ws) u.searchParams.set("ws", ST.ws); ST.pref.set(prefKey(), id); location.href = u; };
 
   // ---- dựng giao diện Pose Lab, chia khối cho các vùng của Studio
   function buildDom() {
     stash = document.createElement("div"); stash.id = "poseStash"; stash.hidden = true; document.body.appendChild(stash);
     const w = document.createElement("div"); w.innerHTML = ST.POSE_HTML;
-    const wrap = (cls, node, inner) => { const d = document.createElement("div"); d.className = "pz " + cls; if (inner) { const i = document.createElement("div"); i.className = inner; i.appendChild(node); d.appendChild(i); } else d.appendChild(node); stash.appendChild(d); return d; };
+    const wrap = (cls, node, inner) => { const d = document.createElement("div"); d.className = "pz " + cls; d.dataset.park = "poseStash"; if (inner) { const i = document.createElement("div"); i.className = inner; i.appendChild(node); d.appendChild(i); } else d.appendChild(node); stash.appendChild(d); return d; };
     const viewer = w.querySelector("#viewer"), tm = viewer.querySelector("#p_tmBar"); if (tm) tm.remove();
     const side = w.querySelector("aside.side"), first = side.firstElementChild, phys = side.querySelector("#physBox");
     const notes = document.createElement("div"); [...side.children].slice(1).forEach(c => notes.appendChild(c));
@@ -56,7 +58,7 @@
 
   // ---- host: những gì lõi Pose cần từ Studio
   function makeHost(ns) {
-    const alive = () => ST.ws === "pose";
+    const alive = () => ST.focus === "pose" && ST.layerOn.anim;   // chuột / phím / gizmo của lõi
     const paneRect = () => { const r = cvEl.getBoundingClientRect(), p = V.active.rect; return { left: r.left + p.x, top: r.top + p.y, width: p.w, height: p.h, right: r.left + p.x + p.w, bottom: r.top + p.y + p.h, x: r.left + p.x, y: r.top + p.y }; };
     const canvas = {
       getBoundingClientRect: paneRect,
@@ -68,9 +70,9 @@
     return {
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
       cam: () => V.active.cam, alive,
-      scenes: (s, o) => { scenes = { scene: s, overlay: o }; if (ST.ws === "pose") V.extra = scenes; },
+      scenes: (s, o) => { scenes = { scene: s, overlay: o }; if (ST.layerOn.anim) V.extra = scenes; },
       resize: () => V.resize(), renderNow: () => V.renderNow(),
-      onFrame: f => V.onFrame(now => { if (alive()) f(now); }),
+      onFrame: f => V.onFrame(now => { if (ST.layerOn.anim && parts && parts.overlay.isConnected) f(now); }),   // lớp hiện là chạy (phát anim cả khi đang sửa thứ khác)
       downloads: { save: async ({ filename, data }) => { const b = data instanceof Blob ? data : new Blob([data]), u = URL.createObjectURL(b), x = document.createElement("a"); x.href = u; x.download = filename; document.body.appendChild(x); x.click(); x.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); } },
       db: ST.poseDB(q.get("ns") ? q.get("ns") + "_pose" : ns),   // ?ns= để thử trên kho riêng
     };
@@ -95,28 +97,54 @@
       state = "ready"; fillPicker();
       if (!ST.char) { const e = $("empty"); if (e) e.hidden = true; ST.$("charName").textContent = clipInfo.name; }
       else ST.$("charName").textContent = ST.char.name + " · " + clipInfo.name;
-      M.enter();
+      applyLayer(ST.layerOn.anim); if (ST.focus === "pose") M.focusIn();
     } catch (e) { console.error(e); state = "error"; err = e.message || String(e); }
     ST.refresh();
   }
 
-  // ---- vào / ra workspace
-  let saved = null;
-  M.enter = () => {
-    ST.mods.mesh.display("hidden");
-    const tc = V.gizmo.tc;
-    if (!saved) saved = { space: tc.space, size: tc.size, enc: V.renderer.outputEncoding };
-    V.renderer.outputEncoding = THREE.sRGBEncoding;
-    if (scenes) V.extra = scenes;
-    if (parts) { V.gizmo.detach(); $("vp").appendChild(parts.overlay); parts.overlay.hidden = false; if (eng) { tc.setSpace($("mSpace") && /world/.test($("mSpace").textContent) ? "world" : "local"); } }
-    if (!eng) ensure();
+  // ---- lớp Anim (vẽ cảnh Pose + lớp phủ) và focus (chuột, gizmo)
+  let encSaved = null, tcSaved = null;
+  function applyLayer(on) {
+    if (on) {
+      if (encSaved === null) { encSaved = V.renderer.outputEncoding; V.renderer.outputEncoding = THREE.sRGBEncoding; }
+      if (scenes) V.extra = scenes;
+      if (parts) { $("vp").appendChild(parts.overlay); parts.overlay.hidden = false; }
+    } else {
+      V.extra = null; if (eng) eng.stopPlay();
+      if (encSaved !== null) { V.renderer.outputEncoding = encSaved; encSaved = null; }
+      if (parts) { parts.overlay.hidden = true; stash.appendChild(parts.overlay); }
+      if (ST.focus === "pose") V.gizmo.detach();
+    }
+  }
+  M.layer = on => { applyLayer(on); if (on && !eng) ensure(); ST.refresh(); };
+  M.focusIn = () => {
+    if (!eng) { ensure(); return; }
+    const tc = V.gizmo.tc; if (!tcSaved) tcSaved = { space: tc.space, size: tc.size };
+    V.gizmo.detach(); tc.setSpace($("mSpace") && /world/.test($("mSpace").textContent) ? "world" : "local");
+    const g = eng.get(); if (g.sel) eng.setSelection([...g.selSet], g.sel);   // gắn lại gizmo vào khớp đang chọn
     ST.refresh();
   };
-  M.leave = () => {
-    V.extra = null; if (eng) eng.stopPlay();
+  M.focusOut = () => {
     const tc = V.gizmo.tc; tc.detach();
-    if (saved) { tc.setSpace(saved.space || "world"); tc.setSize(saved.size || 0.85); V.renderer.outputEncoding = saved.enc; saved = null; }
-    if (parts) { parts.overlay.hidden = true; stash.appendChild(parts.overlay); [parts.shelf, parts.timeline].forEach(n => stash.appendChild(n)); }
+    if (tcSaved) { tc.setSpace(tcSaved.space || "world"); tc.setSize(tcSaved.size || 0.85); tcSaved = null; }
+  };
+  M.loaded = () => !!eng && !!eng.get().model;
+  // chờ lõi nạp xong (cầu nối AI gọi lệnh ngay sau khi focus)
+  M.whenReady = async () => {
+    ensure(); const busy = () => ["none", "loading"].includes(state) || (state === "ready" && !(eng && eng.get().model));
+    for (let i = 0; i < 400 && busy(); i++) await new Promise(r => setTimeout(r, 100));
+    return state === "ready";
+  };
+  M.loadMsg = () => ({ loading: "Đang nạp anim…", noclip: "Chưa có anim: tạo ở Home hoặc /new_clip", error: "Lỗi nạp anim: " + err }[state] || "Chưa nạp: bấm mắt để nạp");
+  M.nodeLabel = () => "Anim" + (clipInfo ? " · " + clipInfo.name : "");
+  M.shelfMsg = () => "Pose: " + M.loadMsg();
+  // click trúng khớp (chấm) hoặc model của anim → viewport chuyển focus sang Pose
+  M.hit = (x, y, p) => {
+    if (!eng || !ST.layerOn.anim) return false;
+    const g = eng.get(); if (!g.model) return false;
+    const w = new THREE.Vector3(), R = V.TM && V.TM.on ? 26 : 12;
+    if (Object.values(g.markers).some(m => { if (!m.visible) return false; m.getWorldPosition(w); const s = V.toScreen(w, p); return s.z < 1 && Math.hypot(s.x - x, s.y - y) < R; })) return true;
+    return V.raycaster(x, y, p).intersectObject(g.model, true).length > 0;
   };
 
   // ---- vùng giao diện
@@ -124,6 +152,7 @@
   M.shelfNode = () => parts && eng ? parts.shelf : null;
   M.timelineNode = () => parts && eng ? parts.timeline : msg('<span class="sub">Timeline</span>');
   M.panelNode = t => {
+    if (state === "none") setTimeout(ensure, 0);   // panel Pose mở ở workspace nào cũng nạp anim (lớp vẫn ẩn nếu đang tắt)
     if (state === "loading" || state === "none") return msg("Đang nạp anim…");
     if (state === "error") return msg(`<span class="s-bad">Không nạp được anim: ${esc(err)}</span>`);
     if (state === "noclip") return msg(ST.char ? esc(ST.char.name) + " chưa có anim nào trong Pose Lab. Tạo anim ở Home (/home) hoặc gõ /new_clip." : "Chưa có anim nào trong Pose Lab.");
@@ -151,10 +180,10 @@
     const g = eng.get();
     if (ST.addSel(e)) { const s = new Set(g.selSet); s.has(n) ? s.delete(n) : s.add(n); eng.setSelection([...s], n); } else eng.select(n);
   };
-  ST.on("prerender", () => { if (ST.ws === "pose" && eng) { const g = eng.get(); const sig = (g.model ? g.model.uuid : "-") + ":" + g.frame + ":" + g.sel + ":" + g.selSet.size + ":" + g.playing; if (sig !== M._sig) { M._sig = sig; ST.refresh(); } } });
+  ST.on("prerender", () => { if (ST.layerOn.anim && eng) { const g = eng.get(); const sig = (g.model ? g.model.uuid : "-") + ":" + g.frame + ":" + g.sel + ":" + g.selSet.size + ":" + g.playing; if (sig !== M._sig) { M._sig = sig; ST.refresh(); } } });
 
   // playblast → Review (như nút 🎞 của Home cũ): quay trên trang, server lưu webm + nén + thêm version Review
-  ST.cmd({ id: "pose.playblast", menu: "Animate", sep: true, label: "Quay playblast và gửi sang Review…", icon: "export", on: () => !!eng && !!window.DDC && !!window.DDC.askPlayblast, run: async () => {
+  ST.cmd({ id: "pose.playblast", mod: "pose", menu: "Animate", sep: true, label: "Quay playblast và gửi sang Review…", icon: "export", on: () => !!eng && !!window.DDC && !!window.DDC.askPlayblast, run: async () => {
     try {
       const o = await window.DDC.askPlayblast(); if (!o) return;
       ST.toast("Đang quay playblast…"); const r = await window.DDC.playblast(o);
@@ -164,7 +193,7 @@
       if (!j.ok) throw new Error(j.error); ST.toast("Đã thêm version " + j.id.version + " vào Review Lab");
     } catch (e) { ST.toast("Không gửi được: " + (e.message || e)); }
   } });
-  ST.cmd({ id: "pose.oldlab", menu: "Animate", label: "Mở Pose Lab cũ của anim này", icon: "ext", on: () => !!clipInfo, run: () => window.open("/lab/pose/" + encodeURIComponent(clipInfo.id), "_blank") });
+  ST.cmd({ id: "pose.oldlab", mod: "pose", keep: true, menu: "Animate", label: "Mở Pose Lab cũ của anim này", icon: "ext", on: () => !!clipInfo, run: () => window.open("/lab/pose/" + encodeURIComponent(clipInfo.id), "_blank") });
   ST.cmd({ id: "pose.clip", menu: "Animate", label: "Đổi anim…", icon: "pose", global: true, run: async () => {
     await loadClips();
     ST.dialog("Mở anim", (clips || []).length ? `<div class="list">${clips.map(c => `<button class="it" data-id="${esc(c.id)}">${ic("pose")}<span>${esc(c.name)}</span><small>${c.versions} bản · ${esc(c.stage)}</small></button>`).join("")}</div>` : '<p class="note">Chưa có anim nào.</p>', b => { b.onclick = e => { const x = e.target.closest("[data-id]"); if (x) goClip(x.dataset.id); }; });

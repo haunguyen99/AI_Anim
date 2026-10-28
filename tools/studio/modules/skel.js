@@ -1,5 +1,5 @@
 // AI Anim Studio — xương của nhân vật: vẽ joint + đoạn nối cha → con trong viewport, cây joint trong Outliner (mở / gập).
-// Workspace General: click joint trong viewport hoặc Outliner để chọn; gizmo / Channel Box dời, xoay, scale joint,
+// Lớp Cảnh (focus mesh): click joint trong viewport hoặc Outliner để chọn; gizmo / Channel Box dời, xoay, scale joint,
 // joint con đi theo như Maya. Sửa được lưu ở doc skel/edit của kho <nhân vật>_mesh_lab (cạnh mesh/edit).
 // Nguồn gốc: khớp của rig đã dựng ở workspace Rig (doc rig/skeleton của kho <nhân vật>_rig_lab, sửa / pose lưu ở skel/rig);
 // chưa rig thì xương khách từ /api/char → skeleton (cm, Y lên), sửa lưu ở skel/edit.
@@ -21,9 +21,10 @@
     const gl = new THREE.BufferGeometry(); gl.setAttribute("position", new THREE.Float32BufferAttribute(L, 3)); lines = new THREE.LineSegments(gl, lnMat); lines.renderOrder = 25;
     const gs = new THREE.BufferGeometry(); gs.setAttribute("position", new THREE.Float32BufferAttribute(sel ? byName[sel].pos : [], 3)); selPt = new THREE.Points(gs, selMat); selPt.renderOrder = 27;
     [lines, pts, selPt].forEach(o => { o.raycast = () => {}; grp.add(o); });
-    grp.visible = show && S.joints.length > 0 && ST.ws === "general";
+    grp.visible = shown();
   }
-  ST.on("ws", () => { grp.visible = show && S.joints.length > 0 && ST.ws === "general"; });
+  const shown = () => show && S.joints.length > 0 && ST.layerOn.scene;   // xương thuộc lớp Cảnh, không phụ thuộc workspace
+  ST.on("layer", () => { grp.visible = shown(); });
   ST.rigNs = () => { const ns = new URLSearchParams(location.search).get("ns"); return ns ? ns + "_rig" : ST.slug(ST.char.name) + "_rig_lab"; };
   let editKey = "skel/edit";
   ST.on("rig:skeleton", joints => { if (ST.char) load(ST.char, joints); });
@@ -63,8 +64,8 @@
     '. Mesh giữ nguyên (thành mesh tĩnh); sang workspace Rig để đặt khớp và skin mới. Rig cũ được cất lại, khôi phục bằng Rig → Khôi phục rig đã xoá.</p>' +
     '<div class="row"><button class="on" id="delYes">Xoá xương</button><button id="delNo">Huỷ</button></div>',
     b => { b.querySelector("#delYes").onclick = () => { ST.closeDialog(); S.deleteSkeleton(); }; b.querySelector("#delNo").onclick = ST.closeDialog; });
-  ST.cmd({ id: "skel.delete", menu: "Rig", sep: true, label: "Xoá toàn bộ xương…", icon: "trash", ws: ["general", "rig"], on: () => S.joints.length > 0, run: askDelete });
-  ST.cmd({ id: "skel.restore", menu: "Rig", label: "Khôi phục rig đã xoá", icon: "reset", ws: ["general", "rig"], run: () => S.restoreSkeleton() });
+  ST.cmd({ id: "skel.delete", menu: "Rig", sep: true, label: "Xoá toàn bộ xương…", icon: "trash", mod: "mesh", on: () => S.joints.length > 0, run: askDelete });
+  ST.cmd({ id: "skel.restore", menu: "Rig", label: "Khôi phục rig đã xoá", icon: "reset", mod: "mesh", run: () => S.restoreSkeleton() });
   async function load(ch, rig) {
     editKey = rig ? "skel/rig" : "skel/edit";
     S.source = rig ? "rig" : "guest";
@@ -88,7 +89,7 @@
     const rows = [];   // như Maya: joint gốc nằm ngay cấp đầu; mắt ở joint gốc bật / tắt cả bộ xương
     const walk = (list, d) => list.forEach(j => {
       const k = kids[j.name] || [];
-      rows.push({ id: "j:" + j.name, d, label: j.name, icon: "joint", sel: sel === j.name, del: d === 0 && ST.ws === "general", fold: k.length ? (open.has(j.name) ? 0 : 1) : undefined, vis: d === 0 ? show : undefined, count: d === 0 ? S.joints.length : undefined });
+      rows.push({ id: "j:" + j.name, d, label: j.name, icon: "joint", sel: sel === j.name, del: d === 0, fold: k.length ? (open.has(j.name) ? 0 : 1) : undefined, vis: d === 0 ? show : undefined, count: d === 0 ? S.joints.length : undefined });
       if (k.length && open.has(j.name)) walk(k, d + 1);
     });
     walk(kids[""] || [], 0);
@@ -104,8 +105,8 @@
   S.isMine = id => typeof id === "string" && id.startsWith("j:");
   S.bounds = () => { if (!sel) return null; const p = new THREE.Vector3(...byName[sel].pos).applyMatrix4(V.cm.matrixWorld); return new THREE.Box3().setFromCenterAndSize(p, new THREE.Vector3(0.3, 0.3, 0.3)); };
 
-  // ---------------------------------------------------------------- chọn + sửa joint (workspace General)
-  const editable = () => ST.ws === "general" && show && S.joints.length > 0;
+  // ---------------------------------------------------------------- chọn + sửa joint (focus mesh, lớp Cảnh hiện)
+  const editable = () => ST.focus === "mesh" && shown();
   const sub = n => { const out = [], q = [n]; while (q.length) { const k = q.pop(); out.push(k); (kids[k] || []).forEach(c => q.push(c.name)); } return out; };
   S.sel = () => (sel && editable() ? sel : null);
   S.selPos = () => sel ? new V3(...byName[sel].pos) : null;
@@ -115,7 +116,7 @@
     ST.emit("jsel", sel); ST.chRefresh && ST.chRefresh(); ST.refresh();
   };
   S.pickAt = (x, y, p) => {   // joint gần con trỏ nhất trong bán kính vài px (joint vẽ đè lên mesh nên ưu tiên joint)
-    if (!editable()) return null;
+    if (!shown()) return null;
     const R = V.TM && V.TM.on ? 26 : 10, w = new V3(); let best = null, bd = R;
     S.joints.forEach(j => { w.set(...j.pos).applyMatrix4(V.cm.matrixWorld); const s = V.toScreen(w, p); if (!s) return; const d = Math.hypot(s.x - x, s.y - y); if (d < bd) { bd = d; best = j.name; } });
     return best;
@@ -166,6 +167,6 @@
     reset() { JT = null; },
   };
 
-  ST.cmd({ id: "skin.bindPose", menu: "Skin", label: "Về Bind Pose", icon: "reset", on: () => S.joints.length > 0 && S.posed(), run: () => S.bindPose() });
-  ST.cmd({ id: "view.skel", menu: "Display", label: "Xương (joint)", icon: "joint", check: () => show, on: () => S.joints.length > 0, run: () => { show = !show; ST.pref.set("skel:show", show); build(); } });
+  ST.cmd({ id: "skin.bindPose", mod: "mesh", menu: "Skin", label: "Về Bind Pose", icon: "reset", on: () => S.joints.length > 0 && S.posed(), run: () => S.bindPose() });
+  ST.cmd({ id: "view.skel", mod: "mesh", keep: true, menu: "Display", label: "Xương (joint)", icon: "joint", check: () => show, on: () => S.joints.length > 0, run: () => { show = !show; ST.pref.set("skel:show", show); build(); } });
 })();

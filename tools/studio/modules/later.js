@@ -34,5 +34,5 @@
 
   // menu: lệnh sẽ chuyển (mờ) + lối sang Lab cũ
   const later = (menu, label, step) => ST.cmd({ id: "later." + menu + "." + label, menu, label: label + " (" + step + ")", on: () => false, tip: "Chưa chuyển vào Studio: bước " + step });
-  ST.cmd({ id: "rig.oldlab", menu: "Rig", sep: true, label: "Mở Rig Lab cũ", icon: "ext", on: () => !!ST.char, run: () => open(oldRig(), "_blank") });
+  ST.cmd({ id: "rig.oldlab", mod: "rig", keep: true, menu: "Rig", sep: true, label: "Mở Rig Lab cũ", icon: "ext", on: () => !!ST.char, run: () => open(oldRig(), "_blank") });
 })();

@@ -13,9 +13,10 @@
   C({ id: "edit.undo", menu: "Edit", label: "Hoàn tác", icon: "undo", key: "ctrl+z", on: () => ST.mod().canUndo ? ST.mod().canUndo() : ST.hist.U.length > 0, run: () => ST.hist.undo() });
   C({ id: "edit.redo", menu: "Edit", label: "Làm lại", icon: "redo", key: ["ctrl+shift+z", "ctrl+y"], on: () => !ST.mod().undo && ST.hist.R.length > 0, run: () => ST.hist.redo() });
   C({ id: "edit.search", global: true, menu: "Edit", sep: true, label: "Tìm lệnh…", icon: "search", key: ["f3", "ctrl+k"], run: openPalette });
-  const tool = (id, label, icon, key, extra) => C(Object.assign({ id: "tool." + id, menu: "Edit", label, icon, key, check: () => ST.tool === id, on: () => { const w = ST.WS[ST.ws]; return !w || !w.tools || w.tools.includes("tool." + id); }, run: () => ST.setTool(id) }, extra || {}));
+  // công cụ chọn / dời / xoay / scale áp lên module đang focus; Free Transform chỉ có ở mesh
+  const tool = (id, label, icon, key, extra) => C(Object.assign({ id: "tool." + id, menu: "Edit", label, icon, key, keep: true, check: () => ST.tool === id, run: () => ST.setTool(id) }, extra || {}));
   tool("sel", "Công cụ chọn", "sel", "q", { sep: true }); tool("move", "Dời", "move", "w"); tool("rot", "Xoay", "rot", "e"); tool("scl", "Scale", "scl", "r");
-  tool("free", "Free Transform (hộp bao)", "free", "t");
+  tool("free", "Free Transform (hộp bao)", "free", "t", { mod: "mesh", keep: false });
   C({ id: "view.frameAll", menu: "Display", label: "Nhìn toàn bộ", icon: "frame", key: "a", run: () => V.frameAll() });
   C({ id: "view.frameSel", menu: "Display", label: "Nhìn vùng chọn", icon: "framesel", key: "f", run: () => V.frameSel() });
   C({ id: "view.toggle4", menu: "Display", sep: true, label: "1 khung / 4 khung", icon: "view4", key: "space", check: () => V.layout === "4", run: () => V.toggle4() });
@@ -23,9 +24,14 @@
   C({ id: "view.grid", menu: "Display", sep: true, label: "Lưới sàn", icon: "grid", check: () => V.showGrid, run: () => { V.showGrid = !V.showGrid; ST.pref.set("grid", V.showGrid); } });
   C({ id: "view.touch", menu: "Display", label: "Chế độ cảm ứng", icon: "touch", check: () => V.TM.on, run: () => V.setTouch(!V.TM.on) });
   C({ id: "view.theme", menu: "Display", label: "Đổi sáng / tối", run: () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme = dark ? "light" : "dark"; ST.pref.set("theme", r.dataset.theme); } });
-  const panel = (k, label) => C({ id: "win." + k, menu: "Window", label, check: () => ui()[k], run: () => { const u = ui(); u[k] = !u[k]; ST.pref.set("ui:" + ST.ws, u); applyLayout(); } });
-  panel("outliner", "Outliner"); panel("dock", "Dock phải (Channel Box, Công cụ)"); panel("shelf", "Shelf"); panel("timeline", "Timeline");
-  C({ id: "win.reset", menu: "Window", sep: true, label: "Bố cục mặc định của workspace", icon: "reset", run: () => { ST.pref.set("ui:" + ST.ws, null); ST.pref.set("size:" + ST.ws, null); applyLayout(); } });
+  const panel = (k, label) => C({ id: "win." + k, menu: "Window", label, keep: true, check: () => ui()[k], run: () => { const u = ui(); u[k] = !u[k]; ST.pref.set("ui:" + ST.ws, u); applyLayout(); } });
+  panel("outliner", "Outliner"); panel("dock", "Dock phải (Channel Box, panel)"); panel("shelf", "Shelf"); panel("timeline", "Timeline");
+  C({ id: "win.reset", menu: "Window", label: "Bố cục mặc định của workspace", icon: "reset", keep: true, run: () => { ["ui:", "size:", "tabs:"].forEach(k => ST.pref.set(k + ST.ws, null)); applyLayout(); } });
+  // mọi panel mở được ở mọi workspace: bật / tắt tab trong dock của workspace đang dùng (lưu theo workspace)
+  ST.on("init", () => Object.entries(ST.PANELS || {}).forEach(([id, p], i) => C({ id: "panel." + id, menu: "Window", sep: i === 0, head: i === 0 ? "Panel trong dock" : undefined, label: p.label, keep: true,
+    check: () => tabList().includes(id), run: () => { const L = tabList(), on = L.includes(id); ST.pref.set("tabs:" + ST.ws, on ? L.filter(x => x !== id) : L.concat(id)); if (!on) { ST.pref.set("tab:" + ST.ws, id); if (p.mod) ST.setFocus(p.mod); } ST.refresh(); } })));
+  // lớp: cảnh (mesh + xương), rig, anim — bật một lớp thì hai lớp kia ẩn
+  [["scene", "Lớp Cảnh (mesh + xương)"], ["rig", "Lớp Rig"], ["anim", "Lớp Anim"]].forEach(([k, label], i) => C({ id: "layer." + k, menu: "Display", sep: i === 0, label, icon: "eye", keep: true, check: () => ST.layerOn[k], on: () => k === "anim" ? !!(ST.char || ST.clip) : !!ST.char, run: () => ST.showLayer(k, !ST.layerOn[k]) }));
   C({ id: "help.keys", global: true, menu: "Help", label: "Phím tắt", icon: "keys", key: "f1", run: showKeys });
   C({ id: "help.nav", menu: "Help", label: "Điều hướng camera", run: () => ST.dialog("Điều hướng camera (kiểu Maya)", `<div class="keys"><kbd>Alt + kéo trái</kbd><span>Xoay quanh</span><kbd>Kéo giữa</kbd><span>Pan</span><kbd>Kéo phải / Alt + kéo phải</kbd><span>Xoay / dolly</span><kbd>Lăn chuột</kbd><span>Zoom (khung dưới chuột)</span><kbd>Space</kbd><span>1 khung ⇄ 4 khung (khung dưới chuột)</span><kbd>A / F</kbd><span>Nhìn toàn bộ / vùng chọn</span></div>`) });
 
@@ -57,7 +63,7 @@
     openMenu = name; menusEl.querySelectorAll("button").forEach(b => b.classList.toggle("open", b.dataset.m === name));
     const items = [...ST.cmds.values()].filter(c => c.menu === name && !c.hidden);
     pop.innerHTML = items.map(c => (c.sep ? '<div class="sep"></div>' : "") + (c.head ? `<div class="hd">${esc(c.head)}</div>` : "") +
-      `<button class="mi" role="menuitem" data-c="${c.id}" ${ST.cmdOn(c) ? "" : "disabled"} title="${esc(c.tip || (c.ws && !c.ws.includes(ST.ws) ? "Dùng trong workspace " + c.ws.map(w => (ST.WS[w] || {}).label || w).join(", ") : ""))}">` +
+      `<button class="mi" role="menuitem" data-c="${c.id}" ${ST.cmdOn(c) ? "" : "disabled"} title="${esc(c.tip || "")}">` +
       `<span class="ck">${c.check ? (c.check() ? "✓" : "") : ""}</span>${c.icon ? ic(c.icon) : '<svg class="i"></svg>'}<span>${esc(c.label)}</span>${c.key ? `<span class="k">${esc(ST.keyLabel(c.key))}</span>` : ""}</button>`).join("") || '<div class="hd">Trống</div>';
     const r = menusEl.querySelector(`[data-m="${name}"]`).getBoundingClientRect();
     pop.classList.add("show"); pop.style.left = Math.max(4, Math.min(r.left, innerWidth - pop.offsetWidth - 4)) + "px"; pop.style.top = r.bottom + 2 + "px";
@@ -71,56 +77,97 @@
   // ---------------------------------------------------------------- shelf, hộp công cụ, tab workspace
   const btn = (id, cls) => { const c = ST.cmds.get(id); if (!c) return ""; const t = c.label + (c.key ? " (" + ST.keyLabel(c.key) + ")" : ""); return `<button data-c="${id}" class="${(c.check && c.check()) ? "on" : ""} ${cls || ""}" title="${esc(t)}" aria-label="${esc(c.label)}" ${ST.cmdOn(c) ? "" : "disabled"}>${ic(c.icon || "plus")}</button>`; };
   const strip = list => (list || []).map(id => id === "|" ? '<span class="gap"></span>' : btn(id)).join("");
+  // khối giao diện của module (data-park = id chỗ cất) phải luôn nằm trong trang: cất lại trước khi thay nội dung vùng
+  const park = el => { [...el.children].forEach(c => { const s = c.dataset && c.dataset.park && document.getElementById(c.dataset.park); if (s) s.appendChild(c); }); };
+  const mount = (el, n) => { if (el.firstChild === n && el.childNodes.length === 1) return; park(el); el.replaceChildren(n); };
+  const fill = (el, html) => { park(el); el.innerHTML = html; };
   function renderBars() {
-    const w = ST.WS[ST.ws] || {}, m = ST.mod();
-    document.body.className = document.body.className.replace(/(^|\s)ws-[\w-]+/g, " ").trim() + " ws-" + ST.ws;
-    if (m.shelfNode) { const n = m.shelfNode(); if (n && $("shelf").firstChild !== n) $("shelf").replaceChildren(n); }   // khối shelf riêng của module (vd thanh công cụ Pose)
-    else $("shelf").innerHTML = strip(w.shelf);
+    const w = ST.WS[ST.ws] || {};
+    document.body.className = document.body.className.replace(/(^|\s)(ws|fx)-[\w-]+/g, " ").trim() + " ws-" + ST.ws + " fx-" + ST.focus;
+    const sm = typeof w.shelf === "string" && w.shelf[0] === "@" ? ST.mods[w.shelf.slice(1)] : null;   // khối shelf của module (vd thanh công cụ Pose Lab)
+    document.body.classList.toggle("shelf-mod", !!sm);
+    if (sm) { const n = sm.shelfNode && sm.shelfNode(); if (n) mount($("shelf"), n); else fill($("shelf"), '<span class="sub" style="padding:0 10px">' + esc(sm.shelfMsg ? sm.shelfMsg() : "") + "</span>"); $("shelf").dataset.mod = w.shelf.slice(1); }
+    else { fill($("shelf"), strip(w.shelf)); $("shelf").dataset.mod = ""; }
     $("toolbox").innerHTML = strip(w.tools) + (w.modes ? '<span class="gap"></span>' + strip(w.modes) : "");
     $("wstabs").innerHTML = Object.values(ST.WS).map(x => `<button role="tab" aria-selected="${x.id === ST.ws}" class="${x.id === ST.ws ? "on" : ""}" data-ws="${x.id}" title="Workspace ${esc(x.label)}">${ic(x.icon)}<span>${esc(x.label)}</span></button>`).join("");
   }
   ["shelf", "toolbox"].forEach(k => $(k).addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b && !b.disabled) ST.run(b.dataset.c); }));
+  // bấm vào khối của module (shelf / timeline / panel dock) = làm việc với module đó → focus
+  const focusFrom = el => el.addEventListener("pointerdown", () => { const m = el.dataset.mod; if (m && ST.focus !== m) ST.setFocus(m); }, true);
   $("wstabs").addEventListener("click", e => { const b = e.target.closest("[data-ws]"); if (b) ST.setWS(b.dataset.ws); });
 
   // ---------------------------------------------------------------- Outliner (module trả các dòng)
-  let renaming = null;
+  // dòng = mesh + xương (module mesh) ở cấp đầu, rồi nút Rig và Anim (mắt = bật lớp, gập được); mỗi dòng mang module của nó
+  let renaming = null, olRows = [];
+  const LAYER_NODES = [["rig", "rig", "Rig", "rig"], ["anim", "pose", "Anim", "pose"]];
+  function outlineRows() {
+    const rows = [], ms = ST.mods.mesh;
+    if (ms && ms.outline) ms.outline().forEach(r => rows.push(Object.assign({}, r, { m: "mesh", dim: !ST.layerOn.scene })));
+    LAYER_NODES.forEach(([L, mid, label, icon]) => {
+      const m = ST.mods[mid]; if (!m || !(L === "anim" ? (ST.char || ST.clip) : ST.char)) return;
+      const open = ST.pref.get("ol:open:" + L, false), on = ST.layerOn[L];
+      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: on, fold: open ? 0 : 1, act: ST.focus === mid, tip: "Bấm: làm việc với lớp " + label + " · mắt: bật lớp (Shift: hiện chồng)" });
+      if (!open) return;
+      const kids = m.loaded && m.loaded() && m.outline ? m.outline() : null;
+      if (kids) kids.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: (r.d || 0) + 1, dim: !on })));
+      else rows.push({ id: "@" + L + ":hint", m: mid, d: 1, label: m.loadMsg ? m.loadMsg() : "Chưa nạp: bấm mắt để nạp", grp: true });
+    });
+    return rows;
+  }
   function renderOutliner() {
-    const m = ST.mod(), rows = m.outline ? m.outline() : [];
-    $("olBody").innerHTML = rows.map(r => `<div class="olr ${r.grp ? "grp" : ""} ${r.sel ? "sel" : ""} ${r.act ? "act" : ""}" style="--d:${r.d || 0}" data-id="${esc(r.id)}">` +
+    const rows = olRows = outlineRows();
+    $("olBody").innerHTML = rows.map(r => `<div class="olr ${r.grp ? "grp" : ""} ${r.sel ? "sel" : ""} ${r.act ? "act" : ""} ${r.dim ? "dim" : ""} ${r.node ? "node" : ""}" style="--d:${r.d || 0}" data-id="${esc(r.id)}" data-m="${esc(r.m || "")}">` +
       (r.fold !== undefined ? `<button data-a="fold" class="fold" title="${r.fold ? "Mở" : "Gập"}" aria-label="${r.fold ? "Mở" : "Gập"}" aria-expanded="${!r.fold}">${r.fold ? "▸" : "▾"}</button>` : '<span class="fold"></span>') +
-      `<span class="nm" title="${esc(r.label)}${r.rename ? " · bấm đúp để đổi tên" : ""}">${r.icon ? ic(r.icon) : ""}${renaming === r.id ? `<input id="olRn" value="${esc(r.label)}">` : `<span class="tx">${esc(r.label)}</span>`}</span>` +
+      `<span class="nm" title="${esc(r.tip || r.label)}${r.rename ? " · bấm đúp để đổi tên" : ""}">${r.icon ? ic(r.icon) : ""}${renaming === r.m + "|" + r.id ? `<input id="olRn" value="${esc(r.label)}">` : `<span class="tx">${esc(r.label)}</span>`}</span>` +
       (r.count !== undefined ? `<small>${esc(r.count)}</small>` : "") + (r.del ? `<button data-a="del" class="del" title="Xoá" aria-label="Xoá">${ic("trash")}</button>` : "") +
       (r.lock !== undefined ? `<button data-a="lock" class="lk ${r.lock ? "on" : "off"}" title="Khoá: không chọn, không sửa" aria-label="Khoá">${ic(r.lock ? "lock" : "unlock")}</button>` : "") +
       (r.vis !== undefined ? `<button data-a="vis" class="${r.vis ? "" : "off"}" title="Ẩn / hiện" aria-label="Ẩn hoặc hiện">${ic(r.vis ? "eye" : "eyeoff")}</button>` : "") + `</div>`).join("") ||
       '<div class="sub" style="padding:8px 10px">Trống.</div>';
   }
   const olB = $("olBody");
+  const rowOf = el => olRows.find(x => String(x.id) === el.dataset.id && (x.m || "") === el.dataset.m);
   olB.addEventListener("click", e => {
-    const r = e.target.closest(".olr"), a = e.target.closest("[data-a]"); if (!r || e.target.closest("input")) return;
-    if (r.classList.contains("grp") && !a) return;
-    const m = ST.mod(); if (m.olAct) m.olAct(r.dataset.id, a ? a.dataset.a : "pick", e); ST.refresh();
+    const el = e.target.closest(".olr"), b = e.target.closest("[data-a]"); if (!el || e.target.closest("input")) return;
+    const r = rowOf(el), a = b ? b.dataset.a : "pick"; if (!r || (r.grp && !b)) return;
+    if (r.node) {   // nút lớp Rig / Anim
+      if (a === "fold") ST.pref.set("ol:open:" + r.node, !ST.pref.get("ol:open:" + r.node, false));
+      else if (a === "vis") ST.showLayer(r.node, !ST.layerOn[r.node], !e.shiftKey);
+      else ST.setFocus(r.m);
+      ST.refresh(); return;
+    }
+    const m = ST.mods[r.m]; if (!m) return;
+    if (a !== "vis" && a !== "fold" && a !== "lock") ST.setFocus(r.m);
+    if (m.olAct) m.olAct(r.id, a, e); ST.refresh();
   });
-  olB.addEventListener("dblclick", e => { const r = e.target.closest(".olr"); if (!r || e.target.closest("button")) return; const m = ST.mod(); if (!m.outline || !(m.outline().find(x => String(x.id) === r.dataset.id) || {}).rename) return; renaming = r.dataset.id; renderOutliner(); const i = $("olRn"); if (i) { i.focus(); i.select(); } });
-  const commitRn = (i, ok) => { const id = renaming; renaming = null; const m = ST.mod(); if (ok && m.olAct) m.olAct(id, "rename", null, i.value.trim()); ST.refresh(); };
+  olB.addEventListener("dblclick", e => { const el = e.target.closest(".olr"); if (!el || e.target.closest("button")) return; const r = rowOf(el); if (!r || !r.rename) return; renaming = r.m + "|" + r.id; renderOutliner(); const i = $("olRn"); if (i) { i.focus(); i.select(); } });
+  const commitRn = (i, ok) => { const k = renaming; renaming = null; if (!k) return; const j = k.indexOf("|"), m = ST.mods[k.slice(0, j)]; if (ok && m && m.olAct) m.olAct(k.slice(j + 1), "rename", null, i.value.trim()); ST.refresh(); };
   olB.addEventListener("keydown", e => { if (e.target.id !== "olRn") return; e.stopPropagation(); if (e.key === "Enter") commitRn(e.target, true); else if (e.key === "Escape") commitRn(e.target, false); });
   olB.addEventListener("focusout", e => { if (e.target.id === "olRn" && renaming !== null) commitRn(e.target, true); });
 
   // ---------------------------------------------------------------- dock: tab Channel Box + panel của module
   const attrB = $("attrBody");
-  const curTab = () => { const w = ST.WS[ST.ws] || {}, tabs = w.tabs || []; const t = ST.pref.get("tab:" + ST.ws, tabs[0] && tabs[0][0]); return tabs.some(x => x[0] === t) ? t : tabs[0] && tabs[0][0]; };
+  // tab = panel trong ST.PANELS ("<module>:<tab>"); danh sách mặc định của workspace, Cửa sổ → Panel để thêm / bớt
+  const tabList = () => (ST.pref.get("tabs:" + ST.ws, null) || (ST.WS[ST.ws] || {}).tabs || []).filter(id => ST.PANELS[id] && (!ST.PANELS[id].mod || ST.mods[ST.PANELS[id].mod]));
+  const curTab = () => { const L = tabList(), t = ST.pref.get("tab:" + ST.ws, L[0]); return L.includes(t) ? t : L[0]; };
+  const panelOf = t => { const p = ST.PANELS[t] || {}; return { m: p.mod ? ST.mods[p.mod] : null, mid: p.mod || "", sub: t && t.includes(":") ? t.slice(t.indexOf(":") + 1) : t }; };
+  ST.tabs = tabList; ST.curTab = curTab;
+  ST.showTab = id => { if (tabList().includes(id) && curTab() !== id) { ST.pref.set("tab:" + ST.ws, id); ST.refresh(); } };   // module chọn tab của nó nếu workspace đang có
   function renderAttr(force) {
-    const w = ST.WS[ST.ws] || {}, tabs = w.tabs || [], t = curTab();
-    $("attrTabs").innerHTML = tabs.map(([id, label]) => `<button role="tab" data-t="${id}" class="${id === t ? "on" : ""}">${esc(label)}</button>`).join("");
+    const L = tabList(), t = curTab(), mixed = new Set(L.map(x => ST.PANELS[x].mod || "")).size > 1;
+    $("attrTabs").innerHTML = L.map(id => { const p = ST.PANELS[id]; return `<button role="tab" data-t="${esc(id)}" class="${id === t ? "on" : ""}" title="${esc(p.label)}">${esc(mixed && p.mod ? p.label : p.short || p.label)}</button>`; }).join("");
     if (!force && attrB.contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
-    if (t === "channel") { attrB.dataset.key = ""; return chRender(); }
-    if (ST.mod().panelNode) { const n = ST.mod().panelNode(t); if (n) { if (attrB.firstChild !== n || attrB.childNodes.length !== 1) attrB.replaceChildren(n); attrB.dataset.key = ""; return; } }
-    const m = ST.mod(), key = ST.ws + ":" + t + ":" + (m.panelKey ? m.panelKey() : "");
+    if (!t) { fill(attrB, '<div class="sub" style="padding:10px">Không có panel. Cửa sổ → Panel để thêm.</div>'); attrB.dataset.key = ""; attrB.dataset.mod = ""; return; }
+    if (t === "channel") { park(attrB); attrB.dataset.key = ""; attrB.dataset.mod = ""; return chRender(); }
+    const { m, mid, sub } = panelOf(t); attrB.dataset.mod = mid; if (!m) return;
+    if (m.panelNode) { const n = m.panelNode(sub); if (n) { mount(attrB, n); attrB.dataset.key = ""; return; } }
+    const key = t + ":" + (m.panelKey ? m.panelKey() : "");
     if (m.panelStatic && !force && attrB.dataset.key === key) return;   // module tự vẽ lại panel của nó (vd lõi Rig)
-    attrB.innerHTML = m.panel ? m.panel(t) : ""; attrB.dataset.key = key;
-    if (m.panelMounted) m.panelMounted(t);
+    fill(attrB, m.panel ? m.panel(sub) : ""); attrB.dataset.key = key;
+    if (m.panelMounted) m.panelMounted(sub);
   }
-  $("attrTabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; ST.pref.set("tab:" + ST.ws, b.dataset.t); renderAttr(true); });
-  ["click", "change", "input"].forEach(ev => attrB.addEventListener(ev, e => { if (curTab() === "channel") return; const m = ST.mod(), f = m["panel_" + ev]; if (f) f.call(m, e); }));
+  $("attrTabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; ST.pref.set("tab:" + ST.ws, b.dataset.t); const p = ST.PANELS[b.dataset.t]; if (p && p.mod) ST.setFocus(p.mod); renderAttr(true); });
+  ["click", "change", "input"].forEach(ev => attrB.addEventListener(ev, e => { const t = curTab(); if (t === "channel") return; const { m, sub } = panelOf(t), f = m && m["panel_" + ev]; if (f) f.call(m, e, sub); }));
+  focusFrom(attrB); focusFrom($("shelf")); focusFrom($("timeline"));
 
   // Channel Box: provider = module.channel {title(), vals()→{t,r,s}|null, apply(vals, push), begin(), reset()}
   const CHROWS = [["X", "t", 0, 0.1], ["Y", "t", 1, 0.1], ["Z", "t", 2, 0.1], ["X", "r", 0, 0.5], ["Y", "r", 1, 0.5], ["Z", "r", 2, 0.5], ["X", "s", 0, 0.01], ["Y", "s", 1, 0.01], ["Z", "s", 2, 0.01]];
@@ -162,7 +209,13 @@
   attrB.addEventListener("pointerup", chEnd); attrB.addEventListener("pointercancel", chEnd);
 
   // ---------------------------------------------------------------- timeline + dòng trạng thái
-  function renderTimeline() { const m = ST.mod(); if (m.timelineNode) { const n = m.timelineNode(); if ($("timeline").firstChild !== n) $("timeline").replaceChildren(n); return; } $("timeline").innerHTML = m.timeline ? m.timeline() : '<span class="sub">Timeline</span><div class="tlbar"></div>'; }
+  // timeline: của module có timeline (Pose), không phụ thuộc focus
+  function renderTimeline() {
+    const mid = (ST.WS[ST.ws] || {}).timeline || "pose", m = ST.mods[mid], n = m && m.timelineNode && m.timelineNode();
+    $("timeline").dataset.mod = n ? mid : ""; document.body.classList.toggle("tl-mod", !!n);
+    if (n) { mount($("timeline"), n); return; }
+    fill($("timeline"), '<span class="sub">Timeline: mở anim (Animate → Đổi anim…) hoặc bật lớp Anim</span><div class="tlbar"></div>');
+  }
   function renderStatus() { const m = ST.mod(); $("stInfo").textContent = m.info ? m.info() : ""; $("stHint").textContent = ST.hint || ""; }
 
   // ---------------------------------------------------------------- tìm lệnh (F3)
@@ -188,8 +241,8 @@
   [pal, $("dialog")].forEach(m => m.addEventListener("pointerdown", e => { if (e.target === m) m.classList.remove("show"); }));
 
   function showKeys() {
-    const rows = [...ST.cmds.values()].filter(c => c.key && !c.hidden);
-    ST.dialog("Phím tắt", `<div class="keys">${rows.map(c => `<kbd>${esc((Array.isArray(c.key) ? c.key : [c.key]).map(ST.keyLabel).join(" / "))}</kbd><span>${esc(c.label)}${c.ws ? ` <span class="sub">(${esc(c.ws.map(w => (ST.WS[w] || {}).label || w).join(", "))})</span>` : ""}</span>`).join("")}</div>`);
+    const rows = [...ST.cmds.values()].filter(c => c.key && !c.hidden), ML = { mesh: "khi đang sửa mesh / xương", rig: "khi đang sửa rig", pose: "khi đang sửa anim" };
+    ST.dialog("Phím tắt", `<div class="keys">${rows.map(c => `<kbd>${esc((Array.isArray(c.key) ? c.key : [c.key]).map(ST.keyLabel).join(" / "))}</kbd><span>${esc(c.label)}${c.mod && ML[c.mod] && !c.keep ? ` <span class="sub">(${esc(ML[c.mod])})</span>` : ""}</span>`).join("")}</div>`);
   }
   async function openChar() {
     ST.dialog("Mở nhân vật", '<div class="sub">Đang tải danh sách…</div>');
@@ -208,7 +261,8 @@
     if (e.key === "Escape") { closeMenu(); pal.classList.remove("show"); ST.closeDialog(); return; }
     if ($("dialog").classList.contains("show")) return;
     const k = combo(e), all = [...ST.cmds.values()].filter(c => keyMatch(c, k));
-    const c = all.find(c => c.ws && c.ws.includes(ST.ws)) || all.find(c => !c.ws);
+    // lệnh của module đang focus trước, rồi lệnh chung; phím của module khác không chạy (1–5, B, I trùng giữa Mesh / Rig)
+    const c = all.find(c => c.mod === ST.focus) || all.find(c => !c.mod || c.keep);
     if (!c) return;
     if (ST.mod().ownKeys && !c.global) return;   // workspace tự xử lý phím (Pose): Studio chỉ giữ phím chung
     e.preventDefault(); ST.run(c.id);
@@ -228,5 +282,6 @@
   $("empty").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) ST.run(b.dataset.c); });
   ST.on("hist", () => ST.refresh());
   ST.on("ws", () => applyLayout());
+  ST.on("focus", () => ST.refresh());
   ST.on("init", () => { const t = ST.pref.get("theme", null); if (t) document.documentElement.dataset.theme = t; });
 })();

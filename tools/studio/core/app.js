@@ -81,14 +81,16 @@
     redo() { const m = ST.mod(); if (m.undo) return; const e = this.R.pop(); if (!e) return; this.U.push({ owner: e.owner, label: e.label, s: e.owner.snap() }); e.owner.restore(e.s); ST.emit("hist"); ST.toast("Làm lại: " + e.label); },
   };
 
-  // ---- sổ lệnh: một lệnh gọi được từ menu, shelf, toolbox, phím tắt, tìm lệnh (F3)
-  // {id, label, menu, sep, icon, key, ws:[…], on(), check(), run(), tip}
+  // ---- sổ lệnh: một lệnh gọi được từ menu, shelf, toolbox, phím tắt, tìm lệnh (F3), cầu nối AI — ở mọi workspace
+  // {id, label, menu, sep, icon, key, mod, keep, global, on(), check(), run(), tip}
+  // mod = module chủ: chạy lệnh thì focus sang module đó (trừ keep: lệnh hiển thị / bật tắt), phím tắt ưu tiên module đang focus.
   ST.cmds = new Map();
   ST.cmd = def => { ST.cmds.set(def.id, def); return def; };
-  ST.cmdOn = c => !!c && (!c.ws || c.ws.includes(ST.ws)) && (!c.on || !!c.on());
+  ST.cmdOn = c => !!c && (!c.on || !!c.on());
   ST.run = (id, ...a) => {
     const c = ST.cmds.get(id); if (!c) return;
-    if (!ST.cmdOn(c)) { if (c.ws && !c.ws.includes(ST.ws)) ST.toast(c.label + ": dùng trong workspace " + c.ws.map(w => (ST.WS[w] || {}).label || w).join(", ")); return; }
+    if (c.mod && !c.keep && ST.focus !== c.mod && ST.mods[c.mod]) ST.setFocus(c.mod);
+    if (!ST.cmdOn(c)) return;
     try { c.run(...a); } catch (e) { console.error(e); ST.toast("Lỗi: " + (e.message || e)); }
     ST.refresh();
   };
@@ -120,18 +122,41 @@
   };
   ST.saveState = (text, cls) => { const el = ST.$("stSave"); el.textContent = text; el.className = cls || ""; };
 
-  // ---- module + workspace
-  ST.mod = () => ST.mods[(ST.WS[ST.ws] || {}).module] || {};
+  // ---- focus: module đang được sửa (mesh = mesh + xương, rig, pose). Chuột, gizmo, Channel Box, phím, Hoàn tác theo focus.
+  // Module: focusIn() / focusOut(), layer(on) (hiện / ẩn đồ của nó, nạp lười), hit(x, y, pane) → click trúng đồ của nó không.
+  ST.focus = null;
+  ST.mod = () => ST.mods[ST.focus] || {};
   ST.setTool = t => { ST.tool = t; ST.emit("tool", t); ST.refresh(); };
+  ST.LAYER_OF = { mesh: "scene", rig: "rig", pose: "anim" };
+  ST.MOD_OF = { scene: "mesh", rig: "rig", anim: "pose" };
+  ST.setFocus = id => {
+    if (!ST.mods[id] || id === ST.focus) return;
+    const old = ST.mod(); if (old.focusOut) old.focusOut();
+    ST.focus = id;
+    const L = ST.LAYER_OF[id]; if (L && !ST.layerOn[L]) ST.showLayer(L, true);   // không sửa được lớp đang ẩn
+    const m = ST.mod(); if (m.focusIn) m.focusIn();
+    ST.emit("focus", id); ST.refresh();
+  };
+  // ---- lớp: ba bản của cùng nhân vật (cảnh mesh + xương, rig đang dựng, model của anim). Bật một lớp thì hai lớp kia ẩn (solo),
+  // solo=false để hiện chồng. Không phụ thuộc workspace.
+  ST.layerOn = { scene: true, rig: false, anim: false };
+  ST.showLayer = (id, on, solo) => {
+    if (!(id in ST.layerOn)) return;
+    const ch = [];
+    const set = (k, v) => { if (ST.layerOn[k] !== v) { ST.layerOn[k] = v; ch.push(k); } };
+    set(id, !!on);
+    if (on && solo !== false) Object.keys(ST.layerOn).forEach(k => { if (k !== id) set(k, false); });
+    ch.forEach(k => { const m = ST.mods[ST.MOD_OF[k]]; if (m && m.layer) m.layer(ST.layerOn[k]); });
+    if (ch.length) { ST.emit("layer", ch); ST.refresh(); }
+  };
+  // ---- workspace: chỉ là bố cục (panel, shelf, hộp công cụ, timeline) + module focus mặc định
   ST.setWS = id => {
     if (!ST.WS[id] || id === ST.ws) return;
-    const old = ST.mod(); if (old.leave) old.leave();
     ST.ws = id; ST.pref.set("ws", id);
-    const w = ST.WS[id];
-    if (w.tools && !w.tools.includes("tool." + ST.tool)) ST.tool = "sel";
-    const m = ST.mod(); if (m.enter) m.enter(w);
     const u = new URL(location.href); u.searchParams.set("ws", id); history.replaceState(null, "", u);
-    ST.emit("ws", id); ST.refresh();
+    ST.emit("ws", id);
+    if (ST.WS[id].focus) ST.setFocus(ST.WS[id].focus);
+    ST.refresh();
   };
   ST.refresh = () => ST.emit("ui");
 
@@ -144,6 +169,8 @@
     const wsOf = x => ST.WS[x] ? x : (ST.WS_ALIAS || {})[x] || null;   // ?ws=mesh cũ → general
     let cid = parts[0]; const wsId = wsOf(q.get("ws")) || (!cid ? "general" : wsOf(ST.pref.get("ws", "general")) || "general");
     ST.setWS(wsId);
+    if (ST.clip) ST.setFocus("pose");   // ?clip=… (từ Home): mở thẳng lớp Anim, workspace nào cũng vậy
+    if (!ST.focus) ST.setFocus("mesh");
     if (!cid) {   // mở ở "/" hoặc Tệp → Mới: cảnh trống (như Maya / Blender), chọn Mở nhân vật hoặc Nhập FBX
       document.title = "Cảnh mới · Studio"; ST.$("charName").textContent = "Cảnh mới";
       ST.saveState("Cảnh trống"); ST.emit("empty"); ST.refresh(); readyRes(); return;
@@ -157,7 +184,8 @@
     document.title = ST.char.name + " · Studio";
     ST.$("charName").textContent = ST.char.name + (ST.clip ? " · " + ST.clip : "");
     await Promise.all((L.char || []).map(f => Promise.resolve().then(() => f(ST.char)).catch(e => console.error(e))));
-    const m = ST.mod(); if (m.enter) m.enter(ST.WS[ST.ws]);
+    Object.keys(ST.layerOn).forEach(k => { const m = ST.mods[ST.MOD_OF[k]]; if (m && m.layer && ST.layerOn[k]) m.layer(true); });
+    const m = ST.mod(); if (m.focusIn) m.focusIn();
     ST.emit("loaded"); ST.refresh(); readyRes();
   };
 })();

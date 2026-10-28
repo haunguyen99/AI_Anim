@@ -51,7 +51,7 @@
       return;
     }
     const list = picked(); if (!list.length) { msg.textContent = "Chọn ít nhất một mesh."; return; }
-    if (ST.ws !== "general") ST.setWS("general");
+    ST.setFocus("mesh");
     const r = ST.mods.mesh.importMeshes(list, a.dataset.a);
     ST.closeDialog(); ST.toast("Nhập FBX: thay " + r.rep + " mesh, thêm " + r.add + " mesh (Ctrl+Z để bỏ)");
   }

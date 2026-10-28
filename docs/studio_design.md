@@ -193,3 +193,18 @@ Một anim mỗi lần: `?clip=<anim>` (từ Home, lần trước, hoặc anim �
 Server: `tools/home/pose_data.py` — `GET /api/poses?char=<id>` (anim có Pose của nhân vật), `GET /api/poses/<anim>` (phiên bản lấy từ bản gốc, như split_pages.py).
 
 Đã thử (kho thử, đã xoá): Gaygor Die (goal_v1 72 F): chọn khớp từ Outliner, xoay bằng gizmo, đặt key F30 + Sửa → Hoàn tác, phát / dừng, tab Phiên bản / Vật lý, Xuất FBX (zip 0,8 MB, không tải), đổi General ↔ Rig ↔ Pose; SDR Idle không nhân vật, 4 khung. Chưa thử: playblast → Review thật, khớp ref, AI tự xem, vật lý chạy thật trên trang Studio.
+
+## 10. W1: workspace chỉ là layout (2026-10-28, user: "General là một workflow tổng có thể làm mọi việc… mỗi WorkSpace chỉ là một layout chứa các công cụ thuận tiện cho một nhiệm vụ")
+
+Studio là môi trường làm việc chung của người và AI: mọi công cụ dùng được ở mọi nơi, workspace chỉ đổi bố cục.
+
+- **Workspace = layout**: panel nào mở sẵn (tab dock), shelf có nút gì, hộp công cụ, Outliner / dock / timeline bật tắt, kích thước, và module được **focus** mặc định. Đổi workspace không khoá lệnh, không đổi dữ liệu, không đổi vùng chọn.
+- **Focus** (`ST.focus`, thay cho "module của workspace"): module đang được sửa: `mesh` (mesh + xương), `rig`, `pose`. Focus đổi khi bấm vào thứ của module đó: dòng Outliner, panel / tab dock, shelf / timeline của module, lệnh của module, hoặc click trúng đồ của module trong viewport (`hit`). Chuột, gizmo, Channel Box, phím tắt, Hoàn tác đi theo focus.
+- **Lớp** (`ST.layerOn`): `scene` (mesh + xương), `rig` (bản rig đang dựng), `anim` (model của anim đang mở). Ba lớp là ba bản của cùng một nhân vật nên bật một lớp thì hai lớp kia tự ẩn (Shift + bấm mắt để hiện chồng). Lớp nạp lười: bật lần đầu mới tải dữ liệu rig / anim. Focus vào module có lớp đang ẩn thì lớp đó hiện.
+- **Lệnh**: bỏ `ws:`; lệnh có `mod` (module chủ). Lệnh chỉ mờ khi thiếu dữ liệu. Chạy lệnh của module khác thì focus chuyển sang module đó (trừ lệnh hiển thị). Phím tắt: lệnh của module đang focus trước, rồi lệnh chung; phím của module khác không chạy (1–5, B, I trùng nhau giữa Mesh / Rig).
+- **Panel** (`ST.PANELS` trong `workspaces.js`): `channel`, `mesh:tool`, `mesh:check`, `rig:s1`…`rig:s5`, `pose:joint|phys|notes|versions`. Cửa sổ → Panel… mở / đóng panel bất kỳ trong workspace đang dùng (lưu theo workspace, "Bố cục mặc định" trả lại).
+- **Outliner**: mesh + cây xương ở cấp đầu như cũ; thêm nút **Rig** và **Anim · <clip>** (gập được, có mắt = bật lớp) khi có nhân vật / anim. Dòng mờ = lớp đang ẩn.
+- Shelf / timeline của module (thanh công cụ + timeline Pose Lab) là một khối của module: workspace khai báo `shelf: "@pose"`, timeline lấy của module có timeline.
+- Cầu nối: `joint` không đổi workspace nữa (focus mesh); thêm `focus`, `layer`, `cmds`; `state` báo focus + lớp.
+
+Mở: W2 (cầu nối đầy đủ cho AI), W3 (một bản nhân vật chung cho Mesh / Rig / Pose).

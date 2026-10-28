@@ -4,9 +4,11 @@ Cách làm (không đụng nhánh đang làm, không đổi index thật, không
   1. fetch origin; dựng cây mới = cây origin/main + các file nguồn trong danh sách cho phép (đọc từ thư mục làm việc) - các file nguồn đã bị xoá ở máy
      thì bị xoá khỏi cây;
   2. commit lên origin/main (fast-forward) bằng chỉ mục tạm `.git/index_push`, gán nhánh cục bộ `source`, `git push origin source:main`.
-Dùng: python tools/push_source.py [--dry-run] [-m "lời nhắn"] [--yes]
+Dùng: python tools/push_source.py [--dry-run] [-m "lời nhắn"] [--yes] [--only PATH…] [--committed]
   --dry-run   chỉ liệt kê thay đổi sẽ đẩy
   --yes       đẩy luôn (bắt buộc để đẩy thật; thiếu thì chỉ liệt kê)
+  --only      chỉ đẩy các file / thư mục này (vd đẩy một việc khi phiên khác đang sửa dở file khác); không xoá gì
+  --committed lấy nội dung đã commit (HEAD) thay vì thư mục làm việc: bỏ qua thay đổi chưa commit; không xoá gì
 Giữ nguyên bản trên GitHub của `.claude/launch.json` và `.mcp.json` (bản trên máy có cấu hình riêng).
 """
 import argparse, os, re, subprocess, sys
@@ -77,25 +79,37 @@ def main():
     ap.add_argument("-m", "--message", default="")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--yes", action="store_true")
+    ap.add_argument("--only", nargs="+", default=None)
+    ap.add_argument("--committed", action="store_true")
     a = ap.parse_args()
+    only = [o.replace("\\", "/").rstrip("/") for o in a.only] if a.only else None
+    inside = lambda p: only is None or any(p == o or p.startswith(o + "/") for o in only)
+    head = {}
+    if a.committed:   # blob đã commit của từng file nguồn
+        for ln in git("ls-tree", "-r", "HEAD").splitlines():
+            meta, path = ln.split("\t", 1)
+            if allowed(path): head[path] = meta.split()[2]
     git("fetch", "origin", "-q")
     remote = {}
     for ln in git("ls-tree", "-r", "origin/main").splitlines():
         meta, path = ln.split("\t", 1)
         remote[path] = meta.split()[2]            # blob hash
-    local = local_files()
+    local = {p for p in (set(head) if a.committed else local_files()) if inside(p)}
     add, mod, rem, big = [], [], [], []
     new_hash = {}
     for p in sorted(local):
-        if os.path.getsize(os.path.join(ROOT, p)) > MAX_BYTES:
-            big.append(p); continue
-        h = git("hash-object", *(["-w"] if a.yes and not a.dry_run else []), p).strip(); new_hash[p] = h
+        if a.committed: h = head[p]
+        else:
+            if os.path.getsize(os.path.join(ROOT, p)) > MAX_BYTES:
+                big.append(p); continue
+            h = git("hash-object", *(["-w"] if a.yes and not a.dry_run else []), p).strip()
+        new_hash[p] = h
         if p not in remote: add.append(p)
         elif remote[p] != h: mod.append(p)
     for p in sorted(remote):
-        if allowed(p) and p not in local: rem.append(p)
+        if allowed(p) and p not in local and only is None and not a.committed: rem.append(p)
     for p in big: print("BỎ QUA (quá 5 MB):", p)
-    dirty = [ln[3:] for ln in git("status", "--short").splitlines() if ln[3:] in set(add + mod)]
+    dirty = [] if a.committed else [ln[3:] for ln in git("status", "--short").splitlines() if ln[3:] in set(add + mod)]
     if not (add or mod or rem):
         print("Không có gì mới để đẩy: GitHub đã khớp với mã nguồn trên máy."); return
     for tag, lst in (("THÊM", add), ("SỬA", mod), ("XOÁ", rem)):
@@ -117,7 +131,7 @@ def main():
         if tree == git("rev-parse", "origin/main^{tree}").strip():
             print("Cây không đổi, không đẩy."); return
         msg = a.message.strip() or f"Update source: {len(add)} added, {len(mod)} modified, {len(rem)} removed"
-        msg += "\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+        msg += "\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
         commit = git("commit-tree", tree, "-p", "origin/main", "-m", msg).strip()
     finally:
         try: os.remove(os.path.join(ROOT, ".git", "index_push"))

@@ -106,6 +106,7 @@ body.noout #outliner,body.noout #splitO{display:none}
 .olr.sel{background:color-mix(in srgb,var(--accent) 22%,transparent);font-weight:600}
 .olr.act{box-shadow:inset 3px 0 0 var(--accent)}
 .olr.grp{color:var(--mute);cursor:default}
+.olr.dim .nm{opacity:.45} .olr.node{font-weight:600}
 .olr .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .olr .nm input{width:100%;font:inherit;padding:1px 4px;border:1px solid var(--accent)}
 .olr small{color:var(--mute);font:11px var(--mono);margin-right:2px}

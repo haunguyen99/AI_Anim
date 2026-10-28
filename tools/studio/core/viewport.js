@@ -87,7 +87,12 @@
     orbit.update();
   };
   V.frameAll = () => { const m = ST.mod(); const b = m.bounds ? m.bounds(false) : null; V.frame(b, V.visible()); };
-  V.frameSel = () => { const m = ST.mod(); const b = (ST.ws !== "rig" && ST.mods.skel && ST.mods.skel.bounds()) || (m.bounds && m.bounds(true)) || (m.bounds && m.bounds(false)); V.frame(b, [V.active], true); };
+  V.frameSel = () => { const m = ST.mod(); const b = (ST.focus === "mesh" && ST.mods.skel && ST.mods.skel.bounds()) || (m.bounds && m.bounds(true)) || (m.bounds && m.bounds(false)); V.frame(b, [V.active], true); };
+  // click trúng đồ của module khác (lớp đang hiện) → focus sang module đó trước khi xử lý click (như Maya: chọn gì sửa nấy)
+  V.focusAt = (x, y, p) => {
+    const cur = ST.mod(); if (cur.hit && cur.hit(x, y, p)) return;
+    for (const id of Object.keys(ST.mods)) { const m = ST.mods[id]; if (id !== ST.focus && m.hit && m.hit(x, y, p)) { ST.setFocus(id); return; } }
+  };
 
   // ---- vẽ
   function resize() { const r = vp.getBoundingClientRect(); R.setSize(r.width, r.height, false); layoutPanes(); }
@@ -174,6 +179,7 @@
       tc.camera = V.active.cam; tc.updateMatrixWorld(); tc.pointerHover(ptr(e, V.active, 0));
       if (tc.axis) { gzPane = V.active; tc.pointerDown(ptr(e, gzPane, 0)); cv.setPointerCapture(e.pointerId); e.stopImmediatePropagation(); e.preventDefault(); return; }
     }
+    if (e.button === 0 && !(TM.on && TM.mode === "box")) V.focusAt(e.clientX, e.clientY, V.active);   // trước lõi Pose / Rig (chúng nghe cv sau, kiểm host.alive lúc đó)
     const m = ST.mod();
     if (m.pointerDown && m.pointerDown(e, V.active)) { e.stopImmediatePropagation(); e.preventDefault(); return; }
     down = { x: e.clientX, y: e.clientY, p: V.active };

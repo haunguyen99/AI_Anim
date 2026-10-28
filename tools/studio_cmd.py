@@ -6,6 +6,10 @@
   python tools/studio_cmd.py joint Shoulder_L --r 0,0,-30  # xoay thêm (độ) quanh joint; --t x,y,z (cm, tuyệt đối); --s
   python tools/studio_cmd.py bindpose
   python tools/studio_cmd.py ws general | run <id lệnh> | open <nhân vật> [ws] | clients
+  python tools/studio_cmd.py focus rig                     # mesh | rig | pose: module đang sửa (chuột, gizmo, Channel Box, phím)
+  python tools/studio_cmd.py layer anim on [--both]        # scene | rig | anim; on | off | toggle; --both = không ẩn lớp khác
+  python tools/studio_cmd.py cmds [chữ cần tìm]            # mọi lệnh: id, nhãn, module, phím, dùng được ngay không
+Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace nào (run tự focus sang module của lệnh).
 Chỉ có các lệnh có tên (không chạy mã tuỳ ý trong trang).
 Nhiều lệnh một lần (nhanh hơn: Python chỉ khởi động một lần):  studio_cmd.py vis A off ";" select joint B ";" state
 Thêm --time để in thời gian khứ hồi. Cổng: HOME_PORT (mặc định 8780). Server: tools/home/studio_bridge.py; trang: tools/studio/modules/bridge.js.
@@ -70,6 +74,13 @@ def main(argv):
         res = call("ws", {"id": rest[0]})
     elif op == "run":
         res = call("run", {"id": rest[0]})
+    elif op == "focus":
+        res = call("focus", {"id": rest[0]})
+    elif op == "layer":
+        on = {"on": True, "off": False, "toggle": "toggle"}[(rest[1] if len(rest) > 1 else "toggle").lower()]
+        res = call("layer", {"id": rest[0], "on": on, "solo": "--both" not in rest})
+    elif op == "cmds":
+        res = call("cmds", {"q": " ".join(rest)})
     elif op == "open":
         res = call("open", {"char": rest[0], "ws": rest[1] if len(rest) > 1 else None})
     else:

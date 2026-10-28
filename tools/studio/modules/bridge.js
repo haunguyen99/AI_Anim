@@ -1,7 +1,8 @@
 // AI Anim Studio — cầu nối Claude ↔ Studio: long-poll /api/studio/poll trên server Home, nhận lệnh, làm, trả kết quả.
 // Claude gửi lệnh bằng tools/studio_cmd.py (server: tools/home/studio_bridge.py). Chạy ở mọi trình duyệt mở Studio.
 // Lệnh: state · vis {name|"*", on: true|false|"toggle"} · select {mesh|joint|null} · joint {name, t?, r?, s?} · bindPose
-//       ws {id} · run {id, args} · open {char, ws}
+//       ws {id} · run {id, args} · open {char, ws} · focus {id: mesh|rig|pose} · layer {id: scene|rig|anim, on, solo} · cmds {q?}
+// Workspace chỉ là bố cục: mọi lệnh chạy được ở workspace nào cũng được (run tự focus sang module của lệnh).
 (function () {
   const B = ST.bridge = { cid: Math.random().toString(36).slice(2, 10), on: true, n: 0 };
   const M = () => ST.mods.mesh, S = () => ST.mods.skel;
@@ -11,7 +12,7 @@
     state() {
       const m = M(), s = S();
       return {
-        char: ST.char ? ST.char.id : null, name: ST.char ? ST.char.name : null, ws: ST.ws, tool: ST.tool,
+        char: ST.char ? ST.char.id : null, name: ST.char ? ST.char.name : null, ws: ST.ws, focus: ST.focus, layers: Object.assign({}, ST.layerOn), tool: ST.tool, tab: ST.curTab ? ST.curTab() : null,
         meshes: m.objects().map(o => ({ name: o.name, vis: o.vis, lock: o.lock, tris: o.idx.length / 3, skin: !!o.skin })),
         joints: s.joints.length, joint: s.sel ? s.sel() : null, posed: s.posed ? s.posed() : false, save: (ST.$("stSave") || {}).textContent || "",
       };
@@ -29,15 +30,29 @@
       if (o) M().olAct(o.id, "pick", {}); return { mesh: o ? o.name : null };
     },
     joint({ name, t, r, s }) {   // t: vị trí cm (tuyệt đối); r: xoay thêm (độ, quanh joint); s: scale thêm — joint con đi theo, mesh skin đi theo
-      if (ST.ws !== "general") ST.setWS("general");
+      ST.setFocus("mesh");
       need(S().joints.some(j => j.name === name), "Không có joint " + name);
       S().select(name); const ch = S().channel, v = ch.vals();
       ch.apply({ t: t || v.t, r: r || [0, 0, 0], s: s || [1, 1, 1] }, true);
       const j = S().joints.find(x => x.name === name); return { name, pos: j.pos.map(x => +x.toFixed(2)), posed: S().posed() };
     },
     bindPose() { S().bindPose(); return { posed: S().posed() }; },
-    ws({ id }) { ST.setWS(id); return { ws: ST.ws }; },
-    run({ id, args }) { need(ST.cmds.get(id), "Không có lệnh " + id); ST.run(id, ...(args || [])); return { ran: id }; },
+    ws({ id }) { need(ST.WS[id], "Không có workspace " + id); ST.setWS(id); return { ws: ST.ws, focus: ST.focus }; },
+    focus({ id }) { need(ST.mods[id] && ST.LAYER_OF[id], "Focus là mesh, rig hoặc pose"); ST.setFocus(id); return { focus: ST.focus, layers: Object.assign({}, ST.layerOn) }; },
+    layer({ id, on, solo }) { need(id in ST.layerOn, "Lớp là scene, rig hoặc anim"); ST.showLayer(id, on === "toggle" ? !ST.layerOn[id] : on !== false, solo); return { layers: Object.assign({}, ST.layerOn) }; },
+    cmds({ q }) {   // danh sách lệnh (để AI biết gọi gì): id, nhãn, menu, module, phím, dùng được ngay không
+      const k = String(q || "").toLowerCase();
+      return [...ST.cmds.values()].filter(c => !c.hidden && (!k || (c.id + " " + c.label + " " + (c.menu || "")).toLowerCase().includes(k)))
+        .map(c => ({ id: c.id, label: c.label, menu: c.menu || "", mod: c.mod || "", key: c.key ? ST.keyLabel(c.key) : "", on: ST.cmdOn(c) }));
+    },
+    async run({ id, args }) {
+      const c = ST.cmds.get(id); need(c, "Không có lệnh " + id);
+      const m = c.mod && ST.mods[c.mod];
+      if (m && !c.keep && ST.focus !== c.mod) ST.setFocus(c.mod);
+      if (m && m.whenReady && !c.keep) await m.whenReady();   // lõi Rig / Pose nạp lười: chờ sẵn sàng hẳn rồi mới chạy
+      need(ST.cmdOn(c), "Lệnh " + id + " chưa dùng được lúc này (thiếu dữ liệu hoặc vùng chọn)");
+      ST.run(id, ...(args || [])); return { ran: id, focus: ST.focus };
+    },
     open({ char, ws }) { const u = new URL("/studio/" + encodeURIComponent(char), location.origin); u.searchParams.set("ws", ws || ST.ws || "general"); setTimeout(() => { location.href = u; }, 50); return { opening: u.pathname + u.search }; },
   };   // chỉ các lệnh có tên ở trên, không chạy mã tuỳ ý
 

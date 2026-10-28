@@ -1,5 +1,5 @@
-// AI Anim Studio — workspace Rig (S3): lõi Rig Lab (modules/rig_engine.js, sinh từ template bằng port_rig.py) chạy trong viewport chung.
-// Năm bước của Rig Lab là năm tab dock (1 Mesh · 2 Khớp · 3 Xương · 4 Skin · 5 Thử khớp). Chọn khớp bằng click / khung, dời bằng gizmo chung,
+// AI Anim Studio — module Rig (S3, lớp Rig): lõi Rig Lab (modules/rig_engine.js, sinh từ template bằng port_rig.py) chạy trong viewport chung.
+// Dùng được ở mọi workspace (W1): Năm bước của Rig Lab là năm panel dock (1 Mesh · 2 Khớp · 3 Xương · 4 Skin · 5 Thử khớp). Chọn khớp bằng click / khung, dời bằng gizmo chung,
 // undo chung, Outliner = cây xương đang dựng, Channel Box = toạ độ khớp. Lưu cùng kho với Rig Lab cũ (<nhân vật>_rig_lab).
 (function () {
   const V = ST.view, esc = ST.esc, ic = ST.ic;
@@ -8,6 +8,14 @@
   const cvEl = ST.$("cv");
   const TOOL2MODE = { sel: "select", move: "translate", rot: "rotate", scl: "scale" }, MODE2TOOL = { select: "sel", translate: "move", rotate: "rot", scale: "scl" };
   const step = () => eng ? eng.get().step : 0;
+  const act = () => ST.focus === "rig" && ST.layerOn.rig;   // lõi Rig nhận chuột / gizmo khi đang focus và lớp Rig hiện
+  // tab dock theo bước: workspace có tab bước đó thì chọn; chỉ có một tab Rig (vd General) thì tab đó đổi sang bước mới
+  const syncTab = n => {
+    const id = "rig:s" + n, L = ST.tabs ? ST.tabs() : [], cur = ST.curTab ? ST.curTab() : null;
+    if (L.includes(id)) return ST.showTab(id);
+    const old = cur && cur.startsWith("rig:s") ? cur : L.find(x => x.startsWith("rig:s"));
+    if (old) { ST.pref.set("tabs:" + ST.ws, L.map(x => x === old ? id : x)); if (cur === old) ST.pref.set("tab:" + ST.ws, id); }
+  };
 
   // ---- mesh đã sửa ở workspace General → DATA (giống MESHLINK của Rig Lab: thay theo tên, dời landmark nếu thân đổi cỡ / vị trí)
   const bbox = a => { const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9]; for (let i = 0; i < a.length; i += 3) for (let k = 0; k < 3; k++) { mn[k] = Math.min(mn[k], a[i + k]); mx[k] = Math.max(mx[k], a[i + k]); } return { mn, mx }; };
@@ -79,13 +87,13 @@
       cam: () => V.active.cam,
       cv: { getBoundingClientRect: () => { const r = cvEl.getBoundingClientRect(), p = V.active.rect; return { left: r.left + p.x, top: r.top + p.y, width: p.w, height: p.h, right: r.left + p.x + p.w, bottom: r.top + p.y + p.h }; } },
       raycaster: (x, y, p) => V.raycaster(x, y, p), toScreen: (w, p) => V.toScreen(w, p),
-      alive: () => me.on && ST.ws === "rig",
-      listen(t, f) { if (t === "pointerdown") downL.push(f); else cvEl.addEventListener(t, e => { if (me.on && ST.ws === "rig") f(e); }); },
-      placeGizmo(c, mode) { if (!me.on || ST.ws !== "rig") return; if (!c) V.gizmo.detach(); else V.gizmo.place(c, grp, mode); },
+      alive: () => me.on && act(),
+      listen(t, f) { if (t === "pointerdown") downL.push(f); else cvEl.addEventListener(t, e => { if (me.on && act()) f(e); }); },
+      placeGizmo(c, mode) { if (!me.on || !act()) return; if (!c) V.gizmo.detach(); else V.gizmo.place(c, grp, mode); },
       onMode(m) { const t = MODE2TOOL[m]; if (t && ST.tool !== t) { ST.tool = t; ST.refresh(); } },
       pushLM: before => push(lmOwner, "Rig: khớp", before),
       pushSkin: m => push({ snap: () => eng.skinSnapshotOf(m), restore: x => { eng.restoreSkin(x); eng.scheduleSkinSave(); } }, "Rig: skin", m),
-      refresh: () => { if (eng && ST.pref.get("tab:rig") !== "s6") ST.pref.set("tab:rig", "s" + step()); ST.refresh(); },   // tab dock theo bước của lõi (trừ khi đang ở bước 6 Vật lý)
+      refresh: () => { if (eng && !onS6()) syncTab(step()); ST.refresh(); },   // tab dock theo bước của lõi (trừ khi đang ở panel 6 Vật lý)
     };
   }
 
@@ -104,7 +112,7 @@
       const D = meshApply(JSON.parse(raw[ST.char.id]));
       const st = await ST.store(ST.rigNs()).get("rig/skeleton");
       if (st && st.source === "none") { D.ref = []; D.refW = {}; }   // đã xoá xương ở Outliner: rig lại từ mesh, không gợi ý xương / skin của FBX
-      root = new THREE.Group(); root.name = "rig"; V.cm.add(root);
+      root = new THREE.Group(); root.name = "rig"; root.visible = ST.layerOn.rig; V.cm.add(root);
       const host = makeHost(root); live = host;
       eng = ST.rigEngine(D, host); key = k; ST.rigEng = () => eng; ST.rigRoot = () => root;   // lõi Rig cho script / Claude (studio_cmd)
       await eng.ready; state = "ready"; ST.rigSetup.bind(eng); if (!st || st.source !== "none") saveSkel();   // vừa xoá xương: chỉ hiện lại khi lưu khớp mới
@@ -127,15 +135,34 @@
     } catch (e) { state = "nodata"; err = e.message || String(e); ST.refresh(); }
   }
 
-  // ---- workspace
-  M.enter = () => { ST.mods.mesh.display("hidden"); if (root) root.visible = true; ensure().then(() => { if (root) root.visible = ST.ws === "rig"; if (eng) { eng.syncScene(); } }); };
-  M.leave = () => { if (root) root.visible = false; V.gizmo.detach(); ST.rigSetup.hide(); };
-  ST.on("tool", t => { if (ST.ws === "rig" && eng) { eng.setMode(TOOL2MODE[t] || "select"); if (step() === 4 && t === "sel") eng.setSkTool("pick"); } });
+  // ---- lớp Rig (hiện / ẩn, nạp lười) + focus
+  M.layer = on => { if (root) root.visible = on; if (on) ensure().then(() => { if (root) root.visible = ST.layerOn.rig; if (eng) eng.syncScene(); ST.refresh(); }); else { if (ST.focus === "rig") V.gizmo.detach(); ST.rigSetup.hide(); } };
+  M.focusIn = () => { ensure().then(() => { if (eng && ST.focus === "rig") { eng.setMode(TOOL2MODE[ST.tool] || "select"); eng.syncScene(); } }); };
+  M.focusOut = () => { V.gizmo.detach(); ST.rigSetup.hide(); };
+  ST.on("ws", () => { if (eng) syncTab(step()); });   // đổi workspace: tab Rig theo bước đang làm, không kéo lõi về bước của tab cũ
+  M.loaded = () => !!eng;
+  // chờ lõi nạp xong (cầu nối AI gọi lệnh ngay sau khi focus)
+  M.whenReady = async () => {
+    if (!ST.char) return false; ensure(); const busy = () => ["none", "loading", "building"].includes(state);
+    for (let i = 0; i < 400 && busy(); i++) await new Promise(r => setTimeout(r, 100));
+    return state === "ready";
+  };
+  M.loadMsg = () => !ST.char ? "Chưa mở nhân vật" : ({ loading: "Đang nạp rig…", building: "Đang dựng dữ liệu rig…", nodata: "Chưa có dữ liệu rig: mở panel Rig để dựng", error: "Lỗi nạp rig: " + err }[state] || "Chưa nạp: bấm mắt để nạp");
+  M.nodeLabel = () => eng ? "Rig · bước " + step() + "/5" : "Rig";
+  ST.on("tool", t => { if (ST.focus === "rig" && eng) { eng.setMode(TOOL2MODE[t] || "select"); if (step() === 4 && t === "sel") eng.setSkTool("pick"); } });
   ST.on("char", () => { dispose(); raw = {}; open = null; state = "none"; });
-  ST.on("rig:cleared", () => { dispose(); raw = {}; state = "none"; if (ST.ws === "rig") ensure(); });   // xoá / khôi phục xương ở General: dựng lại lõi Rig
+  ST.on("rig:cleared", () => { dispose(); raw = {}; state = "none"; if (ST.layerOn.rig || ST.focus === "rig") ensure(); });   // xoá / khôi phục xương ở General: dựng lại lõi Rig
 
   // ---- chuột (viewport gọi)
   M.canBox = () => step() === 2;
+  // click trúng khớp (bước 2) hoặc mesh của rig → viewport chuyển focus sang Rig
+  M.hit = (x, y, p) => {
+    if (!eng || !ST.layerOn.rig || !root) return false;
+    const g = eng.get(), w = new THREE.Vector3(), R = V.TM && V.TM.on ? 26 : 12;
+    if (step() === 2 && Object.values(g.LM).some(q => { if (!Array.isArray(q)) return false; const s = V.toScreen(w.set(q[0], q[1], q[2]).applyMatrix4(V.cm.matrixWorld), p); return Math.hypot(s.x - x, s.y - y) < R; })) return true;
+    const ms = []; root.traverse(o => { if (o.isMesh && o.visible) ms.push(o); });
+    return V.raycaster(x, y, p).intersectObjects(ms, false).length > 0;
+  };
   M.pick = (x, y, e, p) => { if (!eng) return; const s = step(); if (s === 2) eng.pickLM(x, y, e, p); else if (s >= 4) eng.pickJoint(e); };
   M.box = (x0, y0, x1, y1, e, p) => { if (eng && step() === 2) eng.boxLM(x0, y0, x1, y1, e, p); };
   M.pointerDown = (e, p) => { if (!eng || !eng.wantsSkinPointer(e)) return false; live.downL.forEach(f => f(e)); return true; };
@@ -163,7 +190,7 @@
 
   // ---- Outliner: mesh của rig + cây xương đang dựng (bấm để chọn khớp ở bước 2, chọn xương ở bước 4–5)
   M.outline = () => {
-    if (!eng) return ST.mods.mesh.outline ? ST.mods.mesh.outline().filter(r => typeof r.id === "number") .map(r => Object.assign({}, r, { del: false, rename: false, lock: undefined })) : [];
+    if (!eng) return [];
     if (!open) open = new Set(ST.pref.get("rig:open:" + ST.char.id, null) || ["root", "Root_M", "Spine1_M", "Chest_M"]);
     const g = eng.get(), rows = [{ id: "m:body", d: 0, label: g.DATA.body.name || "Body", icon: "mesh", vis: g.vis.body }];
     (g.DATA.clothes || []).forEach((c, i) => rows.push({ id: "m:cloth" + i, d: 0, label: c.name, icon: "mesh", vis: g.vis.cloth }));
@@ -186,9 +213,10 @@
   };
 
   // ---- dock: 5 bước = 5 tab
-  const onS6 = () => ST.pref.get("tab:rig") === "s6";
+  const onS6 = () => !!ST.curTab && ST.curTab() === "rig:s6";
   M.panelKey = () => state + ":" + (eng ? step() : 0) + (onS6() ? ":s6:" + ST.rigSetup.ver : "");
   M.panel = tab => {
+    if (ST.char && state === "none") setTimeout(ensure, 0);   // panel Rig mở ở workspace nào cũng nạp lõi (lớp vẫn ẩn nếu đang tắt)
     if (!ST.char) return '<p class="note">Cảnh trống: mở nhân vật (Ctrl+O) hoặc nhập FBX (Ctrl+Shift+I) trước.</p>';
     if (state === "loading" || state === "none") return '<div class="sub">Đang nạp rig…</div>';
     if (state === "building") return '<div class="sub">Đang dựng dữ liệu rig (gợi ý khớp từ mesh, mẫu ngón từ xương khách)… khoảng vài chục giây.</div>';
@@ -211,26 +239,25 @@
     if (!eng) return ST.char.name + " · rig " + ({ loading: "đang nạp", nodata: "chưa có dữ liệu", building: "đang dựng", error: "lỗi" }[state] || "");
     const g = eng.get(); return ST.char.name + " · Rig bước " + g.step + "/5" + (g.S.size ? " · chọn " + g.S.size + " khớp" : "") + (g.saveMsg ? " · " + g.saveMsg : "");
   };
-  M.timeline = () => '<span class="sub">Timeline (Pose, S4)</span><div class="tlbar"></div>';
 
   // ---- lệnh
-  const C = o => ST.cmd(Object.assign({ ws: ["rig"] }, o)), R = () => !!eng;
-  ["1 Mesh", "2 Khớp", "3 Xương", "4 Skin", "5 Thử khớp"].forEach((l, i) => C({ id: "rig.step" + (i + 1), menu: "Rig", sep: i === 0, icon: "s" + (i + 1), label: "Bước " + l, key: String(i + 1), on: R, check: () => step() === i + 1, run: () => { ST.pref.set("tab:rig", "s" + (i + 1)); eng.go(i + 1); ST.refresh(); } }));
+  const C = o => ST.cmd(Object.assign({ mod: "rig" }, o)), R = () => !!eng;
+  ["1 Mesh", "2 Khớp", "3 Xương", "4 Skin", "5 Thử khớp"].forEach((l, i) => C({ id: "rig.step" + (i + 1), menu: "Rig", sep: i === 0, icon: "s" + (i + 1), label: "Bước " + l, key: String(i + 1), on: R, check: () => step() === i + 1, run: () => { syncTab(i + 1); eng.go(i + 1); ST.refresh(); } }));
   C({ id: "rig.mirror", menu: "Rig", sep: true, label: "Đối xứng R → L", icon: "sym", on: R, check: () => eng && eng.get().mirror, run: () => eng.set("mirror", !eng.get().mirror) });
   C({ id: "rig.reset", menu: "Rig", label: "Khớp về gợi ý tự động", icon: "reset", on: R, run: () => { const g = eng.get(); for (const k in g.DATA.auto.landmarks) g.LM[k] = g.DATA.auto.landmarks[k].slice(); eng.initFingers(g.LM, true); eng.syncScene(); eng.dirty(); eng.commit(); eng.renderPanel(); } });
   // FBX đã có xương + skin: dùng luôn làm rig (đặt khớp theo xương khách + dùng skin khách), không cần đặt khớp / tô skin lại
   const useFbx = () => { eng.go(2); eng.adoptGuestJoints(); eng.go(4); eng.adoptGuestSkin(); ST.toast("Đã dùng joint + skin của FBX làm rig."); };
-  ST.cmd({ id: "rig.useFbx", menu: "Rig", label: "Dùng joint + skin của FBX", icon: "rig", ws: ["general", "rig"],
-    on: () => ST.ws !== "rig" || (R() && eng.guestJ() && eng.guestS()),
+  ST.cmd({ id: "rig.useFbx", menu: "Rig", label: "Dùng joint + skin của FBX", icon: "rig", mod: "rig",
+    on: () => !eng || (eng.guestJ() && eng.guestS()),
     run: async () => {
-      if (ST.ws !== "rig") { ST.setWS("rig"); for (let i = 0; i < 100 && !(eng && state === "ready"); i++) await new Promise(r => setTimeout(r, 100)); }
+      await M.whenReady();   // lõi Rig nạp lười (W1): chờ xong rồi dùng
       if (!eng || !eng.guestJ() || !eng.guestS()) return ST.toast("Nhân vật này không có xương + skin từ FBX (hoặc đã xoá xương).");
       useFbx();
     } });
   C({ id: "rig.guestJ", menu: "Rig", label: "Đặt khớp theo xương khách", icon: "rig", on: () => R() && eng.guestJ(), run: () => eng.adoptGuestJoints() });
   C({ id: "rig.export", menu: "Rig", sep: true, label: "Xuất rig.json", icon: "export", on: R, run: () => eng.exportRig() });
   C({ id: "rig.build", menu: "Rig", label: "Dựng lại dữ liệu rig", on: () => !!ST.char && state !== "building", run: buildData });
-  C({ id: "skin.compute", menu: "Skin", label: "Tính skin", icon: "soft", on: R, run: () => { ST.pref.set("tab:rig", "s4"); eng.go(4); eng.computeSkin(); } });
+  C({ id: "skin.compute", menu: "Skin", label: "Tính skin", icon: "soft", on: R, run: () => { syncTab(4); eng.go(4); eng.computeSkin(); } });
   C({ id: "skin.guest", menu: "Skin", label: "Dùng skin khách", on: () => R() && eng.guestS(), run: () => { eng.go(4); eng.adoptGuestSkin(); } });
   C({ id: "skin.pick", menu: "Skin", sep: true, label: "Chọn joint", icon: "joint", on: () => R() && !!eng.get().SK, check: () => eng && eng.get().skTool === "pick", run: () => eng.setSkTool("pick") });
   C({ id: "skin.brush", menu: "Skin", label: "Cọ tô weight", icon: "smooth", key: "b", on: () => R() && !!eng.get().SK, check: () => eng && eng.get().skTool === "brush", run: () => { if (step() !== 4) eng.go(4); eng.setSkTool("brush"); } });
@@ -241,7 +268,7 @@
   C({ id: "skin.weights", menu: "Skin", sep: true, label: "Xuất weights.json", icon: "export", on: () => R() && !!eng.get().SK, run: () => eng.exportWeights() });
   C({ id: "rig.gltf", menu: "File", label: "Xuất glTF (rig + skin)", icon: "export", on: () => R() && !!eng.get().SK, run: () => eng.exportGltf() });
   C({ id: "rig.toPose", menu: "Rig", label: "Gửi rig sang Pose…", icon: "pose", on: () => R() && !!eng.get().SK, run: sendToPose });
-  const vis = (id, label, k, getv) => C({ id: "rig.v." + id, menu: "Display", label, on: R, check: () => eng && getv(eng.get()), run: () => eng.set(k, !getv(eng.get())) });
+  const vis = (id, label, k, getv) => C({ id: "rig.v." + id, menu: "Display", keep: true, label, on: R, check: () => eng && getv(eng.get()), run: () => eng.set(k, !getv(eng.get())) });
   vis("body", "Rig: thân", "visBody", g => g.vis.body); vis("cloth", "Rig: quần áo", "visCloth", g => g.vis.cloth); vis("props", "Rig: prop", "visProps", g => g.vis.props.every(Boolean));
   vis("wire", "Rig: lưới mesh", "showWire", g => g.showWire); vis("skel", "Rig: xương (bước 2)", "showSkel", g => g.showSkel); vis("fing", "Rig: khớp ngón", "showFing", g => g.showFing); vis("ref", "Rig: xương khách (đối chiếu)", "showRef", g => g.showRef);
 
