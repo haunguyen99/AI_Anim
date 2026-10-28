@@ -9,6 +9,16 @@ Bước 1 của kế hoạch gộp Rig / Pose / Review thành một ứng dụng
 - **Thứ tự chọn nơi lưu:** db claude.ai (khi mở trên claude.ai) → kho trên máy (khi Home server đang chạy) → trình duyệt / tải file `.json` như cũ.
 - **Nút Lưu trữ** (icon cơ sở dữ liệu, góc trên phải mỗi Lab): cho biết nơi lưu đang dùng (chấm xanh = có kho, vàng = chưa), **Xuất file** (`<ns>_<ngày>.json`, định dạng `ddc-store-v1`) và **Mở file** (ghi lại vào kho; tải lại trang để thấy). Hoạt động cả khi lưu bằng db claude.ai.
 
+## File cảnh `.aas` (chuyển cả nhân vật sang máy khác)
+
+Studio **Tệp → Lưu cảnh…** (Ctrl+Shift+S) tải một file `<nhân vật>_<ngày>.aas`, giống `.ma` / `.blend`: zip gồm `manifest.json` (định dạng `ai-anim-scene-v1`, mục sổ `work/clips.json` của nhân vật, anim, dự án, dòng POSES) và file thật dưới `files/work/...`:
+
+- `work/rig_lab/chars/<id>.json`, `chars/<id>/` (mesh gốc cm, texture), thư mục tham chiếu (`ref_dir`, `names_from`), trang Rig `work/rig_lab/pages/<id>/`.
+- Kho `work/store/<nhân vật>_mesh_lab`, `_rig_lab`, `_studio`; với mỗi anim: kho Pose (`<tiêu đề>_pose_lab`), `<anim>_studio`, model glTF các phiên bản (`work/pose_lab/models/`), file chữ (md, json, txt) trong thư mục anim.
+- **Không gói:** video ref, playblast, FBX gốc, kho Review. Cần thì chép tay.
+
+**Tệp → Mở cảnh…** (Ctrl+Shift+O, cũng có ở ô Cảnh trống) đọc manifest trước, báo nếu máy đã có nhân vật đó (sẽ ghi đè), rồi chép file, gộp sổ, thêm dòng POSES còn thiếu và build lại trang Pose / Review. Chỉ nhận đường dẫn trong `work/` (chặn `..`, `work/store/_sys`, file ở gốc `work/`). Mã: `tools/home/scene_file.py` (có CLI `save` / `open --dry`), `tools/studio/modules/scene.js`.
+
 ## Cho Claude
 
 Ghi chú review và vòng gửi của `/check_fb` khi chạy cục bộ nằm ở `work/store/<ns>/notes/` và `rounds/`; Pose Lab ở `adjusts/`, `keys/`, `anims/`, `rounds/`; Rig Lab ở `rig/` (`landmarks`, `skin`, `gates`). Đọc trực tiếp các file đó.

@@ -332,7 +332,7 @@
   // ---------------------------------------------------------------- cảnh trống: ô gợi ý giữa viewport
   ST.on("empty", async () => {
     const el = $("empty"); el.hidden = false;
-    el.innerHTML = `<b>Cảnh trống</b><div class="row"><button class="on" data-c="file.fbx">${ic("import")} Nhập FBX…</button><button data-c="file.open">${ic("open")} Mở nhân vật…</button></div><div class="sub">Mở nhanh:</div><div class="list" id="emptyList"><span class="sub">Đang tải…</span></div>`;
+    el.innerHTML = `<b>Cảnh trống</b><div class="row"><button class="on" data-c="file.fbx">${ic("import")} Nhập FBX…</button><button data-c="file.open">${ic("open")} Mở nhân vật…</button><button data-c="file.sceneOpen" title="File .aas lưu từ Tệp → Lưu cảnh… (máy này hoặc máy khác)">${ic("open")} Mở cảnh…</button></div><div class="sub">Mở nhanh:</div><div class="list" id="emptyList"><span class="sub">Đang tải…</span></div>`;
     let L = []; try { L = await (await fetch("/api/chars")).json(); } catch (e) {}
     const last = ST.pref.get("char", null); L.sort((a, b) => (b.id === last) - (a.id === last));
     $("emptyList").innerHTML = L.map(c => `<a class="it" href="/studio/${encodeURIComponent(c.id)}?ws=${encodeURIComponent(ST.ws || "general")}">${ic("mesh")}<span>${esc(c.name)}</span><small>${c.id === last ? "mở lần trước" : esc(c.id)}</small></a>`).join("") || '<span class="sub">Chưa có nhân vật.</span>';

@@ -107,7 +107,7 @@ Project Spine nằm ở `work/<game>/spine/<anim>/`, ví dụ `work/pirate_goldr
 - Model nhân vật đã xuất cho Pose Lab (`work/pose_lab/models/`), ảnh ref (`work/pose_lab/refs/`), trang đã dựng (`pages/`).
 - Video ref, playblast (`work/review_page/clips/`), FBX đã xuất, file `.blend` / `.casc`.
 - Mesh gốc của nhân vật (vd `work/rig_lab/ref_gaygor/`): thiếu thì Mesh Lab và Rig Lab của nhân vật đó không dựng lại được (`work/mesh_lab/build_mesh.py <nhân vật>`, `work/rig_lab/build_char.py <id>`). Trang Pose / Review của anim cũ cũng cần model và video gốc; Home vẫn liệt kê anim từ `work/clips.json` và mở link claude.ai nếu chưa có trang trên máy.
-- `work/store/`: dữ liệu làm việc của riêng mỗi máy. Muốn chuyển sang máy khác thì xuất file `.json` bằng nút Lưu trữ rồi mở lại ở máy kia.
+- `work/store/`: dữ liệu làm việc của riêng mỗi máy. Muốn chuyển một nhân vật sang máy khác: trong Studio **Tệp → Lưu cảnh…** (Ctrl+Shift+S) ra một file `.aas` (mesh, rig, skin, ghi chú, các phiên bản Pose), máy kia **Tệp → Mở cảnh…** (Ctrl+Shift+O). Chỉ một kho thì vẫn dùng nút Lưu trữ (xuất / mở `.json`).
 - `.mcp.json` có sẵn trong repo chỉ khai báo server Spine; muốn thêm server khác thì gộp vào file đó trên máy bạn.
 
 Muốn làm tiếp clip của người khác thì xin họ thư mục `work/<clip>/` và model tương ứng. Làm nhân vật mới thì bắt đầu bằng `/rig` hoặc `/new_clip` với FBX nhân vật của bạn.

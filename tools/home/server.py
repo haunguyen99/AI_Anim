@@ -15,6 +15,7 @@ import rig_data
 import studio_bridge
 import pose_data
 import spine_live
+import scene_file
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -500,7 +501,12 @@ def char_texture(b):
     return fbx_import.set_texture(b.get("id", ""), base64.b64decode(b.get("img_b64") or ""), b.get("filename", ""))
 
 
-ROUTES = {"/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
+def scene_open(b):
+    """Studio → Tệp → Mở cảnh…: bung file .aas (base64); dry=True chỉ đọc manifest."""
+    return scene_file.open_scene(base64.b64decode(b.get("zip_b64") or ""), dry=bool(b.get("dry")))
+
+
+ROUTES = {"/api/scene/open": scene_open, "/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
           "/api/clip/update": update_clip, "/api/project/update": update_project}
 
 
@@ -626,6 +632,20 @@ class H(SimpleHTTPRequestHandler):
             except ValueError as e:
                 return self.send_json({"error": str(e)}, 400)
             return self.send_json(d) if d else self.send_json({"error": "chưa có dữ liệu rig", "build": True}, 404)
+        m = re.match(r"^/api/scene/save/([^/]+)$", path)   # Tệp → Lưu cảnh…: tải file .aas của nhân vật (scene_file.py)
+        if m:
+            try:
+                data = scene_file.save(m.group(1))
+            except ValueError as e:
+                return self.send_json({"error": str(e)}, 400)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/zip")
+            self.send_header("Content-Disposition", 'attachment; filename="%s_%s.aas"' % (m.group(1), date.today().isoformat()))
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(data)
+            return
         m = re.match(r"^/api/char/([^/]+)$", path)
         if m:
             c = studio_char(m.group(1))
