@@ -66,7 +66,10 @@ def _convert(data):
     out = []
     for m in meshes:
         V = [conv(p) for p in zip(*[iter(m["verts"])] * 3)]
-        out.append({"name": m["name"], "verts": [x for p in V for x in p], "tris": m["tris"], "weights": m.get("weights") or {}})
+        o = {"name": m["name"], "verts": [x for p in V for x in p], "tris": m["tris"], "weights": m.get("weights") or {}}
+        if m.get("uvc") and len(m["uvc"]) == len(m["tris"]) * 2: o["uvc"] = m["uvc"]   # UV theo góc tam giác
+        if m.get("tex"): o["tex"] = m["tex"]
+        out.append(o)
     for s in skel:
         if s.get("bind_pos"):
             s["bind_pos"] = conv(s["bind_pos"])
@@ -85,7 +88,8 @@ def parse(data):
     for m in meshes:
         mn, mx = _bbox(m["verts"]) if m["verts"] else ([0] * 3, [0] * 3)
         res.append({"name": m["name"], "verts": m["verts"], "tris": m["tris"], "bones": len(m["weights"]),
-                    "min": [round(v, 1) for v in mn], "max": [round(v, 1) for v in mx]})
+                    "min": [round(v, 1) for v in mn], "max": [round(v, 1) for v in mx],
+                    **({"uvc": m["uvc"]} if m.get("uvc") else {}), **({"tex": m["tex"]} if m.get("tex") else {})})
     return {"meshes": res, "bones": len(skel), **info}
 
 
@@ -114,6 +118,31 @@ def new_char(data, name, filename=""):
            "note": "Rig chưa dựng: đặt clothes / cfg trước khi chạy build_char.py"}
     os.makedirs(os.path.join(RIG, "chars", cid), exist_ok=True)
     json.dump(cfg, open(os.path.join(RIG, "chars", cid + ".json"), "w", encoding="utf8"), ensure_ascii=False, indent=1)
-    json.dump([{"name": m["name"], "verts": m["verts"], "tris": m["tris"]} for m in meshes],
+    keep = ("name", "verts", "tris", "uvc", "tex")
+    json.dump([{k: m[k] for k in keep if k in m} for m in meshes],
               open(os.path.join(RIG, "chars", cid, "mesh_cm.json"), "w"), separators=(",", ":"))
-    return {"id": cid, "name": name, "meshes": len(meshes), "bones": len(skel), **info}
+    texs = sorted({m["tex"] for m in meshes if m.get("tex")})
+    return {"id": cid, "name": name, "meshes": len(meshes), "bones": len(skel), "textures": texs, **info}
+
+
+def set_texture(cid, data, filename=""):
+    """Gắn ảnh texture cho nhân vật: mọi định dạng PIL đọc được (tga, png, jpg, psd phẳng…) → chars/<id>/texture.png.
+    Ghi tên file gốc vào chars/<id>.json (khóa "texture")."""
+    from io import BytesIO
+    from PIL import Image
+    cid = slug(cid or "")
+    cfgp = os.path.join(RIG, "chars", cid + ".json")
+    if not cid or not os.path.isfile(cfgp):
+        raise ValueError("không có nhân vật '%s'" % cid)
+    try:
+        im = Image.open(BytesIO(data))
+        im = im.convert("RGBA" if im.mode in ("RGBA", "LA", "P") else "RGB")
+    except Exception as e:
+        raise ValueError("không đọc được ảnh: %s" % e)
+    d = os.path.join(RIG, "chars", cid)
+    os.makedirs(d, exist_ok=True)
+    im.save(os.path.join(d, "texture.png"))
+    cfg = json.load(open(cfgp, encoding="utf8"))
+    cfg["texture"] = filename or "texture"
+    json.dump(cfg, open(cfgp, "w", encoding="utf8"), ensure_ascii=False, indent=1)
+    return {"id": cid, "w": im.size[0], "h": im.size[1], "file": filename}

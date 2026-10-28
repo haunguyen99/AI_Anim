@@ -24,7 +24,36 @@
     o.color = o.color || COLORS[(o.id - 1) % COLORS.length];
     buildGeo(o); OBJ.push(o); return o;
   }
-  function disposeObj(o) { root.remove(o.mesh); o.mesh.geometry.dispose(); o.mesh.material.dispose(); o.wire.material.dispose(); o.pts.material.dispose(); }
+  function disposeObj(o) { dropTex(o); root.remove(o.mesh); o.mesh.geometry.dispose(); o.mesh.material.dispose(); o.wire.material.dispose(); o.pts.material.dispose(); }
+
+  // ---------------------------------------------------------------- texture (UV theo góc tam giác, không tách đỉnh)
+  // o.uvc: Float32Array 2 số × 3 góc × số tam giác (từ FBX, server /api/char). Lớp o.tex: mesh không chỉ số (mỗi góc một đỉnh),
+  // vị trí gom từ hình đang hiển thị của o.mesh theo o.idx → đi theo pose / sửa điểm; không nhận raycast (chọn vẫn bằng o.mesh).
+  let TEX = null, showTex = ST.pref.get("mesh:tex", true);
+  const texOk = o => !!(o.uvc && o.uvc.length === o.idx.length * 2);
+  function dropTex(o) { if (!o.tex) return; o.mesh && o.mesh.remove(o.tex); o.tex.geometry.dispose(); o.tex.material.dispose(); o.tex = null; }
+  function syncTex(o) {   // tạo / cập nhật lớp texture theo hình đang hiển thị
+    if (!TEX || !texOk(o)) { dropTex(o); return; }
+    const src = o.mesh.geometry.attributes.position.array, I = o.idx, n = I.length;
+    if (!o.tex) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(n * 3), 3));
+      g.setAttribute("uv", new THREE.BufferAttribute(o.uvc, 2));
+      o.tex = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ map: TEX, side: THREE.DoubleSide }));
+      o.tex.raycast = () => {}; o.mesh.add(o.tex);
+    }
+    const g = o.tex.geometry, P = g.attributes.position.array;
+    for (let k = 0; k < n; k++) { const v = 3 * I[k]; P[3 * k] = src[v]; P[3 * k + 1] = src[v + 1]; P[3 * k + 2] = src[v + 2]; }
+    g.attributes.position.needsUpdate = true; g.computeVertexNormals(); g.computeBoundingSphere();
+  }
+  function loadTex(url) {
+    if (!url) { TEX = null; OBJ.forEach(o => { dropTex(o); applyVis(o); }); return; }
+    new THREE.TextureLoader().load(url, t => {
+      t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;   // bảng màu: giữ ô màu sắc nét
+      if (TEX) TEX.dispose(); TEX = t; OBJ.forEach(o => { dropTex(o); syncTex(o); applyVis(o); }); ST.refresh && ST.refresh();
+    }, undefined, () => say("Không nạp được texture " + url));
+  }
+  M.texInfo = () => ({ loaded: !!TEX, on: showTex, meshes: OBJ.filter(texOk).length, of: OBJ.length });
   function buildGeo(o) {
     if (o.mesh) disposeObj(o);
     const g = new THREE.BufferGeometry();
@@ -35,7 +64,8 @@
     o.wire = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x1b2230, wireframe: true, transparent: true, opacity: 0.22, depthWrite: false }));
     o.pts = new THREE.Points(g, new THREE.PointsMaterial({ size: 3.5, sizeAttenuation: false, color: 0x1b2230 }));
     o.mesh.add(o.wire); o.mesh.add(o.pts); root.add(o.mesh); o.mirror = null; o.adj = null; o.def = null;
-    applyVis(o); if (o.skin) deform(o, posed());
+    if (o.skin) deform(o, posed()); else syncTex(o);
+    applyVis(o);
   }
 
   // ---------------------------------------------------------------- skin FBX: mesh đi theo joint (workspace General)
@@ -55,7 +85,7 @@
   const ID16 = new M4().elements;
   function deform(o, on) {
     const g = o.mesh.geometry, attr = g.attributes.position;
-    if (!on || !o.skin) { if (attr.array !== o.pos) { g.setAttribute("position", new THREE.BufferAttribute(o.pos, 3)); g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox(); } return; }
+    if (!on || !o.skin) { if (attr.array !== o.pos) { g.setAttribute("position", new THREE.BufferAttribute(o.pos, 3)); g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox(); } syncTex(o); return; }
     const n = nV(o), P = o.pos, out = o.def && o.def.length === P.length ? o.def : (o.def = new Float32Array(P.length)), { bones, B, W } = o.skin;
     const E = bones.map(b => { const m = ST.mods.skel.skinMat(b); return m ? m.elements : ID16; });
     for (let i = 0; i < n; i++) {
@@ -65,16 +95,20 @@
       out[3 * i] = ox; out[3 * i + 1] = oy; out[3 * i + 2] = oz;
     }
     if (attr.array !== out) g.setAttribute("position", new THREE.BufferAttribute(out, 3)); else attr.needsUpdate = true;
-    g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox();
+    g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox(); syncTex(o);
   }
   ST.on("skel:pose", () => { const on = posed(); OBJ.forEach(o => deform(o, on)); placePivot && placePivot(); });
   const frozen = () => posed() && (mode === "o" ? [...selO].some(i => (get(i) || {}).skin) : !!(active && active.skin));   // mesh skin đang pose: không sửa đỉnh
-  function touchGeo(o, full) { const g = o.mesh.geometry; g.attributes.position.needsUpdate = true; g.computeVertexNormals(); if (full) { g.computeBoundingSphere(); g.computeBoundingBox(); } }
+  function touchGeo(o, full) { const g = o.mesh.geometry; g.attributes.position.needsUpdate = true; g.computeVertexNormals(); if (full) { g.computeBoundingSphere(); g.computeBoundingBox(); } if (o.tex) syncTex(o); }
   function applyVis(o) {
     const edit = style === "edit", mat = o.mesh.material;
     o.mesh.visible = o.vis && style !== "hidden"; o.wire.visible = edit && showWire; o.pts.visible = edit && mode === "v" && o === active;
     mat.transparent = style === "rig"; mat.opacity = style === "rig" ? 0.35 : 1; mat.depthWrite = style !== "rig"; mat.color.setHex(o.color);
-    mat.emissive.setHex(edit && selO.has(o.id) && mode === "o" ? 0x2a3f7a : 0x000000);
+    const sel = edit && selO.has(o.id) && mode === "o" ? 0x2a3f7a : 0x000000;
+    mat.emissive.setHex(sel);
+    const tex = !!(o.tex && showTex && edit);   // texture chỉ ở kiểu hiển thị sửa (kiểu rig mờ giữ màu đơn)
+    if (o.tex) { o.tex.visible = tex; o.tex.material.emissive.setHex(sel); }
+    mat.colorWrite = !tex;   // mesh gốc vẫn ghi độ sâu (bị polygonOffset đẩy lùi) và nhận click chọn
   }
   function allVis() { OBJ.forEach(applyVis); }
   function removeObj(o) { disposeObj(o); OBJ = OBJ.filter(x => x !== o); selO.delete(o.id); if (active === o) active = OBJ[0] || null; }
@@ -84,7 +118,7 @@
   ST.on("focus", () => { const want = shownNow() ? "edit" : "hidden"; if (style !== want) M.display(want); });
 
   // ---------------------------------------------------------------- undo (lịch sử chung)
-  M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice(), skin: o.skin || null, piv: o.piv || null, zero: o.zero || null })), cp: cPiv });
+  M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice(), uvc: o.uvc || null, skin: o.skin || null, piv: o.piv || null, zero: o.zero || null })), cp: cPiv });
   M.restore = s => {
     OBJ.slice().forEach(disposeObj); OBJ = []; TS = null;
     s.o.forEach(d => { const o = Object.assign({}, d); buildGeo(o); OBJ.push(o); });
@@ -448,7 +482,11 @@
   M.save = save;
   function loadMeshes(list) {
     OBJ.slice().forEach(disposeObj); OBJ = []; selO.clear(); clearSel(); TS = null;
-    list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length], skin: skinOf(m.name, m.verts.length / 3), piv: m.piv ? new V3().fromArray(m.piv) : null, zero: m.zero ? new V3().fromArray(m.zero) : null }));
+    const uvOf = m => {   // UV từ FBX; bản đã sửa (kho mesh/edit) không lưu UV: lấy của mesh gốc cùng tên nếu tam giác y nguyên
+      const src = m.uvc ? m : (ORIG || []).find(x => x.name === m.name && x.uvc && x.tris.length === m.tris.length);
+      return src && src.uvc.length === m.tris.length * 2 ? Float32Array.from(src.uvc) : null;
+    };
+    list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length], skin: skinOf(m.name, m.verts.length / 3), uvc: uvOf(m), piv: m.piv ? new V3().fromArray(m.piv) : null, zero: m.zero ? new V3().fromArray(m.zero) : null }));
     active = OBJ[OBJ.length - 1] || null; if (active) selO = new Set([active.id]); allVis();
   }
   // Nhập mesh từ FBX (đã đổi cm, Y lên ở server): "replace" thay mesh trùng tên (giữ màu, ẩn/khoá), còn lại thêm mới
@@ -456,7 +494,8 @@
     pushUndo("Nhập FBX"); let rep = 0, add = 0;
     list.forEach(m => {
       const pos = Float32Array.from(m.verts), idx = Uint32Array.from(m.tris), o = how === "replace" && OBJ.find(x => x.name === m.name);
-      if (o) { o.pos = pos; o.idx = idx; buildGeo(o); rep++; } else { makeObj(m.name, pos, idx); add++; }
+      const uvc = m.uvc && m.uvc.length === m.tris.length * 2 ? Float32Array.from(m.uvc) : null;
+      if (o) { o.pos = pos; o.idx = idx; o.uvc = uvc; buildGeo(o); rep++; } else { makeObj(m.name, pos, idx, { uvc }); add++; }
     });
     clearSel(); TS = null; mode = "o"; allVis(); changed(); refreshSel(); V.frameAll();
     return { rep, add };
@@ -479,7 +518,7 @@
     try { const s = await store.get("mesh/edit"); if (s && s.meshes && s.meshes.length) { src = s.meshes; editAt = s.at || "edit"; from = "đã sửa " + String(s.at || "").slice(0, 16).replace("T", " "); } } catch (e) { console.error(e); }
     RIGSKIN = null; try { const d = await ST.store(ST.rigNs()).get("rig/skin"); if (d && d.names && d.nv) RIGSKIN = d; } catch (e) {}
     try { const k = await ST.store(ST.rigNs()).get("rig/skeleton"); ST.rigState = { source: k && k.source === "none" ? "none" : k && k.joints && k.joints.length ? "rig" : "guest" }; } catch (e) {}
-    loadMeshes(src); ST.saveState("Đã nạp bản " + from);
+    TEX = null; loadMeshes(src); ST.saveState("Đã nạp bản " + from); loadTex(ch.texture);
   });
   ST.on("rig:skin", d => {   // vừa tính / tô skin ở Rig: mesh ở General đi theo skin mới
     if (!d || !d.names) return; RIGSKIN = d; const on = posed();
@@ -678,6 +717,28 @@
   C({ id: "mesh.ground", menu: "Mesh", sep: true, label: "Đặt xuống sàn", icon: "floor", run: opGround });
   C({ id: "mesh.height", menu: "Mesh", label: "Chiều cao cả cảnh…", icon: "height", run: () => opHeight() });
   C({ id: "mesh.wire", menu: "Display", sep: true, keep: true, label: "Lưới mesh (wireframe)", icon: "wire", key: "v", check: () => showWire, run: () => { showWire = !showWire; ST.pref.set("mesh:wire", showWire); allVis(); } });
+  C({ id: "view.tex", menu: "Display", keep: true, label: "Texture", icon: "image", tip: "Hiện màu texture (UV từ FBX). Gắn ảnh: Tệp → Gắn texture…",
+      check: () => showTex, run: () => { showTex = !showTex; ST.pref.set("mesh:tex", showTex); allVis(); if (showTex && !TEX) say(OBJ.some(texOk) ? "Chưa gắn ảnh texture: Tệp → Gắn texture…" : "Mesh không có UV (nhập lại FBX để lấy UV)."); } });
+  function texDialog() {
+    if (!ST.char) return say("Mở nhân vật trước.");
+    ST.dialog("Gắn texture", `<div class="row"><input type="file" id="texIn" accept="image/*,.tga,.psd,.tif,.tiff"></div>
+      <p class="note">Ảnh texture cho ${esc(ST.char.name)} (tga / png / jpg…). Server đổi sang PNG, lưu ở work/rig_lab/chars/${esc(ST.char.id)}/texture.png.
+      ${(() => { const n = [...new Set((ORIG || []).map(m => m.tex).filter(Boolean))]; return n.length ? "FBX dùng: <b>" + n.map(esc).join(", ") + "</b>" : ""; })()}</p><div class="note" id="texMsg"></div>`, b => {
+      b.querySelector("#texIn").onchange = async e => {
+        const f = e.target.files[0], msg = b.querySelector("#texMsg"); if (!f) return; msg.textContent = "Đang gửi " + f.name + "…";
+        try {
+          const data = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = () => rej(r.error); r.readAsDataURL(f); });
+          const r = await fetch("/api/char/texture", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: ST.char.id, img_b64: data, filename: f.name }) });
+          const j = await r.json(); if (!j.ok) throw new Error(j.error || r.status);
+          loadTex("/work/rig_lab/chars/" + encodeURIComponent(ST.char.id) + "/texture.png?v=" + Date.now());
+          if (!showTex) { showTex = true; ST.pref.set("mesh:tex", true); }
+          ST.closeDialog(); say("Đã gắn texture " + f.name + " (" + j.id.w + "×" + j.id.h + ")");
+        } catch (err) { msg.textContent = "Không gắn được: " + (err.message || err); }
+      };
+    });
+  }
+  ST.cmd({ id: "file.tex", menu: "File", label: "Gắn texture…", icon: "image", run: texDialog });
+  ST.cmd({ id: "tex.reload", menu: "File", hidden: true, label: "Nạp lại texture", run: () => ST.char && ST.char.id && loadTex("/work/rig_lab/chars/" + encodeURIComponent(ST.char.id) + "/texture.png?v=" + Date.now()) });
   ST.cmd({ id: "file.save", menu: "File", sep: true, label: "Lưu ngay", icon: "save", key: "ctrl+s", on: () => !!store, run: () => { dirty = true; save(); } });
   C({ id: "file.obj", menu: "File", label: "Xuất OBJ", icon: "export", run: exportOBJ });
   C({ id: "file.rigjson", menu: "File", label: "Xuất mesh_cm.json (cho Rig)", icon: "export", run: exportRig });

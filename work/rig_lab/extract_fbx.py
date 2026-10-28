@@ -74,6 +74,37 @@ def model_matrix(o):
     W = model_matrix(models[par[0]]) if par else np.eye(4)
     return W @ L @ G
 
+def _s(v):
+    return (v.decode("utf8", "replace") if isinstance(v, bytes) else str(v)).split("\x00")[0]
+
+def _uv_reader(g):
+    """Hàm (chỉ số đỉnh-đa-giác, chỉ số đỉnh) -> [u, v] từ LayerElementUV đầu tiên; None nếu mesh không có UV."""
+    lu = sub(g, "LayerElementUV")
+    if lu is None or sub(lu, "UV") is None: return None
+    uv = np.array(sub(lu, "UV")[1][0], float).reshape(-1, 2)
+    mp = _s(sub(lu, "MappingInformationType")[1][0]) if sub(lu, "MappingInformationType") else "ByPolygonVertex"
+    rf = _s(sub(lu, "ReferenceInformationType")[1][0]) if sub(lu, "ReferenceInformationType") else "Direct"
+    ix = np.array(sub(lu, "UVIndex")[1][0], int) if sub(lu, "UVIndex") is not None else None
+    by_cp = mp.startswith("ByVert") or mp == "ByControlPoint"
+    def get(pv, cp):
+        j = cp if by_cp else pv
+        if rf.startswith("IndexToDirect") and ix is not None: j = ix[j]
+        return uv[j].tolist() if 0 <= j < len(uv) else [0.0, 0.0]
+    return get
+
+def _texture_of(mid):
+    """Tên file texture (không thư mục) của Material gắn vào mesh model; '' nếu không có."""
+    for t, a, b in conns:
+        if b != mid or a not in byid or byid[a][0] != "Material": continue
+        for t2, a2, b2 in conns:
+            if b2 == a and a2 in byid and byid[a2][0] == "Texture":
+                o = byid[a2]
+                for key in ("RelativeFilename", "FileName"):
+                    n = sub(o, key)
+                    if n is not None and _s(n[1][0]).strip():
+                        return os.path.basename(_s(n[1][0]).replace("\\", "/"))
+    return ""
+
 # mesh model -> geometry
 meshout = []
 for mid, mo in meshes.items():
@@ -85,12 +116,17 @@ for mid, mo in meshes.items():
     # áp transform của node mesh (Lcl T/R/S + pivot + Geometric*); trước đây bỏ qua → zom1 Items/Bloods lệch 3,58 cm
     V = (model_matrix(mo) @ np.c_[V, np.ones(len(V))].T).T[:, :3]
     P = sub(g, "PolygonVertexIndex")[1][0]
-    tris, poly = [], []
-    for i in P:
-        if i < 0: poly.append(~i); 
+    uvget = _uv_reader(g)
+    tris, poly, pvs, uvc = [], [], [], []
+    for pv, i in enumerate(P):
+        pvs.append(pv)
+        if i < 0: poly.append(~i)
         else: poly.append(i); continue
-        for k in range(1, len(poly) - 1): tris.append([poly[0], poly[k], poly[k + 1]])
-        poly = []
+        for k in range(1, len(poly) - 1):
+            tris.append([poly[0], poly[k], poly[k + 1]])
+            if uvget:
+                for c in (0, k, k + 1): uvc.extend(uvget(pvs[c], poly[c]))
+        poly, pvs = [], []
     # skin weights
     W = {}
     skin = next((s for s, gg in geom_of_skin.items() if gg == gid), None)
@@ -99,7 +135,11 @@ for mid, mo in meshes.items():
         ix, wt = sub(clusters[c], "Indexes"), sub(clusters[c], "Weights")
         if ix is None: continue
         W[nm(bones[bone_of_cluster[c]][1][1])] = [ix[1][0], wt[1][0]]
-    meshout.append(dict(name=nm(mo[1][1]), verts=np.round(V, 4).flatten().tolist(), tris=np.array(tris).flatten().tolist(), weights=W))
+    d = dict(name=nm(mo[1][1]), verts=np.round(V, 4).flatten().tolist(), tris=np.array(tris).flatten().tolist(), weights=W)
+    if uvc: d["uvc"] = np.round(uvc, 5).tolist()   # UV theo góc tam giác: 2 số × 3 góc × số tam giác (không tách đỉnh)
+    tex = _texture_of(mid)
+    if tex: d["tex"] = tex
+    meshout.append(d)
     print(nm(mo[1][1]), len(V), "verts", len(tris), "tris", len(W), "weighted bones, bbox", V.min(0).round(1), V.max(0).round(1))
 json.dump(skel, open(os.path.join(out, "ref_skeleton.json"), "w"))
 json.dump(meshout, open(os.path.join(out, "ref_mesh.json"), "w"))

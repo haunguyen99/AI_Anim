@@ -194,9 +194,13 @@ def studio_char(cid):
     if not os.path.isfile(p):
         return None
     meshes = json.load(open(p, encoding="utf8"))
-    return {"id": cid, "name": name, "unit": "cm", "skeleton": studio_skeleton(ref, sc),
+    tp = os.path.join(RIGLAB, "chars", cid, "texture.png")   # Tệp → Gắn texture… (fbx_import.set_texture)
+    tex = "/work/rig_lab/chars/%s/texture.png?v=%d" % (cid, int(os.path.getmtime(tp))) if os.path.isfile(tp) else None
+    return {"id": cid, "name": name, "unit": "cm", "skeleton": studio_skeleton(ref, sc), "texture": tex,
             "meshes": [dict({"name": m["name"], "verts": [round(v, 3) for v in m["verts"]], "tris": m["tris"]},
-                            **({"weights": m["weights"]} if m.get("weights") else {})) for m in meshes]}   # skin FBX: {xương: [[đỉnh], [w]]}
+                            **({"weights": m["weights"]} if m.get("weights") else {}),   # skin FBX: {xương: [[đỉnh], [w]]}
+                            **({"uvc": [round(v, 4) for v in m["uvc"]]} if m.get("uvc") else {}),   # UV theo góc tam giác
+                            **({"tex": m["tex"]} if m.get("tex") else {})) for m in meshes]}
 
 
 def lab_html(kind, id_):
@@ -482,7 +486,20 @@ def fbx_new_char(b):
     return fbx_import.new_char(base64.b64decode(b.get("fbx_b64") or ""), b.get("name", ""), b.get("filename", ""))
 
 
-ROUTES = {"/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
+def char_texture(b):
+    """Studio → Tệp → Gắn texture…: ảnh (base64, tga/png/jpg…) → work/rig_lab/chars/<id>/texture.png.
+    Hoặc {"id", "path"}: đọc thẳng file trên máy (cho studio_cmd / Claude)."""
+    if b.get("path"):
+        p = b["path"]
+        if os.path.splitext(p)[1].lower() not in (".tga", ".png", ".jpg", ".jpeg", ".bmp", ".psd", ".tif", ".tiff", ".webp"):
+            raise ValueError("chỉ nhận file ảnh")
+        if not os.path.isfile(p):
+            raise ValueError("không thấy file " + p)
+        return fbx_import.set_texture(b.get("id", ""), open(p, "rb").read(), os.path.basename(p))
+    return fbx_import.set_texture(b.get("id", ""), base64.b64decode(b.get("img_b64") or ""), b.get("filename", ""))
+
+
+ROUTES = {"/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
           "/api/clip/update": update_clip, "/api/project/update": update_project}
 
 
