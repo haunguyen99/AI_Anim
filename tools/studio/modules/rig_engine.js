@@ -40,7 +40,7 @@ function buildSkeleton(L) {
   if (CFG.prop) add("Prop_M", "Chest_M", P("Prop_M")); if (CFG.dress) { add("DressFront_M", "Root_M", P("DressFront_M")); add("DressBack_M", "Root_M", P("DressBack_M")); }
   for (const s of ["R", "L"]) for (const [i, n] of LEG_J.entries())
     add(n + "_" + s, i ? LEG_J[i - 1] + "_" + s : "Root_M", P(n + "_" + s));
-  if (CFG.weapon) add("Weapon", CFG.weaponParent || "root", P("Weapon"));   // Ninja: kunai cầm tay trái → Wrist_L
+  if (CFG.weapon) add("Weapon", "root", P("Weapon"));
   for (const e of EXTRA) if (B.some(b => b.name === e.parent) && P(e.name)) add(e.name, e.parent, P(e.name));
   // twist: đoạn đầu (Shoulder/Hip) nhận roll NGƯỢC t lần roll của khớp đầu; đoạn cuối (Elbow/Knee) nhận roll +t lần roll của Wrist/Ankle
   const byName = {}; B.forEach(b => byName[b.name] = b);
@@ -743,15 +743,6 @@ function poseCloth(M) {
     m.userData.wire.geometry.dispose(); m.userData.wire.geometry = new THREE.WireframeGeometry(g);
   });
 }
-// prop rời (kunai Ninja, chùy Gaygor) bind cứng 100% vào Weapon (không có thì Prop_M / Chest_M), như lúc xuất glTF
-const propJoint = () => { const n = buildSkeleton(LM).map(b => b.name); return n.includes("Weapon") ? "Weapon" : n.includes("Prop_M") ? "Prop_M" : "Chest_M"; };
-function poseProps(W) {
-  const m = W[propJoint()], v = new THREE.Vector3();
-  propMeshes.forEach((pm, i) => { const r = DATA.props[i].verts, a = pm.geometry.attributes.position.array;
-    for (let k = 0; k < r.length; k += 3) { v.set(r[k], r[k + 1], r[k + 2]); if (m) v.applyMatrix4(m); a[k] = v.x; a[k + 1] = v.y; a[k + 2] = v.z; }
-    pm.geometry.attributes.position.needsUpdate = true; pm.geometry.computeVertexNormals(); pm.geometry.computeBoundingSphere();
-    if (pm.userData.wire) { pm.userData.wire.geometry.dispose(); pm.userData.wire.geometry = new THREE.WireframeGeometry(pm.geometry); } });
-}
 function poseSkin() {
   if (!SK) return null;
   const B = buildSkeleton(LM), W = poseMats(B), pos = skinGeo.attributes.position.array, v = new THREE.Vector3(), o = new THREE.Vector3();
@@ -762,7 +753,6 @@ function poseSkin() {
     pos[i * 3] = o.x; pos[i * 3 + 1] = o.y; pos[i * 3 + 2] = o.z;
   }
   try { poseCloth(M); } catch (e) { if (__err) __err('quần áo: ' + (e.message || e)); }
-  poseProps(W);
   skinGeo.attributes.position.needsUpdate = true; skinGeo.computeVertexNormals(); skinGeo.computeBoundingSphere(); skinGeo.computeBoundingBox(); skinWire.geometry.dispose(); skinWire.geometry = new THREE.WireframeGeometry(skinGeo);
   const sum = new Float64Array(NV), cnt = new Int32Array(NV);
   LAP.edges.forEach(([i, j], e) => { const l = Math.hypot(pos[3 * i] - pos[3 * j], pos[3 * i + 1] - pos[3 * j + 1], pos[3 * i + 2] - pos[3 * j + 2]), s = Math.abs(l / EDGE_L0[e] - 1); sum[i] += s; sum[j] += s; cnt[i]++; cnt[j]++; });
@@ -1228,7 +1218,7 @@ let skTimer = null;
 function scheduleSkinSave() { saveMsg = "Đang lưu…"; renderPanelLight(); clearTimeout(skTimer); skTimer = setTimeout(saveSkin, 2500); }
 async function saveSkin() {
   if (!SK) return;
-  const doc = { names: SK.names, I: Array.from(SK.I), W: Array.from(SK.W, v => +v.toFixed(3)), sig: SK.LMsnap, nv: NV, at: Date.now(), props: Object.fromEntries((DATA.props || []).map(p => [p.name, propJoint()])) };   // General: prop bind cứng vào khớp này
+  const doc = { names: SK.names, I: Array.from(SK.I), W: Array.from(SK.W, v => +v.toFixed(3)), sig: SK.LMsnap, nv: NV, at: Date.now() };
   try {
     if (db) await db.doc("rig/skin").set(doc); else localStorage.setItem("rig_skin", JSON.stringify(doc));
     dirtySkin = false; saveMsg = db ? "Đã lưu" : "Đã lưu (chỉ trình duyệt này)";

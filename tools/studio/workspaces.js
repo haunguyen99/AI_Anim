@@ -9,7 +9,7 @@ ST.PANELS = {
   "rig:s4": { label: "Rig 4 · Skin", short: "4 Skin", mod: "rig" }, "rig:s5": { label: "Rig 5 · Thử khớp", short: "5 Thử", mod: "rig" },
   "rig:s6": { label: "Rig 6 · Vật lý", short: "6 Vật lý", mod: "rig" },
   "pose:joint": { label: "Pose · Khớp", short: "Khớp", mod: "pose" }, "pose:phys": { label: "Pose · Vật lý", short: "Vật lý", mod: "pose" },
-  "pose:notes": { label: "Pose · Điều chỉnh gửi AI", short: "Điều chỉnh", mod: "pose" }, "notes:list": { label: "Ghi chú vẽ", short: "Ghi chú vẽ", mod: "notes", nofocus: true }, "pose:versions": { label: "Pose · Phiên bản", short: "Phiên bản", mod: "pose" },
+  "pose:notes": { label: "Pose · Ghi chú", short: "Ghi chú", mod: "pose" }, "notes:list": { label: "Ghi chú vẽ", short: "Ghi chú vẽ", mod: "notes", nofocus: true }, "pose:versions": { label: "Pose · Phiên bản", short: "Phiên bản", mod: "pose" },
 };
 ST.WS_ALIAS = { mesh: "general" };   // link / pref cũ ?ws=mesh
 ST.WS = {
@@ -35,7 +35,7 @@ ST.WS = {
   pose: {
     id: "pose", label: "Pose", icon: "pose", focus: "pose",
     tools: [], modes: [], shelf: "@pose",   // shelf = thanh công cụ Pose Lab (khối của modules/pose.js)
-    tabs: ["pose:joint", "pose:phys", "pose:notes", "notes:list", "pose:versions"],   // notes:list = ghi chú vẽ ✎ (user 2026-10-28: "không thấy hiển thị")
+    tabs: ["pose:joint", "pose:phys", "pose:notes", "pose:versions"],
     size: { dockW: 340 },
     ui: { outliner: true, dock: true, shelf: true, timeline: true },
   },

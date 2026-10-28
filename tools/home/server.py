@@ -665,6 +665,10 @@ class H(SimpleHTTPRequestHandler):
             n = int(self.headers.get("Content-Length", "0"))
             if studio_bridge.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
                 return
+        if path.startswith("/api/spine/"):   # Spine Live: key pose / ghi chú / hoàn tác (spine_live.py)
+            n = int(self.headers.get("Content-Length", "0"))
+            if spine_live.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
+                return
         fn = ROUTES.get(path)
         if not fn:
             return self.send_error(404)

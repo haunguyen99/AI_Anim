@@ -4,7 +4,6 @@
 ## Phân tích
 - Nguồn vào là FBX blocking của user (không ref) → quy trình B: khớp file, phân tích, breakdown, polish, FBX → user_blocking.md
 - Chỉ có yêu cầu bằng lời → quy trình C: thiết kế + timing, pose 10%, blocking 50%, rồi như B → text_brief.md
-- Có GDD → giai đoạn 0: danh sách anim, câu hỏi, phân tích có nguồn, ảnh key pose Codex trên render model thật → gdd_stage0.md
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
 - Intake: hỏi prop treo vào joint nào khi xuất → export.md#reparent-prop
 - Clip không ref / ref điện ảnh: thiết kế theo silhouette camera game, đề xuất bản tối giản → review_process.md#no-ref-clips

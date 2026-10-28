@@ -10,13 +10,24 @@ API:
   GET /spine-live/f/[v<số>/]<rel>   file JSON / atlas / PNG (không cache; v<số> chỉ để đổi URL mỗi lần nạp lại)
   GET /spine-live/f/<dir>/images/_auto.atlas   atlas tự sinh khi skeleton chỉ có ảnh rời (images/):
                                     mỗi PNG là một trang atlas, vùng = cả ảnh, tên vùng = đường dẫn bỏ đuôi
+Sửa trực tiếp (chế độ Sửa trên trang):
+  POST /api/spine/key   {json, anim, frame, bones:{tên:{rotate, x, y}} (giá trị local tuyệt đối), note?, curve?}
+                        ghi key vào anim tại frame (tạo anim nếu chưa có), backup trước khi ghi, lưu một ghi chú
+  POST /api/spine/note  {json, anim, frame, note, bones?}   chỉ ghi chú cho Claude, không sửa file
+  POST /api/spine/undo  {json}   trả JSON về bản backup mới nhất (hoàn tác lần key cuối)
+  GET  /api/spine/notes?json=&all=1   ghi chú (mặc định: chưa xử lý)
+Ghi chú ở work/store/_sys/spine_live/notes.json; Claude đọc bằng tools/spine_live_cmd.py notes / note-done.
 """
-import glob, json, os, struct, time
+import glob, json, os, shutil, struct, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 WORK = os.path.join(ROOT, "work")
 PAGE = os.path.join(ROOT, "tools", "spine_live")
 FOCUS = os.path.join(WORK, "store", "_sys", "spine_live", "focus.json")
+SYS = os.path.dirname(FOCUS)
+NOTES = os.path.join(SYS, "notes.json")
+BACKUP = os.path.join(SYS, "backup")
+KEEP_BACKUP = 40   # mỗi file JSON giữ chừng này bản backup
 CLIENTS = {}   # id trang -> {t, follow, seq, json}
 CT = {".json": "application/json; charset=utf-8", ".atlas": "text/plain; charset=utf-8", ".txt": "text/plain; charset=utf-8",
       ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".js": "text/javascript; charset=utf-8",
@@ -146,6 +157,147 @@ def stamp(js_rel):
     return t
 
 
+# ---------------- sửa trực tiếp: key pose, ghi chú, hoàn tác ----------------
+def _load_notes():
+    try:
+        return json.load(open(NOTES, encoding="utf8"))
+    except (OSError, ValueError):
+        return []
+
+
+def _save_json(path, obj):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf8") as fh:
+        json.dump(obj, fh, ensure_ascii=False, indent=1)
+    os.replace(tmp, path)
+
+
+def add_note(b, keyed=False):
+    notes = _load_notes()
+    n = {"id": "n%d" % (time.time() * 1000), "t": time.strftime("%Y-%m-%d %H:%M:%S"), "json": b.get("json", ""),
+         "anim": b.get("anim", ""), "frame": b.get("frame"), "note": (b.get("note") or "").strip(),
+         "bones": b.get("pose") or b.get("bones") or {}, "keyed": keyed, "request": b.get("request") or "",
+         "status": "open"}
+    notes.append(n)
+    _save_json(NOTES, notes)
+    return n["id"]
+
+
+def _backup_name(js_rel):
+    return js_rel.replace("/", "__")
+
+
+def backup(js):
+    os.makedirs(BACKUP, exist_ok=True)
+    base = _backup_name(rel(js))
+    shutil.copy2(js, os.path.join(BACKUP, f"{base}__{time.time_ns()}.json"))
+    olds = sorted(glob.glob(os.path.join(BACKUP, glob.escape(base) + "__*.json")))
+    for p in olds[:-KEEP_BACKUP]:
+        os.remove(p)
+
+
+def _ease(t1, v1, t2, v2):
+    d = t2 - t1
+    return [round(t1 + d / 3, 4), round(v1, 4), round(t1 + 2 * d / 3, 4), round(v2, 4)]
+
+
+def _set_key(keys, t, vals, fields, kind):
+    """chèn / thay key ở thời điểm t; curve của key trước và key này đặt lại theo kind (ease / linear / stepped)."""
+    tm = lambda k: k.get("time", 0)
+    i = next((j for j, k in enumerate(keys) if abs(tm(k) - t) < 1e-4), None)
+    if i is None:
+        i = sum(1 for k in keys if tm(k) < t)
+        keys.insert(i, {"time": round(t, 4)})
+    keys[i].update({f: round(v, 4) for f, v in zip(fields, vals)})
+    for j in (i - 1, i):
+        if j < 0 or j + 1 >= len(keys):
+            if 0 <= j < len(keys) and j + 1 >= len(keys):
+                keys[j].pop("curve", None)
+            continue
+        a, b = keys[j], keys[j + 1]
+        if kind == "stepped":
+            a["curve"] = "stepped"
+        elif kind == "linear":
+            a.pop("curve", None)
+        else:
+            a["curve"] = sum((_ease(tm(a), a.get(f, 0), tm(b), b.get(f, 0)) for f in fields), [])
+
+
+def key_pose(b):
+    js = safe(b.get("json", ""))
+    if not js or not os.path.isfile(js):
+        raise ValueError("không thấy file " + str(b.get("json")))
+    anim, frame, bones = (b.get("anim") or "").strip(), b.get("frame"), b.get("bones") or {}
+    if not anim or frame is None or not bones:
+        raise ValueError("thiếu anim / frame / xương")
+    data = json.load(open(js, encoding="utf8"))
+    fps = (data.get("skeleton") or {}).get("fps") or 30
+    t = float(frame) / fps
+    setup = {x["name"]: x for x in data.get("bones", [])}
+    an = data.setdefault("animations", {}).setdefault(anim, {})
+    bt = an.setdefault("bones", {})
+    kind = b.get("curve") or "ease"
+    n = 0
+    for name, v in bones.items():
+        if name not in setup:
+            continue
+        s = setup[name]
+        tl = bt.get(name, {})
+        if "rotate" in v:
+            r = float(v["rotate"]) - s.get("rotation", 0)
+            r = (r + 180) % 360 - 180
+            ks = tl.get("rotate")
+            if ks:   # chọn góc tương đương gần key trước nhất, tránh xoay vòng 360
+                prev = [k for k in ks if k.get("time", 0) <= t + 1e-4] or ks
+                p = prev[-1].get("value", 0)
+                r += 360 * round((p - r) / 360)
+            if ks or abs(r) > 1e-3:
+                _set_key(tl.setdefault("rotate", []), t, [r], ["value"], kind)
+                n += 1
+        if "x" in v or "y" in v:
+            dx = float(v.get("x", s.get("x", 0))) - s.get("x", 0)
+            dy = float(v.get("y", s.get("y", 0))) - s.get("y", 0)
+            if tl.get("translate") or abs(dx) > 1e-3 or abs(dy) > 1e-3:
+                _set_key(tl.setdefault("translate", []), t, [dx, dy], ["x", "y"], kind)
+                n += 1
+        if tl:
+            bt[name] = tl
+    if not n:
+        raise ValueError("pose trùng setup, không có gì để key")
+    backup(js)
+    _save_json(js, data)
+    if (b.get("note") or "").strip() or b.get("request"):   # key không ghi chú: chỉ sửa file, không tạo ghi chú
+        add_note(b, keyed=True)
+    return {"keys": n, "anim": anim, "frame": frame}
+
+
+def undo(b):
+    js = safe(b.get("json", ""))
+    if not js:
+        raise ValueError("không thấy file")
+    olds = sorted(glob.glob(os.path.join(BACKUP, glob.escape(_backup_name(rel(js))) + "__*.json")))
+    if not olds:
+        raise ValueError("không còn bản backup để hoàn tác")
+    shutil.copy2(olds[-1], js)
+    os.utime(js)   # đổi mtime để trang nạp lại
+    os.remove(olds[-1])
+    return {"left": len(olds) - 1}
+
+
+def handle_post(h, path, body):
+    fn = {"/api/spine/key": key_pose, "/api/spine/note": lambda b: {"id": add_note(b)}, "/api/spine/undo": undo}.get(path)
+    if not fn:
+        return False
+    try:
+        h.send_json(dict(fn(body), ok=True))
+    except ValueError as e:
+        h.send_json({"ok": False, "error": str(e)}, 400)
+    except Exception as e:
+        h.send_json({"ok": False, "error": f"{type(e).__name__}: {e}"}, 500)
+    return True
+
+
 def handle_get(h, path, qs):
     """True nếu đã trả lời. h: handler của server.py (send_json, send_bytes)."""
     if path in ("/spine", "/spine/"):
@@ -171,6 +323,10 @@ def handle_get(h, path, qs):
         except (OSError, ValueError):
             f = {"seq": 0}
         h.send_json(f)
+        return True
+    if path == "/api/spine/notes":
+        js, everything = (qs.get("json") or [""])[0], (qs.get("all") or [""])[0] == "1"
+        h.send_json([n for n in _load_notes() if (everything or n.get("status") == "open") and (not js or n.get("json") == js)])
         return True
     if path == "/api/spine/clients":
         now = time.time()

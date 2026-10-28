@@ -19,7 +19,6 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | Mục | Đọc khi … |
 |---|---|
 | **text_brief.md** | chỉ có yêu cầu bằng lời (không ref, không blocking): quy trình C, intake, bản thiết kế + bảng timing, pose 10%, phần còn thiếu (pose_build, đọc key Pose Lab, FBX nguồn) |
-| **gdd_stage0.md** | có GDD (xlsx / Google Sheet) hoặc cần ảnh key pose khi không có ref: giai đoạn 0 (đọc GDD → danh sách anim → câu hỏi → phân tích có nguồn → ảnh key pose bằng Codex trên render model thật → trang duyệt), mẫu prompt, đo tỉ lệ vũ khí, lỗi Codex hay gặp |
 | **user_blocking.md** | user/team đưa FBX blocking (không ref): quy trình B, cổng duyệt, script mẫu, luật (RotationOrder, mũi chân, cung nhấc chân, QA fold_backs) |
 | **review_process.md** `#home-app` | Home (quản lý dự án/anim), clip tạo từ Home, trạng thái hiện trên Home |
 | **arms_hands.md** | |

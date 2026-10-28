@@ -42,21 +42,7 @@ for e in cfg.get("extra", []):
     p = e.get("pos") or pos.get(e["name"])
     if p: auto["landmarks"][e["name"]] = [round(v, 2) for v in p]
 if cfg.get("extra"): json.dump(auto, open(f"{out}/landmarks_auto.json", "w"), indent=1)
-# khớp đo tay trên mesh (chars/<id>.json "landmarks"): đè gợi ý của propose.py (tỉ lệ Gaygor lệch với thân khác)
-for k, p in C.get("landmarks", {}).items(): auto["landmarks"][k] = [round(v, 2) for v in p]
-if C.get("landmarks"): json.dump(auto, open(f"{out}/landmarks_auto.json", "w"), indent=1)
-# prop rời gắn cứng vào xương Weapon (chars/<id>.json "props": [{name, xf}]); xf = 3 cột trục (x, y, z của prop
-# trong thế giới) + điểm đặt gốc prop, 12 số. Mesh FBX để prop ở gốc (Ninja: kunai đứng ở 0,0,0) nên xf đặt nó vào tay;
-# gốc prop = điểm cầm = vị trí khớp Weapon
-props = []
-for p in C.get("props", []):
-    v, m = byn[p["name"]]["verts"], p.get("xf")
-    if m:
-        v = [round(m[k] * v[i] + m[3 + k] * v[i + 1] + m[6 + k] * v[i + 2] + m[9 + k], 3) for i in range(0, len(v), 3) for k in range(3)]
-        if cfg.get("weapon"): auto["landmarks"]["Weapon"] = [round(x, 2) for x in m[9:12]]
-    props.append(dict(name=p["name"], verts=v, tris=byn[p["name"]]["tris"], **({"xf": m} if m else {})))
-if props: json.dump(auto, open(f"{out}/landmarks_auto.json", "w"), indent=1)
-data = dict(body=dict(name=body["name"], verts=body["verts"], tris=body["tris"]), props=props,
+data = dict(body=dict(name=body["name"], verts=body["verts"], tris=body["tris"]), props=[],
             clothes=[dict(name=byn[n]["name"], verts=byn[n]["verts"], tris=byn[n]["tris"]) for n in C.get("clothes", [])],
             auto=auto, fingers=fingers, cfg=cfg, ref=[dict(name=s["name"], parent=s["parent"], pos=None) for s in sk], refW={})
 html = open(f"{R}/template.html", encoding="utf8").read().replace("/*DATA*/null", json.dumps(data, separators=(",", ":"))).replace("__NAME__", C["name"])
