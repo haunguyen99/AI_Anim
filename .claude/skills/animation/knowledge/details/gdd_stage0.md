@@ -34,4 +34,15 @@ Clip đầu tiên: SDR map3 nỏ (`work/shoot_die_repeat/sdr03/`).
   `tools/render_fbx_tex.py <rig.fbx> <texture bảng màu> out --views q34,side_r` (+ `--only` mesh vũ khí). Studio chưa đọc UV nên
   snap của Studio là màu giả. Nỏ trong model (gỗ sẫm, sắt đen, cò vàng) KHÁC nỏ ảnh GDD (viền vàng): luôn lấy vũ khí từ model.
   Dùng ảnh tư thế ngắm đã duyệt làm ref thì Codex giữ tư thế tốt hơn.
+- **Tỉ lệ vũ khí / người** (người dùng 2026-10-28: "sai tỉ lệ giữ vũ khí và nhân vật"): gửi ảnh vũ khí phóng to riêng thì Codex
+  vẽ vũ khí to ~1,5 lần. Cách sửa: render nhân vật + vũ khí CÙNG TỈ LỆ cạnh nhau (`sdr03/model_ref/scale_side.png`), ghi số đo
+  vào prompt (dài / cao, so với cánh tay), ảnh vũ khí riêng ghi "NOT to scale"; ảnh đã đúng tỉ lệ làm ref cho ảnh sau.
+  Đo mọi ảnh bằng `sdr03/keys/measure_scale.py` (phần gỗ / chiều cao; mốc trên render model), không ước bằng mắt.
+- **Tay nào làm gì là điểm yếu nhất của Codex** (map3 k4, 4 lần): luôn để tay gần camera giữ báng, tay xa vươn đi. Dùng ảnh
+  tư thế ngắm làm ref còn sinh ra **3 tay**. Ghi "EXACTLY TWO ARMS" + tả từng tay thì hết thừa tay nhưng vẫn đổi tay. Không cố
+  quá 2–3 lần theo cách cũ. **Cách đã chạy (k4 m8):** lấy một ảnh ĐÃ ĐÚNG TAY làm ref (k5: tay phải ở chốt, tay trái đỡ) và
+  chỉ yêu cầu "change ONLY ONE ARM: move the hand that is at the catch forward to the string"; tả tay theo vị trí trong ảnh
+  ("hand nearest the face") thay vì trái/phải.
+- **Codex làm quá biên độ** (k2: thân ngả ~12° khi thiết kế 3–4°, người dùng: "giật về sau hơi nhiều"). Viết "copy image 3 almost
+  exactly, SAME upright torso angle; the ONLY changes: …" với ref là pose gốc (k1). Đọc ảnh so với số trong analysis trước khi gửi.
 - Ảnh chỉ dùng để chốt ý đồ và dáng nhìn, **không đo góc** (`review_process.md`, bài học Attack: ước góc bằng mắt lệch 20–40°).
