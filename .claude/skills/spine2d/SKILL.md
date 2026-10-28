@@ -141,5 +141,18 @@ Thêm game hoặc anim mới thì ghi một dòng vào `MAP.md`.
   - Góp ý "bàn tay nghiêng về bên trái nhiều quá" → đổi góc `dir` (các bản thử -170/-182/-194/-206). Chốt mức 2 (-194).
   - "Thêm 1 anim bàn tay xoay sang phải" → `tap_right` = `dir` đối xứng theo trục nhìn (lệch -53.64°).
   - Export theo mặc định CLI bị lỗi → export theo setting của người dùng (mục Quy trình, bước 8).
+- 2026-10-28 BallBounceRoll (bài test: bóng nảy 5 lần bằng nhau rồi lăn phải ra khỏi khung), người dùng duyệt "Pass".
+  - Curve Spine 4.2 ghi **thời gian (giây) và giá trị tuyệt đối**, không phải tỉ lệ 0–1; key xoay dùng `value`, không phải `angle`. Bản `_v1` sai cả hai chỗ. Hàm `curve()` và `timeline()` chuyển từ curve chuẩn hoá có trong `work/test/spine/BallBounceRoll/build_bounceroll.py`.
+  - Vật lăn: chỗ sáng/bóng tối để slot riêng trên xương không xoay, nếu không đèn sẽ xoay theo. Góc lăn = -quãng / bán kính, dùng chung curve với x để không trượt.
+  - Bóng đổ và độ cao tỉ lệ tuyến tính với nhau thì dùng chung curve cho scale + alpha của bóng đổ.
+  - Setting export trên máy này để atlas `scale: 1.8` (atlas phóng to). Báo người dùng mỗi lần export.
+- 2026-10-28 Soldier (rig lính cầm súng từ PSD, bài trainee), người dùng duyệt "Rig OK". Script mẫu `work/test/spine/Soldier/build_soldier.py`.
+  - PSD → rig: `psd-tools` (đã cài trong `.venv`) tách mỗi layer một PNG theo bbox; thứ tự layer trong PSD (dưới → trên) là thứ tự slot. Đo khớp bằng trọng tâm alpha ở dải đầu và cuối mỗi part, rồi vẽ xương đè lên ảnh PSD để tự kiểm trước khi gửi.
+  - Kiểm tư thế gốc: render JSON ở scale 1, trừ với ảnh PSD ghép sẵn, lệch chỉ ở viền là đặt đúng.
+  - Nhân vật cầm súng: cả hai bàn tay là con của xương `gun`, mỗi tay một IK 2 xương với target là bàn tay. Súng thành ctrl kéo cả hai tay. Nếu tư thế gốc khác PSD (vd tay buông → nắm báng súng) thì gắn ảnh theo tư thế PSD, giải IK cho xương ở tư thế mới.
+  - Chân: target IK ở cổ chân, nằm dưới `root`; bàn chân là con của target.
+  - Mesh vải (khăn, áo choàng): người dùng muốn **bám sát viền như Trace nhưng ít điểm**. Bản được duyệt: hull `approxPolyDP` eps 3.5–4.5 px trên alpha nới 2 px, cạnh hull ≤ 110–140 px, điểm trong khoảng 1 điểm mỗi đốt xương (khăn dài 4 đốt: 24 viền + 4 trong). Bản lưới đều phủ cả ảnh và bản 70 đỉnh đều bị trả lại.
+  - Xương phụ kiện (lưỡi lê): đầu xương đặt ở chốt gắn thật trên ảnh (chốt vàng), xương con bắt đầu ở chuôi và chạy dọc lưỡi.
+  - `render_spine.py` không tính IK: tay chân tách rời trong GIF là bình thường, nói rõ với người dùng và nhờ thử trong Spine.
 - 2026-10-28 Spine Live: người dùng hỏi "có chạy trực tiếp trên bản đang mở không". Spine editor không có API điều khiển từ ngoài, nên làm trang Spine Live (spine-player 4.2) tự nạp lại khi file đổi. Pane trình duyệt của Claude bị ẩn thì player không vẽ (không có requestAnimationFrame), kiểm dữ liệu bằng `spine.SkeletonJson` trong JS thay vì chờ `success`. Test 2026-10-28 trên HandTut: nạp lại giữ anim/thời điểm/dừng; JSON hỏng thì spine-player không gọi `error()` mà treo, nên trang tự đọc thử JSON + atlas trước khi dựng player.
 - 2026-10-28 HandTut v5 cổ tay (user: "rig thêm cổ tay thay vì chỉ có ngón"): đặt khớp ở ranh giới da/cổ áo đo bằng màu điểm ảnh (đường x+y≈205), weight chuyển `hand`→`wrist` trong ~12 px qua mép đó. Thử bẻ ±25° trước để kiểm mesh và tìm chiều: góc âm = ngón gật vào nút. 6° không thấy ở cỡ 164 px, cần ~10°. Đo đầu ngón trên Spine Live phải dùng skeleton riêng (player đang trộn anim cho số sai).

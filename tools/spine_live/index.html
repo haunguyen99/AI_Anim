@@ -39,6 +39,8 @@ main{position:relative;min-height:0}
 #claudeLog{margin:4px 0 0;padding:6px 10px 6px 30px;background:var(--raise);border:1px solid var(--line);border-radius:8px;max-height:40vh;overflow:auto;color:var(--mute)}
 #claudeLog li{margin:2px 0} #claudeLog li:last-child{color:var(--fg)}
 #empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);text-align:center;padding:16px}
+/* display của từng id đè thuộc tính hidden -> #empty phủ lên player, chặn nút phát/dừng và thanh thời gian */
+[hidden]{display:none !important}
 </style>
 </head>
 <body>
@@ -363,6 +365,21 @@ $("stage").addEventListener("pointermove", ev => {
   tip.textContent = b.data.name + (b.parent ? " ← " + b.parent.data.name : "") + " · xoay " + b.rotation.toFixed(1) + "°";
 });
 $("stage").addEventListener("pointerleave", () => $("tip").hidden = true);
+// Phím: Space phát / dừng; ← → lùi / tới 1 frame (dừng lại nếu đang phát)
+document.addEventListener("keydown", ev => {
+  if (!player?.animationState || /^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(ev.target.tagName)) return;
+  const e = player.animationState.getCurrent(0);
+  if (ev.code === "Space") { ev.preventDefault(); player.paused ? player.play() : player.pause() }
+  else if ((ev.key === "ArrowLeft" || ev.key === "ArrowRight") && e) {
+    ev.preventDefault(); player.pause();
+    const d = e.animation.duration || 0, step = (ev.key === "ArrowRight" ? 1 : -1) / FPS;
+    const fr = Math.round(((player.playTime || 0) + step) * FPS) / FPS;
+    const t = d ? ((fr % d) + d) % d : 0;
+    e.trackTime = t; player.animationState.apply(player.skeleton); player.skeleton.updateWorldTransform(2); player.playTime = t;
+    player.timelineSlider?.setValue(d ? t / d : 0);
+    setStatus("frame " + Math.round(t * FPS) + " / " + Math.round(d * FPS) + " (dừng)", "ok");
+  }
+});
 $("stage").addEventListener("click", ev => {   // bấm vào khớp: tô weight của xương đó (bấm lại để tắt)
   const b = boneAt(ev); if (!b) return;
   ev.stopPropagation();

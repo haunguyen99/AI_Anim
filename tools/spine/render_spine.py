@@ -4,7 +4,7 @@ Supports bone translate/rotate/scale timelines, slot alpha, region and
 
 usage: render_spine.py skel.json images_dir anim out_prefix
          [--bg img.png | --bgcolor 1c3a5c] [--at X Y] [--scale S] [--size W H]
-         [--loops N] [--frames 0,4,8] [--cross] [--ss 2]
+         [--loops N] [--frames 0,4,8] [--cross] [--ss 2] [--png_dir dir]
 """
 import argparse, json, math
 from pathlib import Path
@@ -18,6 +18,7 @@ ap.add_argument("--size", nargs=2, type=int, default=[320, 320])
 ap.add_argument("--loops", type=int, default=1); ap.add_argument("--frames", default="0,4,8,10,13,16,19,25")
 ap.add_argument("--cross", action="store_true"); ap.add_argument("--ss", type=int, default=2)
 ap.add_argument("--fps", type=int, default=30)
+ap.add_argument("--png_dir", help="also save every frame as PNG (f_0001.png...) for a playblast video")
 A = ap.parse_args()
 
 data = json.loads(Path(A.skel).read_text(encoding="utf-8"))
@@ -201,10 +202,15 @@ def frame(t):
     return canvas
 
 
-dur = max([k.get("time", 0) for tl in anim.get("bones", {}).values() for ks in tl.values() for k in ks] + [1.0])
+dur = max([k.get("time", 0) for tl in anim.get("bones", {}).values() for ks in tl.values() for k in ks]
+          + [e.get("time", 0) for e in anim.get("events", [])] + [1.0])   # an end event holds the last pose
 n = round(dur * A.fps)
 frames = [frame(i / A.fps) for i in range(n)]
 out = Path(A.out)
+if A.png_dir:   # full-colour frames for a playblast video (ffmpeg -i f_%04d.png)
+    Path(A.png_dir).mkdir(parents=True, exist_ok=True)
+    for i, fr in enumerate(frames):
+        fr.convert("RGB").save(Path(A.png_dir) / f"f_{i + 1:04d}.png")
 allf = frames * A.loops
 pal = [fr.convert("RGB").quantize(colors=255, method=Image.MEDIANCUT, dither=Image.FLOYDSTEINBERG) for fr in allf]
 pal[0].save(out.with_suffix(".gif"), save_all=True, append_images=pal[1:], duration=round(1000 / A.fps), loop=0)

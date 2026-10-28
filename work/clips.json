@@ -17,6 +17,9 @@
   },
   "Zom2 Map3": {
    "rig_url": ""
+  },
+  "Ball": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -286,6 +289,52 @@
     "title": "Boss_Gragas Idle Pose Lab",
     "url": ""
    }
+  },
+  {
+   "id": "ball_bounceroll",
+   "character": "Ball",
+   "stage": "polish",
+   "note": "Spine 2D test: nảy 5 lần bằng nhau rồi lăn phải ra khỏi khung; v2 chờ góp ý",
+   "review": {
+    "key": "ball_bounceroll",
+    "clip": "BounceRoll",
+    "title": "Ball BounceRoll Review Lab",
+    "crumb": "test · Spine 2D",
+    "name": "Bóng nảy + lăn (125F)",
+    "parts": [
+     "Bóng (nảy)",
+     "Bẹp / kéo dài",
+     "Lăn",
+     "Bóng đổ",
+     "Nhịp"
+    ],
+    "url": "https://claude.ai/artifact/1Y7nSomeGbuqj7d8jfShcD"
+   },
+   "dir": "work/test/spine/BallBounceRoll",
+   "updated": "2026-10-28"
+  },
+  {
+   "id": "ball_ball2",
+   "character": "Ball",
+   "stage": "polish",
+   "note": "Spine 2D: anim Ball2 theo ref YouTube 0:27–0:32 (lấy đà, nảy giảm dần 5 lần, lăn dừng); v1 chờ góp ý",
+   "review": {
+    "key": "ball_ball2",
+    "clip": "Ball2",
+    "title": "Ball Ball2 Review Lab",
+    "crumb": "test · Spine 2D",
+    "name": "Ball2 · theo ref (120F)",
+    "parts": [
+     "Bóng (nảy)",
+     "Bẹp / kéo dài",
+     "Lăn",
+     "Bóng đổ",
+     "Nhịp"
+    ],
+    "url": "https://claude.ai/artifact/1d6keUtyFHEfBtqQmpkpuh"
+   },
+   "dir": "work/test/spine/BallBounceRoll",
+   "updated": "2026-10-28"
   }
  ],
  "projects": [
@@ -319,8 +368,12 @@
    "id": "test",
    "name": "test",
    "desc": "",
-   "characters": [],
-   "labels": {},
+   "characters": [
+    "Ball"
+   ],
+   "labels": {
+    "Ball": "bóng (Spine 2D)"
+   },
    "created": "2026-10-27"
   },
   {
