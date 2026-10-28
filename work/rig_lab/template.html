@@ -397,7 +397,7 @@ function buildSkeleton(L) {
   if (CFG.prop) add("Prop_M", "Chest_M", P("Prop_M")); if (CFG.dress) { add("DressFront_M", "Root_M", P("DressFront_M")); add("DressBack_M", "Root_M", P("DressBack_M")); }
   for (const s of ["R", "L"]) for (const [i, n] of LEG_J.entries())
     add(n + "_" + s, i ? LEG_J[i - 1] + "_" + s : "Root_M", P(n + "_" + s));
-  if (CFG.weapon) add("Weapon", "root", P("Weapon"));
+  if (CFG.weapon) add("Weapon", CFG.weaponParent || "root", P("Weapon"));   // Ninja: kunai cầm tay trái → Wrist_L
   for (const e of EXTRA) if (B.some(b => b.name === e.parent) && P(e.name)) add(e.name, e.parent, P(e.name));
   // twist: đoạn đầu (Shoulder/Hip) nhận roll NGƯỢC t lần roll của khớp đầu; đoạn cuối (Elbow/Knee) nhận roll +t lần roll của Wrist/Ankle
   const byName = {}; B.forEach(b => byName[b.name] = b);

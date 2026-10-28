@@ -1,0 +1,344 @@
+{
+ "id": "ninja",
+ "name": "Ninja",
+ "ref_dir": "ref_ninja",
+ "scale": 1,
+ "body": "body_ninja",
+ "clothes": [],
+ "extra": [
+  "weapon_explode"
+ ],
+ "names_from": "",
+ "cfg": {
+  "name": "body_ninja",
+  "fingers": [
+   "Middle",
+   "Thumb"
+  ],
+  "fseg": 2,
+  "toes": true,
+  "toesEnd": false,
+  "fingerEnd": true,
+  "headEnd": true,
+  "dress": false,
+  "prop": false,
+  "weapon": true,
+  "weaponParent": "Wrist_L",
+  "extra": [
+   {
+    "name": "Scarf1_L",
+    "parent": "Chest_M",
+    "label": "Đuôi khăn",
+    "pos": [
+     16.8,
+     119.3,
+     -11.5
+    ]
+   },
+   {
+    "name": "Scarf2_L",
+    "parent": "Scarf1_L",
+    "label": "Đuôi khăn",
+    "pos": [
+     15.5,
+     118.9,
+     -45
+    ]
+   },
+   {
+    "name": "Scarf3_L",
+    "parent": "Scarf2_L",
+    "label": "Đuôi khăn",
+    "pos": [
+     17.4,
+     118.6,
+     -80.7
+    ]
+   },
+   {
+    "name": "Scarf4_L",
+    "parent": "Scarf3_L",
+    "label": "Đuôi khăn",
+    "pos": [
+     15.4,
+     118.5,
+     -115
+    ]
+   },
+   {
+    "name": "ScarfEnd_L",
+    "parent": "Scarf4_L",
+    "label": "Đầu đuôi khăn",
+    "pos": [
+     20,
+     118.3,
+     -150
+    ]
+   },
+   {
+    "name": "Scarf1_R",
+    "parent": "Chest_M",
+    "label": "Đuôi khăn",
+    "pos": [
+     -16.8,
+     119.3,
+     -11.5
+    ]
+   },
+   {
+    "name": "Scarf2_R",
+    "parent": "Scarf1_R",
+    "label": "Đuôi khăn",
+    "pos": [
+     -15.5,
+     118.9,
+     -45
+    ]
+   },
+   {
+    "name": "Scarf3_R",
+    "parent": "Scarf2_R",
+    "label": "Đuôi khăn",
+    "pos": [
+     -17.4,
+     118.6,
+     -80.7
+    ]
+   },
+   {
+    "name": "Scarf4_R",
+    "parent": "Scarf3_R",
+    "label": "Đuôi khăn",
+    "pos": [
+     -15.4,
+     118.5,
+     -115
+    ]
+   },
+   {
+    "name": "ScarfEnd_R",
+    "parent": "Scarf4_R",
+    "label": "Đầu đuôi khăn",
+    "pos": [
+     -20,
+     118.3,
+     -150
+    ]
+   }
+  ]
+ },
+ "source": "Studio Nhập FBX 2026-10-28: MC_Ninja.fbx",
+ "note": "Chỉ rig body_ninja + weapon (kunai tay trái, user 2026-10-28); weapon_explode không rig",
+ "texture": "T_Colorpalette.tga",
+ "props": [
+  {
+   "name": "weapon",
+   "xf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    -1,
+    0,
+    74,
+    113,
+    1
+   ]
+  }
+ ],
+ "landmarks": {
+  "Root_M": [
+   0,
+   74,
+   1
+  ],
+  "Spine1_M": [
+   0,
+   92,
+   0.5
+  ],
+  "Chest_M": [
+   0,
+   110,
+   0
+  ],
+  "Neck_M": [
+   0,
+   129,
+   -1
+  ],
+  "Head_M": [
+   0,
+   138,
+   -1.5
+  ],
+  "HeadEnd_M": [
+   0,
+   185,
+   0
+  ],
+  "Scapula_L": [
+   6,
+   122,
+   -2
+  ],
+  "Shoulder_L": [
+   20,
+   117.5,
+   -2
+  ],
+  "Elbow_L": [
+   43,
+   117,
+   -3
+  ],
+  "Wrist_L": [
+   64,
+   116.5,
+   -0.5
+  ],
+  "HandTip_L": [
+   88,
+   116.5,
+   0.3
+  ],
+  "MiddleFinger1_L": [
+   77.5,
+   117.5,
+   0
+  ],
+  "MiddleFinger2_L": [
+   82.5,
+   117.5,
+   0
+  ],
+  "ThumbFinger1_L": [
+   68,
+   112,
+   5
+  ],
+  "ThumbFinger2_L": [
+   73,
+   110,
+   10
+  ],
+  "Hip_L": [
+   10,
+   70,
+   1
+  ],
+  "Knee_L": [
+   11,
+   42,
+   0.5
+  ],
+  "Ankle_L": [
+   11,
+   12,
+   -2
+  ],
+  "Toes_L": [
+   11,
+   3,
+   9
+  ],
+  "ToesEnd_L": [
+   11,
+   1,
+   17
+  ],
+  "Scapula_R": [
+   -6,
+   122,
+   -2
+  ],
+  "Shoulder_R": [
+   -20,
+   117.5,
+   -2
+  ],
+  "Elbow_R": [
+   -43,
+   117,
+   -3
+  ],
+  "Wrist_R": [
+   -64,
+   116.5,
+   -0.5
+  ],
+  "HandTip_R": [
+   -88,
+   116.5,
+   0.3
+  ],
+  "MiddleFinger1_R": [
+   -77.5,
+   117.5,
+   0
+  ],
+  "MiddleFinger2_R": [
+   -82.5,
+   117.5,
+   0
+  ],
+  "ThumbFinger1_R": [
+   -68,
+   112,
+   5
+  ],
+  "ThumbFinger2_R": [
+   -73,
+   110,
+   10
+  ],
+  "Hip_R": [
+   -10,
+   70,
+   1
+  ],
+  "Knee_R": [
+   -11,
+   42,
+   0.5
+  ],
+  "Ankle_R": [
+   -11,
+   12,
+   -2
+  ],
+  "Toes_R": [
+   -11,
+   3,
+   9
+  ],
+  "ToesEnd_R": [
+   -11,
+   1,
+   17
+  ],
+  "MiddleFingerEnd_L": [
+   88,
+   117,
+   0.3
+  ],
+  "MiddleFingerEnd_R": [
+   -88,
+   117,
+   0.3
+  ],
+  "ThumbFingerEnd_L": [
+   74.5,
+   109.5,
+   12
+  ],
+  "ThumbFingerEnd_R": [
+   -74.5,
+   109.5,
+   12
+  ]
+ }
+}

@@ -1,0 +1,254 @@
+﻿FDD - Feature Document Design
+Hero: Ninja
+Lưu ý quan trọng: Tất cả giá trị số trong tài liệu (damage %, radius, duration, cooldown, số tia sét, số hit kích hoạt passive, stun duration, minimum enemy, cast delay, strike interval, damage cap...) PHẢI được config từ data/config file, KHÔNG hardcode vào code. Giá trị prototype chỉ mang tính tham khảo để phát triển và cân bằng.
+I. Thông tin chung
+Tên tính năng
+	Hero – Ninja
+	Loại tài liệu
+	FDD (Feature Design Document)
+	Phân loại
+	Hero
+	Phiên bản
+	1.1
+	Người thực hiện
+	Vũ Việt Tiến,Phạm Minh Thắng
+	Ngày
+	17/10/2026
+	Tài liệu liên quan
+	Infinite Defense - Config Skill Hero
+	II. Tổng quan Hero
+Mục đích thiết kế: Ninja là Hero sát thủ tấn công liên tục bằng shuriken và kunai. Bộ kỹ năng xoay quanh việc dọn cụm enemy bằng kunai bùa nổ, nhân số đòn đánh bằng phân thân và trở nên bất tử khi tung ultimate, tạo cảm giác nhanh, linh hoạt và áp đảo.
+  
+
+Signature Visual (đề xuất):
+* Màu nhân vật: Đen / tím than, điểm nhấn đỏ ở khăn quàng và bùa nổ.
+* Trang phục: Đồ ninja bó gọn, che nửa dưới khuôn mặt, khăn quàng đỏ dài bay phía sau.
+* Đặc điểm nhận dạng: Tay phải luôn cầm kunai (signature weapon), tay trái để trống để ném shuriken; thắt lưng gắn túi shuriken và bùa nổ.
+Link Ref Model: Link
+Idle Animation & VFX Aura
+Trường
+	Mô tả
+	Link ref
+	Idle Animation
+	Ninja đứng thủ thế hơi khom người, tay phải cầm ngược kunai trước ngực, tay trái thả lỏng. Khăn quàng bay nhẹ theo nhịp thở. Khoảng mỗi 4–6 giây xoay kunai một vòng trong tay (phần này optional). Animation loop liền mạch.
+	link(tay duỗi kiếm trong ref là tay không của ninja, tay kia là tay cầm kunai, và tư thế hơi khom người một chút)
+	1. Tấn công thường
+Cơ bản
+Ninja tự động chọn enemy gần nhất trong Attack Range và vung tay trái (tay không cầm vũ khí) ném một shuriken về phía mục tiêu. Tay phải luôn cầm kunai, chỉ để thể hiện, không tham gia đòn đánh thường.
+* Luôn sử dụng projectile dạng shuriken.
+* Shuriken bay thẳng theo hướng mục tiêu tại thời điểm cast, xoay tròn trong lúc bay.
+* Không bám theo mục tiêu.
+* Gây sát thương lên enemy đầu tiên va chạm; không xuyên mục tiêu, không gây AoE.
+* Áp dụng knockback theo H.Current Knockback.
+* Nếu mục tiêu ban đầu chết hoặc di chuyển khỏi đường bay, shuriken vẫn tiếp tục bay đến khi va chạm hoặc hết tầm.
+* Phân thân của Skill 2 dùng chung đòn đánh thường này.
+Flow: Chọn mục tiêu → Khóa hướng → Vung tay trái ném → Tạo shuriken → Kiểm tra va chạm → Gây damage.
+
+
+VFX & Animation
+Trường
+	Mô tả
+	Link ref
+	VFX
+	Shuriken kim loại xoay tròn, có vệt mờ phía sau dọc đường bay.
+	link(projectile)
+	Animation
+	Ninja vung tay trái từ sau ra trước ném shuriken, tay phải giữ kunai thủ thế trước ngực.
+	link
+	2. Bộ kĩ năng
+a. Skill 1 – Explosive Kunai (Kunai Bùa Nổ)
+Cơ bản
+Icon
+	Tổng quan skill
+	  
+
+	Ninja ném một kunai gắn bùa nổ vào Current Target. Kunai cắm vào mục tiêu và phát nổ sau Fuse Time, gây sát thương AoE lên mọi enemy quanh mục tiêu. Nếu mục tiêu chết trước khi hết Fuse Time, bùa nổ phát nổ ngay tại vị trí mục tiêu.
+	* Tự động kích hoạt khi skill sẵn sàng và có enemy trong Attack Range.
+* Chọn Current Target tại thời điểm cast; kunai bay bám theo mục tiêu (homing) nên luôn trúng.
+* Khi chạm mục tiêu, kunai cắm vào và di chuyển theo mục tiêu; bùa nổ bắt đầu đếm Fuse Time. Lúc cắm vào không gây damage.
+* Hết Fuse Time, bùa nổ phát nổ tại vị trí mục tiêu, gây damage lên mọi enemy trong Explosion Radius, kể cả mục tiêu.
+* Nếu mục tiêu chết trước khi hết Fuse Time, bùa nổ phát nổ ngay tại vị trí mục tiêu chết.
+* Nếu mục tiêu chết khi kunai còn đang bay, kunai rơi xuống vị trí mục tiêu chết và phát nổ ngay.
+* Mỗi enemy chỉ nhận damage một lần mỗi vụ nổ; vụ nổ áp dụng knockback theo H.Current Knockback, đẩy enemy ra xa tâm nổ.
+* Ninja vẫn đánh thường trong lúc chờ nổ. Phân thân không dùng skill này.
+Flow: Skill sẵn sàng → Chọn Current Target → Ném kunai bùa nổ → Kunai cắm vào mục tiêu → Đếm Fuse Time → Hết Fuse Time hoặc mục tiêu chết → Phát nổ AoE tại vị trí mục tiêu → Kết thúc.
+Tham số
+Tham số
+	Giá trị prototype
+	Mô tả
+	Cooldown
+	X giây
+	Thời gian hồi kỹ năng, bắt đầu đếm khi kunai được ném.
+	Fuse Time
+	Y giây
+	Thời gian từ lúc kunai cắm vào mục tiêu đến khi phát nổ.
+	Explosion Damage
+	Z% ATK
+	Sát thương AoE lên mỗi enemy trong vùng nổ.
+	Explosion Radius
+	R m
+	Bán kính nổ tính từ vị trí mục tiêu.
+	Projectile Speed
+	S m/s
+	Tốc độ bay của kunai.
+	Minimum Enemy
+	N
+	Số enemy tối thiểu để kích hoạt.
+	Target Type
+	Current Target (homing)
+	Kunai bám theo mục tiêu được chọn khi cast.
+	Hit Type
+	Delayed AoE + Knockback
+	Nổ một lần khi hết Fuse Time hoặc khi mục tiêu chết.
+	VFX & Animation
+Trường
+	Mô tả
+	Link ref
+	VFX (Kunai)
+	Kunai có lá bùa giấy đỏ buộc ở chuôi, và có aura khi bay ra, để lại vệt mờ khi bay.
+	link(projectile)
+	VFX (Fuse)
+	Kunai cắm lên mục tiêu phát sáng đỏ và nhấp nháy nhanh dần khi sắp nổ.
+	Hiệu ứng nhấp nháy đỏ cảnh báo trên kunai
+	VFX (Explosion)
+	Vụ nổ lửa kèm khói đen, sóng xung kích hình tròn đúng bằng Explosion Radius.
+	link
+	Animation
+	Ninja vung tay cầm kunai(trong tư thế idle) về phía trước hướng mục tiêu
+	link
+	b. Skill 2 – Shadow Clone (Phân Thân Chi Thuật)
+Cơ bản
+Icon
+	Tổng quan skill
+	TBD
+	Ninja kết ấn tạo N phân thân đứng quanh mình. Phân thân tự đánh thường enemy gần nhất trong Attack Range của Ninja và tồn tại trong Clone Duration, giúp tăng DPS và dàn sát thương ra nhiều mục tiêu.
+	* Tự động kích hoạt khi skill sẵn sàng và có enemy trong Attack Range.
+* Tạo Clone Count phân thân đứng cố định, chia đều xung quanh Ninja, cách Ninja một khoảng Clone Offset.
+* Phân thân chỉ dùng đánh thường (ném shuriken), không dùng skill.
+* Mỗi phân thân tự chọn enemy gần chính nó nhất trong số các enemy nằm trong Attack Range của Ninja (tâm vùng là Ninja, không phải phân thân).
+* Phân thân không có HP và không phải mục tiêu: enemy không thể nhắm, tấn công hay gây hiệu ứng lên phân thân. Phân thân chỉ đóng vai trò nguồn đòn đánh thêm của Ninja. ATK của phân thân bằng Clone ATK % của ATK hiện tại của Ninja, chốt tại thời điểm cast. Các chỉ số còn lại (Atk rate, knockback, crit…) bằng Ninja.
+* Phân thân chỉ biến mất khi hết Clone Duration (hoặc khi Ninja chết).
+* Không cộng dồn: tối đa Clone Count phân thân cùng lúc.
+Công thức: Clone ATK = Ninja ATK × Clone ATK %.
+Flow: Skill sẵn sàng → Kết ấn → Tạo Clone Count phân thân (chốt ATK) → Phân thân tự chọn mục tiêu và đánh thường → Hết Clone Duration → Phân thân biến mất.
+Tham số
+Tham số
+	Giá trị prototype
+	Mô tả
+	Cooldown
+	X giây
+	Thời gian hồi kỹ năng, bắt đầu đếm khi cast.
+	Clone Count
+	N
+	Số phân thân được tạo.
+	Clone Duration
+	Y giây
+	Thời gian tồn tại tối đa của phân thân.
+	Clone ATK %
+	A% ATK
+	ATK của mỗi phân thân, chốt khi cast.
+	Clone Offset
+	D m
+	Khoảng cách từ Ninja đến mỗi phân thân.
+	Minimum Enemy
+	M
+	Số enemy tối thiểu để kích hoạt.
+	Target Type
+	Self (spawn quanh Hero)
+	Phân thân xuất hiện quanh Ninja, mỗi phân thân tự chọn mục tiêu.
+	Hit Type
+	Summon
+	Triệu hồi phân thân tấn công độc lập.
+	VFX & Animation
+Trường
+	Mô tả
+	Link ref
+	VFX (Spawn)
+	Khói trắng bùng lên tại vị trí từng phân thân khi phân thân xuất hiện.
+	link
+	VFX (Clone)
+	Phân thân có viền tối, hơi trong suốt để phân biệt với Ninja thật.
+	Thay đổi màu model clone
+	VFX (Despawn)
+	Phân thân tan thành khói khi hết Clone Duration.
+	Giống với vfx spawn
+	Animation
+	Ninja kết ấn hai tay trước ngực rồi trở về tư thế chiến đấu. Phân thân dùng chung bộ animation với Ninja.
+	link
+	c. Skill 3 – Shadow Dance (Ảnh Vũ)
+Cơ bản
+Icon
+	Tổng quan skill
+	TBD
+	Ninja tan vào bóng tối và không nhận sát thương trong suốt thời gian thi triển. Ninja lướt chém liên tục, mỗi nhịp gây 1 hit lên toàn bộ enemy trong Attack Range.
+	* Tự động kích hoạt khi skill sẵn sàng và có ít nhất Minimum Enemy trong Attack Range (ngưỡng cao hơn các skill khác để đảm bảo giá trị ultimate).
+* Khi cast, Ninja vào trạng thái Invulnerable trong suốt Skill Duration (xem mục III).
+* Mỗi Hit Interval gây 1 hit lên toàn bộ enemy trong H.Current Atk Range, tổng cộng Hit Count hit.
+* Enemy đi vào vùng giữa chừng sẽ nhận các hit còn lại.
+* Trong thời gian skill, Ninja không đánh thường và không cast skill khác; cooldown các skill khác vẫn chạy. Phân thân (nếu có) vẫn hoạt động bình thường.
+* Skill không thể bị ngắt. Hết Skill Duration, Ninja hiện lại tại tâm và tiếp tục chiến đấu.
+Flow: Skill sẵn sàng → Kiểm tra ≥ Minimum Enemy trong Attack Range → Ninja tan vào bóng tối (Invulnerable) → Lặp Hit Count lần: gây 1 hit lên toàn bộ enemy trong Attack Range, chờ Hit Interval → Ninja hiện lại tại tâm → Bắt đầu Cooldown.
+Tham số
+Tham số
+	Giá trị prototype
+	Mô tả
+	Cooldown
+	X giây
+	Thời gian hồi kỹ năng, bắt đầu đếm khi skill kết thúc.
+	Hit Count
+	N
+	Tổng số hit.
+	Hit Interval
+	Y giây
+	Khoảng thời gian giữa hai hit.
+	Damage per Hit
+	Z% ATK
+	Sát thương mỗi hit lên mỗi enemy trong vùng.
+	Skill Duration
+	= Hit Count × Hit Interval
+	Thời gian Ninja ở trạng thái Invulnerable.
+	Skill Radius
+	H.Current Atk Range
+	Vùng gây damage, lấy Ninja làm tâm.
+	Minimum Enemy
+	M
+	Số enemy tối thiểu trong Attack Range để kích hoạt.
+	Target Type
+	Self (lấy Hero làm tâm)
+	Tác động lên toàn bộ enemy trong Attack Range.
+	Hit Type
+	Multi-hit Radial AoE + Invulnerable
+	Gây damage nhiều lần lên toàn bộ enemy trong vùng.
+	VFX & Animation
+Trường
+	Mô tả
+	Link ref
+	VFX (Vanish)
+	Ninja hóa thành tàn ảnh tại vị trí đứng.
+	link
+	VFX (Hit)
+	Mỗi lần gây sát thương, tất cả enemy trong vùng ảnh hưởng hiện hit VFX vệt chém đỏ đen trên người. Vệt chém xuất hiện đồng thời trên mọi enemy trúng đòn, lặp lại theo từng hit (Hit Count lần). Hướng chém nên thay đổi ngẫu nhiên giữa các hit để không bị lặp hình.
+	link
+	VFX (Area)
+	Khi skill bắt đầu, một vùng tròn tím đen xuất hiện dưới đất, lấy Ninja làm tâm, bán kính bằng Skill Radius, đánh dấu vùng ảnh hưởng (tham khảo vùng tròn ultimate của Psylocke trong Marvel Rivals). Vùng hiển thị suốt Skill Duration, viền sáng nhẹ và có vệt năng lượng xoay chậm bên trong; biến mất khi Ninja hiện lại.
+	link
+	VFX (Reappear)
+	Tàn ảnh tụ lại tại tâm, Ninja hiện ra.
+	link
+	Animation
+	Vanish: từ tư thế idle hạ thấp trọng tâm cơ thể rồi tan biến. Reappear: hiện ra trong tư thế đáp đất và như lúc vanish, sau đó về idle.
+	link(lúc hạ trọng tâm)
+	III. Phân thân và Invulnerable – Quy tắc chung
+Các quy tắc dưới đây áp dụng cho phân thân (Skill 2) và trạng thái Invulnerable (Skill 3).
+Quy tắc
+	Mô tả
+	Phân thân không phải mục tiêu
+	Phân thân không có HP, không có hitbox nhận đòn và bị bỏ qua khi enemy chọn mục tiêu. Enemy luôn nhắm vào Ninja như khi không có phân thân; đòn AoE của enemy cũng không tác động lên phân thân.
+	Snapshot chỉ số
+	ATK của phân thân chốt khi cast; buff hoặc nâng cấp nhận sau thời điểm đó không áp dụng cho phân thân đang tồn tại.
+	Ninja chết
+	Khi Ninja chết, toàn bộ phân thân biến mất.
+	Invulnerable
+	Ninja không nhận damage và không bị hiệu ứng bất lợi nào. Enemy vẫn có thể nhắm vào Ninja nhưng đòn đánh không có tác dụng.
+	Hiển thị
+	Phân thân có viền tối, hơi trong suốt. Khi Invulnerable, model Ninja ẩn đi, chỉ còn hit VFX vệt chém trên các enemy trúng đòn.
