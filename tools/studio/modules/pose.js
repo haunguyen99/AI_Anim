@@ -160,6 +160,7 @@
     return { joint: parts.joint, phys: parts.phys, notes: parts.notes, versions: parts.versions }[t] || parts.joint;
   };
   M.info = () => { if (!eng) return "Pose · " + ({ loading: "đang nạp", noclip: "chưa có anim", error: "lỗi" }[state] || ""); const g = eng.get(); return (clipInfo ? clipInfo.name : "") + " · " + (g.P ? g.P.version : "") + " · F" + g.frame + "/" + (g.P ? g.P.frames : 1) + (g.sel ? " · " + g.sel : ""); };
+  M.frameAll = () => { if (!eng || !eng.frameAll || !eng.get().model) return false; eng.frameAll(); return true; };   // khung theo lõi Pose (hộp bao model có đồ phụ to)
   M.undo = () => eng && eng.undo(); M.canUndo = () => !!eng && eng.canUndo();
   M.bounds = () => { if (!eng || !eng.get().model) return null; return new THREE.Box3().setFromObject(eng.get().model); };
 

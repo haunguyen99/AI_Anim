@@ -10,6 +10,14 @@
   python tools/studio_cmd.py layer anim on [--both]        # scene | rig | anim; on | off | toggle; --both = không ẩn lớp khác
   python tools/studio_cmd.py cmds [chữ cần tìm]            # mọi lệnh: id, nhãn, module, phím, dùng được ngay không
 Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace nào (run tự focus sang module của lệnh).
+
+  Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] | snap [file.png]   (ảnh viewport để AI tự kiểm)
+  Rig:    rig lms | rig lm Elbow_R x,y,z | rig sel Elbow_R Wrist_R | rig step 4
+  Anim:   anim info | anim joints | anim read [khớp…] | anim select khớp… | anim frame 12 | anim play on|off
+          anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
+          anim pos Root_M 0,0,-5              # dời thêm (cm, trục Blender, Z lên); hông / cổ chân / cổ tay theo IK
+          anim key [f] | anim unkey [f] | anim versions | anim version v3
+  Rig / anim tự focus, bật lớp và chờ lõi nạp (lần đầu vài giây). Sửa khớp ở bản dạng key thì Auto key đặt key luôn.
 Chỉ có các lệnh có tên (không chạy mã tuỳ ý trong trang).
 Nhiều lệnh một lần (nhanh hơn: Python chỉ khởi động một lần):  studio_cmd.py vis A off ";" select joint B ";" state
 Thêm --time để in thời gian khứ hồi. Cổng: HOME_PORT (mặc định 8780). Server: tools/home/studio_bridge.py; trang: tools/studio/modules/bridge.js.
@@ -79,6 +87,38 @@ def main(argv):
     elif op == "layer":
         on = {"on": True, "off": False, "toggle": "toggle"}[(rest[1] if len(rest) > 1 else "toggle").lower()]
         res = call("layer", {"id": rest[0], "on": on, "solo": "--both" not in rest})
+    elif op in ("undo", "redo", "save"):
+        res = call(op)
+    elif op == "view":
+        a = {}
+        for x in rest:
+            if x in ("1", "4"): a["layout"] = x
+            elif x in ("persp", "top", "front", "side"): a["cam"] = x
+            elif x in ("all", "sel"): a["frame"] = x
+        res = call("view", a)
+    elif op == "snap":
+        res = call("snap", timeout=20)
+        if res.get("ok"):
+            import base64, tempfile
+            out = rest[0] if rest else os.path.join(tempfile.gettempdir(), "studio_snap_%d.png" % int(time.time()))
+            open(out, "wb").write(base64.b64decode(res["result"].pop("png")))
+            res["result"]["file"] = os.path.abspath(out)
+    elif op == "rig":
+        d, a = (rest[0] if rest else "lms"), {}
+        if d == "lm": a = {"name": rest[1], "xyz": vec(rest[2])}
+        elif d == "sel": a = {"names": rest[1:]}
+        elif d == "step": a = {"n": int(rest[1])}
+        res = call("rig", dict(a, do=d), timeout=90)
+    elif op == "anim":
+        d, r, a = (rest[0] if rest else "info"), rest[1:], {}
+        if d in ("read", "select"): a = {"names": r}
+        elif d == "rot": a = {"name": r[0], "r": vec(r[1]), "abs": "--abs" in r}
+        elif d == "pos": a = {"name": r[0], "t": vec(r[1])}
+        elif d == "frame": a = {"f": int(r[0])}
+        elif d == "play": a = {"on": (r[0] if r else "on").lower() != "off"}
+        elif d in ("key", "unkey") and r: a = {"f": int(r[0])}
+        elif d == "version": a = {"v": r[0]}
+        res = call("anim", dict(a, do=d), timeout=90)
     elif op == "cmds":
         res = call("cmds", {"q": " ".join(rest)})
     elif op == "open":

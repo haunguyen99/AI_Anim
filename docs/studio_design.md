@@ -208,3 +208,15 @@ Studio là môi trường làm việc chung của người và AI: mọi công c
 - Cầu nối: `joint` không đổi workspace nữa (focus mesh); thêm `focus`, `layer`, `cmds`; `state` báo focus + lớp.
 
 Mở: W2 (cầu nối đầy đủ cho AI), W3 (một bản nhân vật chung cho Mesh / Rig / Pose).
+
+## 11. W2: cầu nối đầy đủ cho AI (2026-10-28, user: "Làm W2")
+
+AI làm việc trong Studio đang mở như người dùng: không cần trình duyệt của Claude, không chụp màn hình, người dùng thấy ngay trên trang. Mọi lệnh qua `tools/studio_cmd.py` (server `tools/home/studio_bridge.py`, trang `modules/bridge.js`), chỉ lệnh có tên.
+
+- `state`: nhân vật, workspace, focus, lớp, tab, công cụ, trạng thái lưu, bước Hoàn tác kế; mesh; xương (joint chọn, pose); **rig** (bước, khớp chọn, có skin chưa, cổng duyệt, lưu); **anim** (anim, phiên bản, frame / tổng, khớp chọn, key, đang phát, khớp đã sửa chưa key).
+- Chung: `undo`, `redo`, `save`, `view` (1 / 4 khung, khung persp / top / front / side, nhìn toàn bộ / vùng chọn), `snap` (ảnh viewport PNG lưu ra file: để AI tự kiểm, không gửi người dùng nếu họ không hỏi).
+- Rig: `rig` với `lms` (danh sách khớp + toạ độ cm), `lm <tên> x,y,z` (đặt khớp, theo đối xứng nếu bật), `sel <tên…>`, `step <1–5>`.
+- Anim: `frame <f>`, `play on|off`, `jsel <khớp…>`, `rot <khớp> x,y,z` (xoay thêm theo trục local của khớp, độ; `--abs`: đặt góc local XYZ tuyệt đối), `pos <khớp> x,y,z` (dời thêm, cm, trục Blender X, Y, Z lên; hông / cổ chân / cổ tay theo IK như Channel Box), `key` / `unkey` (frame hiện tại), `keys`, `read [khớp…]` (góc local + vị trí thế giới), `versions`, `version <tên>`. Sửa khớp ở bản dạng key thì Auto key đặt key luôn (như kéo gizmo trên trang).
+- Lõi Pose mở thêm `ai` (sinh trong `port_pose.py`, không sửa tay `pose_engine.js`). Nhìn toàn bộ khi focus Pose dùng khung của lõi Pose.
+
+Đã thử (kho thử, đã xoá): Gaygor: view 1 / 4 khung + nhìn toàn bộ, snap (ảnh đúng cảnh mesh và cảnh Anim), rig step / sel / lm (đối xứng) + undo, anim info / versions / frame / read / rot (góc local Z +15° đúng) / pos hông / key / unkey / undo (lõi Pose) / đổi phiên bản, báo lỗi khớp sai tên và key trên bản nướng sẵn. Lõi Rig / Pose nạp lười: lệnh đầu chờ 1–2 s.

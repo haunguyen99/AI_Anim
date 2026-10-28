@@ -23,5 +23,5 @@ Studio là tool chính: mở `http://127.0.0.1:8780` là vào thẳng viewport v
 
 - Chỉ mở và xem: không bấm lệnh sửa mesh trên kho thật (`<nhân vật>_mesh_lab`, Rig Lab đọc kho này). Cần thử thao tác thì dùng `?ns=studio_test_<x>` rồi xoá `work/store/studio_test_*`.
 - Sửa Studio: thêm lệnh bằng `ST.cmd` trong module, lệnh có `mod` (module chủ), không khoá theo workspace; panel + bố cục workspace ở `tools/studio/workspaces.js`; cập nhật `docs/studio_design.md` và `MAP.md`.
-- Thao tác trong Studio đang mở (ẩn/hiện, chọn, joint, bind pose, focus, lớp, workspace, lệnh): `tools/studio_cmd.py` qua cầu nối (`CLAUDE.md`), không bấm qua công cụ trình duyệt.
+- Thao tác trong Studio đang mở (ẩn/hiện, chọn, joint, bind pose, focus, lớp, workspace, lệnh, rig, anim: xoay khớp / key / frame, view, snap): `tools/studio_cmd.py` qua cầu nối (`CLAUDE.md`), không bấm qua công cụ trình duyệt.
 - Chỉ chụp màn hình khi người dùng yêu cầu: họ xem trang trực tiếp. Kiểm bằng `javascript_tool` / `read_page`, báo bằng chữ (xem `CLAUDE.md`).

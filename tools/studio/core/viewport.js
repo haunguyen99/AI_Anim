@@ -86,7 +86,7 @@
     });
     orbit.update();
   };
-  V.frameAll = () => { const m = ST.mod(); const b = m.bounds ? m.bounds(false) : null; V.frame(b, V.visible()); };
+  V.frameAll = () => { const m = ST.mod(); if (m.frameAll && m.frameAll()) return; const b = m.bounds ? m.bounds(false) : null; V.frame(b, V.visible()); };
   V.frameSel = () => { const m = ST.mod(); const b = (ST.focus === "mesh" && ST.mods.skel && ST.mods.skel.bounds()) || (m.bounds && m.bounds(true)) || (m.bounds && m.bounds(false)); V.frame(b, [V.active], true); };
   // click trúng đồ của module khác (lớp đang hiện) → focus sang module đó trước khi xử lý click (như Maya: chọn gì sửa nấy)
   V.focusAt = (x, y, p) => {

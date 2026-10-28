@@ -4508,6 +4508,39 @@ window.DDC.askPlayblast = function () {
   });
 };
 
+// ---- API cho cầu nối AI (Studio W2, modules/bridge.js): cùng đường với thao tác trên trang (chọn khớp → sửa → Auto key)
+const AI = (() => {
+  const r2 = x => +(+x).toFixed(2), need = (c, m) => { if (!c) throw new Error(m); };
+  const joint = n => { need(model, "Anim chưa nạp xong"); need(B[n] && markers[n], "Không có khớp " + n + " (khớp có chấm chọn: " + Object.keys(markers).length + ")"); return n; };
+  const edit = (n, fn) => {
+    joint(n); stopPlay(); if (sel !== n || selSet.size !== 1) select(n); pushUndo();
+    fn(); afterEdit(); attachGizmo(); commitEdit(); refresh();
+    return { joint: n, frame: cyc(frame), keyed: keysMode() && KEYS.has(cyc(frame)), unkeyed: editedList() };
+  };
+  const loc = n => { const e = new THREE.Euler().setFromQuaternion(B[n].quaternion, "XYZ"); return [e.x, e.y, e.z].map(v => r2(THREE.MathUtils.radToDeg(v))); };
+  const world = n => { const w = n.startsWith("Ankle_") && footT[n.slice(-1)] ? footT[n.slice(-1)] : wp(B[n]); return [w.x * 100, -w.z * 100, w.y * 100].map(r2); };   // cm, trục Blender (Z lên)
+  return {
+    info: () => ({ clip: P.clip, version: P.version, label: P.label || "", mode: keysMode() ? "keys" : "baked", frame: cyc(frame), frames: P.frames || 1, loop: !!P.loop, fps: P.fps || 30,
+      sel, selSet: [...selSet], playing, autoKey, keys: keysMode() ? [...KEYS.keys()].sort((a, b) => a - b) : [], unkeyed: editedList(), interp: ANIM.interp || "spline" }),
+    joints: () => Object.keys(markers).map(n => ({ name: n, label: NAMES[n] || "", parent: (() => { for (let o = B[n].parent; o; o = o.parent) if (markers[o.name]) return o.name; return null; })() })),
+    read: names => { const L = names && names.length ? names : (sel ? [...selSet] : Object.keys(markers)); const o = {}; L.forEach(n => { joint(n); o[n] = { rot: loc(n), pos: world(n) }; }); return o; },
+    select: names => { (names || []).forEach(joint); stopPlay(); if (!names || !names.length) select(null); else setSelection(names, names[names.length - 1]); return { sel, selSet: [...selSet] }; },
+    rot: (n, v, abs) => edit(n, () => {
+      if (n === GUN) gunGrab();
+      const q = new Q().setFromEuler(new THREE.Euler(...v.map(x => THREE.MathUtils.degToRad(+x || 0)), "XYZ"));
+      if (abs) B[n].quaternion.copy(q); else B[n].quaternion.multiply(q);   // xoay thêm quanh trục local của khớp
+      model.updateMatrixWorld(true);
+    }),
+    pos: (n, d) => edit(n, () => { const c = chanPos(n); setPos(n, c.map((x, i) => x + (+d[i] || 0))); }),
+    frame: f => { need(model, "Anim chưa nạp xong"); stopPlay(); goto(Math.max(1, Math.min(P.frames || 1, Math.round(+f) || 1))); refresh(); return { frame: cyc(frame) }; },
+    play: on => { need(model, "Anim chưa nạp xong"); if (!!on !== playing) $("play").click(); return { playing }; },
+    key: () => { need(keysMode(), "Phiên bản " + P.version + " là anim nướng sẵn, không đặt key được: mở phiên bản dạng key"); $("kSet").click(); return { frame: cyc(frame), keys: [...KEYS.keys()].sort((a, b) => a - b) }; },
+    unkey: () => { need(keysMode() && KEYS.has(cyc(frame)), "F" + cyc(frame) + " không có key"); $("kDel").click(); return { frame: cyc(frame), keys: [...KEYS.keys()].sort((a, b) => a - b) }; },
+    versions: () => POSES.map(p => ({ version: p.version, label: p.label || "", frames: p.frames || 1, mode: p.mode || "baked", date: p.date || "", open: p === P })),
+    version: v => { const p = POSES.find(q => q.version === v); need(p, "Không có phiên bản " + v); if (p !== P) { openPose(p); renderPoses(); } return { version: p.version }; },
+  };
+})();
 return { get: () => ({ P, frame, sel, selSet, B, markers, model, playing, mode }), select: n => select(n), setSelection, setMode, goto, undo: () => $("undo").click(),
-  canUndo: () => undoStack.length > 0, openPose, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS };
+  canUndo: () => undoStack.length > 0, openPose, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS,
+  ai: AI };
 };
