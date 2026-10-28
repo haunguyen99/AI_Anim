@@ -23,8 +23,8 @@
     [lines, pts, selPt].forEach(o => { o.raycast = () => {}; grp.add(o); });
     grp.visible = shown();
   }
-  const shown = () => show && S.joints.length > 0 && ST.layerOn.scene;   // xương thuộc lớp Cảnh, không phụ thuộc workspace
-  ST.on("layer", () => { grp.visible = shown(); });
+  const shown = () => show && S.joints.length > 0 && ST.layerOn.scene && ST.focus !== "rig";   // xương thuộc lớp Nhân vật; đang sửa rig thì lõi Rig vẽ khớp
+  ST.on("layer", () => { grp.visible = shown(); }); ST.on("focus", () => { grp.visible = shown(); });
   ST.rigNs = () => { const ns = new URLSearchParams(location.search).get("ns"); return ns ? ns + "_rig" : ST.slug(ST.char.name) + "_rig_lab"; };
   let editKey = "skel/edit";
   ST.on("rig:skeleton", joints => { if (ST.char) load(ST.char, joints); });

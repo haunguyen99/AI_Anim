@@ -31,7 +31,7 @@
   ST.on("init", () => Object.entries(ST.PANELS || {}).forEach(([id, p], i) => C({ id: "panel." + id, menu: "Window", sep: i === 0, head: i === 0 ? "Panel trong dock" : undefined, label: p.label, keep: true,
     check: () => tabList().includes(id), run: () => { const L = tabList(), on = L.includes(id); ST.pref.set("tabs:" + ST.ws, on ? L.filter(x => x !== id) : L.concat(id)); if (!on) { ST.pref.set("tab:" + ST.ws, id); if (p.mod) ST.setFocus(p.mod); } ST.refresh(); } })));
   // lớp: cảnh (mesh + xương), rig, anim — bật một lớp thì hai lớp kia ẩn
-  [["scene", "Lớp Cảnh (mesh + xương)"], ["rig", "Lớp Rig"], ["anim", "Lớp Anim"]].forEach(([k, label], i) => C({ id: "layer." + k, menu: "Display", sep: i === 0, label, icon: "eye", keep: true, check: () => ST.layerOn[k], on: () => k === "anim" ? !!(ST.char || ST.clip) : !!ST.char, run: () => ST.showLayer(k, !ST.layerOn[k]) }));
+  [["scene", "Lớp Nhân vật (mesh + xương + rig)"], ["anim", "Lớp Anim"]].forEach(([k, label], i) => C({ id: "layer." + k, menu: "Display", sep: i === 0, label, icon: "eye", keep: true, check: () => ST.layerOn[k], on: () => k === "anim" ? !!(ST.char || ST.clip) : !!ST.char, run: () => ST.showLayer(k, !ST.layerOn[k]) }));
   C({ id: "help.keys", global: true, menu: "Help", label: "Phím tắt", icon: "keys", key: "f1", run: showKeys });
   C({ id: "help.nav", menu: "Help", label: "Điều hướng camera", run: () => ST.dialog("Điều hướng camera (kiểu Maya)", `<div class="keys"><kbd>Alt + kéo trái</kbd><span>Xoay quanh</span><kbd>Kéo giữa</kbd><span>Pan</span><kbd>Kéo phải / Alt + kéo phải</kbd><span>Xoay / dolly</span><kbd>Lăn chuột</kbd><span>Zoom (khung dưới chuột)</span><kbd>Space</kbd><span>1 khung ⇄ 4 khung (khung dưới chuột)</span><kbd>A / F</kbd><span>Nhìn toàn bộ / vùng chọn</span></div>`) });
 
@@ -105,8 +105,9 @@
     if (ms && ms.outline) ms.outline().forEach(r => rows.push(Object.assign({}, r, { m: "mesh", dim: !ST.layerOn.scene })));
     LAYER_NODES.forEach(([L, mid, label, icon]) => {
       const m = ST.mods[mid]; if (!m || !(L === "anim" ? (ST.char || ST.clip) : ST.char)) return;
-      const open = ST.pref.get("ol:open:" + L, false), on = ST.layerOn[L];
-      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: on, fold: open ? 0 : 1, act: ST.focus === mid, tip: "Bấm: làm việc với lớp " + label + " · mắt: bật lớp (Shift: hiện chồng)" });
+      const open = ST.pref.get("ol:open:" + L, false), lay = ST.LAYER_OF[mid], on = ST.layerOn[lay];
+      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, fold: open ? 0 : 1, act: ST.focus === mid,
+        tip: L === "rig" ? "Bấm: sửa rig của nhân vật (khớp, skin, thử khớp)" : "Bấm: làm việc với lớp " + label + " · mắt: bật lớp (Shift: hiện chồng)" });
       if (!open) return;
       const kids = m.loaded && m.loaded() && m.outline ? m.outline() : null;
       if (kids) kids.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: (r.d || 0) + 1, dim: !on })));
@@ -131,7 +132,7 @@
     const r = rowOf(el), a = b ? b.dataset.a : "pick"; if (!r || (r.grp && !b)) return;
     if (r.node) {   // nút lớp Rig / Anim
       if (a === "fold") ST.pref.set("ol:open:" + r.node, !ST.pref.get("ol:open:" + r.node, false));
-      else if (a === "vis") ST.showLayer(r.node, !ST.layerOn[r.node], !e.shiftKey);
+      else if (a === "vis") { const lay = ST.LAYER_OF[r.m]; ST.showLayer(lay, !ST.layerOn[lay], !e.shiftKey); }
       else ST.setFocus(r.m);
       ST.refresh(); return;
     }

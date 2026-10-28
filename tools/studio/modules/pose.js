@@ -57,6 +57,27 @@
   }
 
   // ---- host: những gì lõi Pose cần từ Studio
+  // ---- W3a: model sống = nhân vật hiện tại (mesh đã sửa + khớp + skin của Rig), dựng bằng lõi Rig, cho phiên bản dạng key làm từ rig Studio.
+  // Chọn theo phiên bản (doc studio/model của kho Pose, chung mọi máy): mặc định sống, trừ anim đã xuất (stage export) giữ model chụp.
+  let choices = {}, liveSig = null, liveUrl = null, rigSaves = 0;
+  const vkey = p => p.clip + "-" + p.version;
+  const eligible = p => !!(ST.char && p && p.mode === "keys" && (p.model === "live" || /_rig_v\d+\.json$/.test(p.glb || "")));
+  const modelOf = p => !eligible(p) ? "snap" : choices[vkey(p)] || (clipInfo && clipInfo.stage === "export" ? "snap" : "live");
+  const sigNow = () => (ST.mods.mesh.ver ? ST.mods.mesh.ver() : 0) + ":" + rigSaves;
+  ST.on("rig:skeleton", () => { rigSaves++; }); ST.on("rig:skin", () => { rigSaves++; });
+  const modelStore = () => ST.store(q.get("ns") ? q.get("ns") + "_pose" : clipInfo.ns);
+  async function liveModel(p) {
+    if (modelOf(p) !== "live") return null;
+    try {
+      const R = ST.mods.rig; if (!(await R.whenReady())) throw new Error(R.loadMsg ? R.loadMsg() : "rig chưa nạp được");
+      const g = ST.rigEng().buildGltf(); liveSig = sigNow();
+      if (liveUrl) URL.revokeObjectURL(liveUrl);
+      return (liveUrl = URL.createObjectURL(new Blob([JSON.stringify(g)], { type: "model/gltf+json" })));
+    } catch (e) { ST.toast("Không dựng được model từ rig (" + (e.message || e) + "): dùng model chụp của phiên bản."); return null; }
+  }
+  // rig / mesh đã đổi từ lần dựng trước: dựng lại khi quay lại lớp Anim
+  function refreshLive() { if (eng && eng.isLive() && liveSig !== sigNow()) { ST.toast("Rig / mesh đã đổi: dựng lại model của anim…"); eng.reopen(); } }
+
   function makeHost(ns) {
     const alive = () => ST.focus === "pose" && ST.layerOn.anim;   // chuột / phím / gizmo của lõi
     const paneRect = () => { const r = cvEl.getBoundingClientRect(), p = V.active.rect; return { left: r.left + p.x, top: r.top + p.y, width: p.w, height: p.h, right: r.left + p.x + p.w, bottom: r.top + p.y + p.h, x: r.left + p.x, y: r.top + p.y }; };
@@ -69,7 +90,7 @@
     };
     return {
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
-      cam: () => V.active.cam, alive,
+      cam: () => V.active.cam, alive, liveModel,
       scenes: (s, o) => { scenes = { scene: s, overlay: o }; if (ST.layerOn.anim) V.extra = scenes; },
       resize: () => V.resize(), renderNow: () => V.renderNow(),
       onFrame: f => V.onFrame(now => { if (ST.layerOn.anim && parts && parts.overlay.isConnected) f(now); }),   // lớp hiện là chạy (phát anim cả khi đang sửa thứ khác)
@@ -87,6 +108,7 @@
     try {
       const r = await fetch("/api/poses/" + encodeURIComponent(id)); clipInfo = await r.json(); if (!r.ok) throw new Error(clipInfo.error || r.status);
       const POSES = new Function("return " + clipInfo.js)();
+      try { choices = (await modelStore().get("studio/model")) || {}; } catch (e) { choices = {}; }
       const fix = o => { for (const k in o) { const v = o[k]; if (typeof v === "string" && /^(models|refs|fbx)\//.test(v)) o[k] = "/work/pose_lab/" + v; else if (v && typeof v === "object") fix(v); } };
       POSES.forEach(fix);
       ST.pref.set(prefKey(), id);
@@ -116,9 +138,10 @@
       if (ST.focus === "pose") V.gizmo.detach();
     }
   }
-  M.layer = on => { applyLayer(on); if (on && !eng) ensure(); ST.refresh(); };
+  M.layer = on => { applyLayer(on); if (on && !eng) ensure(); if (on) refreshLive(); ST.refresh(); };
   M.focusIn = () => {
     if (!eng) { ensure(); return; }
+    refreshLive();
     const tc = V.gizmo.tc; if (!tcSaved) tcSaved = { space: tc.space, size: tc.size };
     V.gizmo.detach(); tc.setSpace($("mSpace") && /world/.test($("mSpace").textContent) ? "world" : "local");
     const g = eng.get(); if (g.sel) eng.setSelection([...g.selSet], g.sel);   // gắn lại gizmo vào khớp đang chọn
@@ -159,7 +182,7 @@
     if (t === "phys" && $("physBox") && $("physBox").hidden) return msg("Vật lý dùng cho phiên bản dạng key (làm trên trang). Phiên bản này là anim nướng sẵn: mở phiên bản key ở tab Phiên bản.");
     return { joint: parts.joint, phys: parts.phys, notes: parts.notes, versions: parts.versions }[t] || parts.joint;
   };
-  M.info = () => { if (!eng) return "Pose · " + ({ loading: "đang nạp", noclip: "chưa có anim", error: "lỗi" }[state] || ""); const g = eng.get(); return (clipInfo ? clipInfo.name : "") + " · " + (g.P ? g.P.version : "") + " · F" + g.frame + "/" + (g.P ? g.P.frames : 1) + (g.sel ? " · " + g.sel : ""); };
+  M.info = () => { if (!eng) return "Pose · " + ({ loading: "đang nạp", noclip: "chưa có anim", error: "lỗi" }[state] || ""); const g = eng.get(); return (clipInfo ? clipInfo.name : "") + " · " + (g.P ? g.P.version : "") + (eng.isLive() ? " · nhân vật hiện tại" : "") + " · F" + g.frame + "/" + (g.P ? g.P.frames : 1) + (g.sel ? " · " + g.sel : ""); };
   M.frameAll = () => { if (!eng || !eng.frameAll || !eng.get().model) return false; eng.frameAll(); return true; };   // khung theo lõi Pose (hộp bao model có đồ phụ to)
   M.undo = () => eng && eng.undo(); M.canUndo = () => !!eng && eng.canUndo();
   M.bounds = () => { if (!eng || !eng.get().model) return null; return new THREE.Box3().setFromObject(eng.get().model); };
@@ -194,6 +217,17 @@
       if (!j.ok) throw new Error(j.error); ST.toast("Đã thêm version " + j.id.version + " vào Review Lab");
     } catch (e) { ST.toast("Không gửi được: " + (e.message || e)); }
   } });
+  // W3a: anim chạy trên nhân vật hiện tại hay model chụp của phiên bản
+  ST.cmd({ id: "pose.liveModel", mod: "pose", menu: "Animate", sep: true, label: "Model: nhân vật hiện tại (mesh + rig + skin)", icon: "rig",
+    tip: "Bật: anim dùng mesh, khớp, skin đang có trong Studio (sửa rig là anim thấy ngay). Tắt: dùng model chụp lúc tạo phiên bản. Key vẫn lưu như cũ.",
+    on: () => !!eng && eligible(eng.get().P), check: () => !!eng && eng.isLive(),
+    run: async () => {
+      const P = eng.get().P, k = vkey(P), next = modelOf(P) === "live" ? "snap" : "live";
+      if (next === "snap" && !(await fetch(P.glb, { method: "HEAD" }).then(r => r.ok).catch(() => false))) return ST.toast("Phiên bản này không còn file model chụp trên máy (" + P.glb.split("/").pop() + "): giữ nhân vật hiện tại.");
+      choices[k] = next;
+      try { await modelStore().set("studio/model", choices); } catch (e) { console.error(e); }
+      ST.toast(choices[k] === "live" ? "Anim dùng nhân vật hiện tại." : "Anim dùng model chụp của phiên bản."); eng.reopen();
+    } });
   ST.cmd({ id: "pose.oldlab", mod: "pose", keep: true, menu: "Animate", label: "Mở Pose Lab cũ của anim này", icon: "ext", on: () => !!clipInfo, run: () => window.open("/lab/pose/" + encodeURIComponent(clipInfo.id), "_blank") });
   ST.cmd({ id: "pose.clip", menu: "Animate", label: "Đổi anim…", icon: "pose", global: true, run: async () => {
     await loadClips();

@@ -220,3 +220,28 @@ AI làm việc trong Studio đang mở như người dùng: không cần trình 
 - Lõi Pose mở thêm `ai` (sinh trong `port_pose.py`, không sửa tay `pose_engine.js`). Nhìn toàn bộ khi focus Pose dùng khung của lõi Pose.
 
 Đã thử (kho thử, đã xoá): Gaygor: view 1 / 4 khung + nhìn toàn bộ, snap (ảnh đúng cảnh mesh và cảnh Anim), rig step / sel / lm (đối xứng) + undo, anim info / versions / frame / read / rot (góc local Z +15° đúng) / pos hông / key / unkey / undo (lõi Pose) / đổi phiên bản, báo lỗi khớp sai tên và key trên bản nướng sẵn. Lõi Rig / Pose nạp lười: lệnh đầu chờ 1–2 s.
+
+## 12. W3: một nhân vật chung cho Mesh / Rig / Pose (duyệt 2026-10-28, user: "Duyệt, làm W3a")
+
+Ba bản cùng một nhân vật: lớp Cảnh (mesh đã sửa + khớp + skin của Rig, đã là bản gốc), lõi Rig (bản sao mesh để đặt khớp / tô skin), lớp Anim (mỗi phiên bản Pose trỏ tới một model glTF chụp lúc tạo). Lộ trình: **W3a** anim dùng nhân vật hiện tại · **W3b** Rig vẽ khớp / skin lên chính mesh của lớp Cảnh, bỏ bản sao · **W3c** Outliner một cây, một khớp dùng chung (General sửa bind, Anim sửa pose của frame).
+
+### W3a: anim dùng nhân vật hiện tại (2026-10-28)
+- Phiên bản dạng key có model xuất từ rig Studio (`models/<clip>_rig_vN.json` của "Gửi rig sang Pose", hoặc `model: "live"` trong POSES) của nhân vật đang mở: lõi Pose nạp model dựng trực tiếp bằng lõi Rig (`buildGltf`: mesh đã sửa + khớp + skin hiện tại), không dùng file chụp. Rig nạp lười, ẩn lớp vẫn dựng được.
+- Key vẫn lưu theo model chụp của phiên bản (Pose Lab cũ đọc đúng): khi hiện, vị trí xương = vị trí nghỉ của rig mới + phần dời thêm so với model chụp, góc xoay giữ nguyên (xương của rig Studio không có góc nghỉ nên góc local áp thẳng được); khi lưu đổi ngược lại. Không còn file chụp trên máy thì chỉ hông (`root`, `Root_M`) giữ vị trí của key.
+- Chọn model theo phiên bản: Animate → "Model: nhân vật hiện tại" (doc `studio/model` trong kho Pose, chung mọi máy). Mặc định: sống, trừ anim đã xuất (stage `export`) giữ model chụp. Không có file chụp trên máy thì không chuyển sang chụp được.
+- Rig / mesh đổi (lưu khớp, tô / tính skin, sửa mesh) → quay lại lớp Anim hoặc focus Pose thì model dựng lại.
+- Phiên bản có model từ FBX / Blender (mọi anim Gaygor, SDR) giữ model của chúng: hướng xương có thể khác rig Studio.
+- FBX xuất ra từ phiên bản đang dùng nhân vật hiện tại là bản chụp của lúc xuất; chưa ghi model đó lại vào phiên bản.
+- Lõi: `port_pose.py` (`host.liveModel`, `liveIn` / `liveOut`, `reopen`, `isLive`); Studio: `modules/pose.js`; `/api/poses/<anim>` trả thêm `stage`. Cầu nối: `anim info` có `model: live|snap`.
+
+Đã thử (kho thử chép từ Boss_Gragas, đã xoá): rig_v1 (file chụp không có trên máy) chạy trên rig hiện tại sau khi tính skin; xoay khuỷu −40° + key, dời cổ tay trong Rig (cẳng tay 37 → 51 cm) → quay lại Anim tự dựng lại, khuỷu vẫn −40°, cổ tay theo đúng hướng, xa hơn; tải lại trang key còn nguyên; Gaygor Hit vẫn dùng model riêng.
+
+### W3b: Rig là chế độ sửa của nhân vật, không còn lớp riêng (2026-10-28, user: "Làm W3b")
+Lõi Rig vẽ mesh theo kiểu riêng từng bước (thân mờ khi đặt khớp, màu trọng số khi tô, biến dạng khi thử khớp, quần áo bám thân), nên không vẽ thẳng lên mesh của Cảnh mà đổi cách coi: **Rig là chế độ sửa của nhân vật trong Cảnh**.
+- Hai lớp: `scene` (nhân vật: mesh + xương + rig) và `anim`. `rig` chỉ còn là tên cũ của `scene` (link, cầu nối `layer rig` vẫn chạy).
+- Focus Rig: lõi Rig vẽ nhân vật, mesh + xương của Cảnh ẩn. Rời Rig: lõi Rig ẩn, Cảnh vẽ lại (mesh đã sửa, skin + khớp của Rig). Trên màn hình luôn một nhân vật.
+- Ẩn / hiện mesh (mắt Outliner, Ctrl+H, cầu nối `vis`) là của mesh trong Cảnh, áp sang lõi Rig theo tên (thân, quần áo, prop). Bỏ ba lệnh Hiển thị → Rig: thân / quần áo / prop.
+- Outliner: mesh chỉ một dòng ở cấp đầu; nút Rig không có mắt (bấm = sửa rig), con là cây xương đang dựng.
+- Còn lại: lõi Rig vẫn giữ bản dữ liệu mesh riêng để tính (cọ, biến dạng) và dựng lại khi mesh đổi (lần focus Rig sau). W3c: một khớp dùng chung giữa General và Rig.
+
+Đã thử (kho thử, đã xoá): Gaygor General ↔ Rig ↔ Pose, mesh / xương / rig hiện đúng một bản; ẩn vũ khí ở General thì Rig cũng ẩn, hiện lại từ Outliner lúc đang ở Rig thì Rig hiện ngay; cầu nối `layer rig on` + `focus rig`.

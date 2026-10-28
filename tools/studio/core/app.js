@@ -127,8 +127,11 @@
   ST.focus = null;
   ST.mod = () => ST.mods[ST.focus] || {};
   ST.setTool = t => { ST.tool = t; ST.emit("tool", t); ST.refresh(); };
-  ST.LAYER_OF = { mesh: "scene", rig: "rig", pose: "anim" };
-  ST.MOD_OF = { scene: "mesh", rig: "rig", anim: "pose" };
+  // W3b: Rig không còn là lớp riêng mà là chế độ sửa của nhân vật trong Cảnh (cùng lớp scene): đang focus Rig thì lõi Rig vẽ nhân vật,
+  // rời Rig thì Cảnh vẽ (dùng khớp + skin của Rig). Trên màn hình chỉ một nhân vật.
+  ST.LAYER_OF = { mesh: "scene", rig: "scene", pose: "anim" };
+  ST.MOD_OF = { scene: "mesh", anim: "pose" };
+  ST.LAYER_ALIAS = { rig: "scene" };   // link / lệnh cũ
   ST.setFocus = id => {
     if (!ST.mods[id] || id === ST.focus) return;
     const old = ST.mod(); if (old.focusOut) old.focusOut();
@@ -139,8 +142,9 @@
   };
   // ---- lớp: ba bản của cùng nhân vật (cảnh mesh + xương, rig đang dựng, model của anim). Bật một lớp thì hai lớp kia ẩn (solo),
   // solo=false để hiện chồng. Không phụ thuộc workspace.
-  ST.layerOn = { scene: true, rig: false, anim: false };
+  ST.layerOn = { scene: true, anim: false };
   ST.showLayer = (id, on, solo) => {
+    id = (ST.LAYER_ALIAS || {})[id] || id;
     if (!(id in ST.layerOn)) return;
     const ch = [];
     const set = (k, v) => { if (ST.layerOn[k] !== v) { ST.layerOn[k] = v; ch.push(k); } };

@@ -35,7 +35,7 @@ def poses(clip_id):
     if not mine:
         return None
     return {"id": c["id"], "character": c["character"], "name": c.get("title") or p["title"].replace(" Pose Lab", ""),
-            "title": p["title"], "ns": slug(p["title"]), "js": "[\n" + ",\n".join(mine) + "\n]"}
+            "title": p["title"], "ns": slug(p["title"]), "stage": c.get("stage", ""), "js": "[\n" + ",\n".join(mine) + "\n]"}
 
 
 def clips_for(char_names):

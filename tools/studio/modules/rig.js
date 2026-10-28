@@ -8,7 +8,7 @@
   const cvEl = ST.$("cv");
   const TOOL2MODE = { sel: "select", move: "translate", rot: "rotate", scl: "scale" }, MODE2TOOL = { select: "sel", translate: "move", rotate: "rot", scale: "scl" };
   const step = () => eng ? eng.get().step : 0;
-  const act = () => ST.focus === "rig" && ST.layerOn.rig;   // lõi Rig nhận chuột / gizmo khi đang focus và lớp Rig hiện
+  const act = () => ST.focus === "rig" && ST.layerOn.scene;   // lõi Rig nhận chuột / gizmo khi đang focus và lớp Rig hiện
   // tab dock theo bước: workspace có tab bước đó thì chọn; chỉ có một tab Rig (vd General) thì tab đó đổi sang bước mới
   const syncTab = n => {
     const id = "rig:s" + n, L = ST.tabs ? ST.tabs() : [], cur = ST.curTab ? ST.curTab() : null;
@@ -112,12 +112,12 @@
       const D = meshApply(JSON.parse(raw[ST.char.id]));
       const st = await ST.store(ST.rigNs()).get("rig/skeleton");
       if (st && st.source === "none") { D.ref = []; D.refW = {}; }   // đã xoá xương ở Outliner: rig lại từ mesh, không gợi ý xương / skin của FBX
-      root = new THREE.Group(); root.name = "rig"; root.visible = ST.layerOn.rig; V.cm.add(root);
+      root = new THREE.Group(); root.name = "rig"; root.visible = act(); V.cm.add(root);
       const host = makeHost(root); live = host;
       eng = ST.rigEngine(D, host); key = k; ST.rigEng = () => eng; ST.rigRoot = () => root;   // lõi Rig cho script / Claude (studio_cmd)
       await eng.ready; state = "ready"; ST.rigSetup.bind(eng); if (!st || st.source !== "none") saveSkel();   // vừa xoá xương: chỉ hiện lại khi lưu khớp mới
       if (!open) open = new Set(ST.pref.get("rig:open:" + ST.char.id, null) || ["root", "Root_M", "Spine1_M", "Chest_M"]);
-      eng.setMode(TOOL2MODE[ST.tool] || "select");
+      eng.setMode(TOOL2MODE[ST.tool] || "select"); syncVis(); eng.syncScene(); root.visible = act();   // W3b: ẩn / hiện theo mesh của Cảnh
     } catch (e) { console.error(e); state = "error"; err = e.message || String(e); }
     ST.refresh();
   }
@@ -135,10 +135,17 @@
     } catch (e) { state = "nodata"; err = e.message || String(e); ST.refresh(); }
   }
 
-  // ---- lớp Rig (hiện / ẩn, nạp lười) + focus
-  M.layer = on => { if (root) root.visible = on; if (on) ensure().then(() => { if (root) root.visible = ST.layerOn.rig; if (eng) eng.syncScene(); ST.refresh(); }); else { if (ST.focus === "rig") V.gizmo.detach(); ST.rigSetup.hide(); } };
-  M.focusIn = () => { ensure().then(() => { if (eng && ST.focus === "rig") { eng.setMode(TOOL2MODE[ST.tool] || "select"); eng.syncScene(); } }); };
-  M.focusOut = () => { V.gizmo.detach(); ST.rigSetup.hide(); };
+  // ---- W3b: Rig là chế độ sửa của nhân vật trong Cảnh. Focus Rig = lõi Rig vẽ nhân vật (mesh Cảnh + xương Cảnh ẩn), rời Rig = Cảnh vẽ lại.
+  // Ẩn / hiện mesh (mắt Outliner, Ctrl+H) là của mesh trong Cảnh, áp sang lõi Rig theo tên.
+  function syncVis() {
+    if (!eng) return; const g = eng.get(), on = n => { const o = ST.mods.mesh.byName(n); return !o || o.vis; };
+    g.vis.body = on(g.DATA.body.name); g.vis.cloth = (g.DATA.clothes || []).length ? g.DATA.clothes.some(c => on(c.name)) : g.vis.cloth;
+    (g.DATA.props || []).forEach((p, i) => { g.vis.props[i] = on(p.name); });
+  }
+  M.syncVis = () => { syncVis(); if (eng) eng.syncScene(); };
+  M.focusIn = () => { if (root) root.visible = act(); ensure().then(() => { if (root) root.visible = act(); if (eng && ST.focus === "rig") { syncVis(); eng.setMode(TOOL2MODE[ST.tool] || "select"); eng.syncScene(); } ST.refresh(); }); };
+  M.focusOut = () => { if (root) root.visible = false; V.gizmo.detach(); ST.rigSetup.hide(); };
+  ST.on("layer", () => { if (root) root.visible = act(); });
   ST.on("ws", () => { if (eng) syncTab(step()); });   // đổi workspace: tab Rig theo bước đang làm, không kéo lõi về bước của tab cũ
   M.loaded = () => !!eng;
   // chờ lõi nạp xong (cầu nối AI gọi lệnh ngay sau khi focus)
@@ -147,17 +154,17 @@
     for (let i = 0; i < 400 && busy(); i++) await new Promise(r => setTimeout(r, 100));
     return state === "ready";
   };
-  M.loadMsg = () => !ST.char ? "Chưa mở nhân vật" : ({ loading: "Đang nạp rig…", building: "Đang dựng dữ liệu rig…", nodata: "Chưa có dữ liệu rig: mở panel Rig để dựng", error: "Lỗi nạp rig: " + err }[state] || "Chưa nạp: bấm mắt để nạp");
+  M.loadMsg = () => !ST.char ? "Chưa mở nhân vật" : ({ loading: "Đang nạp rig…", building: "Đang dựng dữ liệu rig…", nodata: "Chưa có dữ liệu rig: mở panel Rig để dựng", error: "Lỗi nạp rig: " + err }[state] || "Chưa nạp: bấm Rig để nạp");
   M.nodeLabel = () => eng ? "Rig · bước " + step() + "/5" : "Rig";
   ST.on("tool", t => { if (ST.focus === "rig" && eng) { eng.setMode(TOOL2MODE[t] || "select"); if (step() === 4 && t === "sel") eng.setSkTool("pick"); } });
   ST.on("char", () => { dispose(); raw = {}; open = null; state = "none"; });
-  ST.on("rig:cleared", () => { dispose(); raw = {}; state = "none"; if (ST.layerOn.rig || ST.focus === "rig") ensure(); });   // xoá / khôi phục xương ở General: dựng lại lõi Rig
+  ST.on("rig:cleared", () => { dispose(); raw = {}; state = "none"; if (ST.focus === "rig") ensure(); });   // xoá / khôi phục xương ở General: dựng lại lõi Rig
 
   // ---- chuột (viewport gọi)
   M.canBox = () => step() === 2;
   // click trúng khớp (bước 2) hoặc mesh của rig → viewport chuyển focus sang Rig
   M.hit = (x, y, p) => {
-    if (!eng || !ST.layerOn.rig || !root) return false;
+    if (!eng || !root || !root.visible) return false;
     const g = eng.get(), w = new THREE.Vector3(), R = V.TM && V.TM.on ? 26 : 12;
     if (step() === 2 && Object.values(g.LM).some(q => { if (!Array.isArray(q)) return false; const s = V.toScreen(w.set(q[0], q[1], q[2]).applyMatrix4(V.cm.matrixWorld), p); return Math.hypot(s.x - x, s.y - y) < R; })) return true;
     const ms = []; root.traverse(o => { if (o.isMesh && o.visible) ms.push(o); });
@@ -192,9 +199,7 @@
   M.outline = () => {
     if (!eng) return [];
     if (!open) open = new Set(ST.pref.get("rig:open:" + ST.char.id, null) || ["root", "Root_M", "Spine1_M", "Chest_M"]);
-    const g = eng.get(), rows = [{ id: "m:body", d: 0, label: g.DATA.body.name || "Body", icon: "mesh", vis: g.vis.body }];
-    (g.DATA.clothes || []).forEach((c, i) => rows.push({ id: "m:cloth" + i, d: 0, label: c.name, icon: "mesh", vis: g.vis.cloth }));
-    (g.DATA.props || []).forEach((c, i) => rows.push({ id: "m:prop" + i, d: 0, label: c.name, icon: "mesh", vis: g.vis.props[i] }));
+    const g = eng.get(), rows = [];   // W3b: mesh chỉ có một dòng (ở cấp đầu, của Cảnh); dưới nút Rig là cây xương đang dựng
     const B = eng.buildSkeleton(), kids = {}; B.forEach(b => (kids[b.parent || ""] || (kids[b.parent || ""] = [])).push(b));
     const s = g.step, on = n => s === 2 ? g.S.has(n) : s >= 4 ? (n === g.skinBone && s === 4) || n === g.jointSel || (s === 5 && n === g.poseBone) : false;
     const walk = (list, d) => list.forEach(b => { const k = kids[b.name] || []; rows.push({ id: "j:" + b.name, d, label: b.name, icon: "joint", sel: on(b.name), fold: k.length ? (open.has(b.name) ? 0 : 1) : undefined, count: d === 0 ? B.length : undefined }); if (k.length && open.has(b.name)) walk(k, d + 1); });
@@ -269,7 +274,7 @@
   C({ id: "rig.gltf", menu: "File", label: "Xuất glTF (rig + skin)", icon: "export", on: () => R() && !!eng.get().SK, run: () => eng.exportGltf() });
   C({ id: "rig.toPose", menu: "Rig", label: "Gửi rig sang Pose…", icon: "pose", on: () => R() && !!eng.get().SK, run: sendToPose });
   const vis = (id, label, k, getv) => C({ id: "rig.v." + id, menu: "Display", keep: true, label, on: R, check: () => eng && getv(eng.get()), run: () => eng.set(k, !getv(eng.get())) });
-  vis("body", "Rig: thân", "visBody", g => g.vis.body); vis("cloth", "Rig: quần áo", "visCloth", g => g.vis.cloth); vis("props", "Rig: prop", "visProps", g => g.vis.props.every(Boolean));
+  // thân / quần áo / prop: mắt mesh trong Outliner (W3b)
   vis("wire", "Rig: lưới mesh", "showWire", g => g.showWire); vis("skel", "Rig: xương (bước 2)", "showSkel", g => g.showSkel); vis("fing", "Rig: khớp ngón", "showFing", g => g.showFing); vis("ref", "Rig: xương khách (đối chiếu)", "showRef", g => g.showRef);
 
   // ---- gửi rig sang Pose: tạo base pose 1 khung cho một anim của nhân vật (POST /api/rig/to-pose, như nút ➤ của Home)

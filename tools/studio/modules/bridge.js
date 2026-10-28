@@ -97,7 +97,7 @@
     },
     ws({ id }) { need(ST.WS[id], "Không có workspace " + id); ST.setWS(id); return { ws: ST.ws, focus: ST.focus }; },
     focus({ id }) { need(ST.mods[id] && ST.LAYER_OF[id], "Focus là mesh, rig hoặc pose"); ST.setFocus(id); return { focus: ST.focus, layers: Object.assign({}, ST.layerOn) }; },
-    layer({ id, on, solo }) { need(id in ST.layerOn, "Lớp là scene, rig hoặc anim"); ST.showLayer(id, on === "toggle" ? !ST.layerOn[id] : on !== false, solo); return { layers: Object.assign({}, ST.layerOn) }; },
+    layer({ id, on, solo }) { id = (ST.LAYER_ALIAS || {})[id] || id; need(id in ST.layerOn, "Lớp là scene (nhân vật, rig là chế độ sửa của nó) hoặc anim"); ST.showLayer(id, on === "toggle" ? !ST.layerOn[id] : on !== false, solo); return { layers: Object.assign({}, ST.layerOn) }; },
     cmds({ q }) {   // danh sách lệnh (để AI biết gọi gì): id, nhãn, menu, module, phím, dùng được ngay không
       const k = String(q || "").toLowerCase();
       return [...ST.cmds.values()].filter(c => !c.hidden && (!k || (c.id + " " + c.label + " " + (c.menu || "")).toLowerCase().includes(k)))

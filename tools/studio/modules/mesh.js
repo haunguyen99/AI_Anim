@@ -79,7 +79,9 @@
   function allVis() { OBJ.forEach(applyVis); }
   function removeObj(o) { disposeObj(o); OBJ = OBJ.filter(x => x !== o); selO.delete(o.id); if (active === o) active = OBJ[0] || null; }
   M.display = s => { style = s; allVis(); refreshSel(); };
-  M.layer = on => M.display(on ? "edit" : "hidden");   // lớp Cảnh (mesh + xương)
+  const shownNow = () => ST.layerOn.scene && ST.focus !== "rig";   // W3b: đang sửa rig thì lõi Rig vẽ nhân vật
+  M.layer = () => M.display(shownNow() ? "edit" : "hidden");   // lớp Nhân vật (mesh + xương)
+  ST.on("focus", () => { const want = shownNow() ? "edit" : "hidden"; if (style !== want) M.display(want); });
 
   // ---------------------------------------------------------------- undo (lịch sử chung)
   M.snap = () => ({ act: active && active.id, sel: [...selO], sv: [...selV], sf: [...selF], mode, o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice(), skin: o.skin || null, piv: o.piv || null, zero: o.zero || null })), cp: cPiv });
@@ -571,7 +573,7 @@
   M.olAct = (id, a, e, val) => {
     if (ST.mods.skel && ST.mods.skel.isMine(id)) return ST.mods.skel.olAct(id, a);
     const o = get(+id); if (!o) return;
-    if (a === "vis") { o.vis = !o.vis; applyVis(o); dirty = true; changed(); refreshSel(); return; }
+    if (a === "vis") { o.vis = !o.vis; applyVis(o); dirty = true; changed(); refreshSel(); visToRig(); return; }
     if (a === "lock") { o.lock = !o.lock; if (o.lock) { selO.delete(o.id); if (active === o) { active = OBJ.find(x => !x.lock && x.vis) || null; clearSel(); } } changed(); allVis(); refreshSel(); return; }
     if (a === "del") { pushUndo("Xoá mesh"); removeObj(o); clearSel(); changed(); refreshSel(); return; }
     if (a === "rename") { if (val && val !== o.name) { pushUndo("Đổi tên"); o.name = val; changed(); } return; }
@@ -677,7 +679,8 @@
   C({ id: "file.rigjson", menu: "File", label: "Xuất mesh_cm.json (cho Rig)", icon: "export", run: exportRig });
   C({ id: "file.reset", menu: "File", label: "Về mesh gốc", icon: "reset", run: resetAll });
   // ẩn / hiện như Maya: Ctrl+H ẩn mesh đang chọn, Shift+H hiện mesh đang chọn (chọn trong Outliner), Ctrl+Shift+H hiện tất cả
-  M.setVis = (list, v) => { list = list.filter(o => o && o.vis !== v); if (!list.length) return 0; list.forEach(o => { o.vis = v; applyVis(o); }); dirty = true; changed(); refreshSel(); return list.length; };
+  M.setVis = (list, v) => { list = list.filter(o => o && o.vis !== v); if (!list.length) return 0; list.forEach(o => { o.vis = v; applyVis(o); }); dirty = true; changed(); refreshSel(); visToRig(); return list.length; };
+  const visToRig = () => { const r = ST.mods.rig; if (r && r.syncVis) r.syncVis(); };
   M.byName = n => OBJ.find(o => o.name === n) || null;
   const selObjs = () => [...selO].map(get).filter(Boolean);
   C({ id: "mesh.hide", menu: "Display", sep: true, label: "Ẩn mesh đang chọn", icon: "eyeoff", key: "ctrl+h", on: () => selO.size > 0, run: () => say("Đã ẩn " + M.setVis(selObjs(), false) + " mesh.") });

@@ -166,6 +166,38 @@ m = rep(m, '  try { window.dbWidget({ db, cols: ["adjusts", "rounds", "keys", "a
 m = rep(m, 'document.addEventListener("keydown", e => {\n  if (e.target.matches("textarea, input")) return;',
         'document.addEventListener("keydown", e => {\n  if (!host.alive()) return;\n  if (e.target.matches("textarea, input")) return;')
 m = re.sub(r"(?<![.\w$])camera\b(?!\s*:)", "CAM()", m)
+# ---- W3a (2026-10-28): model sống = nhân vật hiện tại trong Studio (host.liveModel); key vẫn lưu theo model chụp của phiên bản
+m = rep(m, "const [g1, g2] = await Promise.all([loadGlb(p.glb), loadGlb(p.glb)]);",
+        "const live = host.liveModel ? await host.liveModel(p) : null, src = live || p.glb;   // Studio W3a: model dựng từ mesh + rig + skin hiện tại\n"
+        "    const [g1, g2, g0] = await Promise.all([loadGlb(src), loadGlb(src), live ? loadGlb(p.glb).catch(() => null) : null]);")
+m = rep(m, "B = {}; model.traverse(o => { if (o.isBone) B[o.name] = o; });",
+        "B = {}; model.traverse(o => { if (o.isBone) B[o.name] = o; });\n"
+        "    LIVE = null;\n"
+        "    if (live) {   // vị trí nghỉ của rig hiện tại và của model chụp (nếu còn file) để đổi vị trí key qua lại\n"
+        "      const rest = {}; for (const n in B) rest[n] = B[n].position.clone();\n"
+        "      let snap = null; if (g0) { snap = {}; g0.scene.traverse(o => { if (o.isBone) snap[o.name] = o.position.clone(); }); }\n"
+        "      LIVE = { rest, snap };\n"
+        "    }")
+m = rep(m, "const packBone = (q, p) =>",
+        "let LIVE = null;   // Studio W3a: {rest, snap} khi đang hiện bằng nhân vật hiện tại\n"
+        "const LIVE_ROOTS = new Set([\"root\", \"Root_M\"]);\n"
+        "function liveIn(n, k) {    // key (theo model chụp) -> rig hiện tại: giữ góc xoay, độ dài xương theo rig mới, phần dời thêm giữ nguyên\n"
+        "  k = k.slice(); const r = LIVE && LIVE.rest[n]; if (!r) return k;\n"
+        "  const s = LIVE.snap && LIVE.snap[n];\n"
+        "  if (s) { k[4] = r.x + k[4] - s.x; k[5] = r.y + k[5] - s.y; k[6] = r.z + k[6] - s.z; }\n"
+        "  else if (!LIVE_ROOTS.has(n)) { k[4] = r.x; k[5] = r.y; k[6] = r.z; }\n"
+        "  return k;\n"
+        "}\n"
+        "function liveOut(pose) {   // ngược lại khi lưu key: key luôn theo model chụp, Pose Lab cũ vẫn đọc đúng\n"
+        "  if (!LIVE || !LIVE.snap) return pose; const o = {};\n"
+        "  for (const n in pose) { const k = pose[n].slice(), r = LIVE.rest[n], s = LIVE.snap[n]; if (r && s) { k[4] += s.x - r.x; k[5] += s.y - r.y; k[6] += s.z - r.z; } o[n] = k; }\n"
+        "  return o;\n"
+        "}\n"
+        "const packBone = (q, p) =>")
+m = rep(m, "const V = idx.map(i => ((KEYS.get(ks[i]).pose || {})[n] || REST[n]).slice());",
+        "const V = idx.map(i => { const k = (KEYS.get(ks[i]).pose || {})[n]; return k ? liveIn(n, k) : REST[n].slice(); });")
+m = rep(m, "function setKey(f, pose) { f = cyc(f); pose = unphys(f, pose);", "function setKey(f, pose) { f = cyc(f); pose = liveOut(unphys(f, pose));")
+m = rep(m, 'KEYS.set(cyc(f), { pose: poseFromCache(f), at: "seed" });', 'KEYS.set(cyc(f), { pose: liveOut(poseFromCache(f)), at: "seed" });')
 m = rep(m, 'const dl = await claude.use("downloads").catch(() => null);', 'const dl = window.claude && claude.use ? await claude.use("downloads").catch(() => null) : host.downloads;   // Studio: tải thẳng về máy')
 m = m.replace("drawImage(canvas,", "drawImage(renderer.domElement,")
 m = re.sub(r"\bcanvas\.width\b", "renderer.domElement.width", m)
@@ -202,7 +234,7 @@ const AI = (() => {
   const loc = n => { const e = new THREE.Euler().setFromQuaternion(B[n].quaternion, "XYZ"); return [e.x, e.y, e.z].map(v => r2(THREE.MathUtils.radToDeg(v))); };
   const world = n => { const w = n.startsWith("Ankle_") && footT[n.slice(-1)] ? footT[n.slice(-1)] : wp(B[n]); return [w.x * 100, -w.z * 100, w.y * 100].map(r2); };   // cm, trục Blender (Z lên)
   return {
-    info: () => ({ clip: P.clip, version: P.version, label: P.label || "", mode: keysMode() ? "keys" : "baked", frame: cyc(frame), frames: P.frames || 1, loop: !!P.loop, fps: P.fps || 30,
+    info: () => ({ clip: P.clip, version: P.version, label: P.label || "", mode: keysMode() ? "keys" : "baked", model: LIVE ? "live" : "snap", frame: cyc(frame), frames: P.frames || 1, loop: !!P.loop, fps: P.fps || 30,
       sel, selSet: [...selSet], playing, autoKey, keys: keysMode() ? [...KEYS.keys()].sort((a, b) => a - b) : [], unkeyed: editedList(), interp: ANIM.interp || "spline" }),
     joints: () => Object.keys(markers).map(n => ({ name: n, label: NAMES[n] || "", parent: (() => { for (let o = B[n].parent; o; o = o.parent) if (markers[o.name]) return o.name; return null; })() })),
     read: names => { const L = names && names.length ? names : (sel ? [...selSet] : Object.keys(markers)); const o = {}; L.forEach(n => { joint(n); o[n] = { rot: loc(n), pos: world(n) }; }); return o; },
@@ -223,7 +255,7 @@ const AI = (() => {
   };
 })();
 return { get: () => ({ P, frame, sel, selSet, B, markers, model, playing, mode }), select: n => select(n), setSelection, setMode, goto, undo: () => $("undo").click(),
-  canUndo: () => undoStack.length > 0, openPose, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS,
+  canUndo: () => undoStack.length > 0, openPose, reopen: () => openPose(P), isLive: () => !!LIVE, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS,
   ai: AI };
 };
 """

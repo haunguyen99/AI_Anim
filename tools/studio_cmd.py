@@ -7,7 +7,7 @@
   python tools/studio_cmd.py bindpose
   python tools/studio_cmd.py ws general | run <id lệnh> | open <nhân vật> [ws] | clients
   python tools/studio_cmd.py focus rig                     # mesh | rig | pose: module đang sửa (chuột, gizmo, Channel Box, phím)
-  python tools/studio_cmd.py layer anim on [--both]        # scene | rig | anim; on | off | toggle; --both = không ẩn lớp khác
+  python tools/studio_cmd.py layer anim on [--both]        # scene (nhân vật; rig là chế độ sửa của nó) | anim; on | off | toggle; --both = không ẩn lớp khác
   python tools/studio_cmd.py cmds [chữ cần tìm]            # mọi lệnh: id, nhãn, module, phím, dùng được ngay không
 Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace nào (run tự focus sang module của lệnh).
 
