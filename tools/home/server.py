@@ -14,6 +14,7 @@ import fbx_import
 import rig_data
 import studio_bridge
 import pose_data
+import spine_live
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -596,6 +597,10 @@ class H(SimpleHTTPRequestHandler):
         if path.startswith("/api/studio/"):   # cầu nối Claude ↔ Studio (studio_bridge.py)
             from urllib.parse import parse_qs
             if studio_bridge.handle_get(self, path, parse_qs(urlparse(self.path).query)):
+                return
+        if path in ("/spine", "/spine/") or path.startswith(("/spine/", "/api/spine/", "/spine-live/")):   # Spine Live (spine_live.py)
+            from urllib.parse import parse_qs
+            if spine_live.handle_get(self, path, parse_qs(urlparse(self.path).query)):
                 return
         if path == "/api/state":
             try:

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spine Live</title>
+<link rel="stylesheet" href="/spine/vendor/spine-player.css">
+<style>
+/* Spine Live: xem skeleton JSON bằng spine-player 4.2, tự nạp lại khi file JSON / atlas / ảnh đổi (server: tools/home/spine_live.py). */
+:root{--bg:#e9ebef;--panel:#f7f8fa;--raise:#fff;--line:#cfd3da;--fg:#1b2230;--mute:#5d6676;--accent:#2f5fd0;--ok:#1f9d5c;--bad:#c8402f;--sans:system-ui,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c2028;--panel:#232832;--raise:#2b313c;--line:#353c48;--fg:#e4e8ef;--mute:#8d97a8;--accent:#6f95f0;--ok:#52c58a;--bad:#ef6d60;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c2028;--panel:#232832;--raise:#2b313c;--line:#353c48;--fg:#e4e8ef;--mute:#8d97a8;--accent:#6f95f0;--ok:#52c58a;--bad:#ef6d60;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--bg);color:var(--fg);font:13px/1.4 var(--sans)}
+header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{font-size:14px;margin:0;font-weight:600}
+select,button{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+select{max-width:min(420px,100%)}
+button{cursor:pointer} button:hover{border-color:var(--accent)}
+label{display:inline-flex;gap:4px;align-items:center;color:var(--mute);cursor:pointer}
+.grp{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#status{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--mute)}
+#status.ok::before,#status.bad::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--ok)}
+#status.bad{color:var(--bad)} #status.bad::before{background:var(--bad)}
+main{position:relative;min-height:0}
+#stage{position:absolute;inset:0}
+#stage.checker{background:conic-gradient(#0000 25%,#8882 0 50%,#0000 0 75%,#8882 0) 0 0/24px 24px}
+#msg{position:absolute;left:16px;right:16px;bottom:56px;padding:10px 12px;border-radius:8px;background:var(--raise);border:1px solid var(--bad);color:var(--bad);white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px;display:none}
+#tip{position:absolute;pointer-events:none;padding:2px 7px;border-radius:5px;background:#000c;color:#fff;font-size:12px;transform:translate(10px,-24px);white-space:nowrap}
+#legend{position:absolute;right:16px;top:12px;display:flex;gap:6px;align-items:center;padding:4px 8px;border-radius:6px;background:var(--raise);border:1px solid var(--line);font-size:12px;color:var(--mute)}
+#legend i{width:90px;height:8px;border-radius:4px;background:linear-gradient(90deg,#1f4dff,#00d0ff,#30e060,#ffe030,#ff2a1a)}
+#claude{position:absolute;left:16px;top:12px;max-width:min(560px,calc(100% - 32px));z-index:5}
+#claudeBar{display:flex;gap:8px;align-items:baseline;text-align:left;width:100%;background:var(--raise);border:1px solid var(--accent);border-radius:8px;padding:6px 10px;box-shadow:0 2px 8px #0003}
+#claudeBar b{flex:none;color:var(--accent);font-variant-numeric:tabular-nums}
+#claudeBar b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:1px}
+#claude.fresh #claudeBar b::before{animation:pulse 1s ease-in-out 3}
+@keyframes pulse{50%{opacity:.2}}
+#claudeLog{margin:4px 0 0;padding:6px 10px 6px 30px;background:var(--raise);border:1px solid var(--line);border-radius:8px;max-height:40vh;overflow:auto;color:var(--mute)}
+#claudeLog li{margin:2px 0} #claudeLog li:last-child{color:var(--fg)}
+#empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);text-align:center;padding:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Spine Live</h1>
+  <select id="pick" aria-label="Skeleton"></select>
+  <div class="grp">
+    <label><input type="checkbox" id="dBones">Xương</label>
+    <label><input type="checkbox" id="dMeshes">Lưới mesh</label>
+    <select id="wBone" aria-label="Tô weight theo xương" title="Tô màu weight của xương này lên mesh: xanh = 0, đỏ = 1. Bấm vào khớp xương trên hình cũng chọn được"><option value="">Weight: tắt</option></select>
+    <label><input type="checkbox" id="dRegions">Vùng ảnh</label>
+    <select id="bgSel" aria-label="Nền">
+      <option value="checker">Nền ô</option><option value="#202020">Nền tối</option><option value="#f0f0f0">Nền sáng</option><option value="#00b140">Nền xanh</option>
+    </select>
+    <select id="uiSel" aria-label="Ghép lên UI game" title="Ghép lên ảnh UI game: gốc skeleton đặt đúng điểm chạm (file ui/<tên>.json trong thư mục anim)"><option value="">UI: tắt</option></select>
+    <button id="reload" title="Nạp lại ngay (bình thường trang tự nạp khi file đổi)">Nạp lại</button>
+  </div>
+  <label title="Trang nhảy theo file / anim / frame Claude đang làm (tools/spine_live_cmd.py)"><input type="checkbox" id="follow" checked>Theo Claude</label>
+  <span id="status">đang tải…</span>
+</header>
+<main>
+  <div id="stage" class="checker"></div>
+  <div id="empty" hidden>Chưa có skeleton nào trong work/&lt;game&gt;/spine/&lt;anim&gt;/</div>
+  <div id="msg"></div>
+  <div id="tip" hidden></div>
+  <div id="claude" hidden><button id="claudeBar" aria-expanded="false" title="Bấm để xem các bước trước"><b></b><span></span></button><ol id="claudeLog" hidden></ol></div>
+  <div id="legend" hidden><span>weight 0</span><i></i><span>1</span></div>
+</main>
+<script src="/spine/vendor/spine-player.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const store = { get(k, d) { try { return localStorage.getItem("spineLive." + k) ?? d } catch { return d } },
+                set(k, v) { try { localStorage.setItem("spineLive." + k, v) } catch {} } };
+let list = [], cur = null, player = null, stamp = null, ver = 0, loading = false, lastErr = "";
+
+// ---- Lớp xem rig: xương, lưới mesh, weight (debug sẵn của player vẽ nét 1 px, lẫn vào hình) ----
+const C = (r, g, b, a) => new spine.Color(r, g, b, a);
+const COL = { bone: C(0.1, 0.85, 1, 1), sel: C(1, 0.85, 0.1, 1), joint: C(1, 1, 1, 1), root: C(1, 0.3, 0.3, 1),
+              edge: C(0, 0, 0, 0.75), tri: C(1, 1, 1, 0.45), hull: C(1, 0.55, 0.1, 1) };
+const HEAT = [[0.12, 0.3, 1], [0, 0.82, 1], [0.19, 0.88, 0.38], [1, 0.88, 0.19], [1, 0.16, 0.1]];
+const heatCache = new Map();
+function heat(w) {
+  const k = Math.round(Math.max(0, Math.min(1, w)) * 40);
+  if (!heatCache.has(k)) {
+    const t = k / 40 * (HEAT.length - 1), i = Math.min(HEAT.length - 2, Math.floor(t)), f = t - i, a = HEAT[i], b = HEAT[i + 1];
+    heatCache.set(k, C(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f, 0.3 + 0.45 * (k / 40)));
+  }
+  return heatCache.get(k);
+}
+const weightCache = new WeakMap();
+function vertexWeights(slot, at, boneIdx) {   // weight của một xương tại từng đỉnh mesh
+  let m = weightCache.get(at); if (!m) weightCache.set(at, m = new Map());
+  const key = boneIdx + ":" + slot.bone.data.index;
+  if (m.has(key)) return m.get(key);
+  const n = at.worldVerticesLength / 2, w = new Float32Array(n);
+  if (!at.bones) w.fill(slot.bone.data.index === boneIdx ? 1 : 0);
+  else for (let v = 0, b = 0, f = 0; v < n; v++) {
+    const cnt = at.bones[b++];
+    for (let k = 0; k < cnt; k++, f += 3) if (at.bones[b++] === boneIdx) w[v] += at.vertices[f + 2];
+  }
+  m.set(key, w); return w;
+}
+let wv = new Float32Array(0);
+function pxWorld(p) { const cv = p.sceneRenderer.canvas; return p.sceneRenderer.camera.zoom * cv.width / Math.max(1, cv.clientWidth) }
+function overlay(p) {
+  const showB = $("dBones").checked, showM = $("dMeshes").checked, wName = $("wBone").value;
+  $("legend").hidden = !wName;
+  const sr = p.sceneRenderer, px = pxWorld(p), sk = p.skeleton;
+  sr.begin();   // dấu + đỏ ở gốc skeleton (điểm chạm / điểm game căn anim), luôn hiện
+  for (const [w, c] of [[4, COL.edge], [2, COL.root]]) {
+    sr.rectLine(true, -12 * px, 0, 12 * px, 0, w * px, c); sr.rectLine(true, 0, -12 * px, 0, 12 * px, w * px, c) }
+  sr.end();
+  if (!showB && !showM && !wName) return;
+  const wIdx = wName ? sk.findBone(wName)?.data.index : undefined;
+  sr.begin();
+  for (const slot of sk.drawOrder) {
+    const at = slot.getAttachment();
+    if (!(at instanceof spine.MeshAttachment) || !slot.bone.active) continue;
+    const n = at.worldVerticesLength; if (wv.length < n) wv = new Float32Array(n);
+    at.computeWorldVertices(slot, 0, n, wv, 0, 2);
+    const t = at.triangles;
+    if (wIdx !== undefined) {
+      const w = vertexWeights(slot, at, wIdx);
+      for (let i = 0; i < t.length; i += 3) { const a = t[i], b = t[i + 1], c = t[i + 2];
+        sr.triangle(true, wv[a * 2], wv[a * 2 + 1], wv[b * 2], wv[b * 2 + 1], wv[c * 2], wv[c * 2 + 1], heat(w[a]), heat(w[b]), heat(w[c])) }
+    }
+    if (showM) {
+      for (let i = 0; i < t.length; i += 3) for (let e = 0; e < 3; e++) { const a = t[i + e], b = t[i + (e + 1) % 3];
+        if (a < b) sr.line(wv[a * 2], wv[a * 2 + 1], wv[b * 2], wv[b * 2 + 1], COL.tri) }
+      const h = (at.hullLength || 0) / 2;
+      for (let i = 0; i < h; i++) { const j = (i + 1) % h; sr.rectLine(true, wv[i * 2], wv[i * 2 + 1], wv[j * 2], wv[j * 2 + 1], 2 * px, COL.hull) }
+      for (let i = 0; i < n / 2; i++) sr.circle(true, wv[i * 2], wv[i * 2 + 1], 1.6 * px, i < h ? COL.hull : COL.joint, 6);
+    }
+  }
+  if (showB) for (const b of sk.bones) {
+    if (!b.active) continue;
+    const sel = b.data.name === wName, col = sel ? COL.sel : COL.bone, len = b.data.length, x = b.worldX, y = b.worldY;
+    if (len > 0) { const x2 = x + len * b.a, y2 = y + len * b.c;
+      sr.rectLine(true, x, y, x2, y2, 10 * px, COL.edge); sr.rectLine(true, x, y, x2, y2, 6 * px, col) }
+    sr.circle(true, x, y, 9 * px, COL.edge, 20);
+    sr.circle(true, x, y, 6.5 * px, sel ? COL.sel : b.parent ? (len > 0 ? COL.joint : col) : COL.root, 16);
+  }
+  sr.end();
+}
+function boneAt(ev) {   // khớp xương gần con trỏ nhất (trong 12 px)
+  if (!player || !$("dBones").checked && !$("wBone").value) return null;
+  const cv = player.sceneRenderer.canvas, r = cv.getBoundingClientRect();
+  const v = player.sceneRenderer.camera.screenToWorld(new spine.Vector3(ev.clientX - r.left, ev.clientY - r.top, 0), r.width, r.height);
+  const lim = 12 * pxWorld(player); let best = null, bd = lim;
+  for (const b of player.skeleton.bones) {
+    const pts = [[b.worldX, b.worldY]];
+    if (b.data.length > 0) pts.push([b.worldX + b.data.length * b.a * 0.5, b.worldY + b.data.length * b.c * 0.5]);
+    for (const [x, y] of pts) { const d = Math.hypot(x - v.x, y - v.y); if (d < bd) { bd = d; best = b } }
+  }
+  return best;
+}
+function fillBones(p) {
+  const sel = $("wBone"), want = sel.value || store.get("wBone", "");
+  sel.innerHTML = '<option value="">Weight: tắt</option>' + p.skeleton.bones.map(b => `<option value="${b.data.name}">Weight: ${b.data.name}</option>`).join("");
+  sel.value = want && p.skeleton.findBone(want) ? want : "";   // findBone("") ném lỗi
+}
+
+function setStatus(text, cls) { const s = $("status"); s.textContent = text; s.className = cls || "" }
+function showMsg(t) { $("msg").textContent = t; $("msg").style.display = t ? "block" : "none" }
+const hhmmss = () => new Date().toLocaleTimeString("vi-VN", { hour12: false });
+
+async function loadList() {
+  list = await (await fetch("/api/spine/list", { cache: "no-store" })).json();
+  const sel = $("pick"); sel.innerHTML = "";
+  $("empty").hidden = list.length > 0;
+  const groups = {};
+  for (const s of list) (groups[s.game + " / " + s.anim] ||= []).push(s);
+  for (const [g, items] of Object.entries(groups)) {
+    const og = document.createElement("optgroup"); og.label = g;
+    for (const s of items) { const o = document.createElement("option"); o.value = s.json; o.textContent = s.json.split("/").slice(-1)[0] + ({ export: " (export)", live: " (Claude thử)" }[s.kind] || ""); og.appendChild(o) }
+    sel.appendChild(og);
+  }
+  const want = new URLSearchParams(location.search).get("json") || store.get("json", "");
+  sel.value = list.some(s => s.json === want) ? want : (list[0]?.json || "");
+}
+
+function freeGL(p) {   // trả context WebGL của player cũ ngay, tránh chạm giới hạn số context khi nạp lại nhiều lần
+  try { const c = p.dom.querySelector("canvas"); c.getContext("webgl2")?.getExtension("WEBGL_lose_context")?.loseContext() || c.getContext("webgl")?.getExtension("WEBGL_lose_context")?.loseContext() } catch {}
+}
+
+function fail(s, m, holder) {
+  loading = false; holder?.remove();
+  lastErr = String(m);
+  setStatus("lỗi lúc " + hhmmss() + (player ? " (đang giữ bản trước)" : ""), "bad");
+  showMsg("Không nạp được " + s.json + "\n" + m + "\nTrang sẽ thử lại khi file đổi lần nữa.");
+}
+
+function uiKey(s) { return "ui." + s.game + "/" + s.anim }
+function fillUi(s) {   // các nền UI của anim này; giữ lựa chọn theo từng anim
+  const sel = $("uiSel"), uis = s.ui || [], want = store.get(uiKey(s), uis.length ? uis[0].name : "");
+  sel.innerHTML = '<option value="">UI: tắt</option>' + uis.map(u => `<option value="${u.name}">UI: ${u.name}</option>`).join("");
+  sel.value = uis.some(u => u.name === want) ? want : "";
+  sel.hidden = !uis.length;
+}
+function uiConfig(s, base) {   // nền UI + khung nhìn cả màn hình, gốc skeleton ở điểm chạm
+  const u = (s.ui || []).find(x => x.name === $("uiSel").value);
+  if (!u) return {};
+  const k = 1 / u.scale, w = u.w * k, h = u.h * k, x = -u.at[0] * k, y = -(u.h - u.at[1]) * k;
+  return { backgroundImage: { url: base + u.image, x, y, width: w, height: h },
+           viewport: { x, y, width: w, height: h, padLeft: 0, padRight: 0, padTop: 0, padBottom: 0, transitionTime: 0 } };
+}
+
+async function build(keep) {
+  const s = list.find(x => x.json === $("pick").value);
+  if (!s) return;
+  if (cur !== s) fillUi(s);
+  cur = s; loading = true; const my = ++ver;
+  const base = "/spine-live/f/v" + my + "/";
+  const bg = $("bgSel").value;
+  $("stage").className = bg === "checker" ? "checker" : ""; $("stage").style.background = bg === "checker" ? "" : bg;
+  // Kiểm trước: lỗi đọc JSON xảy ra bên trong player thì player không gọi error() mà đứng chờ mãi (file ghi dở, thiếu vùng ảnh...)
+  try {
+    const [js, at] = await Promise.all([base + s.json, base + s.atlas].map(async u => {
+      const r = await fetch(u, { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status + " " + u.replace(base, ""));
+      return r.text();
+    }));
+    const sd = new spine.SkeletonJson(new spine.AtlasAttachmentLoader(new spine.TextureAtlas(at))).readSkeletonData(JSON.parse(js));
+    if (keep?.anim && !sd.findAnimation(keep.anim)) keep = { ...keep, anim: undefined };   // anim cũ không còn (vd bước dựng rig chưa có anim)
+    if (keep?.skin && !sd.findSkin(keep.skin)) keep = { ...keep, skin: undefined };
+  } catch (e) { return fail(s, e.message || e) }
+  if (my !== ver) return;
+  const holder = document.createElement("div"); holder.style.cssText = "position:absolute;inset:0";
+  setTimeout(() => { if (loading && my === ver) fail(s, "player không khởi động sau 10 s (xem console)", holder) }, 10000);
+  new spine.SpinePlayer(holder, {
+    skeleton: base + s.json, atlas: base + s.atlas,
+    animation: keep?.anim, skin: keep?.skin,
+    premultipliedAlpha: false, alpha: true, backgroundColor: "#00000000",
+    showControls: true, showLoading: false, preserveDrawingBuffer: false,
+    debug: { regions: $("dRegions").checked },
+    draw: p => overlay(p),
+    viewport: keep?.viewport ? { transitionTime: 0 } : {},
+    ...uiConfig(s, base),
+    success: p => {
+      if (my !== ver) { p.dispose(); freeGL(p); holder.remove(); return }   // đã có lần nạp mới hơn
+      if (player && player !== p) { player.dispose(); freeGL(player); player.dom.parentNode?.remove() }
+      $("stage").querySelectorAll(":scope > div").forEach(d => { if (d !== holder) d.remove() });
+      player = p; loading = false; lastErr = ""; showMsg(""); fillBones(p);
+      const names = p.skeleton.data.animations.map(a => a.name);
+      if (!keep?.anim || !names.includes(keep.anim)) {   // mở lần đầu: phát anim đã chọn lần trước, không có thì anim đầu
+        const want = store.get("anim." + s.json, "");
+        if (names.length) p.setAnimation(names.includes(want) ? want : names[0], true);
+      }
+      else setTimeout(() => {   // nạp lại: giữ đúng chỗ đang xem. Chờ một nhịp vì player gọi play() ngay sau success
+        const e = p.animationState.getCurrent(0);
+        if (!e) return;
+        const t = Math.min(keep.time, e.animation.duration);
+        if (keep.paused) p.pause();
+        e.trackTime = t; p.animationState.apply(p.skeleton); p.skeleton.updateWorldTransform(2); p.playTime = t;
+        if (keep.speed) p.speed = keep.speed;
+      }, 0);
+      setStatus("đã nạp " + hhmmss() + " · " + s.json.split("/").slice(-3).join("/"), "ok");
+    },
+    error: (p, m) => fail(s, m, holder)
+  });
+  $("stage").appendChild(holder);
+}
+
+function snapshot() {
+  if (!player || !player.animationState) return null;
+  const e = player.animationState.getCurrent(0);
+  return { anim: e?.animation.name, time: player.playTime || 0, paused: player.paused, speed: player.speed, skin: player.skeleton?.skin?.name, viewport: true };
+}
+
+async function poll() {
+  if (document.hidden || loading || !cur) return;
+  const a = player?.animationState?.getCurrent(0)?.animation.name;
+  if (a && a !== "<empty>") store.set("anim." + cur.json, a);
+  try {
+    const r = await fetch("/api/spine/stat?json=" + encodeURIComponent(cur.json), { cache: "no-store" });
+    if (!r.ok) return;
+    const { t } = await r.json();
+    if (stamp === null) { stamp = t; return }
+    if (t !== stamp) { stamp = t; build(snapshot()) }
+  } catch {}
+}
+
+// ---- Theo Claude: tools/spine_live_cmd.py ghi "đang xem gì", trang hỏi mỗi 0.5 s ----
+const pageId = Math.random().toString(36).slice(2, 8);
+let seenSeq = null;
+const FPS = 30;
+async function pollFocus() {
+  if (document.hidden) return;
+  const a = player?.animationState?.getCurrent(0)?.animation.name || "";
+  let f;
+  try {
+    const q = new URLSearchParams({ id: pageId, follow: $("follow").checked ? "1" : "0", seq: seenSeq ?? "", json: cur?.json || "", anim: a });
+    f = await (await fetch("/api/spine/focus?" + q, { cache: "no-store" })).json();
+  } catch { return }
+  if (!f.seq || f.seq === seenSeq) return;
+  const first = seenSeq === null; seenSeq = f.seq;
+  showClaude(f, !first);
+  if (first || f.what !== "show" || !$("follow").checked) return;   // mở trang: không nhảy theo bước cũ
+  applyFocus(f);
+}
+function showClaude(f, fresh) {
+  const box = $("claude");
+  box.hidden = !(f.log || []).length && !f.say;
+  $("claudeBar").querySelector("b").textContent = "Claude " + (f.t || "");
+  $("claudeBar").querySelector("span").textContent = f.say || "";
+  $("claudeLog").innerHTML = (f.log || []).map(l => `<li><b>${l.t}</b> ${l.say.replace(/[<&]/g, c => c === "<" ? "&lt;" : "&amp;")}</li>`).join("");
+  if (fresh) { box.classList.remove("fresh"); void box.offsetWidth; box.classList.add("fresh") }
+}
+$("claudeBar").onclick = () => { const l = $("claudeLog"); l.hidden = !l.hidden; $("claudeBar").setAttribute("aria-expanded", String(!l.hidden)) };
+async function applyFocus(f) {
+  const v = f.view || {};
+  if ("bones" in v) $("dBones").checked = v.bones;
+  if ("mesh" in v) $("dMeshes").checked = v.mesh;
+  if ("weight" in v) { store.set("wBone", v.weight); if ([...$("wBone").options].some(o => o.value === v.weight)) $("wBone").value = v.weight }
+  if (!list.some(s => s.json === f.json)) await loadList();
+  if (!list.some(s => s.json === f.json)) return;
+  let uiChanged = false;
+  if ("ui" in v) {
+    const s = list.find(x => x.json === f.json);
+    uiChanged = cur?.json === f.json && $("uiSel").value !== v.ui;
+    store.set(uiKey(s), v.ui); if (cur?.json === f.json) $("uiSel").value = v.ui;
+  }
+  const want = { anim: f.anim, time: f.frame == null ? 0 : f.frame / FPS, paused: f.frame != null, viewport: true };
+  if (cur?.json !== f.json || !player || uiChanged) {
+    $("pick").value = f.json; store.set("json", f.json);
+    const u = new URL(location.href); u.searchParams.set("json", f.json); history.replaceState(null, "", u);
+    stamp = null;
+    if (want.anim) store.set("anim." + f.json, want.anim);
+    return build(want.anim ? want : null);
+  }
+  const names = player.skeleton.data.animations.map(a => a.name);
+  if (want.anim && names.includes(want.anim) && player.animationState.getCurrent(0)?.animation.name !== want.anim) player.setAnimation(want.anim, true);
+  const e = player.animationState.getCurrent(0);
+  if (f.frame != null && e) {
+    player.pause();
+    const t = Math.min(want.time, e.animation.duration);
+    e.trackTime = t; player.animationState.apply(player.skeleton); player.skeleton.updateWorldTransform(2); player.playTime = t;
+  } else if (f.frame == null) player.play();
+}
+
+function choose() {
+  store.set("json", $("pick").value);
+  const u = new URL(location.href); u.searchParams.set("json", $("pick").value); history.replaceState(null, "", u);
+  stamp = null; build(null);
+}
+
+$("pick").onchange = choose;
+$("reload").onclick = async () => { await loadList(); build(snapshot()) };
+for (const id of ["dBones", "dMeshes", "dRegions", "bgSel", "follow"]) {
+  const el = $(id), saved = store.get(id, null);
+  if (saved !== null) el.type === "checkbox" ? (el.checked = saved === "1") : (el.value = saved);
+  const live = id === "dBones" || id === "dMeshes" || id === "follow";   // lớp xem rig vẽ mỗi khung, không cần dựng lại player
+  el.onchange = () => { store.set(id, el.type === "checkbox" ? (el.checked ? "1" : "0") : el.value); if (!live) build(snapshot()) };
+}
+$("wBone").onchange = () => store.set("wBone", $("wBone").value);
+$("uiSel").onchange = () => { if (cur) store.set(uiKey(cur), $("uiSel").value); build(snapshot()) };
+$("stage").addEventListener("pointermove", ev => {
+  const b = boneAt(ev), tip = $("tip");
+  if (!b) { tip.hidden = true; return }
+  const r = $("stage").getBoundingClientRect();
+  tip.hidden = false; tip.style.left = (ev.clientX - r.left) + "px"; tip.style.top = (ev.clientY - r.top) + "px";
+  tip.textContent = b.data.name + (b.parent ? " ← " + b.parent.data.name : "") + " · xoay " + b.rotation.toFixed(1) + "°";
+});
+$("stage").addEventListener("pointerleave", () => $("tip").hidden = true);
+$("stage").addEventListener("click", ev => {   // bấm vào khớp: tô weight của xương đó (bấm lại để tắt)
+  const b = boneAt(ev); if (!b) return;
+  ev.stopPropagation();
+  $("wBone").value = $("wBone").value === b.data.name ? "" : b.data.name; store.set("wBone", $("wBone").value);
+}, true);
+
+(async () => {
+  try { await loadList() } catch (e) { setStatus("không gọi được server Home", "bad"); return }
+  if (list.length) choose(); else setStatus("chưa có skeleton");
+  setInterval(poll, 500);
+  setInterval(pollFocus, 500);
+})();
+</script>
+</body>
+</html>
