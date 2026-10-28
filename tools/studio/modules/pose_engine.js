@@ -83,6 +83,13 @@ const NAMES = {
 };
 const NAMES0 = { ...NAMES };
 let JOINTS = Object.keys(NAMES);
+const FINGER_VI = { Thumb: "ngón cái", Index: "ngón trỏ", Middle: "ngón giữa", Ring: "ngón áp út", Pinky: "ngón út" };
+function jointLabel(n) {    // nhãn tiếng Việt cho khớp thêm từ rig: "Ngón trỏ 2 phải", "Mũi chân trái", "joint1 phải"
+  const side = n.endsWith("_R") ? " phải" : n.endsWith("_L") ? " trái" : "", m = n.match(/^(\w+?)Finger(\d)_/);
+  if (m) return FINGER_VI[m[1]][0].toUpperCase() + FINGER_VI[m[1]].slice(1) + " " + m[2] + side;
+  if (/^Toes_/.test(n)) return "Mũi chân" + side;
+  return n.replace(/_[LR]$/, "") + side;
+}
 function useNames(p) {      // per-clip labels / extra joints (SDR06: gun, drum, fingers)
   for (const k of Object.keys(NAMES)) delete NAMES[k];
   Object.assign(NAMES, NAMES0, p.names || {}); JOINTS = Object.keys(NAMES);
@@ -91,7 +98,9 @@ const LEGS = { L: ["Hip_L", "Knee_L", "Ankle_L"], R: ["Hip_R", "Knee_R", "Ankle_
 // Arm IK (user 2026-10-22 "Sao tôi trong dời dk mà chỉ xoay"): W on a wrist drags the hand, shoulder + elbow bend
 // like an IK handle, the hand keeps its world orientation. Saved as rotations, so Blender applies it unchanged.
 const ARMS = { L: ["Shoulder_L", "Elbow_L", "Wrist_L"], R: ["Shoulder_R", "Elbow_R", "Wrist_R"] };
-const MOVABLE = new Set(["Root_M", "Ankle_L", "Ankle_R", "Wrist_L", "Wrist_R", "slingshot_0"]);
+const MOVABLE = new Set(["Root_M", "Ankle_L", "Ankle_R", "Wrist_L", "Wrist_R", "slingshot_0"]);   // khớp có cách dời riêng (hông, IK chân / tay, súng)
+const RIGSET = () => window.__rigSetup || null;   // cài đặt bước 6 Vật lý của Rig (Studio), không có thì như cũ
+const canMove = n => !!B[n] && !(RIGSET() && RIGSET().joints && RIGSET().joints[n] && RIGSET().joints[n].move === false);   // mọi khớp dời được (W), user 2026-10-27 "các khớp không được di dời"; khớp khác dời thẳng theo cha
 const isWrist = n => !!n && n.startsWith("Wrist_");
 // Gun (user 2026-10-22 "Tôi muốn chỉnh vị trí của súng"): slingshot_0 moves (W) and turns (E) in world space; with
 // "Tay phải bám súng" on, the right hand keeps its grip (arm IK). Blender: pose_lab_apply.py turns it into CTRL_knife keys.
@@ -234,6 +243,9 @@ async function openPose(p) {
     ghost.visible = $("tGhost").classList.contains("on");
     scene.add(model, ghost);
     B = {}; model.traverse(o => { if (o.isBone) B[o.name] = o; });
+    // rig dựng ở Studio (Rig): đốt ngón, mũi chân, joint phụ (giáp vai, túi…) cũng là điểm khớp chọn / xoay / key được (user 2026-10-27)
+    for (const n of Object.keys(B)) if (!NAMES[n] && /^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+)_[LR]$/.test(n)) { NAMES[n] = jointLabel(n); JOINTS.push(n); }
+    if (RIGSET() && RIGSET().joints) JOINTS = JOINTS.filter(n => { const j = RIGSET().joints[n]; return !j || j.ctl !== false; });   // Rig: khớp không điều khiển thì không có điểm
     gB = {}; ghost.traverse(o => { if (o.isBone) gB[o.name] = o; });
     buildCache(g1.animations[0]);
     if (keysMode()) initKeys();
@@ -675,10 +687,7 @@ function attachGizmo() {
   if (!sel) return;
   const isAnkle = sel.startsWith("Ankle_");
   if (mode === "select") { gizmo.detach(); return; }
-  if (mode === "translate" && !MOVABLE.has(sel)) {
-    $("p_status").textContent = (NAMES[sel] || sel) + " chỉ xoay được (E). Dời (W) dùng cho hông, bàn chân và cổ tay (IK tay).";
-    setMode("rotate"); return;
-  }
+  if (mode === "translate" && !canMove(sel)) { setMode("rotate"); return; }
   gizmo.setMode(mode);
   if (mode === "translate" && isAnkle) {
     const s = sel.slice(-1); footHandle[s].position.copy(footT[s]); footHandle[s].quaternion.set(0, 0, 0, 1); footHandle[s].updateMatrixWorld(true);
@@ -955,7 +964,7 @@ function buildCB() {
   const cb = $("cb"); cb.innerHTML = ""; cbFor = sel; cb.hidden = !sel || !model;
   if (cb.hidden) return;
   const rows = [["r", CH_R, "Xoay (độ, trục local của khớp, so với pose gốc)"]];
-  if (MOVABLE.has(sel)) rows.push(["t", CH_T, "Dời (cm, trục Blender, so với pose gốc)"]);
+  if (canMove(sel)) rows.push(["t", CH_T, "Dời (cm, trục Blender, so với pose gốc)"]);
   for (const [kind, names, hd] of rows) {
     const h = document.createElement("div"); h.className = "hd"; h.textContent = hd; cb.append(h);
     names.forEach((nm, i) => {
@@ -990,7 +999,7 @@ function buildCB() {
 function renderCB() {
   if (cbFor !== sel || $("cb").hidden !== !(sel && model)) buildCB();
   if (!sel || !model) return;
-  const vals = { r: chanRot(sel), t: MOVABLE.has(sel) ? chanPos(sel) : null };
+  const vals = { r: chanRot(sel), t: canMove(sel) ? chanPos(sel) : null };
   for (const inp of $("cb").querySelectorAll("input")) {
     if (inp === document.activeElement) continue;
     const v = vals[inp.dataset.k][+inp.dataset.i];
@@ -1023,7 +1032,7 @@ function refresh() {
       : sel === GUN ? "Dời (W) / xoay (E) súng. Bật \"Tay phải bám súng\" để tay phải giữ chỗ cầm."
       : isWrist(sel) ? "Dời (W) để kéo bàn tay, vai và khuỷu tự gập theo IK, hướng bàn tay giữ nguyên. Xoay (E) để xoay cổ tay."
       : "Dời (W) để kéo bàn chân, gối tự gập theo IK. Xoay (E) để đổi hướng bàn chân.")
-    : "Kéo vòng gizmo (E) hoặc chỉnh trong Channel Box. X đổi trục local/world, ↑ ↓ sang khớp cha / con.";
+    : "Xoay (E) hoặc dời (W) khớp, hoặc chỉnh trong Channel Box. X đổi trục local/world, ↑ ↓ sang khớp cha / con.";
   $("resetJoint").disabled = !sel || ![...selSet].some(changed);
   $("resetJoint").textContent = selSet.size > 1 ? "Trả " + selSet.size + " khớp về gốc" : "Trả khớp này về gốc";
   const tag = $("selTag"); tag.hidden = !sel;
@@ -1758,7 +1767,8 @@ function impCom() {                       // CoM of the pose on screen (core cap
 }
 function impMass() {                       // kg per segment (+ prop) and the total
   const m = {}; let M = 0;
-  for (const [k, c] of Object.entries(BODY.caps)) { const L = c.a.distanceTo(c.b), r = c.r; m[k] = IMP_RHO * (Math.PI * r * r * L + 4 / 3 * Math.PI * r ** 3); M += m[k]; }
+  const rm = (RIGSET() && RIGSET().mass) || {};
+  for (const [k, c] of Object.entries(BODY.caps)) { const L = c.a.distanceTo(c.b), r = c.r; m[k] = rm[k] != null ? rm[k] : IMP_RHO * (Math.PI * r * r * L + 4 / 3 * Math.PI * r ** 3); M += m[k]; }
   const pm = M * balPropPct() / 100; return { m, pm, M: M + pm };
 }
 // generalized velocity of the body after impulse j (world N s, at world point x on segment seg) for the pose on screen.
@@ -2619,7 +2629,8 @@ function bodyPairs(props) {
   return P2.filter(([a, b]) => B[a] && B[b]);
 }
 function buildBody() {
-  const ch = charPhys() || {}, over = (ANIM.phys && ANIM.phys.bodyR) || {};
+  const RSc = (RIGSET() && RIGSET().colliders) || {}, rigR = Object.fromEntries(Object.entries(RSc).map(([k, c]) => [k, c.r]));
+  const ch = charPhys() || {}, over = { ...rigR, ...((ANIM.phys && ANIM.phys.bodyR) || {}) };
   return withPose(ch.rest || null, () => {
     const pts = {}, own = {}; for (const k of Object.keys(BODY_SEG)) { pts[k] = []; own[k] = []; }   // own: for the core radius
     model.traverse(m => {
@@ -2653,6 +2664,7 @@ function buildBody() {
       // surface points of the segment (armor included): another segment's surface inside this thin core = a real
       // intersection (capsule-vs-capsule flagged the head 17 cm into the arm where the meshes only touch)
       const st = Math.max(1, Math.floor(pts[b].length / 160)); shells[b] = pts[b].filter((_, i) => i % st === 0).map(p => p.clone().applyMatrix4(inv));
+      if (RSc[b] && RSc[b].on === false) delete shells[b];   // Rig tắt collider đoạn này: không va chạm (khối lượng vẫn tính)
     }
     const props = [B.Weapon ? "Weapon" : null, B[GUN] ? GUN : null].filter(Boolean);
     for (const p of props) { const pp = propPoints(p); if (pp.length) shells[p] = pp; }
@@ -3994,7 +4006,8 @@ function guessPart(n) {
   if (/^(Elbow|Knee)_/.test(n)) return { bone: n, type: "hinge", preset: "medium" };
   return { bone: n, type: "joint", preset: /^(Wrist|Head|Neck)/.test(n) ? "light" : "medium" };
 }
-const charPhys = () => CHAR_PHYS[Object.keys(CHAR_PHYS).find(k => (P.clip || "").startsWith(k))] || null;
+const charPhys = () => (RIGSET() && RIGSET().limits ? { parts: [], colliders: [], end: 8, limits: RIGSET().limits, rest: null } : null)
+  || CHAR_PHYS[Object.keys(CHAR_PHYS).find(k => (P.clip || "").startsWith(k))] || null;
 const mkEl = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 // AutoPhysics layers on PHYS.out (page locals per frame). Order: rotation smoothing -> trajectory smoothing -> separation ->
 // penetration; planted feet are put back where they were (leg IK) and a held prop stays in the hand.

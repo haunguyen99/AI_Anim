@@ -37,6 +37,11 @@ if C.get("auto_from_ref"):
     for k in L:
         if pos.get(k): L[k] = [round(v * sc, 2) for v in pos[k]]
     json.dump(auto, open(f"{out}/landmarks_auto.json", "w"), indent=1)
+# joint phụ (cfg.extra): vị trí ghi sẵn trong cấu hình, không có thì lấy theo xương khách
+for e in cfg.get("extra", []):
+    p = e.get("pos") or pos.get(e["name"])
+    if p: auto["landmarks"][e["name"]] = [round(v, 2) for v in p]
+if cfg.get("extra"): json.dump(auto, open(f"{out}/landmarks_auto.json", "w"), indent=1)
 data = dict(body=dict(name=body["name"], verts=body["verts"], tris=body["tris"]), props=[],
             clothes=[dict(name=byn[n]["name"], verts=byn[n]["verts"], tris=byn[n]["tris"]) for n in C.get("clothes", [])],
             auto=auto, fingers=fingers, cfg=cfg, ref=[dict(name=s["name"], parent=s["parent"], pos=None) for s in sk], refW={})

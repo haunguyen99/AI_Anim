@@ -133,7 +133,7 @@ syncScene(); renderAll(); resetHist();
 const ready = initDb();
 return {
   ready, renderPanel, renderAll, go, setMode, pick, setSel, applySel, pickLM, boxLM, pickJoint, selectBoneByName, gzStart, gzChange, gzEnd, syncScene,
-  snapStr: snap, applySnap, skinSnapshotOf, restoreSkin, scheduleSkinSave, saveLM, saveSkin, exportRig, exportGltf, buildGltf, adoptGuestJoints, adoptGuestSkin, guestJ, guestS,
+  snapStr: snap, applySnap, skinSnapshotOf, restoreSkin, scheduleSkinSave, saveLM, saveSkin, exportRig, exportGltf, buildGltf, adoptGuestJoints, adoptGuestSkin, assignIslandOf, stripBoneFromBody, moveWeight, cleanWeights, guestJ, guestS,
   setSkTool, assignIsland, computeSkin, hammerCurrent, hammerAuto, runSelfTest, exportWeights, renderPanelLight, buildSkeleton: () => buildSkeleton(LM), LM_ORDER, GROUPS, isFinger, mirrorKey, sideOf, centroid, dirty, commit, initFingers,
   get: () => ({ step, sel, S, mode, mirror, showRef, showWire, showSkel, showFing, vis, SK, skTool, saveMsg, gates, jointSel, poseBone, skinBone, LM, TW, CFG, DATA, clothN: clothMeshes.length, propN: propMeshes.length }),
   set(k, v) {

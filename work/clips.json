@@ -11,6 +11,9 @@
   },
   "Zom1": {
    "rig_url": "https://claude.ai/artifact/X6coV21xjfQohDtbVRdK7W"
+  },
+  "Boss_Gragas": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -240,6 +243,33 @@
     "clip": "Gaygor_Attack 10 Blocking",
     "title": "Gaygor Attack 10 Blocking Pose Lab",
     "url": "https://claude.ai/artifact/CQzVF3trnyHg6Ga9EgNKcZ"
+   }
+  },
+  {
+   "id": "boss_gragas_idle",
+   "character": "Boss_Gragas",
+   "stage": "p0",
+   "note": "Mới tạo từ Home: chờ /new_clip boss_gragas_idle",
+   "frames": null,
+   "fps": 30,
+   "ref": "",
+   "desc": "",
+   "created": "2026-10-27",
+   "updated": "2026-10-27",
+   "review": {
+    "key": "boss_gragas_idle",
+    "clip": "Idle",
+    "title": "Boss_Gragas Idle Review Lab",
+    "crumb": "Boss_Gragas · anim",
+    "name": "Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "boss_gragas_idle",
+    "clip": "Boss_Gragas_Idle",
+    "title": "Boss_Gragas Idle Pose Lab",
+    "url": ""
    }
   }
  ],

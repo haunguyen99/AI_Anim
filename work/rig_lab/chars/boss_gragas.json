@@ -23,7 +23,69 @@
   "headEnd": true,
   "dress": false,
   "prop": false,
-  "weapon": false
+  "weapon": false,
+  "extra": [
+   {
+    "name": "joint1_R",
+    "parent": "Scapula_R",
+    "label": "Giáp vai",
+    "pos": [
+     -29.0,
+     166.0,
+     -8.0
+    ]
+   },
+   {
+    "name": "joint1End_R",
+    "parent": "joint1_R",
+    "label": "Đầu giáp vai",
+    "pos": [
+     -51.0,
+     163.5,
+     -8.0
+    ]
+   },
+   {
+    "name": "joint1_L",
+    "parent": "Scapula_L",
+    "label": "Giáp vai",
+    "pos": [
+     29.0,
+     166.0,
+     -8.0
+    ]
+   },
+   {
+    "name": "joint1End_L",
+    "parent": "joint1_L",
+    "label": "Đầu giáp vai",
+    "pos": [
+     51.0,
+     163.5,
+     -8.0
+    ]
+   },
+   {
+    "name": "joint18_L",
+    "parent": "Root_M",
+    "label": "Túi bên hông",
+    "pos": [
+     34.5,
+     109.0,
+     19.5
+    ]
+   },
+   {
+    "name": "joint18End_L",
+    "parent": "joint18_L",
+    "label": "Đáy túi",
+    "pos": [
+     37.5,
+     95.0,
+     20.5
+    ]
+   }
+  ]
  },
  "source": "Studio Nhập FBX 2026-10-27: Boss_Gragas.fbx",
  "auto_from_ref": true

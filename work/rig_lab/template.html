@@ -374,11 +374,14 @@ const NC = CFG.headEnd ? 6 : 5;   // số khớp thân giữa (cột sống + đ
 const FINGERS = CFG.fingers, FSEG = [1, 2, 3].filter(i => i <= CFG.fseg);
 const FKEYS = FINGERS.flatMap(f => [...FSEG.map(i => f + "Finger" + i), ...(CFG.fingerEnd ? [f + "FingerEnd"] : [])]);
 const isFinger = k => /Finger(\d|End)_/.test(k);
+// joint phụ theo nhân vật (giáp vai, túi, vạt…): CFG.extra = [{name, parent, label}], theo thứ tự cha trước con; vị trí trong landmark như khớp thường
+const EXTRA = (CFG.extra || []).filter(e => e && e.name && e.parent);
+EXTRA.forEach(e => { if (e.label) LM_LABEL[e.name.replace(/_[RL]$/, "")] = e.label; });
 const LM_ORDER = [...CENTER.slice(0, NC), ...["Scapula", "Shoulder", "Elbow", "Wrist"].map(n => n + "_R"), ...LEG_J.map(n => n + "_R"),
   ...["Scapula", "Shoulder", "Elbow", "Wrist"].map(n => n + "_L"), ...LEG_J.map(n => n + "_L"), ...CENTER.slice(NC),
-  ...FKEYS.map(n => n + "_R"), ...FKEYS.map(n => n + "_L")];
+  ...FKEYS.map(n => n + "_R"), ...FKEYS.map(n => n + "_L"), ...EXTRA.map(e => e.name)];
 const sideOf = k => k.endsWith("_R") ? "R" : k.endsWith("_L") ? "L" : "M";
-const mirrorKey = k => k.endsWith("_R") ? k.slice(0, -1) + "L" : k.endsWith("_L") ? k.slice(0, -1) + "R" : null;
+const mirrorKey = k => { const m = k.endsWith("_R") ? k.slice(0, -1) + "L" : k.endsWith("_L") ? k.slice(0, -1) + "R" : null; return m && LM_ORDER.includes(m) ? m : null; };   // joint phụ một bên (vd túi bên trái) không có cặp
 
 function buildSkeleton(L) {
   const B = [], add = (name, parent, pos) => B.push({ name, parent, pos: pos.slice() });
@@ -395,6 +398,7 @@ function buildSkeleton(L) {
   for (const s of ["R", "L"]) for (const [i, n] of LEG_J.entries())
     add(n + "_" + s, i ? LEG_J[i - 1] + "_" + s : "Root_M", P(n + "_" + s));
   if (CFG.weapon) add("Weapon", "root", P("Weapon"));
+  for (const e of EXTRA) if (B.some(b => b.name === e.parent) && P(e.name)) add(e.name, e.parent, P(e.name));
   // twist: đoạn đầu (Shoulder/Hip) nhận roll NGƯỢC t lần roll của khớp đầu; đoạn cuối (Elbow/Knee) nhận roll +t lần roll của Wrist/Ankle
   const byName = {}; B.forEach(b => byName[b.name] = b);
   for (const s of ["R", "L"]) for (const st in TW_SEG) {
@@ -504,7 +508,7 @@ tc.addEventListener("objectChange", () => {
   if (mirror) {
     for (const k of S) {
       const m = mirrorKey(k);
-      if (!m) { LM[k][0] = 0; continue; }
+      if (!m) { if (sideOf(k) === "M") LM[k][0] = 0; continue; }
       if (sideOf(k) === "R" || !S.has(m)) LM[m] = [-LM[k][0], LM[k][1], LM[k][2]];
     }
   }
@@ -824,7 +828,7 @@ function wirePanel() {
   on("resetAuto", () => { LM = JSON.parse(JSON.stringify(DATA.auto.landmarks)); initFingers(LM, true); syncScene(); dirty(); commit(); renderPanel(); });
   Object.keys(TW_SEG).forEach(st => { const e = $("tw_" + st); if (e) e.addEventListener("change", () => { TW[st] = +e.value; syncScene(); dirty(); commit(); renderPanel(); }); });
   document.querySelectorAll("[data-tw]").forEach(b => b.addEventListener("click", () => { Object.keys(TW).forEach(st => TW[st] = +b.dataset.tw); syncScene(); dirty(); commit(); renderPanel(); }));
-  const m = $("mir"); if (m) m.addEventListener("change", e => { mirror = e.target.checked; if (mirror) { for (const k of LM_ORDER) if (sideOf(k) === "R") LM[mirrorKey(k)] = [-LM[k][0], LM[k][1], LM[k][2]]; syncScene(); dirty(); commit(); } });
+  const m = $("mir"); if (m) m.addEventListener("change", e => { mirror = e.target.checked; if (mirror) { for (const k of LM_ORDER) if (sideOf(k) === "R" && mirrorKey(k)) LM[mirrorKey(k)] = [-LM[k][0], LM[k][1], LM[k][2]]; syncScene(); dirty(); commit(); } });
   const r = $("ref"); if (r) r.addEventListener("change", e => { showRef = e.target.checked; syncScene(); renderVopts(); });
   document.querySelectorAll("#lmrows tr").forEach(tr => tr.addEventListener("click", e => pick(tr.dataset.k, e.shiftKey || e.ctrlKey || e.metaKey)));
 }
@@ -1403,6 +1407,60 @@ function assignIsland(e) {
   skinUndo.push(m); skinRedo = []; dirtySkin = true; paintSkin();
   saveMsg = "Đã gán khối rời " + m.size + " đỉnh cho " + skinBone + " 100%."; scheduleSkinSave();
 }
+// gán cả khối rời chứa đỉnh vi cho một xương 100% (như công cụ Gán khối rời, không cần click; dùng cho script / Claude)
+function assignIslandOf(vi, bone) {
+  if (!SK || SK.idx[bone] === undefined || !(vi >= 0 && vi < NV)) return 0;
+  const c = COMP.id[vi]; if (COMP.size[c] >= NV * 0.3) return 0;   // thân chính không gán nguyên khối
+  const j = SK.idx[bone], m = new Map(), v = new Float64Array(SK.nb); v[j] = 1;
+  for (let i = 0; i < NV; i++) if (COMP.id[i] === c) { m.set(i, [Array.from(SK.I.slice(i * 4, i * 4 + 4)), Array.from(SK.W.slice(i * 4, i * 4 + 4))]); setVec(i, Float64Array.from(v)); }
+  skinUndo.push(m); skinRedo = []; dirtySkin = true; paintSkin(); scheduleSkinSave();
+  return m.size;
+}
+// joint phụ chỉ nên lái khối rời của nó: bỏ trọng số của `bone` trên thân chính (khối lớn), chia lại cho các xương còn lại ở đỉnh đó; đỉnh chỉ có `bone` thì sang `to`
+function stripBoneFromBody(bone, to) {
+  if (!SK || SK.idx[bone] === undefined || SK.idx[to] === undefined) return 0;
+  const j = SK.idx[bone], t = SK.idx[to], m = new Map();
+  for (let i = 0; i < NV; i++) {
+    if (COMP.size[COMP.id[i]] < NV * 0.3) continue;
+    const I4 = SK.I.slice(i * 4, i * 4 + 4), W4 = SK.W.slice(i * 4, i * 4 + 4), k = [...I4].findIndex((x, q) => x === j && W4[q] > 0); if (k < 0) continue;
+    const v = new Float64Array(SK.nb); for (let q = 0; q < 4; q++) if (W4[q] > 0) v[I4[q]] += W4[q];
+    const rest = 1 - v[j]; if (rest > 0.05) v[j] = 0; else { v[t] += v[j]; v[j] = 0; }   // còn xương khác ở đỉnh này thì chia lại cho chúng (setVec chuẩn hoá), không thì về `to`
+    m.set(i, [Array.from(I4), Array.from(W4)]); setVec(i, v);
+  }
+  if (m.size) { skinUndo.push(m); skinRedo = []; dirtySkin = true; paintSkin(); scheduleSkinSave(); }
+  return m.size;
+}
+// chuyển trọng số `from` → `to` ở các đỉnh thân chính thoả test([x,y,z]) (vd bụng trên đai không theo đùi); k = phần chuyển (1 = hết)
+function moveWeight(from, to, test, k = 1) {
+  if (!SK || SK.idx[from] === undefined || SK.idx[to] === undefined) return 0;
+  const j = SK.idx[from], t = SK.idx[to], m = new Map();
+  for (let i = 0; i < NV; i++) {
+    if (COMP.size[COMP.id[i]] < NV * 0.3 || !test(bodyV[i])) continue;
+    const I4 = SK.I.slice(i * 4, i * 4 + 4), W4 = SK.W.slice(i * 4, i * 4 + 4); if (![...I4].some((x, q) => x === j && W4[q] > 0)) continue;
+    const v = new Float64Array(SK.nb); for (let q = 0; q < 4; q++) if (W4[q] > 0) v[I4[q]] += W4[q];
+    const d = v[j] * k; v[j] -= d; v[t] += d; m.set(i, [Array.from(I4), Array.from(W4)]); setVec(i, v);
+  }
+  if (m.size) { skinUndo.push(m); skinRedo = []; dirtySkin = true; paintSkin(); scheduleSkinSave(); }
+  return m.size;
+}
+// làm gọn skin: mỗi đỉnh chỉ giữ xương mạnh nhất và các xương cách nó ≤ hops bước trên cây, bỏ trọng số < minW, tối đa maxInf xương, chuẩn hoá lại
+// (khối rời đã gán cứng 100% không đổi)
+function cleanWeights(minW = 0.1, maxInf = 3, hops = 1) {
+  if (!SK) return 0;
+  const hop = treeHops(buildSkeleton(LM)), m = new Map();
+  for (let i = 0; i < NV; i++) {
+    const I4 = SK.I.slice(i * 4, i * 4 + 4), W4 = SK.W.slice(i * 4, i * 4 + 4);
+    let top = 0; for (let q = 1; q < 4; q++) if (W4[q] > W4[top]) top = q;
+    const own = SK.names[I4[top]], v = new Float64Array(SK.nb); let changed = false;
+    const keep = [...I4.keys()].filter(q => W4[q] > 0).sort((p, q) => W4[q] - W4[p]).filter((q, r) => {
+      const ok = r === 0 || (W4[q] >= minW && r < maxInf && hop(own, SK.names[I4[q]]) <= hops); if (!ok) changed = true; return ok; });
+    if (!changed) continue;
+    keep.forEach(q => v[I4[q]] += W4[q]);
+    m.set(i, [Array.from(I4), Array.from(W4)]); setVec(i, v);
+  }
+  if (m.size) { skinUndo.push(m); skinRedo = []; dirtySkin = true; paintSkin(); scheduleSkinSave(); }
+  return m.size;
+}
 function denseFrom(I, W, nb) { const f = new Float32Array(nb * NV); for (let i = 0; i < NV; i++) for (let k = 0; k < 4; k++) if (W[i * 4 + k] > 0) f[I[i * 4 + k] * NV + i] = W[i * 4 + k]; return f; }
 function updateSelPt() {
   const name = step === 4 ? skinBone : step === 5 ? poseBone : null;
@@ -1863,8 +1921,12 @@ function adoptGuestSkin() {
   const B = buildSkeleton(LM), segs = boneSegments(B), names = segs.map(x => x.name), idx = Object.fromEntries(names.map((n, i) => [n, i])), nb = names.length;
   const I = new Uint16Array(NV * 4), W = new Float32Array(NV * 4); let bare = 0, kept = 0;
   const fall = idx.Root_M !== undefined ? idx.Root_M : 0;
+  // xương khách không có trong rig này (đốt ngón cuối, ToesEnd, Cup…): dồn trọng số về xương cha gần nhất có trong rig, không thả về Root_M
+  const gpar = Object.fromEntries((DATA.ref || []).map(b => [b.name, b.parent])), upC = {};
+  const up = b => { if (b in upC) return upC[b]; let n = b, d = 0; while (n && idx[n] === undefined && d++ < 40) n = gpar[n]; return (upC[b] = n && idx[n] !== undefined ? idx[n] : undefined); };
   for (let i = 0; i < NV; i++) {
-    const a = Object.entries(REFW[i] || {}).filter(([b, w]) => idx[b] !== undefined && w > 0).sort((p, q) => q[1] - p[1]).slice(0, 4), t = a.reduce((x, p) => x + p[1], 0);
+    const acc = {}; for (const [b, w] of Object.entries(REFW[i] || {})) { const m = up(b); if (m !== undefined && w > 0) acc[m] = (acc[m] || 0) + w; }
+    const a = Object.entries(acc).sort((p, q) => q[1] - p[1]).slice(0, 4).map(([b, w]) => [names[b], w]), t = a.reduce((x, p) => x + p[1], 0);
     if (!a.length || t <= 0) { I[i * 4] = fall; W[i * 4] = 1; bare++; continue; }
     a.forEach(([b, w], k) => { I[i * 4 + k] = idx[b]; W[i * 4 + k] = w / t; }); kept++;
   }

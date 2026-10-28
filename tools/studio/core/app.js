@@ -108,6 +108,10 @@
         try { const r = await fetch(url(p), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }); if (r.ok) return "disk"; } catch (e) {}
         localStorage.setItem(lk(p), JSON.stringify(data)); return "browser";
       },
+      async del(p) {
+        try { localStorage.removeItem(lk(p)); } catch (e) {}
+        try { await fetch(url(p), { method: "DELETE" }); } catch (e) {}
+      },
     };
   };
   ST.download = (name, text, type) => {

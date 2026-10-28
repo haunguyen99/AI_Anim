@@ -1,7 +1,8 @@
 // AI Anim Studio — xương của nhân vật: vẽ joint + đoạn nối cha → con trong viewport, cây joint trong Outliner (mở / gập).
 // Workspace General: click joint trong viewport hoặc Outliner để chọn; gizmo / Channel Box dời, xoay, scale joint,
 // joint con đi theo như Maya. Sửa được lưu ở doc skel/edit của kho <nhân vật>_mesh_lab (cạnh mesh/edit).
-// Nguồn gốc: /api/char → skeleton (cm, Y lên).
+// Nguồn gốc: khớp của rig đã dựng ở workspace Rig (doc rig/skeleton của kho <nhân vật>_rig_lab, sửa / pose lưu ở skel/rig);
+// chưa rig thì xương khách từ /api/char → skeleton (cm, Y lên), sửa lưu ở skel/edit.
 (function () {
   const V = ST.view, S = ST.mods.skel = { joints: [] };
   let byName = {}, kids = {}, open = new Set(), sel = null, show = ST.pref.get("skel:show", true);
@@ -23,18 +24,61 @@
     grp.visible = show && S.joints.length > 0 && ST.ws === "general";
   }
   ST.on("ws", () => { grp.visible = show && S.joints.length > 0 && ST.ws === "general"; });
+  ST.rigNs = () => { const ns = new URLSearchParams(location.search).get("ns"); return ns ? ns + "_rig" : ST.slug(ST.char.name) + "_rig_lab"; };
+  let editKey = "skel/edit";
+  ST.on("rig:skeleton", joints => { if (ST.char) load(ST.char, joints); });
   ST.on("char", async ch => {
-    S.joints = (ch.skeleton || []).map(j => Object.assign({}, j, { pos: j.pos.slice(), bind: j.pos.slice(), D: new M4() })); byName = {}; kids = {}; sel = null; JT = null;
+    let rig = null; ST.rigState = { source: "guest" };
+    try {
+      const d = await ST.store(ST.rigNs()).get("rig/skeleton");
+      if (d && d.source === "none") { rig = []; ST.rigState = { source: "none" }; }
+      else if (d && d.joints && d.joints.length) { rig = d.joints; ST.rigState = { source: "rig" }; }
+    } catch (e) {}
+    load(ch, rig);
+  });
+  ST.on("rig:skeleton", () => { ST.rigState = { source: "rig" }; });
+
+  // ---- xoá cả bộ xương (Outliner / menu): mesh còn lại là mesh tĩnh, sang Rig đặt khớp + skin mới; rig cũ cất ở rig/backup để khôi phục
+  const RIG_DOCS = ["rig/landmarks", "rig/skin", "rig/gates", "rig/skeleton"];
+  S.deleteSkeleton = async () => {
+    const rs = ST.store(ST.rigNs()), bk = { at: new Date().toISOString() };
+    for (const p of RIG_DOCS) { const d = await rs.get(p); if (d) bk[p] = d; }
+    if (Object.keys(bk).length > 1) await rs.set("rig/backup", bk);
+    for (const p of RIG_DOCS) await rs.del(p);
+    await rs.set("rig/skeleton", { v: 1, source: "none", at: bk.at, joints: [] });
+    await store.del("skel/edit"); await store.del("skel/rig");
+    ST.rigState = { source: "none" }; ST.hist.U = ST.hist.U.filter(h => h.owner !== S); ST.hist.R = [];
+    load(ST.char, []); ST.emit("rig:cleared");
+    ST.toast("Đã xoá xương và skin. Sang workspace Rig để đặt khớp và skin mới (Rig → Khôi phục rig đã xoá để lấy lại).");
+  };
+  S.restoreSkeleton = async () => {
+    const rs = ST.store(ST.rigNs()), bk = await rs.get("rig/backup"); if (!bk) return ST.toast("Không có rig nào đã xoá để khôi phục.");
+    await rs.del("rig/skeleton");
+    for (const p of RIG_DOCS) if (bk[p]) await rs.set(p, bk[p]);
+    const d = bk["rig/skeleton"], has = !!(d && d.joints && d.joints.length); ST.rigState = { source: has ? "rig" : "guest" };
+    load(ST.char, has ? d.joints : null); ST.emit("rig:cleared"); ST.emit("rig:skin", bk["rig/skin"] || null);
+    ST.toast("Đã khôi phục rig xoá lúc " + String(bk.at).slice(0, 16).replace("T", " "));
+  };
+  const askDelete = () => ST.dialog("Xoá toàn bộ xương?", '<p class="note">Xoá ' + S.joints.length + " joint và skin của " + ST.esc(ST.char.name) +
+    '. Mesh giữ nguyên (thành mesh tĩnh); sang workspace Rig để đặt khớp và skin mới. Rig cũ được cất lại, khôi phục bằng Rig → Khôi phục rig đã xoá.</p>' +
+    '<div class="row"><button class="on" id="delYes">Xoá xương</button><button id="delNo">Huỷ</button></div>',
+    b => { b.querySelector("#delYes").onclick = () => { ST.closeDialog(); S.deleteSkeleton(); }; b.querySelector("#delNo").onclick = ST.closeDialog; });
+  ST.cmd({ id: "skel.delete", menu: "Rig", sep: true, label: "Xoá toàn bộ xương…", icon: "trash", ws: ["general", "rig"], on: () => S.joints.length > 0, run: askDelete });
+  ST.cmd({ id: "skel.restore", menu: "Rig", label: "Khôi phục rig đã xoá", icon: "reset", ws: ["general", "rig"], run: () => S.restoreSkeleton() });
+  async function load(ch, rig) {
+    editKey = rig ? "skel/rig" : "skel/edit";
+    S.source = rig ? "rig" : "guest";
+    S.joints = (rig || ch.skeleton || []).map(j => Object.assign({}, j, { pos: j.pos.slice(), bind: j.pos.slice(), D: new M4() })); byName = {}; kids = {}; sel = null; JT = null;
     S.joints.forEach(j => { byName[j.name] = j; (kids[j.parent || ""] || (kids[j.parent || ""] = [])).push(j); });
     open = new Set(ST.pref.get("skel:open:" + ch.id, null) || S.joints.filter(j => depth(j) < 2).map(j => j.name));
     store = ST.store(new URLSearchParams(location.search).get("ns") || ST.slug(ch.name) + "_mesh_lab");
     try {
-      const s = await store.get("skel/edit");
+      const s = await store.get(editKey);
       if (s && s.joints) Object.entries(s.joints).forEach(([n, p]) => { if (byName[n]) byName[n].pos = p.slice(); });
       if (s && s.D) Object.entries(s.D).forEach(([n, e]) => { if (byName[n]) byName[n].D.fromArray(e); });
     } catch (e) { console.error(e); }
-    build(); ST.emit("skel:pose");
-  });
+    build(); ST.emit("skel:pose"); ST.refresh();
+  }
   const depth = j => { let d = 0; while (j && j.parent && byName[j.parent]) { j = byName[j.parent]; d++; } return d; };
   const saveOpen = () => ST.char && ST.pref.set("skel:open:" + ST.char.id, [...open]);
 
@@ -44,7 +88,7 @@
     const rows = [];   // như Maya: joint gốc nằm ngay cấp đầu; mắt ở joint gốc bật / tắt cả bộ xương
     const walk = (list, d) => list.forEach(j => {
       const k = kids[j.name] || [];
-      rows.push({ id: "j:" + j.name, d, label: j.name, icon: "joint", sel: sel === j.name, fold: k.length ? (open.has(j.name) ? 0 : 1) : undefined, vis: d === 0 ? show : undefined, count: d === 0 ? S.joints.length : undefined });
+      rows.push({ id: "j:" + j.name, d, label: j.name, icon: "joint", sel: sel === j.name, del: d === 0 && ST.ws === "general", fold: k.length ? (open.has(j.name) ? 0 : 1) : undefined, vis: d === 0 ? show : undefined, count: d === 0 ? S.joints.length : undefined });
       if (k.length && open.has(j.name)) walk(k, d + 1);
     });
     walk(kids[""] || [], 0);
@@ -54,6 +98,7 @@
     const n = id.slice(2), j = byName[n]; if (!j) return;
     if (a === "vis") { show = !show; ST.pref.set("skel:show", show); build(); return; }
     if (a === "fold") { open.has(n) ? open.delete(n) : open.add(n); saveOpen(); return; }
+    if (a === "del") { askDelete(); return; }
     S.select(n);
   };
   S.isMine = id => typeof id === "string" && id.startsWith("j:");
@@ -84,7 +129,7 @@
   async function save() {
     clearTimeout(saveT); if (!store) return;
     const joints = {}, D = {}; S.joints.forEach(j => { joints[j.name] = j.pos.map(v => +v.toFixed(3)); if (!isId(j.D)) D[j.name] = j.D.toArray().map(v => +v.toFixed(6)); });
-    try { const w = await store.set("skel/edit", { v: 2, at: new Date().toISOString(), joints, D }); ST.saveState(w === "disk" ? "Đã lưu xương vào dự án (work/store/" + store.ns + ")" : "Đã lưu xương (chỉ trình duyệt này)", w === "disk" ? "" : "dirty"); }
+    try { const w = await store.set(editKey, { v: 2, at: new Date().toISOString(), joints, D }); ST.saveState(w === "disk" ? "Đã lưu xương vào dự án (work/store/" + store.ns + ")" : "Đã lưu xương (chỉ trình duyệt này)", w === "disk" ? "" : "dirty"); }
     catch (e) { ST.saveState("Không lưu được xương: " + (e.message || e), "err"); }
   }
   S.save = save;

@@ -40,7 +40,10 @@
   // ---------------------------------------------------------------- skin FBX: mesh đi theo joint (workspace General)
   // o.pos luôn là mesh bind (lưu, Rig đọc); khi xương đang pose, hình hiển thị = Σ w·D·v với D = ST.mods.skel.skinMat(xương).
   const posed = () => !!(ST.mods.skel && ST.mods.skel.posed && ST.mods.skel.posed());
+  let RIGSKIN = null;   // skin đã dựng ở workspace Rig (doc rig/skin): dùng cho mesh thân thay skin khách của FBX
   function skinOf(name, n) {   // weights của FBX: {xương: [[đỉnh], [w]]} → 4 ảnh hưởng mạnh nhất mỗi đỉnh, chuẩn hoá
+    if (RIGSKIN && RIGSKIN.nv === n && RIGSKIN.names) return { bones: RIGSKIN.names, B: Uint16Array.from(RIGSKIN.I), W: Float32Array.from(RIGSKIN.W) };
+    if (ST.rigState && ST.rigState.source !== "guest") return null;   // đã xoá xương (mesh tĩnh) hoặc đã rig nhưng chưa có skin: không dùng skin của FBX
     const m = (ORIG || []).find(x => x.name === name && x.weights); if (!m || m.verts.length / 3 !== n) return null;
     const bones = Object.keys(m.weights), per = Array.from({ length: n }, () => []);
     bones.forEach((b, bi) => { const [ix, ws] = m.weights[b]; ix.forEach((v, k) => { if (v < n && ws[k] > 0) per[v].push([bi, ws[k]]); }); });
@@ -468,7 +471,17 @@
     ORIG = ch.meshes; store = ST.store(new URLSearchParams(location.search).get("ns") || ST.slug(ch.name) + "_mesh_lab");
     let src = ORIG, from = "gốc";
     try { const s = await store.get("mesh/edit"); if (s && s.meshes && s.meshes.length) { src = s.meshes; editAt = s.at || "edit"; from = "đã sửa " + String(s.at || "").slice(0, 16).replace("T", " "); } } catch (e) { console.error(e); }
+    RIGSKIN = null; try { const d = await ST.store(ST.rigNs()).get("rig/skin"); if (d && d.names && d.nv) RIGSKIN = d; } catch (e) {}
+    try { const k = await ST.store(ST.rigNs()).get("rig/skeleton"); ST.rigState = { source: k && k.source === "none" ? "none" : k && k.joints && k.joints.length ? "rig" : "guest" }; } catch (e) {}
     loadMeshes(src); ST.saveState("Đã nạp bản " + from);
+  });
+  ST.on("rig:skin", d => {   // vừa tính / tô skin ở Rig: mesh ở General đi theo skin mới
+    if (!d || !d.names) return; RIGSKIN = d; const on = posed();
+    OBJ.forEach(o => { const k = skinOf(o.name, nV(o)); if (k) { o.skin = k; deform(o, on); } });
+  });
+  ST.on("rig:cleared", () => {   // xoá xương: mesh tĩnh về tư thế bind, không skin
+    if (ST.rigState && ST.rigState.source === "none") { RIGSKIN = null; OBJ.forEach(o => { o.skin = null; deform(o, false); }); }
+    refreshSel();
   });
   ST.on("loaded", () => { V.frameAll(); refreshSel(); });
   addEventListener("beforeunload", e => { if (dirty) { save(); e.preventDefault(); e.returnValue = ""; } });

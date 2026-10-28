@@ -17,7 +17,7 @@ ST.WS = {
     modes: ["rig.step1", "rig.step2", "rig.step3", "rig.step4", "rig.step5"],
     shelf: ["edit.undo", "edit.redo", "|", "rig.mirror", "rig.guestJ", "rig.reset", "|", "skin.compute", "skin.brush", "skin.island", "skin.hammer", "skin.test", "|",
       "rig.toPose", "rig.export", "|", "view.toggle4", "view.frameAll", "view.frameSel", "|", "edit.search"],
-    tabs: [["s1", "1 Mesh"], ["s2", "2 Khớp"], ["s3", "3 Xương"], ["s4", "4 Skin"], ["s5", "5 Thử"], ["channel", "Channel"]],
+    tabs: [["s1", "1 Mesh"], ["s2", "2 Khớp"], ["s3", "3 Xương"], ["s4", "4 Skin"], ["s5", "5 Thử"], ["s6", "6 Vật lý"], ["channel", "Channel"]],
     size: { dockW: 360 },
     ui: { outliner: true, dock: true, shelf: true, timeline: false },
   },

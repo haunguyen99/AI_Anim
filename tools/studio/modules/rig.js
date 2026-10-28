@@ -11,6 +11,26 @@
 
   // ---- mesh đã sửa ở workspace General → DATA (giống MESHLINK của Rig Lab: thay theo tên, dời landmark nếu thân đổi cỡ / vị trí)
   const bbox = a => { const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9]; for (let i = 0; i < a.length; i += 3) for (let k = 0; k < 3; k++) { mn[k] = Math.min(mn[k], a[i + k]); mx[k] = Math.max(mx[k], a[i + k]); } return { mn, mx }; };
+  // skin khách đánh theo số thứ tự đỉnh của mesh gốc; mesh sửa ở General có thể đổi thứ tự / số đỉnh (hàn, tách, gộp, nhập lại):
+  // mỗi đỉnh mới lấy trọng số của đỉnh gốc gần nhất (đưa về toạ độ gốc nếu thân đã dời / đổi cỡ)
+  function remapW(W, oldV, newV, c0, c1, f) {
+    const n0 = oldV.length / 3, n1 = newV.length / 3, cell = 2, H = new Map(), key = (x, y, z) => x + "," + y + "," + z;
+    for (let i = 0; i < n0; i++) { const k = key(Math.floor(oldV[3 * i] / cell), Math.floor(oldV[3 * i + 1] / cell), Math.floor(oldV[3 * i + 2] / cell)); (H.get(k) || H.set(k, []).get(k)).push(i); }
+    const per = Array.from({ length: n0 }, () => []);
+    for (const b in W) { const [ix, ws] = W[b]; ix.forEach((v, k) => { if (v < n0) per[v].push([b, ws[k]]); }); }
+    const out = {};
+    for (let j = 0; j < n1; j++) {
+      const x = c0[0] + (newV[3 * j] - c1[0]) / f, y = c0[1] + (newV[3 * j + 1] - c1[1]) / f, z = c0[2] + (newV[3 * j + 2] - c1[2]) / f;
+      const gx = Math.floor(x / cell), gy = Math.floor(y / cell), gz = Math.floor(z / cell); let best = -1, bd = Infinity;
+      for (let r = 1; r <= 8 && best < 0; r *= 2)
+        for (let dx = -r; dx <= r; dx++) for (let dy = -r; dy <= r; dy++) for (let dz = -r; dz <= r; dz++) {
+          const c = H.get(key(gx + dx, gy + dy, gz + dz)); if (!c) continue;
+          for (const i of c) { const d = (oldV[3 * i] - x) ** 2 + (oldV[3 * i + 1] - y) ** 2 + (oldV[3 * i + 2] - z) ** 2; if (d < bd) { bd = d; best = i; } }
+        }
+      if (best >= 0) per[best].forEach(([b, w]) => { const o = out[b] || (out[b] = [[], []]); o[0].push(j); o[1].push(w); });
+    }
+    return out;
+  }
   function meshApply(D) {
     const ms = ST.mods.mesh, at = ms.editAt && ms.editAt();
     window.__meshAt = null; window.__meshT = null;
@@ -20,7 +40,8 @@
     const o0 = bbox(D.body.verts), o1 = bbox(by[bn].verts), f = (o1.mx[1] - o1.mn[1]) / Math.max(1e-6, o0.mx[1] - o0.mn[1]);
     const c0 = [(o0.mn[0] + o0.mx[0]) / 2, o0.mn[1], (o0.mn[2] + o0.mx[2]) / 2], c1 = [(o1.mn[0] + o1.mx[0]) / 2, o1.mn[1], (o1.mn[2] + o1.mx[2]) / 2];
     const T = p => [c1[0] + (p[0] - c0[0]) * f, c1[1] + (p[1] - c0[1]) * f, c1[2] + (p[2] - c0[2]) * f];
-    const same = D.body.verts.length === by[bn].verts.length, take = (o, m) => { o.verts = m.verts; o.tris = m.tris; };
+    const take = (o, m) => { o.verts = m.verts; o.tris = m.tris; };
+    if (D.refW && Object.keys(D.refW).length) D.refW = remapW(D.refW, D.body.verts, by[bn].verts, c0, c1, f);   // skin khách theo VỊ TRÍ đỉnh, không theo số thứ tự
     take(D.body, by[bn]);
     (D.clothes || []).forEach(c => { if (by[c.name]) take(c, by[c.name]); });
     (D.props || []).forEach(p => { if (by[p.name]) take(p, by[p.name]); });
@@ -30,17 +51,27 @@
       (D.ref || []).forEach(b => { if (b.pos) b.pos = T(b.pos); });
       window.__meshT = { f, c0, c1 };
     }
-    if (!same) D.refW = {};
     window.__meshAt = at;
     window.__meshLM = L => { const t = window.__meshT; if (!t) return L; const o = {}; for (const k in L) o[k] = Array.isArray(L[k]) && L[k].length === 3 ? [t.c1[0] + (L[k][0] - t.c0[0]) * t.f, t.c1[1] + (L[k][1] - t.c0[1]) * t.f, t.c1[2] + (L[k][2] - t.c0[2]) * t.f].map(v => +v.toFixed(3)) : L[k]; return o; };
     return D;
   }
 
+  // ---- khớp của rig → kho (doc rig/skeleton) để workspace General vẽ / chọn / pose đúng bộ khớp đã dựng, không phải xương khách
+  let skelT = 0;
+  function saveSkel() {
+    clearTimeout(skelT); skelT = setTimeout(async () => {
+      if (!eng) return;
+      const joints = eng.buildSkeleton().map(b => ({ name: b.name, parent: b.parent, pos: b.pos.map(v => +v.toFixed(3)) }));
+      try { await ST.store(ST.rigNs()).set("rig/skeleton", { v: 1, source: "rig", at: new Date().toISOString(), joints }); ST.emit("rig:skeleton", joints); } catch (e) { console.error(e); }
+    }, 300);
+  }
+
   // ---- host: những gì lõi Rig cần từ Studio
   function makeHost(grp) {
     const me = { on: true }, downL = [];
-    const store = ST.store(new URLSearchParams(location.search).get("ns") ? new URLSearchParams(location.search).get("ns") + "_rig" : ST.slug(ST.char.name) + "_rig_lab");
-    const db = { isLocal: true, doc: p => ({ get: async () => { const d = await store.get(p); return { exists: d != null, data: () => d }; }, set: d => store.set(p, d) }) };
+    const store = ST.store(ST.rigNs());
+    const db = { isLocal: true, doc: p => ({ get: async () => { const d = await store.get(p); return { exists: d != null, data: () => d }; },
+      set: async d => { const w = await store.set(p, d); if (p === "rig/landmarks") saveSkel(); if (p === "rig/skin") ST.emit("rig:skin", d); return w; } }) };   // General dùng khớp + skin của rig
     const lmOwner = { snap: () => eng.snapStr(), restore: s => eng.applySnap(s) };
     const push = (owner, label, s) => { ST.hist.U.push({ owner, label, s }); if (ST.hist.U.length > ST.hist.max) ST.hist.U.shift(); ST.hist.R = []; ST.emit("hist"); };
     return {
@@ -54,7 +85,7 @@
       onMode(m) { const t = MODE2TOOL[m]; if (t && ST.tool !== t) { ST.tool = t; ST.refresh(); } },
       pushLM: before => push(lmOwner, "Rig: khớp", before),
       pushSkin: m => push({ snap: () => eng.skinSnapshotOf(m), restore: x => { eng.restoreSkin(x); eng.scheduleSkinSave(); } }, "Rig: skin", m),
-      refresh: () => { if (eng) ST.pref.set("tab:rig", "s" + step()); ST.refresh(); },   // tab dock theo bước của lõi
+      refresh: () => { if (eng && ST.pref.get("tab:rig") !== "s6") ST.pref.set("tab:rig", "s" + step()); ST.refresh(); },   // tab dock theo bước của lõi (trừ khi đang ở bước 6 Vật lý)
     };
   }
 
@@ -71,10 +102,12 @@
         raw[ST.char.id] = JSON.stringify(j);
       }
       const D = meshApply(JSON.parse(raw[ST.char.id]));
+      const st = await ST.store(ST.rigNs()).get("rig/skeleton");
+      if (st && st.source === "none") { D.ref = []; D.refW = {}; }   // đã xoá xương ở Outliner: rig lại từ mesh, không gợi ý xương / skin của FBX
       root = new THREE.Group(); root.name = "rig"; V.cm.add(root);
       const host = makeHost(root); live = host;
-      eng = ST.rigEngine(D, host); key = k;
-      await eng.ready; state = "ready";
+      eng = ST.rigEngine(D, host); key = k; ST.rigEng = () => eng; ST.rigRoot = () => root;   // lõi Rig cho script / Claude (studio_cmd)
+      await eng.ready; state = "ready"; ST.rigSetup.bind(eng); if (!st || st.source !== "none") saveSkel();   // vừa xoá xương: chỉ hiện lại khi lưu khớp mới
       if (!open) open = new Set(ST.pref.get("rig:open:" + ST.char.id, null) || ["root", "Root_M", "Spine1_M", "Chest_M"]);
       eng.setMode(TOOL2MODE[ST.tool] || "select");
     } catch (e) { console.error(e); state = "error"; err = e.message || String(e); }
@@ -83,7 +116,7 @@
   function dispose() {
     if (live) live.me.on = false;
     if (root) { V.cm.remove(root); root.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
-    V.gizmo.detach(); eng = null; root = null; live = null; key = null;
+    V.gizmo.detach(); ST.rigSetup.unbind(); eng = null; root = null; live = null; key = null;
   }
   async function buildData() {
     state = "building"; ST.refresh();
@@ -96,9 +129,10 @@
 
   // ---- workspace
   M.enter = () => { ST.mods.mesh.display("hidden"); if (root) root.visible = true; ensure().then(() => { if (root) root.visible = ST.ws === "rig"; if (eng) { eng.syncScene(); } }); };
-  M.leave = () => { if (root) root.visible = false; V.gizmo.detach(); };
+  M.leave = () => { if (root) root.visible = false; V.gizmo.detach(); ST.rigSetup.hide(); };
   ST.on("tool", t => { if (ST.ws === "rig" && eng) { eng.setMode(TOOL2MODE[t] || "select"); if (step() === 4 && t === "sel") eng.setSkTool("pick"); } });
   ST.on("char", () => { dispose(); raw = {}; open = null; state = "none"; });
+  ST.on("rig:cleared", () => { dispose(); raw = {}; state = "none"; if (ST.ws === "rig") ensure(); });   // xoá / khôi phục xương ở General: dựng lại lõi Rig
 
   // ---- chuột (viewport gọi)
   M.canBox = () => step() === 2;
@@ -152,21 +186,26 @@
   };
 
   // ---- dock: 5 bước = 5 tab
-  M.panelKey = () => state + ":" + (eng ? step() : 0);
+  const onS6 = () => ST.pref.get("tab:rig") === "s6";
+  M.panelKey = () => state + ":" + (eng ? step() : 0) + (onS6() ? ":s6:" + ST.rigSetup.ver : "");
   M.panel = tab => {
     if (!ST.char) return '<p class="note">Cảnh trống: mở nhân vật (Ctrl+O) hoặc nhập FBX (Ctrl+Shift+I) trước.</p>';
     if (state === "loading" || state === "none") return '<div class="sub">Đang nạp rig…</div>';
     if (state === "building") return '<div class="sub">Đang dựng dữ liệu rig (gợi ý khớp từ mesh, mẫu ngón từ xương khách)… khoảng vài chục giây.</div>';
     if (state === "nodata") return `<h2>Rig</h2><p class="note">${esc(ST.char.name)} chưa có dữ liệu rig. Studio dựng từ mesh thân + xương khách trong FBX (gợi ý khớp tự động, mẫu ngón theo xương khách).</p>${err ? `<p class="note s-bad">${esc(err)}</p>` : ""}<div class="row"><button class="on" data-rig="build">${ic("rig")} Dựng dữ liệu rig</button></div>`;
     if (state === "error") return `<p class="note s-bad">Không nạp được rig: ${esc(err)}</p>`;
+    if (tab === "s6") return '<div class="rigp">' + ST.rigSetup.panel() + "</div>";   // bước 6 Vật lý: modules/rig_setup.js
     return '<div id="jbox" class="jbox" hidden></div><div id="panel" class="rigp"></div>';
   };
   M.panelMounted = tab => {
     if (!eng || state !== "ready") return;
+    if (tab === "s6") return ST.rigSetup.mounted();
+    ST.rigSetup.hide();
     const n = +String(tab).slice(1) || 2;
     if (step() !== n) eng.go(n); else eng.renderPanel();
   };
-  M.panel_click = e => { const b = e.target.closest("[data-rig]"); if (b && b.dataset.rig === "build") buildData(); };
+  M.panel_click = e => { if (onS6()) return ST.rigSetup.click(e); const b = e.target.closest("[data-rig]"); if (b && b.dataset.rig === "build") buildData(); };
+  M.panel_change = e => { if (onS6()) ST.rigSetup.change(e); };
   M.info = () => {
     if (!ST.char) return "Cảnh trống";
     if (!eng) return ST.char.name + " · rig " + ({ loading: "đang nạp", nodata: "chưa có dữ liệu", building: "đang dựng", error: "lỗi" }[state] || "");
@@ -179,6 +218,15 @@
   ["1 Mesh", "2 Khớp", "3 Xương", "4 Skin", "5 Thử khớp"].forEach((l, i) => C({ id: "rig.step" + (i + 1), menu: "Rig", sep: i === 0, icon: "s" + (i + 1), label: "Bước " + l, key: String(i + 1), on: R, check: () => step() === i + 1, run: () => { ST.pref.set("tab:rig", "s" + (i + 1)); eng.go(i + 1); ST.refresh(); } }));
   C({ id: "rig.mirror", menu: "Rig", sep: true, label: "Đối xứng R → L", icon: "sym", on: R, check: () => eng && eng.get().mirror, run: () => eng.set("mirror", !eng.get().mirror) });
   C({ id: "rig.reset", menu: "Rig", label: "Khớp về gợi ý tự động", icon: "reset", on: R, run: () => { const g = eng.get(); for (const k in g.DATA.auto.landmarks) g.LM[k] = g.DATA.auto.landmarks[k].slice(); eng.initFingers(g.LM, true); eng.syncScene(); eng.dirty(); eng.commit(); eng.renderPanel(); } });
+  // FBX đã có xương + skin: dùng luôn làm rig (đặt khớp theo xương khách + dùng skin khách), không cần đặt khớp / tô skin lại
+  const useFbx = () => { eng.go(2); eng.adoptGuestJoints(); eng.go(4); eng.adoptGuestSkin(); ST.toast("Đã dùng joint + skin của FBX làm rig."); };
+  ST.cmd({ id: "rig.useFbx", menu: "Rig", label: "Dùng joint + skin của FBX", icon: "rig", ws: ["general", "rig"],
+    on: () => ST.ws !== "rig" || (R() && eng.guestJ() && eng.guestS()),
+    run: async () => {
+      if (ST.ws !== "rig") { ST.setWS("rig"); for (let i = 0; i < 100 && !(eng && state === "ready"); i++) await new Promise(r => setTimeout(r, 100)); }
+      if (!eng || !eng.guestJ() || !eng.guestS()) return ST.toast("Nhân vật này không có xương + skin từ FBX (hoặc đã xoá xương).");
+      useFbx();
+    } });
   C({ id: "rig.guestJ", menu: "Rig", label: "Đặt khớp theo xương khách", icon: "rig", on: () => R() && eng.guestJ(), run: () => eng.adoptGuestJoints() });
   C({ id: "rig.export", menu: "Rig", sep: true, label: "Xuất rig.json", icon: "export", on: R, run: () => eng.exportRig() });
   C({ id: "rig.build", menu: "Rig", label: "Dựng lại dữ liệu rig", on: () => !!ST.char && state !== "building", run: buildData });
@@ -199,17 +247,31 @@
 
   // ---- gửi rig sang Pose: tạo base pose 1 khung cho một anim của nhân vật (POST /api/rig/to-pose, như nút ➤ của Home)
   async function sendToPose() {
-    let clips = [];
-    try { const s = await (await fetch("/api/state")).json(); clips = (s.clips || []).filter(c => c.labs && (c.labs.mesh === ST.char.id || c.labs.rig === ST.char.id || c.labs.studio === ST.char.id)); } catch (e) {}
-    ST.dialog("Gửi rig sang Pose", clips.length ? `<p class="note">Tạo base pose (1 khung) từ rig + skin hiện tại trong Pose Lab của anim:</p><div class="list">${clips.map(c => `<button class="it" data-clip="${esc(c.id)}">${ic("pose")}<span>${esc(c.name || c.id)}</span><small>${esc(c.stage || "")}${c.id === ST.clip ? " · đang mở" : ""}</small></button>`).join("")}</div>` : `<p class="note">${esc(ST.char.name)} chưa có anim nào. Tạo anim ở Home (/home) trước.</p>`, b => {
-      b.onclick = async e => {
-        const x = e.target.closest("[data-clip]"); if (!x) return;
+    let clips = [], proj = "";
+    try {
+      const s = await (await fetch("/api/state")).json();
+      clips = (s.clips || []).filter(c => c.labs && (c.labs.mesh === ST.char.id || c.labs.rig === ST.char.id || c.labs.studio === ST.char.id));
+      const p = (s.projects || []).find(p => (p.characters || []).some(n => n.toLowerCase() === ST.char.name.toLowerCase())); proj = p ? p.id : "";
+    } catch (e) {}
+    const post = async (url, body) => { const j = await (await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })).json(); if (!j.ok) throw new Error(j.error); return j; };
+    // không có anim nào thì vẫn gửi được: tạo anim mới (như form Home) rồi gửi base pose vào đó
+    const form = `<div class="row"><input type="text" id="tpName" placeholder="Tên anim mới, vd: idle" style="flex:1" aria-label="Tên anim mới"><button data-a="new">${ic("pose")} Tạo anim và gửi</button></div>`;
+    ST.dialog("Gửi rig sang Pose", (clips.length ? `<p class="note">Tạo base pose (1 khung) từ rig + skin hiện tại trong Pose Lab của anim:</p><div class="list">${clips.map(c => `<button class="it" data-clip="${esc(c.id)}">${ic("pose")}<span>${esc(c.name || c.id)}</span><small>${esc(c.stage || "")}${c.id === ST.clip ? " · đang mở" : ""}</small></button>`).join("")}</div><p class="note">Hoặc tạo anim mới:</p>` : `<p class="note">${esc(ST.char.name)} chưa có anim nào. Đặt tên anim để tạo và gửi base pose vào đó:</p>`) + form, b => {
+      const send = async cid => {
         b.innerHTML = '<div class="sub">Đang dựng glTF và gửi…</div>';
-        try {
-          const r = await fetch("/api/rig/to-pose", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: x.dataset.clip, gltf: eng.buildGltf() }) });
-          const j = await r.json(); if (!j.ok) throw new Error(j.error);
-          ST.closeDialog(); ST.toast("Đã tạo base pose " + j.id + " cho " + x.dataset.clip);
-        } catch (err2) { b.innerHTML = `<p class="note s-bad">Không gửi được: ${esc(err2.message || err2)}</p>`; }
+        const j = await post("/api/rig/to-pose", { clip: cid, gltf: eng.buildGltf() });
+        ST.closeDialog(); ST.toast("Đã tạo base pose " + j.id + " cho " + cid);
+      };
+      const fail = e => { b.innerHTML = `<p class="note s-bad">Không gửi được: ${esc(e.message || e)}</p>`; };
+      const create = async () => {
+        const inp = b.querySelector("#tpName"), name = inp.value.trim(); if (!name) return inp.focus();
+        try { const j = await post("/api/clip", { character: ST.char.name, clip: name, project: proj }); await send(j.id); } catch (e) { fail(e); }
+      };
+      b.querySelector("#tpName").onkeydown = e => { if (e.key === "Enter") create(); };
+      b.onclick = async e => {
+        if (e.target.closest('[data-a="new"]')) return create();
+        const x = e.target.closest("[data-clip]"); if (!x) return;
+        try { await send(x.dataset.clip); } catch (e2) { fail(e2); }
       };
     });
   }

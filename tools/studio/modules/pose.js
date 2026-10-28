@@ -89,7 +89,9 @@
       POSES.forEach(fix);
       ST.pref.set(prefKey(), id);
       if (!parts) buildDom();
-      eng = ST.poseEngine(POSES, makeHost(clipInfo.ns));
+      window.__rigSetup = null;   // bước 6 Vật lý của Rig (khớp điều khiển, giới hạn, collider, khối lượng): lõi Pose đọc thay CHAR_PHYS
+      if (ST.char) try { window.__rigSetup = await ST.store(ST.rigNs()).get("rig/setup"); } catch (e) {}
+      eng = ST.poseEngine(POSES, makeHost(clipInfo.ns)); ST.poseEng = () => eng; ST.poseScenes = () => scenes;   // lõi Pose cho script / Claude
       state = "ready"; fillPicker();
       if (!ST.char) { const e = $("empty"); if (e) e.hidden = true; ST.$("charName").textContent = clipInfo.name; }
       else ST.$("charName").textContent = ST.char.name + " · " + clipInfo.name;
