@@ -52,7 +52,11 @@
     if (D.refW && Object.keys(D.refW).length) D.refW = remapW(D.refW, D.body.verts, by[bn].verts, c0, c1, f);   // skin khách theo VỊ TRÍ đỉnh, không theo số thứ tự
     take(D.body, by[bn]);
     (D.clothes || []).forEach(c => { if (by[c.name]) take(c, by[c.name]); });
-    (D.props || []).forEach(p => { if (by[p.name]) take(p, by[p.name]); });
+    // prop đặt vào tay bằng xf (build_char.py, chars/<id>.json props): mesh trong kho vẫn ở gốc, dời lại như lúc dựng
+    const xf = (v, m) => { if (!m) return v; const o = new Array(v.length); for (let i = 0; i < v.length; i += 3) for (let k = 0; k < 3; k++) o[i + k] = m[k] * v[i] + m[3 + k] * v[i + 1] + m[6 + k] * v[i + 2] + m[9 + k]; return o; };
+    // kho đã dời prop vào tay (trùng bản trang) thì giữ nguyên, còn ở gốc FBX thì dời theo xf
+    (D.props || []).forEach(p => { if (!by[p.name]) return; const v0 = p.verts.slice(0, 3); take(p, by[p.name]);
+      if (p.xf && Math.hypot(p.verts[0] - v0[0], p.verts[1] - v0[1], p.verts[2] - v0[2]) > 1) p.verts = xf(p.verts, p.xf); });
     if (Math.abs(f - 1) > 1e-4 || c0.some((v, i) => Math.abs(v - c1[i]) > 1e-3)) {
       for (const k in D.auto.landmarks) D.auto.landmarks[k] = T(D.auto.landmarks[k]).map(v => +v.toFixed(3));
       if (D.auto.H) D.auto.H = +(D.auto.H * f).toFixed(3);

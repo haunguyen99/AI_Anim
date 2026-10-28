@@ -10,6 +10,7 @@ Quy trình chính: chuỗi Mesh → Rig → Pose → Review Lab trong Home (`doc
 
 | Clip | Trạng thái | Scene / script build | Export |
 |---|---|---|---|
+| Ninja Idle (Infinite Defense, FDD Hero Ninja v1.1) | Rig xong 2026-10-28 trong Studio (`work/rig_lab/chars/ninja.json`: khớp đo tay, kunai `weapon` bind cứng 100% vào `Weapon` dưới `Wrist_L` (mesh kunai trong `work/store/ninja_mesh_lab` đã dời vào tay; General đọc `rig/skin.props`, Thử khớp và glTF cũng bind), 2 chuỗi khăn `Scarf*`, `weapon_explode` không rig; skin cổ khăn gắn `Chest_M` sửa tay trong `work/store/ninja_rig_lab/rig/skin.json`) · base pose `ninja_idle_rig_v1` trên Pose Lab · chờ phân tích Idle (quy trình C) · FDD `work/infinite_defense/gdd/ninja_fdd_v1.1.txt` | — | — |
 | Gaygor Idle (133F) | Đã duyệt bản polish v5 · trang review https://claude.ai/artifact/JK2CCuwPktgUCsD6k5fe6s | — (làm cũ trên Blender, đã ngừng dùng) | `work/boss_gaygor/idle/export/EN_M11_Boss_Gaygor_Idle.fbx` |
 | Gaygor Idle_Front (60F) | Đã duyệt bản v14 | — (làm cũ trên Blender, đã ngừng dùng) | `work/boss_gaygor/idle_front/export/EN_M11_Boss_Gaygor_Idle_Front.fbx` |
 | Gaygor Attack (68F) | **Tạm dừng**: bản làm cũ (Blender, rồi Cascadeur, xem tag git) đã thay bằng Attack 50 (polish_v3 đã duyệt, đã xuất FBX) · trang review có `casc_blocking_v4` | — | — |
