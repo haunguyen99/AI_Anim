@@ -121,6 +121,33 @@ class Bridge:
 def blender_to_three(p): return np.array([p[0], p[2], -p[1]], float)
 
 
+def leg_fk(br, side, hip, knee, ankle, foot_yaw_deg=0.0):
+    """Chân FK theo điểm thế giới (trục three, cm): đùi hip→knee, cẳng ankle; gối là bản lề quanh trục X local
+    (ở bind chân chỉ -Y, gối gập ra trước). Bàn chân đặt phẳng, mũi xoay foot_yaw_deg quanh trục đứng (+ = sang trái nhân vật)."""
+    hip, knee, ankle = (np.asarray(v, float) for v in (hip, knee, ankle))
+    t, s = unit(knee - hip), unit(ankle - knee)
+    n = np.cross(s, t)                      # trục gập: gối ra trước → n gần +X
+    n = unit(n) if np.linalg.norm(n) > 1e-6 else np.array([1.0, 0, 0])
+    if n[0] < 0: n = -n
+    def seg(d):
+        y = -unit(d); x = unit(n - np.dot(n, y) * y); return q_from_m(np.c_[x, y, np.cross(x, y)])
+    br.set_world("Hip_" + side, seg(t))
+    br.set_world("Knee_" + side, seg(s))
+    a = np.radians(foot_yaw_deg) / 2
+    br.set_world("Ankle_" + side, np.array([0, np.sin(a), 0, np.cos(a)]))
+    return {"thigh": round(float(np.linalg.norm(knee - hip)), 1), "shin": round(float(np.linalg.norm(ankle - knee)), 1),
+            "knee_deg": round(float(np.degrees(np.arccos(np.clip(np.dot(t, s), -1, 1)))), 1)}
+
+
+def two_bone(root, target, l1, l2, pole):
+    """Điểm khớp giữa của chuỗi 2 đoạn root→mid→target, mặt phẳng gập theo hướng pole."""
+    root, target, pole = (np.asarray(v, float) for v in (root, target, pole))
+    d = target - root; L = min(np.linalg.norm(d), l1 + l2 - 1e-3); d = unit(d)
+    a = (l1 * l1 + L * L - l2 * l2) / (2 * l1 * L)
+    p = pole - np.dot(pole, d) * d; p = unit(p)
+    return root + d * l1 * a + p * l1 * np.sqrt(max(0.0, 1 - a * a))
+
+
 def arm_fk(br, side, elbow_dir, fore_dir, hand_dir, palm_hint=(0, 1, 0), blade_dir=None, blade_roll_hint=(0, 1, 0), grip_thumb=None):
     """Hướng (trục three): elbow_dir = vai→khuỷu, fore_dir = khuỷu→cổ tay, hand_dir = cổ tay→đầu ngón,
     palm_hint = hướng mu bàn tay xấp xỉ (trục +Y local của bàn tay ở bind là mu tay; lòng tay −Y).

@@ -1,0 +1,7 @@
+Turnaround of ONE frozen key pose for a friendly mobile tower-defense game. Toy-like stylized character and prop.
+The FIRST reference image is the approved concept: redraw EXACTLY THE SAME POSE (same stance, same arms, same hands, same kunai grip and angle, same drooping red scarf, same proportions) seen from a different camera. Do not invent a new pose.
+The other references are the real 3D model and its kunai: match their shapes and colors (white low-poly flat-shaded chibi body, huge round head, no face details, red scarf with two long tails; kunai = dark steel diamond blade, red wrapped grip, dark ring at the pommel, blade longer than the forearm).
+Pose recap (character own left/right): deep wide crouched stance, knees bent; LEFT foot slightly forward; LEFT hand holds the kunai in reverse grip, fist in front of the upper chest just under the scarf, elbow bent out to the side, blade running back and down along the outside of the left forearm, tip ending beside the left hip; RIGHT hand empty, loosely curled, beside the right hip, elbow bent outward; scarf tails hang down behind.
+Plain flat medium-grey background, soft even lighting, full body with margin, no text, no extra objects, exactly one character and one kunai.
+
+CAMERA: straight SIDE view from the character LEFT side (the kunai side), camera at chest height, the character faces to the LEFT of the image. The front (left) foot is on the left of the image.

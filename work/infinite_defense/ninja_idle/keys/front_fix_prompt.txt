@@ -1,0 +1,13 @@
+Draw ONE image: the same 3D figurine seen from a PERFECT FRONT camera. Friendly mobile game, toy-like stylized character.
+
+REFERENCES: image 1 = the approved 3/4 view of the pose; image 2 = the same figurine in exact left profile; image 3 = the real model rendered from the exact front camera I want (copy that camera: orthographic, camera in front of the hips, level with mid-body, looking horizontally, zero rotation of the body toward either side); image 4 = the kunai.
+
+CAMERA: straight front elevation, no perspective, no three-quarter turn. The center line of the image passes through the middle of the head, the neck, the chest and the pelvis. The two shoulders are at the same height and the same size; the head is a symmetric circle; the scarf knot sits dead center under the head.
+
+POSE (do not change it; it is the same pose as images 1 and 2): deep wide crouch, knees bent and pushed outward over the toes, feet about two hip-widths apart, both flat on the ground. The character's LEFT foot is a little forward, so in this front view the LEFT foot (on the RIGHT side of the image) is slightly closer to the camera: a bit larger and a bit lower in the image than the right foot. The RIGHT foot is behind, toes turned outward about 30 degrees. Torso leans slightly toward the camera.
+LEFT hand (right side of the image): fist held in front of the upper chest just under the scarf, holding the kunai in reverse grip; the elbow bent and out to the side; the blade leaves the pinky side of the fist and runs DOWN and OUTWARD along the outside of the left forearm, tip ending beside the left hip, outside the body, foreshortened because it points a little toward the camera.
+RIGHT hand (left side of the image): empty, loosely curled, a fist beside the right hip, elbow bent outward, clear of the body.
+Scarf: the two red tails hang behind the back and show as two red shapes on both sides of the torso, drooping gently, only a light breeze.
+
+CHARACTER: chibi, head one quarter of the body height, white low-poly flat-shaded body, no face details, red scarf, short arms, mitten hands. Kunai: dark steel diamond blade, red wrapped grip, dark ring pommel, blade longer than the forearm.
+Plain flat medium-grey background, flat even lighting, full body with margin, feet on a flat ground line, no text, one character, one kunai.
