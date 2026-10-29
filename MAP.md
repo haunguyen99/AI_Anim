@@ -35,7 +35,7 @@ Ghi chú 2026-10-27: các trang Pose / Review / Rig / Mesh của mọi anim dự
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `tools/notes_watch.py` | Canh ghi chú vẽ Studio đã bấm "Gửi cho AI" và cổng Duyệt / Cần sửa các bước Rig (`*_rig_lab/rig/gates.json`, mục `kind: rig_gate`; Claude xong ghi `studio_cmd.py gate-done`) (chạy nền trong phiên chat, không tốn lượt AI khi chờ): thoát khi có ghi chú mới để gọi Claude dậy, đánh dấu `picked` |
+| `tools/notes_watch.py` | Canh ghi chú vẽ Studio đã bấm "Gửi cho AI" và cổng Duyệt / Cần sửa các bước Rig (`*_rig_lab/rig/gates.json`, mục `kind: rig_gate`; Claude xong ghi `studio_cmd.py gate-done`) và góp ý tab Góp ý cho AI của Pose (`*_pose_lab/adjusts` + `rounds`, `kind: pose_adjust`: nhận ngay khi Gửi, chưa gửi thì sau 45 s im; xong `notes_watch.py --pose-done <ns> <clip> <ver> "ghi chú"`) (chạy nền trong phiên chat, không tốn lượt AI khi chờ): thoát khi có ghi chú mới để gọi Claude dậy, đánh dấu `picked` |
 | `tools/notes_watch_hook.py` | Hook Claude Code (`.claude/settings.json`, SessionStart + UserPromptSubmit): Studio đang mở mà không có bộ canh (nhịp tim `work/store/_sys/watch/notes.json` cũ > 10 s) → nhắc Claude bật `notes_watch.py` nền |
 | `tools/render_fbx_tex.py` | Render tĩnh FBX (bind pose) đúng màu texture bảng màu, không Blender/GPU (numpy z-buffer, mỗi tam giác một màu theo UV); góc front/side_r/side_l/q34/back, `--only/--skip` mesh. Làm ảnh ref model thật cho `codex_img.py` (2026-10-28) |
 | `tools/rigpose.py` | FK + IK tay (khuỷu bản lề) + skin LBS + render đúng texture trên khung xương FBX của team (đủ xương prop/tóc), đọc frame FBX anim; cache `work/_cache/rigpose` (2026-10-28, từ SDR03) |

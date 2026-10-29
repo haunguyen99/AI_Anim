@@ -55,6 +55,11 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
   không nằm ở điểm treo thật).
 - "làm thêm anim cho các chi tiết phụ": vải/phụ kiện có xương phải được animate (kiểm kê bằng `rig_inventory.py`).
 
+- **Bím tóc / dây treo trên clip one-shot ngắn (SDR03 Shoot s1 → s2, 2026-10-29, "đuôi tóc đang khá cứng chưa được tự nhiên"):**
+  nội suy vài góc blocking cho từng đốt = cả bím vung như que. Làm lò xo tắt dần theo xung (frame giật): mỗi đốt trễ thêm ~0,4F,
+  biên độ tăng dần xuống đuôi (sóng truyền dọc bím, bím uốn cong), lắc ngang 35% lệch pha, chút trễ ngược ở frame lấy đà; tổng góc
+  đuôi đỉnh ~ bằng blocking đã duyệt; cửa sổ về 0 ở 2–3 frame cuối để frame cuối = P0 (`sdr03/shoot_spline.py` `hair_spring`).
+
 ## loop
 - Frame cuối = frame 1; playblast phát f1..f(N-1); bắt đầu loop ở điểm đứng yên (đáy) cho chỗ nối mượt.
 - Sau khi đổi giá trị key luôn chạy lại `match_seam` (SKILL.md).
