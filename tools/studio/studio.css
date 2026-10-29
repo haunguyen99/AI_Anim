@@ -214,6 +214,8 @@ body.tm input{font-size:16px}
 #dock .body > .rigp,#dock .body > .fbwrap,#dock .body > .nwrap{flex:1 0 auto}
 .fbwrap,.nwrap{display:flex;flex-direction:column}
 .dockfoot,.rigp .gate{position:sticky;bottom:0;z-index:3;margin-top:auto;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 12px -10px #0007}
+.fbfoot .compose{border-top:0;padding:8px 10px 0}
+.fbfoot .fbtop{border-top:1px solid var(--line)}
 .fbwrap .nfoot{position:static;margin-top:0;box-shadow:none;border-top:0;background:none}
 .fbwrap .nfoot [data-n=send]{display:none}
 .rigp .big{font-size:14px;font-weight:600;margin:6px 0}.rigp .big.ok{color:var(--ok)}.rigp .big.warn{color:var(--warn)}.rigp .big.bad{color:var(--bad)}
