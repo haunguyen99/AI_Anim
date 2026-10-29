@@ -216,9 +216,14 @@
     if (adj.firstChild !== parts.notes) adj.replaceChildren(parts.notes);
     const cp = parts.notes.querySelector(".compose"), cpBox = fb.querySelector("#fbCompose");   // ô ghi chú + Lưu / Gửi + vòng review: xuống chân panel, danh sách cuộn phía trên
     if (cp && cp.parentElement !== cpBox) cpBox.appendChild(cp);
+    const sa = fb.querySelector("#fbSendAll"), cpRow = cp && cp.querySelector(".row");   // Lưu + Gửi tất cả cùng một hàng (user 2026-10-29 "gộp vào 1 dòng cho gọn")
+    if (cpRow && sa.parentElement !== cpRow) cpRow.appendChild(sa);
+    const nAdj = $("adjCount") ? $("adjCount").textContent.trim() : "", hs = notesBox.querySelector(".nhead .sub");   // số điều chỉnh ghép vào hàng đầu
+    if (hs && nAdj) hs.textContent += " · " + nAdj + " điều chỉnh";
     const nOpen = N && N.unsentCount ? N.unsentCount() : 0, aiBtn = $("aiSend"), canAdj = !!(aiBtn && !aiBtn.disabled);
-    fb.querySelector("#fbSendAll").disabled = !nOpen && !canAdj;
+    sa.disabled = !nOpen && !canAdj;
     fb.querySelector("#fbCount").textContent = (nOpen ? nOpen + " ghi chú vẽ" : "") + (nOpen && canAdj ? " + " : "") + (canAdj ? "điều chỉnh key" : "") + (nOpen || canAdj ? " chờ gửi" : "Chưa có gì để gửi");
+    sa.title = fb.querySelector("#fbCount").textContent;   // dòng đếm thu vào tooltip của nút
     return fb;
   }
   async function sendAll() {

@@ -93,22 +93,24 @@
     ST.refresh();
   }
   const where = c => !c ? "" : [({ mesh: "General", rig: "Rig", pose: "Anim" }[c.focus] || c.focus), c.rig ? "bước " + c.rig.step : "", c.anim ? c.anim.version + " F" + c.anim.frame : "", c.joint || ""].filter(Boolean).join(" · ");
+  let editing = null;   // id ghi chú đang sửa chữ
   N.panel = () => {
     if (list === null) { load(); return '<div class="sub" style="padding:10px">Đang tải ghi chú…</div>'; }
     const open = list.filter(n => n.status !== "done"), unsent = open.filter(n => !n.sent);
-    const head = `<div class="row" style="padding:8px 10px;flex-wrap:wrap"><button data-n="new">✎ Vẽ ghi chú mới</button>` +
+    const head = `<div class="row nhead" style="padding:8px 10px;flex-wrap:wrap"><button data-n="new" title="Khoanh chỗ cần sửa trên viewport, gõ một dòng rồi Lưu">✎ Vẽ ghi chú mới</button>` +
+      `<span class="wdot" title="${watching ? "Claude đang canh: bấm Gửi là AI nhận ngay" : "Claude không canh: gửi xong nhắn Claude bất kỳ câu nào (hoặc /check_fb)"}">${watching ? "●" : "○"}</span>` +   // trạng thái bộ canh gọn một chấm (user 2026-10-29 "chiếm nhiều diện tích")
       `<span class="sub">${open.length} đang mở${open.length - unsent.length ? " · " + (open.length - unsent.length) + " đã gửi, chờ AI" : ""}</span></div>`;
     // chân panel (dockfoot, user 2026-10-29): nút Gửi cho AI + trạng thái bộ canh luôn ở cạnh dưới; trong tab Góp ý của Pose nút này ẩn (đã có Gửi tất cả)
     const foot = `<div class="nfoot dockfoot" style="padding:8px 10px"><div class="row" style="flex-wrap:wrap"><button class="on" data-n="send" ${unsent.length ? "" : "disabled"} title="Đánh dấu các ghi chú đang mở là đã gửi; rồi nhắn Claude /check_fb (lệnh được chép sẵn)">Gửi cho AI${unsent.length ? " (" + unsent.length + ")" : ""}</button></div>` +
       `<p class="note" style="margin:4px 0 0" title="Bộ canh chạy trong phiên chat Claude của dự án này; Claude tự bật khi có trang Studio mở">${watching ? "● Claude đang canh: bấm Gửi là AI nhận ngay" : "○ Claude không canh: gửi xong nhắn Claude bất kỳ câu nào (hoặc /check_fb)"}</p>` +
       (sentMsg && unsent.length === 0 && open.some(n => n.sent && !n.picked) ? `<p class="note" style="margin:4px 0 0">${sentMsg}</p>` : "") + `</div>`;
     if (!list.length) return `<div class="nwrap">${head}<p class="note" style="padding:0 10px">Chưa có ghi chú. Bấm ✎ ở góc viewport, khoanh chỗ cần sửa, gõ một dòng rồi Lưu.</p>${foot}</div>`;
-    return `<div class="nwrap">` + head + `<div class="notes">${list.map(n => `<div class="nt ${n.status === "done" ? "done" : ""}" data-id="${esc(n.id)}">
+    return `<div class="nwrap">` + head + `<div class="notes">${list.map(n => `<div class="nt ${n.status === "done" ? "done" : ""}" data-id="${esc(n.id)}" style="cursor:pointer" title="Bấm để mở lại góc nhìn, frame + nét vẽ">
       ${n.img ? `<img alt="Ảnh ghi chú" data-n="view" hidden>` : ""}
-      <div class="nb"><b>${esc(n.text || "(không chữ)")}</b><small>${esc(String(n.at).slice(0, 16).replace("T", " "))} · ${esc(where(n.ctx))}${n.status === "done" ? " · AI đã sửa" : n.picked ? " · AI đã nhận, đang sửa" : n.sent ? " · đã gửi AI" : ""}</small>
-      <div class="row"><button data-n="view" title="Mở lại góc nhìn + nét vẽ">${ic("eye")} Xem</button><button data-n="done" title="${n.status === "done" ? "Mở lại" : "Đánh dấu đã sửa"}">${n.status === "done" ? "Mở lại" : "Đã sửa"}</button><button data-n="del" class="bad" title="Xoá ghi chú">${ic("trash")}</button></div></div></div>`).join("")}</div>${foot}</div>`;
+      <div class="nb">${n.id === editing ? `<textarea class="nedit" rows="3" style="width:100%" onkeydown="event.stopPropagation()">${esc(n.text || "")}</textarea><div class="row"><button class="on" data-n="esave">Lưu</button><button data-n="ecancel">Huỷ</button></div>` : `<b>${esc(n.text || "(không chữ)")}</b>`}<small>${esc(String(n.at).slice(0, 16).replace("T", " "))} · ${esc(where(n.ctx))}${n.status === "done" ? " · AI đã sửa" : n.picked ? " · AI đã nhận, đang sửa" : n.sent ? " · đã gửi AI" : ""}</small>
+      <button data-n="menu" class="nkebab" title="Sửa / Đã sửa / Xoá" aria-label="Thao tác ghi chú">⋯</button><div class="row nmenu" style="display:none"><button data-n="edit" title="Sửa chữ của ghi chú">Sửa</button><button data-n="done" title="${n.status === "done" ? "Mở lại" : "Đánh dấu đã sửa"}">${n.status === "done" ? "Mở lại" : "Đã sửa"}</button><button data-n="del" class="bad" title="Xoá ghi chú">${ic("trash")}</button></div></div></div>`).join("")}</div>${foot}</div>`;
   };
-  N.panelKey = () => (list ? list.map(n => n.id + n.status + (n.sent ? "s" : "") + (n.picked ? "p" : "")).join(",") : "-") + sentMsg.length + (watching ? "w" : "");
+  N.panelKey = () => (list ? list.map(n => n.id + n.status + (n.sent ? "s" : "") + (n.picked ? "p" : "") + (n.text || "").length).join(",") : "-") + "e" + editing + sentMsg.length + (watching ? "w" : "");
   N.panelStatic = true;
   N.panelMounted = () => {   // ảnh nhỏ: đọc doc noteimg
     if (!list) return;
@@ -118,11 +120,25 @@
     });
   };
   N.panel_click = async e => {
-    const b = e.target.closest("[data-n]"); if (!b) return;
+    const b = e.target.closest("[data-n]");
+    // bấm vào thân ghi chú (không phải nút / ô sửa) = mở lại góc nhìn + frame + nét vẽ (thay nút Xem, user 2026-10-29)
+    if (!b) { const nt = e.target.closest(".nt"); if (!nt || e.target.closest("textarea")) return; const n = list && list.find(x => x.id === nt.dataset.id); if (n && n.id !== editing) view(n); return; }
     if (b.dataset.n === "new") return start();
     if (b.dataset.n === "send") return send();
+    if (b.dataset.n === "menu") {   // menu ⋯ ở góc ghi chú (user 2026-10-29 "icon 3 chấm ở góc này")
+      const m = b.parentElement.querySelector(".nmenu"), open = m.style.display === "none";
+      document.querySelectorAll(".nmenu").forEach(x => x.style.display = "none"); if (!open) return;
+      const r = b.getBoundingClientRect(); m.style.display = "flex";   // menu nổi (fixed), không bị khung cuộn cắt
+      m.style.top = Math.min(r.bottom + 4, innerHeight - m.offsetHeight - 8) + "px"; m.style.left = Math.max(8, r.right - m.offsetWidth) + "px";
+      const out = ev => { if (!m.contains(ev.target) && ev.target !== b) { m.style.display = "none"; document.removeEventListener("pointerdown", out, true); } };
+      document.addEventListener("pointerdown", out, true); return; }
     const id = b.closest(".nt").dataset.id, n = list.find(x => x.id === id); if (!n) return;
     if (b.dataset.n === "view") return view(n);
+    // sửa chữ tại chỗ (user 2026-10-29 "các fb cần có tính năng xóa, sửa")
+    if (b.dataset.n === "edit") { editing = id; ST.refresh(); setTimeout(() => { const t = document.querySelector('.nt[data-id="' + id + '"] textarea.nedit'); if (t) t.focus(); }, 0); return; }
+    if (b.dataset.n === "ecancel") { editing = null; ST.refresh(); return; }
+    if (b.dataset.n === "esave") { const t = b.closest(".nt").querySelector("textarea.nedit"); n.text = t ? t.value.trim() : n.text; n.editedAt = new Date().toISOString(); editing = null;
+      await fetch(api("notes", id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(n) }); ST.refresh(); return; }
     if (b.dataset.n === "done") { n.status = n.status === "done" ? "open" : "done"; await fetch(api("notes", id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(n) }); ST.refresh(); return; }
     if (b.dataset.n === "del") { await fetch(api("notes", id), { method: "DELETE" }); await fetch(api("noteimg", id), { method: "DELETE" }); list = list.filter(x => x !== n); ST.refresh(); }
   };

@@ -1210,13 +1210,45 @@ async function renderAdjs() {
     if (a.text) { const p = document.createElement("p"); p.textContent = a.text; el.append(p); }
     for (const g of (a.imgs && a.imgs.length ? a.imgs : a.img ? [a.img] : [])) if (g && g.url) { const im = document.createElement("img"); im.className = "adjimg"; im.loading = "lazy"; im.src = g.url; im.alt = "Ảnh ghi chú F" + (a.frame || 1); im.onclick = () => window.open(g.url, "_blank"); el.append(im); }
     const row = document.createElement("div"); row.className = "row";
-    const view = document.createElement("button"); view.className = "btn"; view.textContent = "Xem trên model";
-    view.onclick = () => { applyLocal(a); if (a.cam && a.cam.pos) { CAM().position.fromArray(a.cam.pos); orbit.target.fromArray(a.cam.target); orbit.update(); } };
-    row.append(view);
-    if (a.id && db && canWrite && (a.author === myId || (user && user.canEdit && user.canEdit()))) {
+    // bấm vào mục (không phải nút / ô sửa / ảnh) = nhảy tới frame, áp điều chỉnh, về góc camera lúc ghi (thay nút "Xem trên model")
+    el.style.cursor = "pointer"; el.title = "Bấm để tới F" + (a.frame || 1) + " và xem điều chỉnh trên model";
+    el.onclick = e => { if (e.target.closest("button,textarea,img,a")) return;
+      applyLocal(a); if (a.cam && a.cam.pos) { CAM().position.fromArray(a.cam.pos); orbit.target.fromArray(a.cam.target); orbit.update(); } };
+    if (a.id && db && canWrite && (!a.author || a.author === myId || (user && user.canEdit && user.canEdit()))) {
+      // Sửa lời ghi chú tại chỗ (user 2026-10-29 "các fb cần có tính năng xóa, sửa"); mục không ghi người tạo (Studio trên máy) cũng sửa / xoá được
+      const ed = document.createElement("button"); ed.className = "btn"; ed.textContent = "Sửa";
+      ed.onclick = () => {
+        const ta = document.createElement("textarea"); ta.value = a.text || ""; ta.rows = 3; ta.style.cssText = "width:100%;margin:4px 0";
+        const ok = document.createElement("button"); ok.className = "btn primary"; ok.textContent = "Lưu";
+        const no = document.createElement("button"); no.className = "btn"; no.textContent = "Huỷ";
+        const r2 = document.createElement("div"); r2.className = "row"; r2.append(ok, no);
+        ta.addEventListener("keydown", e => e.stopPropagation());   // gõ chữ không chạy phím tắt Pose
+        no.onclick = () => renderAdjs();
+        ok.onclick = async () => { const { id, ...rest } = a; rest.text = ta.value.trim(); rest.editedAt = new Date().toISOString();
+          try { await db.doc("adjusts/" + a.id).set(rest); a.text = rest.text; } catch (e) { fail(e); } renderAdjs(); };
+        el.querySelector("p") ? el.querySelector("p").replaceWith(ta) : el.insertBefore(ta, row); row.replaceWith(r2); ta.focus();
+      };
+      row.append(ed);
       const del = document.createElement("button"); del.className = "btn"; del.textContent = "Xoá";
       del.onclick = () => { if (del.dataset.arm) db.doc("adjusts/" + a.id).delete().catch(fail); else { del.dataset.arm = 1; del.textContent = "Bấm lần nữa để xoá"; } };
       row.append(del);
+    }
+    if (row.children.length) {   // menu ⋯ ở góc dòng đầu thay hàng nút (user 2026-10-29)
+      el.style.position = "relative";
+      const kb = document.createElement("button"); kb.className = "btn akebab"; kb.textContent = "⋯"; kb.title = "Sửa / Xoá"; kb.setAttribute("aria-label", "Sửa hoặc xoá");
+      kb.style.cssText = "padding:0 8px;min-height:0;height:22px;line-height:20px;font-size:16px;margin-left:6px;background:transparent;border:0;cursor:pointer;color:inherit";
+      row.hidden = true; row.style.cssText = "position:fixed;z-index:50;min-width:90px;flex-direction:column;align-items:stretch;gap:4px;padding:6px;background:var(--panel,#1f2430);border:1px solid var(--line,#333);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.4)";
+      // menu nổi (fixed) theo vị trí nút ⋯: khung cuộn của panel không cắt mất; bấm ra ngoài / cuộn thì đóng
+      const close = () => { row.hidden = true; row.style.display = "none"; document.removeEventListener("pointerdown", outside, true); };
+      const outside = e => { if (!row.contains(e.target) && e.target !== kb) close(); };
+      kb.onclick = e => { e.stopPropagation(); if (!row.hidden) return close();
+        const r = kb.getBoundingClientRect(); row.hidden = false; row.style.display = "flex";
+        row.style.top = Math.min(r.bottom + 4, innerHeight - row.offsetHeight - 8) + "px"; row.style.left = Math.max(8, r.right - row.offsetWidth) + "px";
+        document.addEventListener("pointerdown", outside, true); };
+      row.style.display = "none";
+      row.addEventListener("click", e => e.stopPropagation());
+      for (const b of row.querySelectorAll("button")) { const f = b.onclick; if (b.textContent === "Sửa") b.onclick = ev => { row.style.cssText = ""; row.hidden = false; kb.remove(); f(ev); }; }
+      const grp = document.createElement("span"); grp.style.cssText = "display:inline-flex;align-items:center;gap:2px"; pill.replaceWith(grp); grp.append(kb, pill);   // ⋯ ngay trước nhãn trạng thái
     }
     el.append(row); box.append(el);
   }

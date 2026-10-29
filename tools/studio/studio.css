@@ -105,6 +105,8 @@ body.noout #outliner,body.noout #splitO{display:none}
 .fbtop .sub{font-size:11px}
 .fbsec>h3{margin:0;padding:8px 10px 2px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .fbnotes [data-n="send"]{display:none}
+/* tab Góp ý cho AI: bỏ khối vòng review + AI tự xem lại (user 2026-10-29 "bỏ cái này đi"); chỉ ẩn, lõi Pose vẫn tìm theo id */
+.fbwrap #round,.fbwrap #aiself{display:none!important}
 #attr{flex:1}
 #attrTabs{display:flex;gap:0;border-bottom:1px solid var(--line);flex:none}
 #attrTabs button{border:0;border-radius:0;background:transparent;padding:6px 12px;font-size:12px;color:var(--mute);border-bottom:2px solid transparent}
@@ -248,3 +250,19 @@ body.noting #noteCv{pointer-events:auto;cursor:crosshair}
 .notes .nt img{display:block;width:100%;cursor:pointer}
 .notes .nb{display:flex;flex-direction:column;gap:4px;padding:6px 8px}
 .notes .nb small{color:var(--mute)}
+
+/* tab Góp ý cho AI gọn (user 2026-10-29 "mấy cái này cũng đang chiếm nhiều diện tích"): bỏ tiêu đề, hướng dẫn, chân ghi chú vẽ, nút gửi nhỏ;
+   hàng đầu = ✎ + chấm canh + số đếm; chân = Lưu + Gửi tất cả một hàng */
+.fbwrap .fbsec>h3,.fbwrap #adjList>h2,.fbwrap #adjEmpty,.fbwrap .fbnotes p.note,.fbwrap .fbnotes .nfoot,.fbwrap #aiSend,.fbwrap .fbtop{display:none!important}
+.fbwrap .fbnotes .nhead{padding:6px 10px!important;gap:8px;align-items:center}
+.wdot{font-size:12px;color:var(--mute);cursor:help}
+.fbwrap #fbCompose .row{display:flex;gap:6px;align-items:center;flex-wrap:nowrap}
+.fbwrap #fbCompose #fbSendAll{flex:1;white-space:nowrap}
+
+/* ghi chú vẽ: Sửa / Đã sửa / Xoá thu vào menu ⋯ ở góc phải trên (user 2026-10-29 "icon 3 chấm ở góc này") */
+.notes .nt{position:relative;overflow:visible}
+.notes .nt img{border-radius:8px 8px 0 0}
+.notes .nt .nkebab{position:absolute;top:4px;right:6px;background:transparent;border:0;padding:0 8px;height:22px;line-height:20px;font-size:16px;color:var(--mute);cursor:pointer}
+.notes .nt .nkebab:hover{color:var(--text,#fff)}
+.notes .nt .nmenu{position:fixed;z-index:50;min-width:90px;flex-direction:column;align-items:stretch;gap:4px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.notes .nt .nb>b{padding-right:28px}
