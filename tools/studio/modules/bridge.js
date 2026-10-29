@@ -4,6 +4,7 @@
 //       ws {id} · run {id, args} · open {char, ws} · focus {id: mesh|rig|pose} · layer {id: scene|rig|anim, on, solo} · cmds {q?}
 //       undo · redo · save · view {layout: 1|4, cam: persp|top|front|side, frame: all|sel} · snap (ảnh viewport PNG, base64)
 //       rig {do: lms|lm|sel|step, name, xyz, names, n} · anim {do: info|joints|read|select|rot|pos|frame|play|key|unkey|versions|version, …}
+//       obj {do: list|read|add|key|unkey|parent|set|del|select, …} (vật thể phụ của anim, modules/props.js; cm, trục Blender)
 // Workspace chỉ là bố cục: mọi lệnh chạy được ở workspace nào cũng được (run tự focus sang module của lệnh).
 // rig / anim tự focus + bật lớp + chờ lõi nạp xong (W2, docs/studio_design.md mục 11).
 (function () {
@@ -111,6 +112,7 @@
         need(c, "Không có anim " + a.id + " (anim clips để xem danh sách)"); B.after = () => ST.mods.pose.goClip(c.id); return { opening: c.id };
       }
       await want("pose"); const A = poseEng().ai;
+      if (["rot", "pos", "key", "unkey"].includes(a.do) && ST.mods.props) ST.mods.props.touchEngine();   // Hoàn tác sau đó: khớp trước vật thể
       switch (a.do || "info") {
         case "info": return A.info();
         case "joints": return A.joints();
@@ -126,6 +128,22 @@
         case "version": return A.version(a.v);
       }
       throw new Error("anim: clips | clip | info | joints | read | select | rot | pos | frame | play | key | unkey | versions | version");
+    },
+    async obj(a) {   // vật thể phụ của lớp Anim: mũi tên, hình nộm… (key riêng, không vào FBX)
+      await want("pose"); const P = ST.mods.props; need(P, "Không có module vật thể phụ"); await P.ensure();
+      const n = a.name, f = a.f ? +a.f : undefined;
+      switch (a.do || "list") {
+        case "list": return P.list(f);
+        case "read": return P.read(n, f);
+        case "add": return P.add({ name: n, mesh: a.mesh, box: a.box, capsule: a.capsule, bone: a.bone, f, at: a.at, color: a.color, hideSrc: a.hideSrc });
+        case "key": return P.key(n, { f, at: a.at, move: a.move, along: a.along, rot: a.rot, aim: a.aim, par: a.par, interp: a.interp, vis: a.vis });
+        case "unkey": return P.unkey(n, f);
+        case "parent": return P.parent(n, a.par, f);
+        case "set": return P.set(n, a);
+        case "del": return P.del(n);
+        case "select": { const id = n ? P.idOf(n) : null; need(!n || id, "Không có vật thể " + n); P.select(id); return { sel: n || null }; }
+      }
+      throw new Error("obj: list | read | add | key | unkey | parent | set | del | select");
     },
     ws({ id }) { need(ST.WS[id], "Không có workspace " + id); ST.setWS(id); return { ws: ST.ws, focus: ST.focus }; },
     focus({ id }) { need(ST.mods[id] && ST.LAYER_OF[id], "Focus là mesh, rig hoặc pose"); ST.setFocus(id); return { focus: ST.focus, layers: Object.assign({}, ST.layerOn) }; },

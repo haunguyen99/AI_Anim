@@ -256,9 +256,29 @@ const AI = (() => {
 })();
 return { get: () => ({ P, frame, sel, selSet, B, markers, model, playing, mode }), select: n => select(n), setSelection, setMode, goto, undo: () => $("undo").click(),
   canUndo: () => undoStack.length > 0, openPose, reopen: () => openPose(P), isLive: () => !!LIVE, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS,
-  ai: AI };
+  sampleBones, ai: AI };
 };
 """
+# vật thể phụ (modules/props.js, 2026-10-29): vị trí / hướng thế giới của vài xương ở frame bất kỳ, không đổi frame đang xem
+foot = foot.replace("\n// ---- API cho cầu nối AI", """
+function sampleBones(f, names) {
+  if (!model) return {};
+  const keep = {}, gk = {}; for (const n in B) keep[n] = [B[n].position.clone(), B[n].quaternion.clone()];
+  for (const n in gB) gk[n] = [gB[n].position.clone(), gB[n].quaternion.clone()];
+  const out = {};
+  try {
+    sampleAt(Math.max(1, Math.min(P.frames || 1, Math.round(f))));
+    if (f === frame && drafts[f]) for (const [n, v] of Object.entries(drafts[f])) { B[n].quaternion.copy(v.q); B[n].position.copy(v.p); }
+    model.updateMatrixWorld(true);
+    for (const n of names) if (B[n]) { const p = new THREE.Vector3(), q = new THREE.Quaternion(), s = new THREE.Vector3(); B[n].matrixWorld.decompose(p, q, s); out[n] = { p, q }; }
+  } finally {
+    for (const n in keep) { B[n].position.copy(keep[n][0]); B[n].quaternion.copy(keep[n][1]); }
+    for (const n in gk) { gB[n].position.copy(gk[n][0]); gB[n].quaternion.copy(gk[n][1]); }
+    model.updateMatrixWorld(true); if (ghost) ghost.updateMatrixWorld(true);
+  }
+  return out;
+}
+// ---- API cho cầu nối AI""", 1)
 out = head + m + "\n" + tail + foot
 open(OUT_JS, "w", encoding="utf8", newline=chr(10)).write(out)
 print(len(out) // 1024, "KB ->", OUT_JS, "|", len(pcss) // 1024, "KB css | đổi id:", RENAME)

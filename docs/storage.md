@@ -21,7 +21,7 @@ Studio **Tệp → Lưu cảnh…** (Ctrl+Shift+S) tải một file `<nhân vậ
 
 ## Cho Claude
 
-Ghi chú review và vòng gửi của `/check_fb` khi chạy cục bộ nằm ở `work/store/<ns>/notes/` và `rounds/`; Pose Lab ở `adjusts/`, `keys/`, `anims/`, `rounds/`; Rig Lab ở `rig/` (`landmarks`, `skin`, `gates`). Đọc trực tiếp các file đó.
+Ghi chú review và vòng gửi của `/check_fb` khi chạy cục bộ nằm ở `work/store/<ns>/notes/` và `rounds/`; Pose Lab ở `adjusts/`, `keys/`, `anims/`, `rounds/` (Studio thêm `props/<clip>-<version>`: vật thể phụ của phiên bản, `modules/props.js`); Rig Lab ở `rig/` (`landmarks`, `skin`, `gates`). Đọc trực tiếp các file đó.
 
 ## Chưa làm
 

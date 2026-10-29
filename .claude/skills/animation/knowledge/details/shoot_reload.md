@@ -19,6 +19,22 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
   Δ·G0 sau IK. Key có Δ = 0 (F1, F12) giữ nguyên tay P0 (IK giải lại lệch ~2 mm). Chọn chiều trục hếch một lần rồi dùng góc có
   dấu (bản đầu tự lật dấu → F7 "chúc −1°" thành hếch +1°). Xoay ngực 3° chỉ lùi vai phải ~1,8 cm: muốn vai lùi nhiều hơn phải
   dời bả vai, không tăng xoay ngực.
+- **b1 bị làm lại (2026-10-29, user: "Chốt f1. hãy blocking lại các frame khác"):** biên độ theo analysis (nỏ 6°, lùi 3,5 cm,
+  ngực 3,5°) ở cam game ngang trông như MỘT pose, không đọc ra lực. Blocking phải đọc được ở thumbnail cam game: b2 nỏ hếch
+  12°, lùi 7 cm, ngực ngả 6° (dưới mức 12° bị chê "giật về sau hơi nhiều"), bả vai phải dời lùi theo báng, thêm key lắng F9
+  (stepped F7→F12 đứng rồi bật). Số trong analysis là sàn, không phải trần: kiểm sheet key ở cam game, F2–F12 phải khác nhau
+  rõ bằng mắt. Kiểm báng/đầu: khoảng đầu–nỏ mọi key ≥ khoảng ở P0 đã duyệt (b2: 2,7–3,5 cm, P0 3,2).
+- **`rigpose.ik_arm` lật khớp tay 180° (b2, review F2/F7 "xoắn vặn", F4/F6 "sao lỗi này gặp nhiều thế", "lại lỗi này"):**
+  nó dựng lại tay từ đầu, đoán trục khuỷu = Z local và chọn chiều xoắn theo sai số nhỏ nhất, nên chọn nghiệm lật (vai/cổ tay
+  trái 180°, khuỷu phải 130° lật vào hông) dù cổ tay vẫn tới đích. Khi prop chỉ dời vài cm quanh pose đã duyệt, dùng IK ít đổi
+  nhất `shoot_block.ik_min`: gập khuỷu quanh CHÍNH trục gập hiện tại (pháp tuyến vai–khuỷu–cổ tay), vai xoay `rot_between`
+  góc nhỏ nhất, cổ tay lấy hướng đích. **Quét trước khi gửi:** góc xoay local của Shoulder/Elbow/Wrist mỗi key so với P0;
+  > 45° ở key dời nhỏ là lật khớp (b2: 157–180°, b3: ≤ 17°). Lỗi lặp lại nhiều lần vì trước đó chỉ đo vị trí cổ tay, không đo xoay.
+- **Nỏ/súng vác vai: GD muốn giật LÙI, không hếch (b3 → b4, 2026-10-29, "GD không muốn vũ khí giật lên trên quá nhiều.
+  thay vào đó là đẩy về sau nhiều hơn"):** đỉnh dư chấn hếch ≤ 4°, lùi theo nòng ~10 cm, bả vai bên báng lùi gần bằng nòng
+  (8 cm) để báng không lún vào vai. Mặc định cho vũ khí tì vai lần sau: lực đi dọc nòng ra sau, hếch chỉ phụ.
+- Bản mới đăng bằng `clip_registry.py pose-version` chưa có `work/store/<ns>/anims/<clip>-<ver>.json` nên Studio mở ở spline:
+  chép file của bản trước (đổi `version`) để giữ `interp: step`, rồi `studio_cmd.py anim clip <id>` cho trang tải lại.
 - Model Pose Lab cho rig team: `sdr03/poselab_model.py` (đủ xương + texture); khớp thêm của clip qua `clip_registry.py
   pose-version --names "slingshot_1=Dây nỏ,joint1_M=Bím tóc 1,…"`.
 

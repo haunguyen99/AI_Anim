@@ -282,3 +282,25 @@ Rig Lab cũ chưa từng có; Pose Lab có "✎ Vẽ" (lưu vào điều chỉnh
 - Tệp → **Lưu cảnh…** (Ctrl+Shift+S) / **Mở cảnh…** (Ctrl+Shift+O, thêm nút ở ô Cảnh trống): một file `.aas` (zip) chứa nhân vật, rig, skin, ghi chú và các phiên bản Pose, mang sang máy khác. Chi tiết định dạng và những gì không gói: `docs/storage.md`. Mã: `tools/home/scene_file.py`, `tools/studio/modules/scene.js`.
 - Mở cảnh hỏi trước khi ghi đè nhân vật đã có; sau khi bung thì mở luôn nhân vật đó.
 Đã thử: Boss_Gragas lưu ra 0,6 MB (18 file); gỡ dữ liệu + mục sổ + dòng POSES rồi mở lại: 18 file trùng md5, sổ và POSES cùng nội dung (thứ tự mục mới nằm cuối). Trong trang: lệnh có trong menu Tệp sau Nhập FBX, `/api/scene/save` trả `application/zip`, mở thử `dry` đọc đúng manifest, không lỗi console.
+
+## 13. Vật thể phụ của anim (2026-10-29, cho SDR03 Shoot: mũi tên bay ra cắm vào đối thủ)
+
+Trong game, đạn / mũi tên do code sinh ra; anim chỉ cần vật thể để **xem trước**. `modules/props.js` thêm vật thể có key riêng vào lớp Anim, không phải xương nên **không vào FBX** nhân vật.
+- **Hình**: bản sao một mesh (của model anim, hoặc mesh của Cảnh gồm mesh nhập FBX), lấy hình đã pose ở frame đang xem; hộp (cm); capsule (bán kính, cao; gốc ở chân) làm hình nộm. Bản sao mesh của model anim mặc định gắn vào xương skin chính của nó (mũi tên `MC_char_map1_V2_VK_bow` → `slingshot_1`) và **ẩn mesh gốc** khi vật thể đang hiện (chỉ trên màn hình; `--keep-src` để giữ).
+- **Key**: mỗi key = cha (xương của model anim hoặc world) + vị trí / hướng trong không gian cha (bỏ scale của xương). Đổi cha ở một key = gắn / thả, giữ nguyên chỗ ở frame đó; đoạn trước key đổi cha đi theo cha cũ, nên mũi tên bám nỏ tới đúng frame bắn rồi mới rời. Nội suy theo vật thể: `step` / `linear` (mặc định, vận tốc đều như đạn) / `spline` (Hermite theo key hai bên); hướng nội suy slerp. Ẩn / hiện theo key (bậc thang). Trước key đầu / sau key cuối giữ key gần nhất (vẫn theo cha của nó).
+- Đọc tư thế xương ở frame khác (để đổi không gian khi đổi cha) bằng `sampleBones(f, names)` của lõi Pose (thêm trong `port_pose.py`, không đổi frame đang xem).
+- **Vẽ**: nhóm `__props` trong cảnh của lõi Pose, đặt lại trong `scene.onBeforeRender` → đúng ở viewport, khi phát, `snap` và playblast (camera playblast nhắm nhân vật: vật thể xa như hình nộm 5 m chỉ vào khung khi kéo "Khoảng cách" ra xa hoặc chọn camera trên / phối cảnh).
+- **Lưu**: kho Pose của anim, doc `props/<clip>-<version>` (mỗi phiên bản một bộ; `?ns=` thử trên kho riêng). **Hoàn tác** (2026-10-29, user: "điều chỉnh các vật thể phụ đang không nhận Undo"): Ctrl+Z, nút ↶ của thanh Pose, Sửa → Hoàn tác và cầu nối `undo` đều đi qua nút `#undo` của lõi Pose; `props.js` bắt nút đó trước và giữ một hàng thứ tự chung (vật thể / khớp), nên lùi đúng từng bước xen kẽ, không cần đang chọn vật thể. Kéo gizmo vật thể làm lõi ghi một bước rỗng của nó: hoàn tác lần kéo đó thì bỏ luôn bước rỗng (gọi thẳng `onclick`, vì `click()` lồng trong click của chính nút bị trình duyệt bỏ qua). Lõi xoá hàng của nó khi đổi frame; hàng của vật thể giữ qua frame.
+- **Giao diện**: tab dock **Vật thể** (workspace Pose; Cửa sổ → Panel ở workspace khác): thêm bản sao / hộp / hình nộm, danh sách, key / xoá key frame này, đổi cha từ frame này, nội suy, ẩn mesh gốc, xoá. Outliner: vật thể nằm dưới nút Anim (mắt = tắt vật thể, bấm đúp đổi tên, nút xoá). Bấm vật thể trong viewport = chọn + gizmo (W dời / E xoay, trục world); thả chuột = key frame đang xem.
+- **Cầu nối** (cm, trục Blender, Z lên như `anim read`): `obj list [f]`, `obj read <tên> [f]` (vị trí, `fwd` = trục `--axis`, mặc định +z, cha), `obj add <tên> --mesh M [--bone B|world] [--keep-src]` / `--box x,y,z` / `--capsule r,h` `[--at x,y,z] [--bone B]`, `obj key <tên> <f> [--at] [--move] [--along cm] [--rot] [--aim x,y,z] [--par B|world] [--interp] [--hide|--show]`, `obj parent <tên> <xương|world> <f>`, `obj unkey`, `obj set [--interp] [--axis] [--rename] [--hide-src on|off] [--off on|off]`, `obj del`, `obj select`.
+
+Mẫu (SDR03 Shoot b3, nhân vật nhìn −Y):
+```
+studio_cmd.py anim frame 1 ";" obj add arrow --mesh MC_char_map1_V2_VK_bow     # gắn slingshot_1 ở F1
+studio_cmd.py obj add dummy --capsule 25,180 --at -28,-545,0                    # hình nộm cách ~5 m
+studio_cmd.py obj parent arrow world 3                                          # thả ra ở F3 (event shot), giữ chỗ
+studio_cmd.py obj key arrow 6 --at -27.96,-471.01,131.14 --aim -27.96,-629.98,128.08   # mũi cắm vào ngực hình nộm F6
+```
+Đổi anim của nỏ quanh frame thả thì chạy lại `obj parent … world 3` (key world lưu chỗ của lúc đặt).
+
+Đã thử (kho thử `studio_test_obj_pose`, đã xoá): mũi tên theo dây nỏ F1–F3, F3 nối liền, F4–F5 bay thẳng (~43 m/s), F6 cắm hình nộm rồi giữ; mesh mũi tên gốc ẩn; tải lại trang key còn; playblast đặt mũi tên đúng từng frame; FBX xuất ra (76 xương) không có mũi tên / hình nộm; chọn từ Outliner + gizmo, kéo thả = key, key từ panel, hoàn tác; hộp gắn `Wrist_R`.
