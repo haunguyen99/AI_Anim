@@ -92,6 +92,7 @@
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
       cam: () => V.active.cam, alive, liveModel, setOrtho: on => { if (V.active === V.panes.persp) V.setOrtho(on); },
       gate: () => { const g = V.gate, p = V.active; if (!g || !g.on || !p) return null; const [a, b] = g.ratio.split(":").map(Number), A = a / b, w = Math.min(p.rect.w * 0.92, p.rect.h * 0.92 * A); return { A, frac: (w / A) / p.rect.h }; },   // playblast "Đang xem" quay đúng khung Gate
+      savedView: () => V.savedView(), applyView: sv => V.applyView(sv), camName: k => { V.camName = k; },   // nhớ góc camera qua reload
       propKeys: () => ST.mods.props && ST.mods.props.selKeys ? ST.mods.props.selKeys() : null,   // timeline hiện key của vật thể phụ đang chọn
       panes: {   // nút [ ] của thanh Pose = lệnh Cửa sổ → Outliner / Dock phải của Studio
         toggle: k => ST.run(k === "list" ? "win.outliner" : "win.dock"),
@@ -288,14 +289,19 @@
   ST.on("prerender", () => { if (ST.layerOn.anim && eng) { const g = eng.get(); const sig = (g.model ? g.model.uuid : "-") + ":" + g.frame + ":" + g.sel + ":" + g.selSet.size + ":" + g.playing; if (sig !== M._sig) { M._sig = sig; ST.refresh(); } } });
 
   // playblast → Review (như nút 🎞 của Home cũ): quay trên trang, server lưu webm + nén + thêm version Review
+  // quay + gửi (dùng chung cho lệnh menu và cầu nối `anim playblast`, 2026-10-29 user: "Đưa lên reviewlap")
+  M.sendPlayblast = async (o, label, note) => {
+    ST.toast("Đang quay playblast…"); const r = await window.DDC.playblast(o);
+    const b64 = b => new Promise(res => { const f = new FileReader(); f.onload = () => res(String(f.result).split(",")[1]); f.readAsDataURL(b); });
+    ST.toast("Đang lưu và nén video…");
+    const j = await (await fetch("/api/playblast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clipInfo.id, n: r.n, fps: r.fps, w: r.w, h: r.h, views: r.views, label: label || "", note: note || "", webm_b64: await b64(r.webm), thumb_b64: r.thumb ? await b64(r.thumb) : "" }) })).json();
+    if (!j.ok) throw new Error(j.error); ST.toast("Đã thêm version " + j.id.version + " vào Review Lab");
+    return { version: j.id.version, reencoded: j.id.reencoded, n: r.n, w: r.w, h: r.h, views: r.views };
+  };
   ST.cmd({ id: "pose.playblast", mod: "pose", menu: "Animate", sep: true, label: "Quay playblast và gửi sang Review…", icon: "export", on: () => !!eng && !!window.DDC && !!window.DDC.askPlayblast, run: async () => {
     try {
       const o = await window.DDC.askPlayblast(); if (!o) return;
-      ST.toast("Đang quay playblast…"); const r = await window.DDC.playblast(o);
-      const b64 = b => new Promise(res => { const f = new FileReader(); f.onload = () => res(String(f.result).split(",")[1]); f.readAsDataURL(b); });
-      ST.toast("Đang lưu và nén video…");
-      const j = await (await fetch("/api/playblast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clipInfo.id, n: r.n, fps: r.fps, w: r.w, h: r.h, views: r.views, webm_b64: await b64(r.webm), thumb_b64: r.thumb ? await b64(r.thumb) : "" }) })).json();
-      if (!j.ok) throw new Error(j.error); ST.toast("Đã thêm version " + j.id.version + " vào Review Lab");
+      await M.sendPlayblast(o);
     } catch (e) { ST.toast("Không gửi được: " + (e.message || e)); }
   } });
   // W3a: anim chạy trên nhân vật hiện tại hay model chụp của phiên bản

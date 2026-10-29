@@ -32,3 +32,5 @@ Ghi chú review và vòng gửi của `/check_fb` khi chạy cục bộ nằm �
 ## Cài đặt Studio (2026-10-29)
 
 Bố cục, panel, cỡ panel, tab dock, Gate, lưới, camera và cài đặt lõi Pose (khoá `studio:`, `poselab:`, `pl:`, `plsec:`) lưu ở `work/store/studio_prefs/prefs/local.json` qua Home server (`core/app.js` nạp đồng bộ lúc mở, ghi lại sau mỗi thay đổi). localStorage chỉ là bản đệm, nên mở bằng `localhost` hay `127.0.0.1`, hay trình duyệt khác trên cùng máy đều nhận cùng cài đặt. Mỗi máy (mỗi Home) một bộ.
+
+Góc camera viewport (mọi khung, kể cả persp đang ortho) lưu cùng chỗ, khoá `studio:view:<workspace>:<nhân vật>`, dò thay đổi mỗi giây. Mở lại / đổi workspace dùng góc đã lưu thay vì tự căn (mesh `loaded`, lõi Pose `setCam("right")`); đổi phiên bản anim giữ nguyên camera.

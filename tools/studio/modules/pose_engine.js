@@ -164,7 +164,7 @@ const CAMS = {   // glTF world: Y up, character faces +Z, its right side is -X
 // highest joint at load
 let curCam = "right", camFit = 1;
 function setCam(k) {
-  const c = CAMS[k]; curCam = k; if (typeof renderRef === "function") renderRef();
+  const c = CAMS[k]; curCam = k; if (host.camName) host.camName(k); if (typeof renderRef === "function") renderRef();
   const t = new V3(...c.tgt).multiplyScalar(camFit);
   if (host.setOrtho) host.setOrtho(k !== "persp");   // Studio: góc thẳng = camera Orthographic, 3/4 = phối cảnh
   const cam = CAM(), off = new V3(...c.pos).sub(new V3(...c.tgt)).multiplyScalar(camFit);
@@ -175,7 +175,7 @@ function setCam(k) {
   $("camTag").innerHTML = "Camera: <b></b>"; $("camTag").querySelector("b").textContent = c.label;
 }
 document.querySelectorAll(".cams button").forEach(b => b.onclick = () => setCam(b.dataset.cam));
-orbit.addEventListener("start", () => { document.querySelectorAll(".cams button").forEach(b => b.classList.remove("on")); if (curCam !== "persp" && CAM().isPerspectiveCamera) { curCam = "persp"; $("camTag").innerHTML = "Camera: <b>persp (tự do)</b>"; } });
+orbit.addEventListener("start", () => { document.querySelectorAll(".cams button").forEach(b => b.classList.remove("on")); if (curCam !== "persp" && CAM().isPerspectiveCamera) { curCam = "persp"; $("camTag").innerHTML = "Camera: <b>persp (tự do)</b>"; } if (host.camName) host.camName("free"); });
 
 function resize() { host.resize(); }
 
@@ -267,7 +267,7 @@ async function openPose(p) {
     setupRef();
     buildMarkers(); $("loading").hidden = true; buildStrip(); goto(1, true); renderAdjs(); renderRound();
     const top = Math.max(...Object.values(B).map(b => wp(b).y));
-    camFit = P.camFit || Math.max(0.6, Math.min(4, top / 1.75)); setCam(curCam);   // POSES camFit when a prop sticks out above the joints
+    camFit = P.camFit || Math.max(0.6, Math.min(4, top / 1.75)); if (!camInit) { camInit = true; setCam(curCam); }   // chỉ lần đầu: đổi phiên bản giữ nguyên camera (user 2026-10-29)   // POSES camFit when a prop sticks out above the joints
     ready = true; if (keysMode()) applyRemote(); renderPhys(); if (keysMode()) bodyChanged(true);
     setTimeout(() => maybeAutoReview(), 1500);
   } catch (e) {
@@ -4516,7 +4516,14 @@ function trailUpdate() {
   if (trailData) { const p = trailData.cur[Math.max(0, Math.min(trailData.cur.length - 1, frame - 1))]; const a = trailData.now.geometry.attributes.position; a.setXYZ(0, p.x, p.y, p.z); a.needsUpdate = true; tag.hidden = false; tag.textContent = trailData.text; }
 }
 host.onFrame(now => { tickPlay(now || performance.now()); if (model) placeMarkers(); if (model && trailOn) trailUpdate(); if (model && stripSigNow() !== stripSig) renderStrip(); });
-setCam("right"); renderPoses(); openPose(POSES[0]);
+// góc camera đã lưu (Studio, host.savedView): dùng lại thay cho góc Right mặc định, kể cả khi model nạp xong
+let camInit = false;
+{ const sv = host.savedView ? host.savedView() : null;
+  if (sv && host.applyView && host.applyView(sv)) { camInit = true; const k = sv.cam; curCam = k && CAMS[k] ? k : "persp";
+    $("camTag").innerHTML = "Camera: <b></b>"; $("camTag").querySelector("b").textContent = k && CAMS[k] ? CAMS[k].label : "persp (tự do)";
+    document.querySelectorAll(".cams button").forEach(b => b.classList.toggle("on", b.dataset.cam === k)); }
+  else setCam("right"); }
+renderPoses(); openPose(POSES[0]);
 
 (async () => {
   const hasClaude = !!(window.claude && window.claude.use);

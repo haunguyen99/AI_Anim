@@ -532,7 +532,7 @@
     if (ST.rigState && ST.rigState.source === "none") { RIGSKIN = null; OBJ.forEach(o => { o.skin = null; deform(o, false); }); }
     refreshSel();
   });
-  ST.on("loaded", () => { V.frameAll(); refreshSel(); });
+  ST.on("loaded", () => { if (!V.applyView(V.savedView())) V.frameAll(); refreshSel(); });   // có góc camera đã lưu thì giữ (user 2026-10-29), chưa có mới tự căn
   addEventListener("beforeunload", e => { if (dirty) { save(); e.preventDefault(); e.returnValue = ""; } });
   M.bounds = selOnly => {
     let b;

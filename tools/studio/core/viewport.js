@@ -250,5 +250,27 @@
   cv.addEventListener("contextmenu", e => e.preventDefault());
   cv.addEventListener("pointerleave", () => { V.hover = null; });
 
-  ST.on("init", () => { resize(); });
+  // ---- nhớ góc camera (user 2026-10-29 "chỉnh góc camera, reload lại bị mất"): mỗi workspace + nhân vật một bộ, đủ các khung
+  // (persp kể cả đang ortho, top / front / side); lưu khi đổi (dò mỗi giây), khôi phục lúc mở / đổi workspace. Lõi Pose dùng qua host.
+  V.camName = null;   // tên góc của lõi Pose (right, front… / persp / free) để hiện lại nhãn camera
+  const rd = (a, n) => a.map(x => +x.toFixed(n));
+  V.viewKey = () => "view:" + ST.ws + ":" + ST.slug(ST.char ? ST.char.name : ST.clip || "scene");
+  V.viewState = () => { const o = { panes: {}, cam: V.camName }; for (const [id, p] of Object.entries(P)) { const c = p.cam; o.panes[id] = { o: !!c.isOrthographicCamera, pos: rd(c.position.toArray(), 4), q: rd(c.quaternion.toArray(), 6), up: rd(c.up.toArray(), 4), t: rd(p.target.toArray(), 4), z: +c.zoom.toFixed(5) }; } return o; };
+  let lastView = "";
+  V.applyView = sv => {
+    if (!sv || !sv.panes) return false;
+    for (const [id, v] of Object.entries(sv.panes)) {
+      const p = P[id]; if (!p || !v) continue;
+      if (p.ocam) V.setOrtho(!!v.o, p);
+      const c = p.cam; c.up.fromArray(v.up); c.position.fromArray(v.pos); c.quaternion.fromArray(v.q); p.target.fromArray(v.t); c.zoom = v.z || 1; c.updateProjectionMatrix();
+    }
+    V.camName = sv.cam || null; orbit.update(); lastView = JSON.stringify(V.viewState()); return true;
+  };
+  V.savedView = () => ST.pref.get(V.viewKey(), null);
+  setInterval(() => {
+    if (!ST.ws || V.viewHold) return;
+    const sv = JSON.stringify(V.viewState()); if (sv === lastView) return; lastView = sv; ST.pref.set(V.viewKey(), JSON.parse(sv));
+  }, 1000);
+  ST.on("init", () => { resize(); V.applyView(V.savedView()); });
+  ST.on("ws", () => V.applyView(V.savedView()));
 })();
