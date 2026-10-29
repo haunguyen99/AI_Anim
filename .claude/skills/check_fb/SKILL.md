@@ -9,6 +9,8 @@ Người dùng gõ `/check_fb` khi đã ghi xong note **và** bấm "Gửi feedb
 
 ## Studio: ghi chú vẽ (nút ✎ trong viewport, 2026-10-28)
 
+Bộ canh in mục `"kind": "rig_gate"` (nút Duyệt / Cần sửa ở một bước Rig) → làm theo `/rig` mục 2 phần Studio: duyệt thì tự làm bước kế, cần sửa thì sửa bước đó theo note, xong `studio_cmd.py gate-done`. Mục `"kind": "note"` → các bước dưới.
+
 Người dùng vẽ khoanh trên viewport Studio (General / Rig / Anim), bấm **Gửi cho AI** trong panel "Ghi chú vẽ". Nếu phiên chat đang chạy nền `tools/notes_watch.py` (bật mỗi khi người dùng duyệt trong Studio: chỉ canh thư mục, không tốn lượt AI), Claude được gọi dậy ngay khi có ghi chú gửi; không thì người dùng gõ `/check_fb`. Sửa xong thì bật lại bộ canh. Làm **trước** phần Review Lab bên dưới:
 1. `.venv\Scripts\python.exe -I tools\studio_cmd.py notes [nhân vật] --out <scratchpad>
 otes`: ghi chú đang mở (đã gửi hoặc chưa), ảnh JPEG khung nhìn + nét, `ctx` (chế độ, bước Rig, anim + frame, khớp đang chọn, camera) và `strokes_cm` (khung trước / bên / trên: điểm đầu, cuối, tâm của mỗi nét theo cm, trục Studio). Rig: đọc thêm `work/store/<id>_rig_lab/rig/gates.json`.

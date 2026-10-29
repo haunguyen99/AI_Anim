@@ -101,7 +101,7 @@ body.noout #outliner,body.noout #splitO{display:none}
 #toolbox button.vtab{writing-mode:vertical-rl;transform:rotate(180deg);width:30px;height:auto;min-height:64px;padding:8px 0;font-size:11px;letter-spacing:.04em;color:var(--mute);border-radius:4px}
 #toolbox button.vtab.on{background:var(--hover);color:var(--fg,inherit);box-shadow:inset -2px 0 0 var(--accent)}
 /* tab Góp ý cho AI: ghi chú vẽ trên, điều chỉnh dưới; nút gửi riêng của ghi chú vẽ ẩn (dùng nút chung) */
-.fbtop{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.fbtop{display:flex;align-items:center;gap:8px;padding:8px 10px}
 .fbtop .sub{font-size:11px}
 .fbsec>h3{margin:0;padding:8px 10px 2px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .fbnotes [data-n="send"]{display:none}
@@ -207,7 +207,15 @@ body.tm input{font-size:16px}
 .rigp .num{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .rigp .num label{font-size:11px;color:var(--mute);display:block} .rigp .num input{width:100%;font:12.5px var(--mono)}
 .rigp textarea{width:100%;min-height:44px;font:inherit;background:var(--raise);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:5px}
-.rigp .gate{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.rigp .gate{margin-top:12px;padding-top:10px;padding-bottom:10px;border-top:1px solid var(--line)}
+/* Khối duyệt / gửi AI (cổng Rig, Gửi tất cả cho AI, Gửi cho AI) luôn ở cạnh dưới panel, nội dung ngắn hay phải cuộn
+   (user 2026-10-29, toàn Studio). Panel muốn có chân: gắn class dockfoot cho khối đó, khung ngoài là .rigp / .fbwrap / .nwrap. */
+#dock .body:has(> .rigp, > .fbwrap, > .nwrap){display:flex;flex-direction:column;padding-bottom:0}
+#dock .body > .rigp,#dock .body > .fbwrap,#dock .body > .nwrap{flex:1 0 auto}
+.fbwrap,.nwrap{display:flex;flex-direction:column}
+.dockfoot,.rigp .gate{position:sticky;bottom:0;z-index:3;margin-top:auto;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 12px -10px #0007}
+.fbwrap .nfoot{position:static;margin-top:0;box-shadow:none;border-top:0;background:none}
+.fbwrap .nfoot [data-n=send]{display:none}
 .rigp .big{font-size:14px;font-weight:600;margin:6px 0}.rigp .big.ok{color:var(--ok)}.rigp .big.warn{color:var(--warn)}.rigp .big.bad{color:var(--bad)}
 .rigp details.more{margin:10px 0;border-top:1px solid var(--line);padding-top:6px}
 .rigp details.more>summary{cursor:pointer;color:var(--mute);font-size:12px;padding:2px 0}

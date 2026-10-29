@@ -31,7 +31,7 @@ ALLOW = [
     "work/mesh_lab/template.html", "work/mesh_lab/*.py",
 ]
 # Không bao giờ đẩy / không đụng tới (giữ bản trên GitHub)
-DENY = ["**/__pycache__/**", "**/*.pyc", "**/.venv/**", "tools/spine_mcp/.venv/**", "**/node_modules/**", "work/*/pages/**",
+DENY = ["**/.env", "**/__pycache__/**", "**/*.pyc", "**/.venv/**", "tools/spine_mcp/.venv/**", "**/node_modules/**", "work/*/pages/**",
         "work/store/**", "work/pose_lab/models/**", "work/review_page/clips/**"]
 KEEP_REMOTE = {".claude/launch.json", ".mcp.json"}
 MAX_BYTES = 5 * 1024 * 1024

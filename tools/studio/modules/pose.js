@@ -205,9 +205,9 @@
     const N = ST.mods.notes;
     if (!fb) {
       fb = document.createElement("div"); fb.className = "fbwrap"; fb.dataset.park = "poseStash";
-      fb.innerHTML = `<div class="fbtop"><button class="on" id="fbSendAll">${ic("send")} Gửi tất cả cho AI</button><span class="sub" id="fbCount"></span></div>
-        <section class="fbsec"><h3>Ghi chú vẽ</h3><div class="fbnotes" id="fbNotes"></div></section>
-        <section class="fbsec"><h3>Điều chỉnh key</h3><div id="fbAdj"></div></section>`;
+      fb.innerHTML = `<section class="fbsec"><h3>Ghi chú vẽ</h3><div class="fbnotes" id="fbNotes"></div></section>
+        <section class="fbsec"><h3>Điều chỉnh key</h3><div id="fbAdj"></div></section>
+        <div class="fbtop dockfoot"><button class="on" id="fbSendAll">${ic("send")} Gửi tất cả cho AI</button><span class="sub" id="fbCount"></span></div>`;   // nút gửi ghim đáy panel (user 2026-10-29)
     }
     const notesBox = fb.querySelector("#fbNotes"), adj = fb.querySelector("#fbAdj");
     notesBox.innerHTML = N && N.panel ? N.panel() : '<p class="sub" style="padding:0 10px">Không có module ghi chú vẽ.</p>';

@@ -17,6 +17,8 @@ VIEWS = {  # (hướng nhìn của camera = từ camera tới nhân vật), tr�
     "front": np.array([0, 0, -1.0]), "back": np.array([0, 0, 1.0]),
     "side_r": np.array([1.0, 0, 0]), "side_l": np.array([-1.0, 0, 0]),
     "q34": np.array([0.6, -0.15, -0.78]),
+    "top": np.array([0, -1.0, 0]),          # nhìn từ trên xuống, mặt trước nhân vật (+Z) hướng lên trên ảnh
+    "q34_l": np.array([-0.6, -0.15, -0.78]),  # 3/4 phía trái nhân vật (phía tay cầm nỏ của SDR03)
 }
 
 
@@ -49,15 +51,18 @@ def load(path, tex, only=None, skip=()):
     return np.array(tris), np.array(cols)
 
 
-def render(tris, cols, view, size, pad=0.06, bg=(0.33, 0.35, 0.38)):
-    fwd = VIEWS[view] / np.linalg.norm(VIEWS[view])
-    up0 = np.array([0, 1.0, 0])
+def render(tris, cols, view, size, pad=0.06, bg=(0.33, 0.35, 0.38), box=None):
+    """box = (cx, cy, half) trong toạ độ màn hình (cm) để giữ khung cố định giữa các pose; None = tự khít."""
+    fwd = np.asarray(VIEWS[view] if isinstance(view, str) else view, float); fwd = fwd / np.linalg.norm(fwd)
+    up0 = np.array([0, 0, 1.0]) if abs(fwd[1]) > 0.9 else np.array([0, 1.0, 0])
     right = np.cross(fwd, up0); right /= np.linalg.norm(right)
     up = np.cross(right, fwd)
     X, Y, Z = tris @ right, tris @ up, tris @ fwd        # Z: xa camera thì lớn
     lo = np.array([X.min(), Y.min()]); hi = np.array([X.max(), Y.max()])
     s = (1 - 2 * pad) * size / (hi - lo).max()
     cx = (lo + hi) / 2
+    if box is not None:
+        cx = np.array(box[:2], float); s = (1 - 2 * pad) * size / (2 * box[2])
     px = (X - cx[0]) * s + size / 2
     py = size / 2 - (Y - cx[1]) * s
     img = np.ones((size, size, 3)) * bg

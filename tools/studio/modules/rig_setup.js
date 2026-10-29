@@ -73,6 +73,8 @@
     }
     return out;
   }
+  const ext = (A, E, c) => { const d = E.clone().sub(A).normalize(); return [A.clone().addScaledVector(d, -(c.e0 || 0)), E.clone().addScaledVector(d, c.e1 || 0)]; };   // nới hai đầu (cm, âm = rút)
+  const lenOf = k => calc[k] ? +(calc[k].len + (doc.colliders[k].e0 || 0) + (doc.colliders[k].e1 || 0)).toFixed(1) : null;
   const capMass = (r, len, rho) => { const R = r / 100, L = len / 100; return rho * (Math.PI * R * R * L + 4 / 3 * Math.PI * R ** 3); };
   function ensure() {     // doc đủ trường cho bộ xương hiện tại (thêm khớp mới, giữ giá trị người dùng đã sửa)
     if (!doc) doc = { v: 1, joints: {}, limits: {}, colliders: {}, mass: {}, rho: 1000 };
@@ -85,7 +87,7 @@
     for (const [k, c] of Object.entries(calc)) {
       if (!doc.colliders[k]) doc.colliders[k] = { on: true, r: c.r, auto: true };
       if (doc.colliders[k].auto) doc.colliders[k].r = c.r;
-      if (doc.mass[k] == null || doc.massAuto !== false && !(doc.massSet || {})[k]) doc.mass[k] = +capMass(doc.colliders[k].r, c.len, doc.rho).toFixed(1);
+      if (doc.mass[k] == null || doc.massAuto !== false && !(doc.massSet || {})[k]) doc.mass[k] = +capMass(doc.colliders[k].r, lenOf(k), doc.rho).toFixed(1);
     }
   }
 
@@ -98,7 +100,7 @@
     const B = {}; skel().forEach(b => B[b.name] = b);
     for (const [k, c] of Object.entries(doc.colliders)) {
       if (!c.on || !B[k] || !B[SEG[k]]) continue;
-      const A = new THREE.Vector3(...B[k].pos), E = new THREE.Vector3(...B[SEG[k]].pos), d = E.clone().sub(A), L = d.length(); if (L < 1e-3) continue;
+      const [A, E] = ext(new THREE.Vector3(...B[k].pos), new THREE.Vector3(...B[SEG[k]].pos), c), d = E.clone().sub(A), L = d.length(); if (L < 1e-3) continue;
       const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().divideScalar(L)), r = c.r, pts = [];
       const ring = y => { for (let i = 0; i <= 24; i++) { const t = i / 24 * Math.PI * 2; pts.push([Math.cos(t) * r, y, Math.sin(t) * r]); } };
       const seg = []; const push = (a, b) => seg.push(...a, ...b);
@@ -113,6 +115,56 @@
       ln.position.copy(A); ln.quaternion.copy(q); ln.renderOrder = 30; ln.raycast = () => {}; grp.add(ln);
     }
   }
+
+  // ---- viewport: bấm capsule = chọn đoạn, kéo = đổi bán kính (bán kính = khoảng cách từ tia chuột tới trục đoạn);
+  // đoạn cặp trái / phải đổi theo, giữ Shift để chỉ đổi một bên. Bấm chỗ trống thì để lõi Rig xử lý như thường.
+  const pair = k => /_[LR]$/.test(k) ? k.slice(0, -1) + (k.endsWith("L") ? "R" : "L") : null;
+  function segEnds() { const B = {}; skel().forEach(b => B[b.name] = b); const o = {};
+    for (const [k, c] of Object.entries(doc.colliders)) if (c.on && B[k] && B[SEG[k]]) { const J = [new THREE.Vector3(...B[k].pos), new THREE.Vector3(...B[SEG[k]].pos)]; o[k] = ext(J[0], J[1], c).concat(J); }
+    return o; }
+  function localRay(e, p) {
+    const ray = V.raycaster(e.clientX, e.clientY, p).ray.clone();
+    if (grp && grp.parent) { grp.parent.updateMatrixWorld(); ray.applyMatrix4(new THREE.Matrix4().copy(grp.parent.matrixWorld).invert()); }
+    return ray;
+  }
+  function setR(k, r, one) {
+    for (const s of one ? [k] : [k, pair(k)]) { const c = s && doc.colliders[s]; if (!c) continue;
+      c.r = +Math.max(0.5, r).toFixed(1); c.auto = false;
+      if (!(doc.massSet || {})[s] && calc[s]) doc.mass[s] = +capMass(c.r, lenOf(s), doc.rho).toFixed(1); }
+  }
+  function setE(k, end, v, one) {   // end "e0" | "e1": nới đầu đó (cm); không cho capsule ngắn dưới 20 % đoạn xương
+    for (const s of one ? [k] : [k, pair(k)]) { const c = s && doc.colliders[s]; if (!c || !calc[s]) continue;
+      const other = end === "e0" ? (c.e1 || 0) : (c.e0 || 0); c[end] = +Math.max(v, -(calc[s].len * 0.8) - other).toFixed(1);
+      if (!(doc.massSet || {})[s]) doc.mass[s] = +capMass(c.r, lenOf(s), doc.rho).toFixed(1); }
+  }
+  RS.pointerDown = (e, p) => {
+    if (!grp || !doc || e.button !== 0) return false;
+    const ray = localRay(e, p), E = segEnds(); let best = null;
+    for (const [k, [a, b]] of Object.entries(E)) {
+      const onRay = new THREE.Vector3(), d = Math.sqrt(ray.distanceSqToSegment(a, b, onRay)), t = onRay.distanceTo(ray.origin), r = doc.colliders[k].r;
+      if (d <= r * 1.15 + 1.5 && (!best || t < best.t)) best = { k, t };
+    }
+    if (!best) return false;
+    const k = best.k, x0 = e.clientX, y0 = e.clientY, [a, b, JA, JE] = E[k]; let moved = false;
+    // bấm gần hai đầu (20 % mỗi đầu hoặc trên nắp) = kéo dài / rút đầu đó; giữa = bán kính
+    const dir = b.clone().sub(a).normalize(), L = a.distanceTo(b), hitP = new THREE.Vector3(); localRay(e, p).distanceSqToSegment(a, b, null, hitP);
+    const u = hitP.distanceTo(a) / Math.max(L, 1e-6), end = u < 0.2 ? "e0" : u > 0.8 ? "e1" : null;
+    const c0 = doc.colliders[k], e00 = c0[end] || 0;
+    const far = 10 * (L + 2 * c0.r), lineA = a.clone().addScaledVector(dir, -far), lineB = b.clone().addScaledVector(dir, far);
+    const axisT = ev => { const q = new THREE.Vector3(); localRay(ev, p).distanceSqToSegment(lineA, lineB, null, q); return q.clone().sub(a).dot(dir); };   // vị trí dọc trục (cm, tính từ đầu a)
+    const t0 = end ? axisT(e) : 0;
+    if (selSeg !== k) { selSeg = k; drawCaps(true); RS.ver++; ST.refresh(); }
+    const mv = ev => {
+      if (!moved && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 3) return; moved = true;
+      if (end) { const dt = axisT(ev) - t0; setE(k, end, e00 + (end === "e0" ? -dt : dt), ev.shiftKey); }
+      else setR(k, Math.sqrt(localRay(ev, p).distanceSqToSegment(a, b)), ev.shiftKey);
+      drawCaps(true); const c = doc.colliders[k];
+      ST.saveState(segName(k) + (end ? ": dài " + lenOf(k) + " cm (đầu " + (end === "e0" ? "trên" : "dưới") + " " + (c[end] >= 0 ? "+" : "") + c[end] + ")" : ": bán kính " + c.r + " cm") + (ev.shiftKey ? " (một bên)" : ""));
+    };
+    const up = () => { removeEventListener("pointermove", mv, true); removeEventListener("pointerup", up, true); if (moved) { save(); RS.ver++; ST.refresh(); setTimeout(() => drawCaps(true), 0); } };
+    addEventListener("pointermove", mv, true); addEventListener("pointerup", up, true);
+    return true;
+  };
 
   // ---- panel bước 6
   const num = (v, a) => `<input type="number" step="${a || 1}" value="${v}" style="width:4.2em">`;
@@ -132,12 +184,14 @@
 <div class="row"><select id="limSel" aria-label="Khớp">${limOpts}</select><button data-s="limMirror" title="Chép sang khớp cùng tên bên kia">Đối xứng</button><button data-s="limReset">Mặc định</button></div>
 <table class="tbl"><thead><tr><th></th><th>Thấp</th><th>Cao</th></tr></thead><tbody>${["Gập", "Dạng", "Xoắn"].map((l, i) => `<tr><td>${l}</td><td data-l="${2 * i}">${num(lim[2 * i])}</td><td data-l="${2 * i + 1}">${num(lim[2 * i + 1])}</td></tr>`).join("")}</tbody></table></details>
 <details open><summary><b>Collider</b> <span class="sub">(capsule lõi, cm; vẽ trong viewport)</span></summary>
+<p class="note">Bấm một capsule trong viewport để chọn, kéo phần giữa = bán kính, kéo gần một đầu = dài / ngắn về phía đầu đó (bên đối xứng đổi theo; giữ Shift: chỉ một bên).</p>
 <div class="row"><button data-s="colAuto">Tính lại theo mesh</button></div>
 <table class="tbl"><thead><tr><th>Đoạn</th><th>Bật</th><th>Bán kính</th><th>Dài</th></tr></thead><tbody>${rows(Object.keys(doc.colliders), k => { const c = doc.colliders[k];
-  return `<tr class="${k === selSeg ? "sel" : ""}" data-seg="${esc(k)}"><td>${esc(segName(k))}</td><td><input type="checkbox" data-c="col" data-n="${esc(k)}" ${c.on ? "checked" : ""} aria-label="Bật collider ${esc(segName(k))}"></td><td data-r="${esc(k)}">${num(c.r, 0.5)}${c.auto ? "" : " ✎"}</td><td class="sub">${calc[k] ? calc[k].len : "—"}</td></tr>`; })}</tbody></table></details>
+  return `<tr class="${k === selSeg ? "sel" : ""}" data-seg="${esc(k)}"><td>${esc(segName(k))}</td><td><input type="checkbox" data-c="col" data-n="${esc(k)}" ${c.on ? "checked" : ""} aria-label="Bật collider ${esc(segName(k))}"></td><td data-r="${esc(k)}">${num(c.r, 0.5)}${c.auto ? "" : " ✎"}</td><td class="sub">${calc[k] ? lenOf(k) + (c.e0 || c.e1 ? " ✎" : "") : "—"}</td></tr>`; })}</tbody></table></details>
 <details open><summary><b>Khối lượng</b> <span class="sub">(kg · tổng ${tot.toFixed(1)} kg)</span></summary>
 <div class="row"><label class="sub">Khối riêng</label>${num(doc.rho, 50).replace("<input", '<input id="rho" aria-label="Khối riêng kg/m3"')}<span class="sub">kg/m³</span><button data-s="massAuto">Tính theo collider</button></div>
-<table class="tbl"><tbody>${rows(Object.keys(doc.mass), k => `<tr data-seg="${esc(k)}"><td>${esc(segName(k))}</td><td data-m="${esc(k)}">${num(doc.mass[k], 0.5)}${(doc.massSet || {})[k] ? " ✎" : ""}</td></tr>`)}</tbody></table></details>`;
+<table class="tbl"><tbody>${rows(Object.keys(doc.mass), k => `<tr data-seg="${esc(k)}"><td>${esc(segName(k))}</td><td data-m="${esc(k)}">${num(doc.mass[k], 0.5)}${(doc.massSet || {})[k] ? " ✎" : ""}</td></tr>`)}</tbody></table></details>
+${eng.gateHtml ? eng.gateHtml(6) : ""}`;
   };
   RS.mounted = () => { drawCaps(true); };
   RS.hide = () => drawCaps(false);
@@ -151,10 +205,12 @@
     if (t.id === "rho") { doc.rho = +t.value || 1000; doc.massSet = {}; save(); return redraw(); }
     const l = t.closest("[data-l]"), r = t.closest("[data-r]"), m = t.closest("[data-m]");
     if (l && doc.limits[limSel]) { doc.limits[limSel][+l.dataset.l] = +t.value; save(); return; }
-    if (r) { const c = doc.colliders[r.dataset.r]; c.r = Math.max(0.3, +t.value || c.r); c.auto = false; if (!(doc.massSet || {})[r.dataset.r]) doc.mass[r.dataset.r] = +capMass(c.r, calc[r.dataset.r].len, doc.rho).toFixed(1); save(); return redraw(); }
+    if (r) { const c = doc.colliders[r.dataset.r]; c.r = Math.max(0.3, +t.value || c.r); c.auto = false; if (!(doc.massSet || {})[r.dataset.r]) doc.mass[r.dataset.r] = +capMass(c.r, lenOf(r.dataset.r), doc.rho).toFixed(1); save(); return redraw(); }
     if (m) { (doc.massSet || (doc.massSet = {}))[m.dataset.m] = true; doc.mass[m.dataset.m] = Math.max(0, +t.value || 0); save(); return redraw(); }
   };
   RS.click = e => {
+    const gb = e.target.closest("#gOk, #gFix");   // cổng duyệt bước 6 (lưu chung rig/gates, bộ canh gửi cho AI)
+    if (gb && eng) { eng.setGate(6, gb.id === "gOk" ? "ok" : "fix").then(() => { RS.ver++; ST.refresh(); }); return; }
     const b = e.target.closest("[data-s]"), row = e.target.closest("tr[data-seg]");
     if (row && !e.target.closest("input")) { selSeg = row.dataset.seg === selSeg ? null : row.dataset.seg; return redraw(); }
     if (!b || !doc) return;
@@ -164,7 +220,7 @@
     if (a === "moveNone") J.forEach(n => doc.joints[n].move = /^(Root_M|Ankle_|Wrist_)/.test(n));
     if (a === "limReset") { const l = limDefault(limSel); if (l) doc.limits[limSel] = l; }
     if (a === "limMirror") { const m = /_[LR]$/.test(limSel) ? limSel.slice(0, -1) + (limSel.endsWith("L") ? "R" : "L") : null; if (m && doc.limits[m]) doc.limits[m] = doc.limits[limSel].slice(); else return ST.toast("Khớp này không có cặp trái / phải."); }
-    if (a === "colAuto") for (const c of Object.values(doc.colliders)) c.auto = true;
+    if (a === "colAuto") for (const c of Object.values(doc.colliders)) { c.auto = true; delete c.e0; delete c.e1; }
     if (a === "massAuto") doc.massSet = {};
     save(); redraw();
   };

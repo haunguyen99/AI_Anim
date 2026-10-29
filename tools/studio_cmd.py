@@ -12,11 +12,12 @@
 Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace nào (run tự focus sang module của lệnh).
 
   Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] | snap [file.png] [WxH]   (ảnh viewport để AI tự kiểm)
-  Rig:    rig lms | rig lm Elbow_R x,y,z | rig sel Elbow_R Wrist_R | rig step 4
+  Rig:    rig lms | rig lm Elbow_R x,y,z | rig sel Elbow_R Wrist_R | rig step 4 (1–5; 6 = panel Vật lý)
   Anim:   anim clips | anim clip gaygor_walk (đổi anim: trang tải lại) | anim info | anim joints | anim read [khớp…] | anim select khớp… | anim frame 12 | anim play on|off
           anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
           anim pos Root_M 0,0,-5              # dời thêm (cm, trục Blender, Z lên); hông / cổ chân / cổ tay theo IK
           anim key [f] | anim unkey [f] | anim versions | anim version v3
+  Cổng duyệt Rig (nút Duyệt / Cần sửa): gate-done <chữ trong tên kho> <bước> ["việc đã làm"]   # trang hiện "AI đã xong"
   Ghi chú vẽ (nút ✎ trong viewport): notes [chữ trong tên kho] [--all] [--out DIR]   # in ghi chú đang mở + ghi ảnh (đọc thẳng work/store/*_studio)
           note-done <id> [--open]                                                    # đánh dấu đã sửa (hoặc mở lại)
   Rig / anim tự focus, bật lớp và chờ lõi nạp (lần đầu vài giây). Sửa khớp ở bản dạng key thì Auto key đặt key luôn.
@@ -102,6 +103,23 @@ def notes_cmd(op, rest):
     print(json.dumps({"ok": True, "result": res}, ensure_ascii=False, indent=1)); return 0
 
 
+def gate_done(rest):
+    """gate-done <chữ trong tên kho rig> <bước> ["việc đã làm"]: ghi done cho cổng duyệt Rig, trang hiện "AI đã xong"."""
+    import glob
+    store = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "work", "store")
+    flt, n, msg = rest[0].lower(), str(int(rest[1])), (rest[2] if len(rest) > 2 else "")
+    fs = [f for f in glob.glob(os.path.join(store, "*_rig_lab", "rig", "gates.json")) if flt in f.lower()]
+    if len(fs) != 1:
+        print(json.dumps({"ok": False, "error": "khớp %d kho rig" % len(fs), "files": fs}, ensure_ascii=False)); return 1
+    raw = json.load(open(fs[0], encoding="utf8")); d = raw["data"] if isinstance(raw.get("data"), dict) else raw
+    g = (d.get("g") or {}).get(n)
+    if not isinstance(g, dict):
+        print(json.dumps({"ok": False, "error": "bước %s chưa có cổng" % n}, ensure_ascii=False)); return 1
+    g["done"] = time.strftime("%Y-%m-%dT%H:%M:%S"); g["doneMsg"] = msg
+    json.dump(raw, open(fs[0], "w", encoding="utf8"), ensure_ascii=False)
+    print(json.dumps({"ok": True, "step": int(n), "status": g.get("status")}, ensure_ascii=False)); return 0
+
+
 def main(argv):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -127,6 +145,8 @@ def main(argv):
     t0 = time.perf_counter()
     if op in ("notes", "note-done"):
         return notes_cmd(op, rest)
+    if op == "gate-done":
+        return gate_done(rest)
     if op == "clients":
         with urllib.request.urlopen(BASE + "/api/studio/clients", timeout=5) as r:
             res = {"ok": True, "result": json.loads(r.read())}

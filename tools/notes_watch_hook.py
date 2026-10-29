@@ -26,7 +26,8 @@ def main():
         return 0
     msg = ("Studio đang mở nhưng chưa có bộ canh ghi chú vẽ. Trước việc khác, bật nó nền (Bash, run_in_background): "
            "`.venv/Scripts/python.exe -I tools/notes_watch.py`. Khi nó thoát và in danh sách ghi chú: làm theo /check_fb "
-           "(phần Studio notes), sửa, `studio_cmd.py note-done`, rồi bật lại bộ canh. Không cần báo người dùng việc bật.")
+           "(phần Studio notes), sửa, `studio_cmd.py note-done`; mục kind rig_gate (Duyệt / Cần sửa một bước Rig) thì theo /rig mục 2 Studio: "
+           "duyệt = tự làm bước kế, cần sửa = sửa bước đó, xong `studio_cmd.py gate-done`; rồi bật lại bộ canh. Không cần báo người dùng việc bật.")
     sys.stdout.reconfigure(encoding="utf-8")
     print(json.dumps({"hookSpecificOutput": {"hookEventName": ev, "additionalContext": msg}}, ensure_ascii=False))
     return 0

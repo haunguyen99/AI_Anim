@@ -40,7 +40,7 @@ function buildSkeleton(L) {
   if (CFG.prop) add("Prop_M", "Chest_M", P("Prop_M")); if (CFG.dress) { add("DressFront_M", "Root_M", P("DressFront_M")); add("DressBack_M", "Root_M", P("DressBack_M")); }
   for (const s of ["R", "L"]) for (const [i, n] of LEG_J.entries())
     add(n + "_" + s, i ? LEG_J[i - 1] + "_" + s : "Root_M", P(n + "_" + s));
-  if (CFG.weapon) add("Weapon", "root", P("Weapon"));
+  if (CFG.weapon) add("Weapon", CFG.weaponParent || "root", P("Weapon"));   // Ninja: kunai cầm tay trái → Wrist_L
   for (const e of EXTRA) if (B.some(b => b.name === e.parent) && P(e.name)) add(e.name, e.parent, P(e.name));
   // twist: đoạn đầu (Shoulder/Hip) nhận roll NGƯỢC t lần roll của khớp đầu; đoạn cuối (Elbow/Knee) nhận roll +t lần roll của Wrist/Ankle
   const byName = {}; B.forEach(b => byName[b.name] = b);
@@ -82,7 +82,7 @@ const TW_SEG = { Shoulder: ["Elbow", "Cánh tay trên"], Elbow: ["Wrist", "Cẳn
 let TW = { Shoulder: 0, Elbow: 0, Hip: 0, Knee: 0 };
 const vis = { body: true, cloth: true, props: DATA.props.map(() => true) };
 let step = 1, sel = null, mirror = true, showRef = false, showWire = false, showSkel = true, showFing = true;
-let gates = { 1: null, 2: null, 3: null, 4: null, 5: null };
+let gates = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };   // 6 = panel Vật lý (modules/rig_setup.js)
 let db = null, saveMsg = "";
 
 // ---------------------------------------------------------------- three.js
@@ -268,7 +268,8 @@ async function saveLM() {
   renderPanelLight();
 }
 async function setGate(n, status) {
-  gates[n] = { status, note: ($("note") || {}).value || "", at: Date.now() };
+  const t = Date.now();
+  gates[n] = { status, note: ($("note") || {}).value || "", at: t, sent: t, picked: null, done: null, char: CFG.name || null };
   try { if (db) await db.doc("rig/gates").set({ g: gates }); else localStorage.setItem("rig_gates", JSON.stringify(gates)); saveMsg = "Đã ghi kết quả bước " + n + "."; }
   catch (e) { saveMsg = "Không ghi được: " + (e.message || e.code || e); }
   renderAll();
@@ -359,10 +360,30 @@ function dims() { const d = i => bb.mx[i] - bb.mn[i]; return [d(0), d(1), d(2)];
 const esc = t => String(t).replace(/</g, "&lt;");
 const OPEN = {};
 const more = (id, title, html) => `<details class="more" data-more="${id}" ${OPEN[id] ? "open" : ""}><summary>${title}</summary>${html}</details>`;
+// Duyệt / Cần sửa = gửi cho AI: tools/notes_watch.py canh rig/gates.json (sent, chưa picked), đánh dấu picked rồi gọi Claude dậy làm tiếp;
+// Claude làm xong ghi done (studio_cmd.py gate-done). Trang hỏi lại gates mỗi 3 s để hiện trạng thái AI.
+function gateAi(g) {
+  const w = ST.mods.notes && ST.mods.notes.watching && ST.mods.notes.watching();
+  if (!g || !g.sent) return w ? "● Claude đang canh: bấm Duyệt hoặc Cần sửa là AI làm tiếp" : "○ Claude không canh: bấm xong nhắn Claude bất kỳ câu nào";
+  if (g.done) return "✓ AI đã xong" + (g.doneMsg ? ": " + esc(g.doneMsg) : "");
+  if (g.picked) return "… AI đã nhận, đang " + (g.status === "ok" ? "làm bước tiếp" : "sửa bước này");
+  return w ? "→ Đã gửi AI, chờ nhận" : "→ Đã gửi, Claude không canh: nhắn Claude bất kỳ câu nào";
+}
+async function pollGates() {
+  if (!db) return;
+  try {
+    const d = await db.doc("rig/gates").get(); if (!d.exists) return;
+    const g2 = d.data().g || {}; let ch = false;
+    for (const k in g2) { const a = gates[k], b = g2[k]; if (a && b && a.at === b.at && (a.picked !== b.picked || a.done !== b.done)) { a.picked = b.picked; a.done = b.done; a.doneMsg = b.doneMsg; ch = true; } }
+    const e = $("gai"); if (e) e.innerHTML = gateAi(gates[ST.curTab && ST.curTab() === "rig:s6" ? 6 : step]);
+  } catch (e) {}
+}
+setInterval(pollGates, 3000);
 function gateHtml(n) {
   const g = gates[n];
   const st = g ? (g.status === "ok" ? '<span class="chip ok">Đã duyệt</span>' : '<span class="chip fix">Cần sửa</span>') : '<span class="chip">Chưa duyệt</span>';
   return `<div class="gate"><div class="ghead"><b>Bước ${n}</b>${st}<span class="msg" id="smsg">${saveMsg}</span></div>
+    <p class="note" id="gai">${gateAi(g)}</p>
     <textarea id="note" rows="2" placeholder="Ghi chú cho AI nếu cần sửa">${g ? esc(g.note) : ""}</textarea>
     <div class="row"><button class="pri" id="gOk">Duyệt</button><button class="bad" id="gFix">Cần sửa</button></div></div>`;
 }
@@ -743,6 +764,15 @@ function poseCloth(M) {
     m.userData.wire.geometry.dispose(); m.userData.wire.geometry = new THREE.WireframeGeometry(g);
   });
 }
+// prop rời (kunai Ninja, chùy Gaygor) bind cứng 100% vào Weapon (không có thì Prop_M / Chest_M), như lúc xuất glTF
+const propJoint = () => { const n = buildSkeleton(LM).map(b => b.name); return n.includes("Weapon") ? "Weapon" : n.includes("Prop_M") ? "Prop_M" : "Chest_M"; };
+function poseProps(W) {
+  const m = W[propJoint()], v = new THREE.Vector3();
+  propMeshes.forEach((pm, i) => { const r = DATA.props[i].verts, a = pm.geometry.attributes.position.array;
+    for (let k = 0; k < r.length; k += 3) { v.set(r[k], r[k + 1], r[k + 2]); if (m) v.applyMatrix4(m); a[k] = v.x; a[k + 1] = v.y; a[k + 2] = v.z; }
+    pm.geometry.attributes.position.needsUpdate = true; pm.geometry.computeVertexNormals(); pm.geometry.computeBoundingSphere();
+    if (pm.userData.wire) { pm.userData.wire.geometry.dispose(); pm.userData.wire.geometry = new THREE.WireframeGeometry(pm.geometry); } });
+}
 function poseSkin() {
   if (!SK) return null;
   const B = buildSkeleton(LM), W = poseMats(B), pos = skinGeo.attributes.position.array, v = new THREE.Vector3(), o = new THREE.Vector3();
@@ -753,6 +783,7 @@ function poseSkin() {
     pos[i * 3] = o.x; pos[i * 3 + 1] = o.y; pos[i * 3 + 2] = o.z;
   }
   try { poseCloth(M); } catch (e) { if (__err) __err('quần áo: ' + (e.message || e)); }
+  poseProps(W);
   skinGeo.attributes.position.needsUpdate = true; skinGeo.computeVertexNormals(); skinGeo.computeBoundingSphere(); skinGeo.computeBoundingBox(); skinWire.geometry.dispose(); skinWire.geometry = new THREE.WireframeGeometry(skinGeo);
   const sum = new Float64Array(NV), cnt = new Int32Array(NV);
   LAP.edges.forEach(([i, j], e) => { const l = Math.hypot(pos[3 * i] - pos[3 * j], pos[3 * i + 1] - pos[3 * j + 1], pos[3 * i + 2] - pos[3 * j + 2]), s = Math.abs(l / EDGE_L0[e] - 1); sum[i] += s; sum[j] += s; cnt[i]++; cnt[j]++; });
@@ -1218,7 +1249,7 @@ let skTimer = null;
 function scheduleSkinSave() { saveMsg = "Đang lưu…"; renderPanelLight(); clearTimeout(skTimer); skTimer = setTimeout(saveSkin, 2500); }
 async function saveSkin() {
   if (!SK) return;
-  const doc = { names: SK.names, I: Array.from(SK.I), W: Array.from(SK.W, v => +v.toFixed(3)), sig: SK.LMsnap, nv: NV, at: Date.now() };
+  const doc = { names: SK.names, I: Array.from(SK.I), W: Array.from(SK.W, v => +v.toFixed(3)), sig: SK.LMsnap, nv: NV, at: Date.now(), props: Object.fromEntries((DATA.props || []).map(p => [p.name, propJoint()])) };   // General: prop bind cứng vào khớp này
   try {
     if (db) await db.doc("rig/skin").set(doc); else localStorage.setItem("rig_skin", JSON.stringify(doc));
     dirtySkin = false; saveMsg = db ? "Đã lưu" : "Đã lưu (chỉ trình duyệt này)";
@@ -1334,6 +1365,7 @@ return {
     syncScene(); renderPanel();
   },
   setLM(k, xyz) { LM[k] = xyz.slice(); if (mirror && mirrorKey(k)) LM[mirrorKey(k)] = [-xyz[0], xyz[1], xyz[2]]; syncScene(); dirty(); commit(); renderPanel(); },
+  gateHtml: n => gateHtml(n), setGate: (n, st) => setGate(n, st),   // panel 6 Vật lý dùng chung cổng duyệt
   wantsSkinPointer: e => step === 4 && !!SK && (skTool === "brush" || skTool === "island") && e.button === 0 && !e.altKey,
 };
 };

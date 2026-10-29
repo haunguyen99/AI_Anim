@@ -12,7 +12,7 @@
 :root[data-theme="dark"]{--bg:#1c2028;--panel:#232832;--raise:#2b313c;--line:#353c48;--fg:#e4e8ef;--mute:#8d97a8;--accent:#6f95f0;--ok:#52c58a;--bad:#ef6d60;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:var(--bg);color:var(--fg);font:13px/1.4 var(--sans)}
+body{display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--bg);color:var(--fg);font:13px/1.4 var(--sans)}
 header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
 h1{font-size:14px;margin:0;font-weight:600}
 select,button{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
@@ -41,19 +41,6 @@ main{position:relative;min-height:0}
 #empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);text-align:center;padding:16px}
 /* display của từng id đè thuộc tính hidden -> #empty phủ lên player, chặn nút phát/dừng và thanh thời gian */
 [hidden]{display:none !important}
-/* chế độ Sửa: bảng bên phải */
-#edPanel{position:absolute;right:16px;top:48px;width:min(310px,calc(100% - 32px));z-index:6;display:flex;flex-direction:column;gap:7px;padding:10px;border-radius:8px;background:var(--raise);border:1px solid var(--accent);box-shadow:0 2px 10px #0004;font-size:12px}
-#edPanel .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-#edPanel input[type=number]{width:62px} #edPanel input[list]{width:120px}
-#edPanel textarea{width:100%;box-sizing:border-box;min-height:54px;resize:vertical;font:inherit}
-#edPanel button.primary{border-color:var(--accent);color:var(--accent);font-weight:600}
-#edBone{color:var(--accent)} #edDirty{color:var(--bad)} #edHelp{color:var(--mute);line-height:1.35}
-#stage.editing{cursor:crosshair}
-/* timeline chi tiết (kiểu SyncSketch) */
-#tlBar{display:flex;gap:8px;align-items:center;padding:6px 12px;background:var(--panel);border-top:1px solid var(--line)}
-#tl{flex:1;min-width:0;height:48px;cursor:ew-resize;border-radius:6px;display:block;touch-action:none}
-#tlNum{font:600 13px/1 ui-monospace,Consolas,monospace;min-width:92px;text-align:center}
-#tlPlay{min-width:38px}
 </style>
 </head>
 <body>
@@ -70,11 +57,7 @@ main{position:relative;min-height:0}
     </select>
     <select id="uiSel" aria-label="Ghép lên UI game" title="Ghép lên ảnh UI game: gốc skeleton đặt đúng điểm chạm (file ui/<tên>.json trong thư mục anim)"><option value="">UI: tắt</option></select>
     <button id="reload" title="Nạp lại ngay (bình thường trang tự nạp khi file đổi)">Nạp lại</button>
-    <span class="grp" style="gap:4px" title="Cuộn chuột: zoom quanh con trỏ · kéo chuột giữa / chuột phải / Alt+kéo: dời khung nhìn · phím + − F">
-      <button id="zOut" aria-label="Thu nhỏ">−</button><button id="zFit" title="Vừa khung (phím F)">100%</button><button id="zIn" aria-label="Phóng to">+</button>
-    </span>
   </div>
-  <label title="Sửa trực tiếp: kéo khớp để xoay, Shift+kéo hoặc kéo tay cầm IK để dời, rồi Key pose vào anim"><input type="checkbox" id="edit">Sửa</label>
   <label title="Trang nhảy theo file / anim / frame Claude đang làm (tools/spine_live_cmd.py)"><input type="checkbox" id="follow" checked>Theo Claude</label>
   <span id="status">đang tải…</span>
 </header>
@@ -85,45 +68,7 @@ main{position:relative;min-height:0}
   <div id="tip" hidden></div>
   <div id="claude" hidden><button id="claudeBar" aria-expanded="false" title="Bấm để xem các bước trước"><b></b><span></span></button><ol id="claudeLog" hidden></ol></div>
   <div id="legend" hidden><span>weight 0</span><i></i><span>1</span></div>
-  <div id="edPanel" hidden>
-    <div class="row"><b id="edBone">Bấm vào một xương</b><span id="edFrame"></span><span id="edDirty"></span></div>
-    <div class="row">
-      <button id="tRot" title="Công cụ xoay (phím C): kéo trên hình để xoay xương đang chọn quanh khớp">Xoay (C)</button>
-      <button id="tMove" title="Công cụ dời (phím V): kéo trên hình để dời xương đang chọn">Dời (V)</button>
-      <span style="color:var(--mute)">Shift: đảo tạm</span>
-    </div>
-    <div class="row">
-      <label title="Góc local (độ)">Xoay <input id="edRot" type="number" step="0.5"></label>
-      <label title="Vị trí local theo xương cha">X <input id="edX" type="number" step="1"></label>
-      <label>Y <input id="edY" type="number" step="1"></label>
-    </div>
-    <div class="row">
-      <button id="edReset" title="Xương đang chọn về setup pose">Về setup</button>
-      <button id="edDrop" title="Bỏ mọi chỉnh sửa chưa key, về đúng anim tại frame này">Bỏ sửa</button>
-    </div>
-    <div class="row">
-      <label title="Anim để key vào; gõ tên mới để tạo anim mới">Anim <input id="edAnim" list="edAnims"></label><datalist id="edAnims"></datalist>
-      <select id="edCurve" title="Curve nối key mới với key trước / sau"><option value="ease">Ease</option><option value="linear">Linear</option><option value="stepped">Stepped</option></select>
-    </div>
-    <label title="Key mọi xương (pose blocking đầy đủ); bỏ chọn thì chỉ key xương đã sửa"><input type="checkbox" id="edAll">Key toàn bộ xương</label>
-    <textarea id="edNote" placeholder="Ghi chú cho Claude, vd: &quot;pose đầu của attack, gen tiếp F0-30 theo pose này&quot;"></textarea>
-    <div class="row">
-      <button id="edKey" class="primary" title="Ghi key vào file JSON tại frame đang xem, kèm ghi chú">Key pose</button>
-      <button id="edNoteBtn" title="Chỉ gửi ghi chú + số đo pose cho Claude, không sửa file">Chỉ gửi ghi chú</button>
-      <button id="edUndo" title="Trả file về bản trước lần key cuối">Hoàn tác key</button>
-    </div>
-    <button id="edGen" class="primary" title="Key pose đang sửa (nếu có) rồi gửi yêu cầu cho Claude gen tiếp các frame sau dựa theo frame này; ghi chú ở ô trên được gửi kèm">Gen tiếp từ frame này (Claude)</button>
-    <div id="edHelp">Bấm xương để chọn, kéo ở đâu trên hình cũng chỉnh xương đó · C xoay · V dời · xương tay / chân trong IK: kéo = dời tay cầm IK (ô cam) · Ctrl+Z lùi (hết bước thì lùi lần Key pose) · Ctrl+Y làm lại · cuộn chuột zoom, + − F · kéo chuột giữa / phải / Alt+kéo: dời khung nhìn · ← → đổi frame · Space phát / dừng · Esc bỏ chọn · bấm vào hình không phát / dừng (dùng nút play)</div>
-  </div>
 </main>
-<footer id="tlBar">
-  <button id="tlPlay" title="Phát / dừng (Space)">▶</button>
-  <span id="tlNum" title="Frame đang xem / tổng">F 0 / 0</span>
-  <canvas id="tl" title="Bấm / kéo: dừng và tua tới frame · cuộn: giãn / thu timeline quanh con trỏ · Shift+cuộn: trượt ngang · ô vàng: key của xương đang chọn"></canvas>
-  <button id="tlOut" aria-label="Thu timeline" title="Thu timeline">−</button>
-  <button id="tlFit" title="Vừa cả anim">Vừa</button>
-  <button id="tlIn" aria-label="Giãn timeline" title="Giãn timeline">+</button>
-</footer>
 <script src="/spine/vendor/spine-player.min.js"></script>
 <script>
 const $ = id => document.getElementById(id);
@@ -134,8 +79,7 @@ let list = [], cur = null, player = null, stamp = null, ver = 0, loading = false
 // ---- Lớp xem rig: xương, lưới mesh, weight (debug sẵn của player vẽ nét 1 px, lẫn vào hình) ----
 const C = (r, g, b, a) => new spine.Color(r, g, b, a);
 const COL = { bone: C(0.1, 0.85, 1, 1), sel: C(1, 0.85, 0.1, 1), joint: C(1, 1, 1, 1), root: C(1, 0.3, 0.3, 1),
-              edge: C(0, 0, 0, 0.75), tri: C(1, 1, 1, 0.45), hull: C(1, 0.55, 0.1, 1),
-              ik: C(0.72, 0.45, 1, 1), ikT: C(1, 0.5, 0.05, 1), ikLine: C(1, 0.5, 0.05, 0.7), dirty: C(1, 0.35, 0.55, 1) };
+              edge: C(0, 0, 0, 0.75), tri: C(1, 1, 1, 0.45), hull: C(1, 0.55, 0.1, 1) };
 const HEAT = [[0.12, 0.3, 1], [0, 0.82, 1], [0.19, 0.88, 0.38], [1, 0.88, 0.19], [1, 0.16, 0.1]];
 const heatCache = new Map();
 function heat(w) {
@@ -162,9 +106,7 @@ function vertexWeights(slot, at, boneIdx) {   // weight của một xương tạ
 let wv = new Float32Array(0);
 function pxWorld(p) { const cv = p.sceneRenderer.canvas; return p.sceneRenderer.camera.zoom * cv.width / Math.max(1, cv.clientWidth) }
 function overlay(p) {
-  vpSync(p);
-  // ô Xương: hiện mọi xương; tắt mà đang Sửa có xương chọn: chỉ hiện xương đó (+ tay cầm IK liên quan), vẫn kéo được
-  const showAll = $("dBones").checked, showB = showAll || (ed.on && !!ed.sel), showM = $("dMeshes").checked, wName = $("wBone").value;
+  const showB = $("dBones").checked, showM = $("dMeshes").checked, wName = $("wBone").value;
   $("legend").hidden = !wName;
   const sr = p.sceneRenderer, px = pxWorld(p), sk = p.skeleton;
   sr.begin();   // dấu + đỏ ở gốc skeleton (điểm chạm / điểm game căn anim), luôn hiện
@@ -193,24 +135,13 @@ function overlay(p) {
       for (let i = 0; i < n / 2; i++) sr.circle(true, wv[i * 2], wv[i * 2 + 1], 1.6 * px, i < h ? COL.hull : COL.joint, 6);
     }
   }
-  const chain = new Set();
-  for (const c of sk.ikConstraints) if (c.mix > 0) c.bones.forEach(b => chain.add(b));
   if (showB) for (const b of sk.bones) {
-    if (!b.active || (!showAll && b !== ed.sel)) continue;
-    const sel = b.data.name === wName || b === ed.sel, dirty = ed.dirty.has(b.data.name);
-    const col = sel ? COL.sel : dirty ? COL.dirty : chain.has(b) ? COL.ik : COL.bone, len = b.data.length, x = b.worldX, y = b.worldY;
+    if (!b.active) continue;
+    const sel = b.data.name === wName, col = sel ? COL.sel : COL.bone, len = b.data.length, x = b.worldX, y = b.worldY;
     if (len > 0) { const x2 = x + len * b.a, y2 = y + len * b.c;
       sr.rectLine(true, x, y, x2, y2, 10 * px, COL.edge); sr.rectLine(true, x, y, x2, y2, 6 * px, col) }
     sr.circle(true, x, y, 9 * px, COL.edge, 20);
-    sr.circle(true, x, y, 6.5 * px, sel ? COL.sel : dirty ? COL.dirty : b.parent ? (len > 0 ? COL.joint : col) : COL.root, 16);
-  }
-  if (showB) for (const c of sk.ikConstraints) {   // IK: nét từ đầu chuỗi tới tay cầm, tay cầm = ô cam
-    if (!c.target.active || (!showAll && c.target !== ed.sel && !c.bones.includes(ed.sel))) continue;
-    const e = c.bones[c.bones.length - 1], t = c.target, ex = e.worldX + e.data.length * e.a, ey = e.worldY + e.data.length * e.c;
-    sr.rectLine(true, ex, ey, t.worldX, t.worldY, 2 * px, COL.ikLine);
-    const s = (t === ed.sel ? 11 : 9) * px;
-    sr.rect(true, t.worldX - s - 2 * px, t.worldY - s - 2 * px, 2 * s + 4 * px, 2 * s + 4 * px, COL.edge);
-    sr.rect(true, t.worldX - s, t.worldY - s, 2 * s, 2 * s, t === ed.sel ? COL.sel : ed.dirty.has(t.data.name) ? COL.dirty : COL.ikT);
+    sr.circle(true, x, y, 6.5 * px, sel ? COL.sel : b.parent ? (len > 0 ? COL.joint : col) : COL.root, 16);
   }
   sr.end();
 }
@@ -312,7 +243,7 @@ async function build(keep) {
       if (my !== ver) { p.dispose(); freeGL(p); holder.remove(); return }   // đã có lần nạp mới hơn
       if (player && player !== p) { player.dispose(); freeGL(player); player.dom.parentNode?.remove() }
       $("stage").querySelectorAll(":scope > div").forEach(d => { if (d !== holder) d.remove() });
-      player = p; loading = false; lastErr = ""; showMsg(""); fillBones(p); edAfterBuild(p);
+      player = p; loading = false; lastErr = ""; showMsg(""); fillBones(p);
       const names = p.skeleton.data.animations.map(a => a.name);
       if (!keep?.anim || !names.includes(keep.anim)) {   // mở lần đầu: phát anim đã chọn lần trước, không có thì anim đầu
         const want = store.get("anim." + s.json, "");
@@ -348,13 +279,7 @@ async function poll() {
     if (!r.ok) return;
     const { t } = await r.json();
     if (stamp === null) { stamp = t; return }
-    if (t !== stamp) {
-      if (ed.dirty.size) {   // đang có chỉnh sửa chưa key: giữ lại, nạp sau khi Key / Bỏ sửa
-        if (!ed.pending) { ed.pending = true; setStatus("file vừa đổi trên đĩa: đang giữ chỉnh sửa của bạn (Key pose hoặc Bỏ sửa để nạp bản mới)", "bad") }
-        return;
-      }
-      stamp = t; build(snapshot());
-    }
+    if (t !== stamp) { stamp = t; build(snapshot()) }
   } catch {}
 }
 
@@ -373,7 +298,7 @@ async function pollFocus() {
   if (!f.seq || f.seq === seenSeq) return;
   const first = seenSeq === null; seenSeq = f.seq;
   showClaude(f, !first);
-  if (first || f.what !== "show" || !$("follow").checked || ed.dirty.size) return;   // mở trang: không nhảy theo bước cũ; đang sửa dở: không nhảy
+  if (first || f.what !== "show" || !$("follow").checked) return;   // mở trang: không nhảy theo bước cũ
   applyFocus(f);
 }
 function showClaude(f, fresh) {
@@ -442,381 +367,27 @@ $("stage").addEventListener("pointermove", ev => {
 $("stage").addEventListener("pointerleave", () => $("tip").hidden = true);
 // Phím: Space phát / dừng; ← → lùi / tới 1 frame (dừng lại nếu đang phát)
 document.addEventListener("keydown", ev => {
-  // chỉ bỏ qua khi đang gõ chữ / số; focus ở nút (vừa bấm Xoay, Key pose...) vẫn nhận phím tắt
-  if (!player?.animationState || /^(INPUT|SELECT|TEXTAREA)$/.test(ev.target.tagName)) return;
-  if (ev.target.tagName === "BUTTON") ev.target.blur();
+  if (!player?.animationState || /^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(ev.target.tagName)) return;
   const e = player.animationState.getCurrent(0);
-  const kk = ev.key.toLowerCase(), mod = ev.ctrlKey || ev.metaKey;
-  if (mod && (kk === "y" || (kk === "z" && ev.shiftKey))) { ev.preventDefault(); return edRedoStep() }
-  if (mod && kk === "z") { ev.preventDefault(); return edUndoStep() }
-  if (!mod && !ev.altKey && (kk === "+" || kk === "=")) { ev.preventDefault(); return vpZoomAt(null, 1.25) }
-  if (!mod && !ev.altKey && (kk === "-" || kk === "_")) { ev.preventDefault(); return vpZoomAt(null, 1 / 1.25) }
-  if (!mod && !ev.altKey && (kk === "f" || kk === "0")) { ev.preventDefault(); return vpFit() }
-  if (ed.on && ev.key === "Escape") { ed.sel = null; return edRefresh() }
-  if (ed.on && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {   // công cụ như Spine
-    const k = ev.key.toLowerCase();
-    if (k === "c") { ev.preventDefault(); return edTool("rotate") }
-    if (k === "v") { ev.preventDefault(); return edTool("translate") }
-  }
-  if (ed.dirty.size && (ev.code === "Space" || ev.key === "ArrowLeft" || ev.key === "ArrowRight")) {
-    ev.preventDefault(); return setStatus("đang có " + ed.dirty.size + " xương sửa chưa key: bấm Key pose hoặc Bỏ sửa trước khi đổi frame", "bad");
-  }
   if (ev.code === "Space") { ev.preventDefault(); player.paused ? player.play() : player.pause() }
   else if ((ev.key === "ArrowLeft" || ev.key === "ArrowRight") && e) {
-    ev.preventDefault();
-    const d = e.animation.duration || 0, F = fpsOf(), step = (ev.key === "ArrowRight" ? 1 : -1) / F;
-    const fr = Math.round(((player.playTime || 0) + step) * F) / F;
-    seekTime(d ? ((fr % d) + d) % d : 0);
+    ev.preventDefault(); player.pause();
+    const d = e.animation.duration || 0, step = (ev.key === "ArrowRight" ? 1 : -1) / FPS;
+    const fr = Math.round(((player.playTime || 0) + step) * FPS) / FPS;
+    const t = d ? ((fr % d) + d) % d : 0;
+    e.trackTime = t; player.animationState.apply(player.skeleton); player.skeleton.updateWorldTransform(2); player.playTime = t;
+    player.timelineSlider?.setValue(d ? t / d : 0);
+    setStatus("frame " + Math.round(t * FPS) + " / " + Math.round(d * FPS) + " (dừng)", "ok");
   }
 });
-$("stage").addEventListener("click", ev => {   // tắt Sửa: bấm vào khớp = tô weight của xương đó (bấm lại để tắt)
-  if (ed.on) return;
+$("stage").addEventListener("click", ev => {   // bấm vào khớp: tô weight của xương đó (bấm lại để tắt)
   const b = boneAt(ev); if (!b) return;
   ev.stopPropagation();
   $("wBone").value = $("wBone").value === b.data.name ? "" : b.data.name; store.set("wBone", $("wBone").value);
 }, true);
 
-// ---- Chế độ Sửa: kéo xương / tay cầm IK, chỉnh số, Key pose vào JSON, ghi chú cho Claude ----
-// Sửa áp lên bone.rotation / x / y (pose FK local, IK tự giải lại khi updateWorldTransform).
-// Key pose gửi giá trị local tuyệt đối; server (spine_live.py) đổi sang key tương đối với setup.
-const ed = { on: false, sel: null, dirty: new Set(), undo: [], redo: [], drag: null, pending: false, tool: store.get("edTool", "rotate") };
-const fpsOf = () => player?.skeleton?.data?.fps || FPS;
-const curFrame = () => Math.round((player?.playTime || 0) * fpsOf());
-const curAnim = () => player?.animationState?.getCurrent(0)?.animation.name || "";
-function toWorld(ev) {
-  const cv = player.sceneRenderer.canvas, r = cv.getBoundingClientRect();
-  return player.sceneRenderer.camera.screenToWorld(new spine.Vector3(ev.clientX - r.left, ev.clientY - r.top, 0), r.width, r.height);
-}
-function isIkTarget(b) { return player.skeleton.ikConstraints.some(c => c.target === b && c.mix > 0) }
-function pickBone(ev) {   // khớp / thân xương / tay cầm IK gần con trỏ nhất (trong 14 px), ưu tiên tay cầm IK và khớp
-  const v = toWorld(ev), px = pxWorld(player), lim = 14 * px;
-  let best = null, bd = lim;
-  for (const b of player.skeleton.bones) {
-    if (!b.active) continue;
-    let d = Math.hypot(b.worldX - v.x, b.worldY - v.y) - (isIkTarget(b) ? 6 * px : 0);
-    const L = b.data.length;
-    if (L > 0) {   // thân xương: cộng thêm chút để khớp được ưu tiên
-      const ex = b.worldX + L * b.a, ey = b.worldY + L * b.c, dx = ex - b.worldX, dy = ey - b.worldY;
-      const u = Math.max(0, Math.min(1, ((v.x - b.worldX) * dx + (v.y - b.worldY) * dy) / (dx * dx + dy * dy)));
-      d = Math.min(d, Math.hypot(b.worldX + dx * u - v.x, b.worldY + dy * u - v.y) + 5 * px);
-    }
-    if (d < bd) { bd = d; best = b }
-  }
-  return best;
-}
-function edApply() { player.skeleton.updateWorldTransform(2) }
-const edState = b => ({ name: b.data.name, r: b.rotation, x: b.x, y: b.y, dirty: ed.dirty.has(b.data.name) });
-function edPush(b) { ed.undo.push(edState(b)); ed.redo = []; if (ed.undo.length > 300) ed.undo.shift() }
-function edMark(b) { ed.dirty.add(b.data.name); edRefresh() }
-function edRestore(u, into) {   // đặt xương về trạng thái u, đẩy trạng thái hiện tại vào stack `into`
-  const b = player.skeleton.findBone(u.name); if (!b) return;
-  into.push(edState(b));
-  b.rotation = u.r; b.x = u.x; b.y = u.y;
-  u.dirty ? ed.dirty.add(u.name) : ed.dirty.delete(u.name);
-  ed.sel = b; edApply(); edRefresh();
-}
-// Ctrl+Z: lùi từng thao tác kéo / nhập số; hết thao tác chưa key thì lùi lần Key pose gần nhất (file về bản backup)
-function edUndoStep() {
-  if (!player) return;
-  const u = ed.undo.pop();
-  if (u) { edRestore(u, ed.redo); return setStatus("hoàn tác: " + u.name + " (còn " + ed.undo.length + " bước, Ctrl+Y làm lại)", "ok") }
-  if (ed.dirty.size) return;
-  $("edUndo").click();
-}
-function edRedoStep() {
-  const u = ed.redo?.pop(); if (!u || !player) return setStatus("không còn bước để làm lại", "");
-  edRestore(u, ed.undo); setStatus("làm lại: " + u.name, "ok");
-}
-function edRefresh() {
-  const b = ed.sel;
-  const ik = b && ikOf(b);
-  $("edBone").textContent = b ? b.data.name + (isIkTarget(b) ? " (tay cầm IK)" : ik ? " (trong IK " + ik.data.name + ": kéo = dời " + ik.target.data.name + ")" : "")
-    + (b.parent ? " ← " + b.parent.data.name : "") : "Bấm vào một xương";
-  $("tRot").classList.toggle("primary", ed.tool === "rotate"); $("tMove").classList.toggle("primary", ed.tool === "translate");
-  for (const [id, v] of [["edRot", b?.rotation], ["edX", b?.x], ["edY", b?.y]])
-    if (document.activeElement !== $(id)) $(id).value = b ? (+v).toFixed(id === "edRot" ? 1 : 1) : "";
-  $("edFrame").textContent = player ? " · F" + curFrame() + " · " + curAnim() : "";
-  $("edDirty").textContent = ed.dirty.size ? " · " + ed.dirty.size + " xương chưa key" : "";
-}
-function edAfterBuild(p) {   // sau khi nạp lại: chọn lại đúng xương theo tên
-  if (ed.sel) ed.sel = p.skeleton.findBone(ed.sel.data.name);
-  ed.undo = []; ed.redo = []; ed.dirty.clear(); ed.pending = false;
-  if (ed.on) edFillAnims(p);
-  edRefresh();
-}
-function edFillAnims(p) {
-  const names = p.skeleton.data.animations.map(a => a.name);
-  $("edAnims").innerHTML = names.map(n => `<option value="${n}">`).join("");
-  if (!$("edAnim").value || !document.activeElement?.id?.startsWith("edAnim")) $("edAnim").value = curAnim() || names[0] || "anim";
-}
-function edSetOn(on) {
-  if (!on && ed.dirty.size && !confirm("Bỏ " + ed.dirty.size + " xương đã sửa mà chưa key?")) { $("edit").checked = true; return }
-  if (!on && ed.dirty.size) edDrop();
-  ed.on = on; ed.sel = on ? ed.sel : null; store.set("edit", on ? "1" : "0");
-  $("edPanel").hidden = !on; $("stage").classList.toggle("editing", on);
-  if (on && player) edFillAnims(player);
-  edRefresh();
-}
-function edDrop() {   // bỏ sửa: về đúng anim tại frame này (xương không có key về setup)
-  ed.dirty.clear(); ed.undo = []; ed.redo = [];
-  if (ed.pending) { ed.pending = false; stamp = null; return build(snapshot()) }
-  const e = player?.animationState?.getCurrent(0); if (!e) return edRefresh();
-  player.skeleton.setBonesToSetupPose(); e.trackTime = player.playTime || 0;
-  player.animationState.apply(player.skeleton); edApply(); edRefresh();
-}
-async function edPost(url, body) {
-  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-  const j = await r.json().catch(() => ({ ok: false, error: "HTTP " + r.status }));
-  if (!j.ok) throw new Error(j.error || "lỗi");
-  return j;
-}
-function edBones(all) {
-  const out = {};
-  for (const b of player.skeleton.bones) if (all || ed.dirty.has(b.data.name))
-    out[b.data.name] = { rotate: +b.rotation.toFixed(3), x: +b.x.toFixed(3), y: +b.y.toFixed(3) };
-  return out;
-}
-$("edit").onchange = () => edSetOn($("edit").checked);
-$("tRot").onclick = () => edTool("rotate");
-$("tMove").onclick = () => edTool("translate");
-$("edGen").onclick = async () => {   // key pose đang sửa (nếu có) + yêu cầu Claude gen tiếp từ frame này (một ghi chú, request "gen")
-  if (!player || !cur) return;
-  const anim = $("edAnim").value.trim() || curAnim(), frame = curFrame(), dirty = ed.dirty.size;
-  const body = { json: cur.json, anim, frame, request: "gen", curve: $("edCurve").value,
-                 note: $("edNote").value.trim() || "Gen tiếp các frame sau dựa theo pose F" + frame };
-  try {
-    if (dirty) await edPost("/api/spine/key", { ...body, bones: edBones($("edAll").checked), pose: edBones(true) });
-    else await edPost("/api/spine/note", { ...body, bones: edBones(true) });
-    $("edNote").value = "";
-    if (dirty) { ed.dirty.clear(); ed.undo = []; ed.redo = []; stamp = null; store.set("anim." + cur.json, anim); build({ anim, time: frame / fpsOf(), paused: true, speed: player.speed, viewport: true }) }
-    setStatus((dirty ? "đã key pose và " : "") + "đã gửi yêu cầu gen tiếp từ F" + frame + " cho Claude · " + hhmmss(), "ok");
-  } catch (e) { setStatus("gửi yêu cầu gen lỗi: " + e.message, "bad") }
-};
-$("edDrop").onclick = edDrop;
-$("edReset").onclick = () => { const b = ed.sel; if (!b) return; edPush(b); b.setToSetupPose(); edApply(); edMark(b) };
-for (const [id, k] of [["edRot", "rotation"], ["edX", "x"], ["edY", "y"]]) $(id).onchange = () => {
-  const b = ed.sel, v = parseFloat($(id).value); if (!b || !isFinite(v)) return;
-  edPush(b); b[k] = v; edApply(); edMark(b);
-};
-$("edKey").onclick = async () => {
-  if (!player || !cur) return;
-  const all = $("edAll").checked, bones = edBones(all), anim = $("edAnim").value.trim() || curAnim(), frame = curFrame();
-  if (!Object.keys(bones).length) return setStatus("chưa sửa xương nào (hoặc chọn Key toàn bộ xương)", "bad");
-  try {
-    const j = await edPost("/api/spine/key", { json: cur.json, anim, frame, bones, note: $("edNote").value, curve: $("edCurve").value });
-    $("edNote").value = ""; ed.dirty.clear(); ed.undo = []; ed.redo = []; ed.pending = false;
-    store.set("anim." + cur.json, anim);
-    stamp = null; build({ anim, time: frame / fpsOf(), paused: true, speed: player.speed, viewport: true });
-    setStatus("đã key " + j.keys + " kênh vào " + anim + " @F" + frame + " · " + hhmmss(), "ok");
-  } catch (e) { setStatus("key lỗi: " + e.message, "bad") }
-};
-$("edNoteBtn").onclick = async () => {
-  if (!player || !cur || !$("edNote").value.trim()) return setStatus("ghi chú đang trống", "bad");
-  try {
-    await edPost("/api/spine/note", { json: cur.json, anim: $("edAnim").value.trim() || curAnim(), frame: curFrame(), note: $("edNote").value, bones: edBones($("edAll").checked) });
-    $("edNote").value = ""; setStatus("đã gửi ghi chú cho Claude · " + hhmmss(), "ok");
-  } catch (e) { setStatus("gửi ghi chú lỗi: " + e.message, "bad") }
-};
-$("edUndo").onclick = async () => {
-  if (!cur) return;
-  try {
-    const j = await edPost("/api/spine/undo", { json: cur.json });
-    ed.dirty.clear(); stamp = null; build(snapshot());
-    setStatus("đã hoàn tác lần key cuối (còn " + j.left + " bản backup)", "ok");
-  } catch (e) { setStatus("hoàn tác lỗi: " + e.message, "bad") }
-};
-// kéo: bắt ở pha capture để player không nhận cú bấm (cú bấm vào hình của player là phát / dừng)
-// Như Spine: bấm gần xương để chọn; đã chọn thì kéo ở đâu trên hình cũng chỉnh xương đó.
-// Công cụ C = xoay, V = dời (giữ Shift để đảo tạm). Xương trong chuỗi IK: IK luôn giải lại góc,
-// nên kéo nó = dời tay cầm IK của chuỗi (tay / chân đi theo ngay).
-function ikOf(b) { return player.skeleton.ikConstraints.find(c => c.mix > 0 && c.bones.includes(b)) }
-function edTool(t) { ed.tool = t; store.set("edTool", t); edRefresh() }
-$("stage").addEventListener("pointerdown", ev => {
-  if (!ed.on || !player || ev.button !== 0 || ev.altKey) return;   // Alt + kéo: dời khung nhìn
-  if (ev.target.closest?.(".spine-player-controls")) {   // nút của player: chặn phát khi đang sửa dở
-    if (ed.dirty.size) { ev.stopPropagation(); ev.preventDefault(); setStatus("đang sửa dở: Key pose hoặc Bỏ sửa trước khi phát", "bad") }
-    return;
-  }
-  ev.stopPropagation(); ev.preventDefault();
-  const hit = pickBone(ev);
-  if (hit) ed.sel = hit;
-  let b = ed.sel; edRefresh();
-  if (!b) return;
-  if (!player.paused) player.pause();
-  const ik = ikOf(b);
-  let move = (ed.tool === "translate") !== ev.shiftKey;
-  if (ik) { b = ik.target; move = true; setStatus(ed.sel.data.name + " nằm trong chuỗi IK " + ik.data.name + ": đang dời tay cầm " + b.data.name, "ok") }
-  const v = toWorld(ev), P = b.parent;
-  const lp0 = P ? P.worldToLocal(new spine.Vector2(v.x, v.y)) : { x: v.x, y: v.y };
-  edPush(b);
-  ed.drag = { b, move, r0: b.rotation, x0: b.x, y0: b.y, lx: lp0.x, ly: lp0.y,
-              a0: Math.atan2(v.y - b.worldY, v.x - b.worldX), flip: P && P.a * P.d - P.b * P.c < 0 ? -1 : 1, moved: false };
-  try { $("stage").setPointerCapture(ev.pointerId) } catch {}
-}, true);
-$("stage").addEventListener("pointermove", ev => {
-  const d = ed.drag; if (!d) return;
-  ev.stopPropagation();
-  const v = toWorld(ev), b = d.b;
-  if (d.move) {
-    const lp = b.parent ? b.parent.worldToLocal(new spine.Vector2(v.x, v.y)) : { x: v.x, y: v.y };
-    b.x = d.x0 + lp.x - d.lx; b.y = d.y0 + lp.y - d.ly;
-  } else {
-    let da = (Math.atan2(v.y - b.worldY, v.x - b.worldX) - d.a0) * 180 / Math.PI;
-    da = ((da + 540) % 360) - 180;
-    b.rotation = d.r0 + da * d.flip;
-  }
-  d.moved = true; edApply(); edMark(b);
-}, true);
-for (const t of ["pointerup", "pointercancel"]) $("stage").addEventListener(t, ev => {
-  if (!ed.drag) return;
-  ev.stopPropagation();
-  if (!ed.drag.moved) ed.undo.pop();   // chỉ bấm chọn, không kéo
-  ed.drag = null; edRefresh();
-}, true);
-for (const t of ["mousedown", "mouseup", "click", "touchstart", "touchend"])   // player nghe các sự kiện này: bấm vào hình = phát / dừng.
-  // Người dùng 2026-10-28: bấm vào hình không phát / dừng, chỉ nút play bên dưới.
-  $("stage").addEventListener(t, ev => { if (!ev.target.closest?.(".spine-player-controls")) ev.stopPropagation() }, true);
-setInterval(() => { if (ed.on) edRefresh() }, 250);
-
-// ---- Timeline chi tiết (kiểu SyncSketch): thước frame, dấu key, đầu phát; bấm / kéo để tua, cuộn để giãn ----
-function seekTime(t) {   // dừng và nhảy tới thời điểm t (giây) của anim đang xem
-  const e = player?.animationState?.getCurrent(0); if (!e) return;
-  player.pause();
-  const d = e.animation.duration || 0; t = d ? Math.max(0, Math.min(t, d)) : 0;
-  e.trackTime = t; player.animationState.apply(player.skeleton); player.skeleton.updateWorldTransform(2); player.playTime = t;
-  player.timelineSlider?.setValue(d ? t / d : 0);
-}
-const tl = { ppf: 0, off: 0, fit: true, drag: false, cache: new WeakMap() };
-const TL_PAD = 14;
-function tlTotal() { const e = player?.animationState?.getCurrent(0); return e ? Math.round(e.animation.duration * fpsOf()) : 0 }
-function tlKeys(anim) {   // frame có key: tất cả + theo từng xương
-  let k = tl.cache.get(anim); if (k) return k;
-  k = { all: new Set(), bone: new Map() }; const F = fpsOf();
-  for (const t of anim.timelines) {
-    const n = t.getFrameCount?.() || 0, ent = t.getFrameEntries?.() || 1;
-    for (let i = 0; i < n; i++) {
-      const f = Math.round(t.frames[i * ent] * F); k.all.add(f);
-      if (t.boneIndex !== undefined) { if (!k.bone.has(t.boneIndex)) k.bone.set(t.boneIndex, new Set()); k.bone.get(t.boneIndex).add(f) }
-    }
-  }
-  tl.cache.set(anim, k); return k;
-}
-function tlFrameAt(ev) { const r = $("tl").getBoundingClientRect(); return tl.off + (ev.clientX - r.left - TL_PAD) / tl.ppf }
-function tlDraw() {
-  const cv = $("tl"), W = cv.clientWidth, H = cv.clientHeight, dpr = window.devicePixelRatio || 1;
-  if (!W) return;
-  if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr) }
-  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const css = getComputedStyle(document.body), col = n => css.getPropertyValue(n).trim() || "#888";
-  const N = tlTotal(), e = player?.animationState?.getCurrent(0);
-  if (tl.fit || !tl.ppf) { tl.ppf = (W - 2 * TL_PAD) / Math.max(1, N); tl.off = 0 }
-  const X = f => TL_PAD + (f - tl.off) * tl.ppf, f0 = Math.max(0, Math.floor(tl.off)), f1 = Math.min(N, Math.ceil(tl.off + (W - TL_PAD) / tl.ppf));
-  g.clearRect(0, 0, W, H); g.fillStyle = col("--raise"); g.fillRect(0, 0, W, H);
-  g.fillStyle = col("--bg"); g.fillRect(X(0), 0, X(N) - X(0), H);   // vùng của anim
-  // thước: vạch mỗi frame (khi đủ rộng), số ở bước chẵn
-  const step = [1, 2, 5, 10, 20, 50, 100, 200].find(s => s * tl.ppf >= 34) || 500;
-  g.font = "11px ui-monospace,Consolas,monospace"; g.textAlign = "center"; g.textBaseline = "top";
-  for (let f = f0; f <= f1; f++) {
-    const x = Math.round(X(f)) + 0.5, major = f % step === 0;
-    if (!major && tl.ppf < 4) continue;
-    g.strokeStyle = major ? col("--fg") : col("--line"); g.globalAlpha = major ? 0.55 : 1;
-    g.beginPath(); g.moveTo(x, 0); g.lineTo(x, major ? 12 : 7); g.stroke(); g.globalAlpha = 1;
-    if (major) { g.fillStyle = col("--mute"); g.fillText(String(f), x, 13) }
-  }
-  // dấu key: xám = mọi xương, vàng = xương đang chọn
-  if (e) {
-    const k = tlKeys(e.animation), selK = ed.sel ? k.bone.get(ed.sel.data.index) : null, y = H - 11;
-    const dia = (x, s, c) => { g.fillStyle = c; g.beginPath(); g.moveTo(x, y - s); g.lineTo(x + s, y); g.lineTo(x, y + s); g.lineTo(x - s, y); g.closePath(); g.fill() };
-    for (const f of k.all) if (f >= f0 - 1 && f <= f1 + 1) dia(X(f), 3, col("--mute"));
-    if (selK) for (const f of selK) if (f >= f0 - 1 && f <= f1 + 1) { dia(X(f), 6, "#000a"); dia(X(f), 5, "#ffd21a") }
-  }
-  // đầu phát
-  const cur = (player?.playTime || 0) * fpsOf(), cf = Math.round(cur), x = X(cur);
-  g.strokeStyle = "#ff3b30"; g.lineWidth = 2; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); g.lineWidth = 1;
-  const lab = String(cf), w = g.measureText(lab).width + 8;
-  g.fillStyle = "#ff3b30"; g.fillRect(x - w / 2, 0, w, 14); g.fillStyle = "#fff"; g.textBaseline = "middle"; g.fillText(lab, x, 7.5);
-  $("tlNum").textContent = "F " + cf + " / " + N;
-  $("tlPlay").textContent = player && !player.paused ? "❚❚" : "▶";
-}
-(function tlLoop() { if (!document.hidden) try { tlDraw() } catch {} requestAnimationFrame(tlLoop) })();
-setInterval(() => { if (document.hidden) return; try { tlDraw() } catch {} }, 200);   // pane ẩn / rAF bị bóp vẫn cập nhật
-function tlBlocked() { if (ed.dirty.size) { setStatus("đang có " + ed.dirty.size + " xương sửa chưa key: Key pose hoặc Bỏ sửa trước khi đổi frame", "bad"); return true } return false }
-function tlSeek(ev) { const N = tlTotal(); seekTime(Math.max(0, Math.min(N, Math.round(tlFrameAt(ev)))) / fpsOf()) }
-$("tl").addEventListener("pointerdown", ev => {
-  if (!player || ev.button !== 0 || tlBlocked()) return;
-  tl.drag = true; try { $("tl").setPointerCapture(ev.pointerId) } catch {} tlSeek(ev);
-});
-$("tl").addEventListener("pointermove", ev => { if (tl.drag) tlSeek(ev) });
-for (const t of ["pointerup", "pointercancel"]) $("tl").addEventListener(t, () => tl.drag = false);
-function tlZoom(f, ev) {
-  const W = $("tl").clientWidth, N = Math.max(1, tlTotal()), fit = (W - 2 * TL_PAD) / N;
-  const at = ev ? tlFrameAt(ev) : tl.off + (W / 2 - TL_PAD) / tl.ppf, ax = ev ? ev.clientX - $("tl").getBoundingClientRect().left : W / 2;
-  tl.ppf = Math.max(fit * 0.5, Math.min(80, tl.ppf * f)); tl.fit = false;
-  tl.off = Math.max(-5, Math.min(N, at - (ax - TL_PAD) / tl.ppf));
-}
-$("tl").addEventListener("wheel", ev => {
-  ev.preventDefault();
-  if (ev.shiftKey || Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) {   // trượt ngang
-    tl.fit = false; tl.off = Math.max(-5, Math.min(tlTotal(), tl.off + (ev.deltaX || ev.deltaY) / tl.ppf));
-  } else tlZoom(Math.pow(1.0018, -ev.deltaY), ev);
-}, { passive: false });
-$("tlIn").onclick = () => tlZoom(1.5);
-$("tlOut").onclick = () => tlZoom(1 / 1.5);
-$("tlFit").onclick = () => { tl.fit = true };
-$("tlPlay").onclick = () => { if (!player || tlBlocked()) return; player.paused ? player.play() : player.pause() };
-
-// ---- Zoom / dời khung nhìn ----
-// Player tính camera mỗi khung từ player.currentViewport, nên zoom = thu / nới vùng nhìn quanh vùng gốc của anim.
-// view giữ qua các lần nạp lại (sửa file, Key pose) để không phải zoom lại.
-const view = { k: 1, dx: 0, dy: 0 };   // k > 1 = phóng to; dx, dy: dời tâm (đơn vị Spine)
-function vpSync(p) {   // gọi mỗi khung: khi player đặt vùng nhìn mới (đổi anim, nạp lại) thì lấy làm gốc rồi áp view
-  const c = p.currentViewport;
-  if (!c || c.width === undefined) return;
-  if (p._vpObj !== c) { p._vpObj = c; p._vpBase = { ...c } }
-  const b = p._vpBase, k = view.k;
-  c.width = b.width / k; c.height = b.height / k;
-  c.x = b.x + b.width / 2 + view.dx - c.width / 2; c.y = b.y + b.height / 2 + view.dy - c.height / 2;
-  for (const s of ["padLeft", "padRight", "padTop", "padBottom"]) if (typeof b[s] === "number") c[s] = b[s] / k;
-  p.previousViewport = null;
-}
-function vpShow() { $("zFit").textContent = Math.round(view.k * 100) + "%" }
-function vpZoomAt(ev, f) {   // zoom quanh con trỏ (ev) hoặc giữa khung (ev = null)
-  if (!player?._vpBase) return;
-  const b = player._vpBase, cx = b.x + b.width / 2 + view.dx, cy = b.y + b.height / 2 + view.dy;
-  const k2 = Math.max(0.2, Math.min(30, view.k * f)), r = view.k / k2;
-  if (ev) { const w = toWorld(ev); view.dx = w.x + (cx - w.x) * r - (b.x + b.width / 2); view.dy = w.y + (cy - w.y) * r - (b.y + b.height / 2) }
-  view.k = k2; vpShow();
-}
-function vpFit() { view.k = 1; view.dx = 0; view.dy = 0; vpShow() }
-$("zIn").onclick = () => vpZoomAt(null, 1.25);
-$("zOut").onclick = () => vpZoomAt(null, 1 / 1.25);
-$("zFit").onclick = vpFit;
-$("stage").addEventListener("wheel", ev => {
-  if (!player?._vpBase) return;
-  ev.preventDefault(); ev.stopPropagation();
-  vpZoomAt(ev, Math.pow(1.0015, -ev.deltaY));
-}, { capture: true, passive: false });
-let pan = null;   // kéo khung nhìn: chuột giữa, chuột phải, hoặc Alt + chuột trái
-$("stage").addEventListener("pointerdown", ev => {
-  if (!player || !(ev.button === 1 || ev.button === 2 || (ev.button === 0 && ev.altKey))) return;
-  if (ev.target.closest?.(".spine-player-controls")) return;
-  ev.preventDefault(); ev.stopImmediatePropagation();
-  pan = { x: ev.clientX, y: ev.clientY, dx: view.dx, dy: view.dy, wpp: pxWorld(player) };
-  try { $("stage").setPointerCapture(ev.pointerId) } catch {} $("stage").style.cursor = "grabbing";
-}, true);
-$("stage").addEventListener("pointermove", ev => {
-  if (!pan) return;
-  ev.stopImmediatePropagation();
-  view.dx = pan.dx - (ev.clientX - pan.x) * pan.wpp; view.dy = pan.dy + (ev.clientY - pan.y) * pan.wpp;
-}, true);
-for (const t of ["pointerup", "pointercancel"]) $("stage").addEventListener(t, ev => {
-  if (!pan) return; ev.stopImmediatePropagation(); pan = null; $("stage").style.cursor = "";
-}, true);
-$("stage").addEventListener("contextmenu", ev => ev.preventDefault());
-
 (async () => {
   try { await loadList() } catch (e) { setStatus("không gọi được server Home", "bad"); return }
-  $("edit").checked = store.get("edit", "1") === "1"; edSetOn($("edit").checked);   // Sửa bật sẵn
   if (list.length) choose(); else setStatus("chưa có skeleton");
   setInterval(poll, 500);
   setInterval(pollFocus, 500);

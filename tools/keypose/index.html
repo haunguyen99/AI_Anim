@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Key Pose Review</title>
+<style>
+/* Key Pose: duyệt ảnh key pose Codex (giai đoạn 0), chọn / loại / ghi chú, gửi yêu cầu tạo thêm ảnh cho AI. Server: tools/home/keypose.py */
+:root{--bg:#e9ebef;--panel:#f7f8fa;--raise:#fff;--line:#cfd3da;--fg:#1b2230;--mute:#5d6676;--accent:#2f5fd0;--ok:#1f9d5c;--bad:#c8402f;--star:#c98a00;--sans:system-ui,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c2028;--panel:#232832;--raise:#2b313c;--line:#353c48;--fg:#e4e8ef;--mute:#8d97a8;--accent:#6f95f0;--ok:#52c58a;--bad:#ef6d60;--star:#f0b429;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c2028;--panel:#232832;--raise:#2b313c;--line:#353c48;--fg:#e4e8ef;--mute:#8d97a8;--accent:#6f95f0;--ok:#52c58a;--bad:#ef6d60;--star:#f0b429;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:13px/1.45 var(--sans)}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{font-size:14px;margin:0;font-weight:600}
+a{color:var(--accent)}
+select,button,input,textarea{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+select{max-width:min(360px,100%)}
+button{cursor:pointer} button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+#watch{margin-left:auto;color:var(--mute);display:inline-flex;align-items:center;gap:6px}
+#watch::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--mute)}
+#watch.on::before{background:var(--ok)}
+main{max-width:1500px;margin:0 auto;padding:12px 16px 60px;display:grid;gap:14px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--mute)}
+.filters label{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+section.key{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.khead{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:8px}
+.khead h2{font-size:14px;margin:0;font-family:ui-monospace,Consolas,monospace}
+.khead .sum{color:var(--mute)}
+.khead button{margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{background:var(--raise);border:2px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.card.star{border-color:var(--star)} .card.reject{opacity:.5}
+.card.new{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
+.card img{width:100%;aspect-ratio:1;object-fit:contain;background:#8882;cursor:zoom-in;display:block}
+.cbody{padding:6px 8px;display:grid;gap:5px}
+.cname{display:flex;gap:6px;align-items:center;font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.cname .badge{margin-left:auto;font-family:var(--sans)}
+.acts{display:flex;gap:4px}
+.acts button{flex:1;padding:3px 4px}
+.acts button.on.s{background:var(--star);border-color:var(--star);color:#000}
+.acts button.on.r{background:var(--bad);border-color:var(--bad);color:#fff}
+.card textarea{width:100%;min-height:34px;resize:vertical;font-size:12px}
+details{font-size:12px;color:var(--mute)} details pre{white-space:pre-wrap;margin:4px 0 0;max-height:220px;overflow:auto;font-size:11px}
+#reqs{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+#reqs h2{font-size:14px;margin:0 0 6px}
+.req{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:start;padding:6px 0;border-top:1px solid var(--line)}
+.req:first-of-type{border-top:0}
+.req .st{font-size:12px;padding:1px 7px;border-radius:10px;background:var(--line);white-space:nowrap}
+.req .st.done{background:var(--ok);color:#fff} .req .st.error{background:var(--bad);color:#fff} .req .st.working,.req .st.picked{background:var(--accent);color:#fff}
+.req .txt{white-space:pre-wrap}
+.req .meta{color:var(--mute);font-size:12px}
+.req .thumbs{grid-column:2/4;display:flex;gap:6px;flex-wrap:wrap}
+.req .thumbs img{width:72px;height:72px;object-fit:contain;background:#8882;border-radius:4px;cursor:zoom-in}
+.empty{color:var(--mute)}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);width:min(560px,calc(100vw - 32px));padding:14px 16px}
+dialog::backdrop{background:#0007}
+dialog form{display:grid;gap:9px}
+dialog label{display:grid;gap:3px;color:var(--mute)}
+dialog textarea{min-height:110px;resize:vertical}
+dialog .row{display:flex;gap:10px;flex-wrap:wrap} dialog .row>label{flex:1;min-width:140px}
+dialog .btns{display:flex;gap:8px;justify-content:flex-end}
+#baseImg{max-height:150px;max-width:150px;object-fit:contain;background:#8882;border-radius:6px}
+#lb{position:fixed;inset:0;background:#000d;display:none;place-items:center;z-index:20;cursor:zoom-out}
+#lb.on{display:grid} #lb img{max-width:96vw;max-height:88vh;object-fit:contain}
+#lb .cap{color:#fff;margin-top:6px;text-align:center;font-family:ui-monospace,Consolas,monospace}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:6px 12px;border-radius:6px;display:none;z-index:30}
+@media (max-width:600px){header{padding:8px 16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.khead button{margin-left:0}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Key Pose Review</h1>
+  <select id="jobSel" aria-label="Job"></select>
+  <label style="color:var(--mute)">Tên bạn <input id="who" size="10" placeholder="vd Ngocvb"></label>
+  <button class="primary" id="newReq">+ Yêu cầu thêm ảnh</button>
+  <span id="watch" title="Bộ canh notes_watch.py: đang chạy thì yêu cầu gửi đi được AI nhận ngay">AI…</span>
+  <a href="/home">Home</a>
+</header>
+<main>
+  <div id="reqs"><h2>Yêu cầu gửi AI</h2><div id="reqList" class="empty">Chưa có yêu cầu.</div></div>
+  <div class="filters">
+    <label><input type="checkbox" id="hideRej"> Ẩn ảnh đã loại</label>
+    <label><input type="checkbox" id="onlyStar"> Chỉ ảnh đã chọn ★</label>
+    <span id="refs"></span>
+  </div>
+  <div id="keys"></div>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="form">
+    <h2 style="margin:0;font-size:15px">Yêu cầu thêm ảnh</h2>
+    <div class="row">
+      <label>Key <select id="fKey"></select></label>
+      <label id="newKeyWrap" hidden>Tên key mới <input id="fNewKey" placeholder="vd k6_recoil"></label>
+    </div>
+    <div class="row" style="align-items:flex-start">
+      <label>Dựa trên ảnh <select id="fBase"></select></label>
+      <img id="baseImg" alt="">
+    </div>
+    <label>Cần sửa gì / ảnh mới thế nào <textarea id="fText" required placeholder="vd: nỏ to hơn khoảng 20%, người ngả ra sau nhiều hơn, chân trái bước dài hơn"></textarea></label>
+    <div class="row">
+      <label>Số ảnh <select id="fN"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+    </div>
+    <div class="meta" style="color:var(--mute);font-size:12px">Mỗi ảnh khoảng 1,5 phút, tạo lần lượt. Ảnh mới hiện trong nhóm key, đánh dấu viền xanh.</div>
+    <div class="btns"><button value="cancel" formnovalidate>Huỷ</button><button class="primary" id="send" value="ok">Gửi cho AI</button></div>
+  </form>
+</dialog>
+<div id="lb"><div><img alt=""><div class="cap"></div></div></div>
+<div id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const NS = "/api/store/keypose";
+let JOB = null, DATA = null, MARKS = {}, REQS = [], seen = new Set();
+const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const docId = j => j.replace(/\//g, "__");
+const toast = t => { const el = $("#toast"); el.textContent = t; el.style.display = "block"; clearTimeout(toast.h); toast.h = setTimeout(() => el.style.display = "none", 2200); };
+async function api(url, opt) { const r = await fetch(url, opt); const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || r.status); return j; }
+
+$("#who").value = ls("kp_who") || "";
+$("#who").onchange = () => ls("kp_who", $("#who").value.trim());
+$("#hideRej").checked = ls("kp_hideRej") === "1";
+$("#onlyStar").checked = ls("kp_onlyStar") === "1";
+$("#hideRej").onchange = () => { ls("kp_hideRej", $("#hideRej").checked ? "1" : "0"); render(); };
+$("#onlyStar").onchange = () => { ls("kp_onlyStar", $("#onlyStar").checked ? "1" : "0"); render(); };
+
+async function loadJobs() {
+  const j = await api("/api/keypose/jobs");
+  setWatch(j.watching);
+  const sel = $("#jobSel");
+  const want = new URLSearchParams(location.search).get("job") || ls("kp_job");
+  sel.innerHTML = j.jobs.map(x => `<option value="${esc(x.id)}">${esc(x.id)} · ${x.keys} key · ${x.count} ảnh</option>`).join("") || "<option value=''>Chưa có job nào có keys/</option>";
+  if (want && j.jobs.some(x => x.id === want)) sel.value = want;
+  sel.onchange = () => { ls("kp_job", sel.value); history.replaceState(null, "", "?job=" + encodeURIComponent(sel.value)); openJob(sel.value); };
+  if (sel.value) openJob(sel.value);
+}
+function setWatch(on) { const w = $("#watch"); w.className = on ? "on" : ""; w.textContent = on ? "AI đang canh" : "AI không canh (yêu cầu vẫn lưu, nhắn AI để bật)"; }
+
+async function openJob(id) {
+  JOB = id; seen = new Set();
+  await refresh(true);
+}
+async function refresh(first) {
+  if (!JOB) return;
+  const [d, m, r] = await Promise.all([
+    api("/api/keypose/job?id=" + encodeURIComponent(JOB)),
+    api(`${NS}/marks/${docId(JOB)}`),
+    api(`${NS}/requests`)]);
+  const names = new Set(d.keys.flatMap(k => k.images.map(i => i.name)));
+  const fresh = first ? new Set() : new Set([...names].filter(n => !seen.has(n)));
+  seen = names;
+  const sig = JSON.stringify([d.keys.map(k => k.images.map(i => i.url)), m.data, r.docs]);
+  setWatch(d.watching);
+  if (!first && sig === refresh.sig) return;
+  refresh.sig = sig;
+  DATA = d; MARKS = m.data || {};
+  REQS = r.docs.map(x => ({id: x.id, ...x.data})).filter(x => x.job === JOB).sort((a, b) => (b.at || "").localeCompare(a.at || ""));
+  for (const n of fresh) newOnes.add(n);
+  if (fresh.size) toast(`Có ${fresh.size} ảnh mới`);
+  render();
+}
+const newOnes = new Set();
+
+function render() {
+  if (!DATA) return;
+  $("#refs").innerHTML = DATA.refs.length ? "Ref gửi kèm khi tạo ảnh: " + DATA.refs.map(u => `<a href="${esc(u)}" target="_blank">${esc(u.split("/").pop())}</a>`).join(", ") : "";
+  const hideRej = $("#hideRej").checked, onlyStar = $("#onlyStar").checked;
+  $("#keys").innerHTML = DATA.keys.map(k => {
+    const imgs = k.images.filter(i => { const mk = (MARKS[i.name] || {}).mark; return !(hideRej && mk === "reject") && !(onlyStar && mk !== "star"); });
+    const stars = k.images.filter(i => (MARKS[i.name] || {}).mark === "star").map(i => i.name);
+    return `<section class="key"><div class="khead"><h2>${esc(k.key)}</h2>
+      <span class="sum">${k.images.length} ảnh${stars.length ? " · ★ " + esc(stars.join(", ")) : " · chưa chọn"}</span>
+      <button data-req="${esc(k.key)}">+ Thêm ảnh cho key này</button></div>
+      <div class="grid">${imgs.map(card).join("") || "<span class='empty'>Không có ảnh theo bộ lọc.</span>"}</div></section>`;
+  }).join("") || "<p class='empty'>Job này chưa có ảnh.</p>";
+  renderReqs();
+}
+function card(i) {
+  const mk = MARKS[i.name] || {};
+  const t = new Date(i.mtime * 1000).toLocaleString("vi-VN", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"});
+  return `<div class="card ${mk.mark || ""} ${newOnes.has(i.name) ? "new" : ""}" data-n="${esc(i.name)}">
+    <img loading="lazy" src="${esc(i.url)}" alt="${esc(i.name)}" data-zoom>
+    <div class="cbody"><div class="cname">${esc(i.name)}<span class="badge">${mk.mark === "star" ? "★" : mk.mark === "reject" ? "✕" : ""}</span></div>
+      <div class="meta" style="color:var(--mute);font-size:11px">${t}${mk.by ? " · " + esc(mk.by) : ""}</div>
+      <div class="acts"><button class="s ${mk.mark === "star" ? "on" : ""}" data-mark="star" title="Chọn làm ref">★ Chọn</button>
+        <button class="r ${mk.mark === "reject" ? "on" : ""}" data-mark="reject">✕ Loại</button>
+        <button data-req-base="${esc(i.name)}" title="Yêu cầu ảnh mới dựa trên ảnh này">↻ Sửa</button></div>
+      <textarea placeholder="Ghi chú…" data-note>${esc(mk.note || "")}</textarea>
+      ${i.prompt ? `<details><summary>Prompt</summary><pre>${esc(i.prompt)}</pre></details>` : ""}</div></div>`;
+}
+function renderReqs() {
+  const L = {sent: "Đã gửi", picked: "AI đã nhận", working: "Đang tạo", done: "Xong", error: "Lỗi"};
+  $("#reqList").className = REQS.length ? "" : "empty";
+  $("#reqList").innerHTML = REQS.map(r => {
+    const st = r.status || (r.picked ? "picked" : "sent");
+    const prog = st === "working" && r.progress ? ` ${r.progress}` : "";
+    const res = (r.results || []).map(n => { const im = findImg(n); return im ? `<img src="${esc(im.url)}" alt="${esc(n)}" title="${esc(n)}" data-zoom>` : ""; }).join("");
+    return `<div class="req"><span class="st ${st}">${L[st] || st}${prog}</span>
+      <div><b>${esc(r.key)}</b>${r.base ? ` ← ${esc(r.base)}` : ""} · ${r.n} ảnh<div class="txt">${esc(r.text)}</div>${r.error ? `<div style="color:var(--bad)">${esc(r.error)}</div>` : ""}${r.reply ? `<div class="meta">AI: ${esc(r.reply)}</div>` : ""}</div>
+      <span class="meta">${esc(r.by || "")}<br>${esc((r.at || "").replace("T", " ").slice(5, 16))}</span>
+      ${res ? `<div class="thumbs">${res}</div>` : ""}</div>`;
+  }).join("") || "Chưa có yêu cầu.";
+}
+const findImg = n => DATA && DATA.keys.flatMap(k => k.images).find(i => i.name === n);
+
+async function saveMark(name, patch) {
+  const by = $("#who").value.trim();
+  MARKS[name] = {...(MARKS[name] || {}), ...patch, by: by || (MARKS[name] || {}).by || ""};
+  await api(`${NS}/marks/${docId(JOB)}`, {method: "PATCH", headers: {"Content-Type": "application/json"}, body: JSON.stringify({[name]: MARKS[name]})});
+}
+
+document.addEventListener("click", async e => {
+  const z = e.target.closest("[data-zoom]");
+  if (z) { $("#lb img").src = z.src; $("#lb .cap").textContent = z.alt; $("#lb").classList.add("on"); return; }
+  if (e.target.closest("#lb")) { $("#lb").classList.remove("on"); return; }
+  const b = e.target.closest("button[data-mark]");
+  if (b) { const n = b.closest(".card").dataset.n; const cur = (MARKS[n] || {}).mark; await saveMark(n, {mark: cur === b.dataset.mark ? "" : b.dataset.mark}); render(); return; }
+  const rq = e.target.closest("[data-req]"); if (rq) return openDlg(rq.dataset.req);
+  const rb = e.target.closest("[data-req-base]"); if (rb) { const n = rb.dataset.reqBase; return openDlg(DATA.keys.find(k => k.images.some(i => i.name === n)).key, n); }
+});
+document.addEventListener("change", async e => {
+  if (e.target.matches("textarea[data-note]")) { await saveMark(e.target.closest(".card").dataset.n, {note: e.target.value}); toast("Đã lưu ghi chú"); }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#lb").classList.remove("on"); });
+
+$("#newReq").onclick = () => openDlg(DATA && DATA.keys[0] && DATA.keys[0].key);
+function openDlg(key, base) {
+  if (!DATA) return;
+  $("#fKey").innerHTML = DATA.keys.map(k => `<option>${esc(k.key)}</option>`).join("") + `<option value="__new">+ Key mới…</option>`;
+  $("#fKey").value = key || "__new";
+  fillBase(base);
+  $("#fText").value = "";
+  $("#dlg").showModal(); $("#fText").focus();
+}
+function fillBase(base) {
+  const k = $("#fKey").value, isNew = k === "__new";
+  $("#newKeyWrap").hidden = !isNew;
+  const imgs = isNew ? DATA.keys.flatMap(x => x.images) : DATA.keys.find(x => x.key === k).images;
+  const star = imgs.filter(i => (MARKS[i.name] || {}).mark === "star").pop();
+  $("#fBase").innerHTML = (isNew ? `<option value="">(không, chỉ theo mô tả)</option>` : "") + imgs.slice().reverse().map(i => `<option>${esc(i.name)}</option>`).join("");
+  $("#fBase").value = base || (isNew ? "" : (star || imgs[imgs.length - 1]).name);
+  showBase();
+}
+function showBase() { const im = findImg($("#fBase").value); $("#baseImg").src = im ? im.url : ""; $("#baseImg").hidden = !im; }
+$("#fKey").onchange = () => fillBase();
+$("#fBase").onchange = showBase;
+$("#form").onsubmit = async e => {
+  if (e.submitter && e.submitter.value !== "ok") return;
+  e.preventDefault();
+  let key = $("#fKey").value;
+  if (key === "__new") { key = $("#fNewKey").value.trim().replace(/[^A-Za-z0-9_]+/g, "_"); if (!key) { $("#fNewKey").focus(); return; } }
+  const text = $("#fText").value.trim(); if (!text) return;
+  const by = $("#who").value.trim(); ls("kp_who", by);
+  const body = {job: JOB, key, base: $("#fBase").value || "", text, n: +$("#fN").value, by, at: new Date().toISOString(), sent: true, status: "sent"};
+  await api(`${NS}/requests`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  $("#dlg").close(); toast("Đã gửi cho AI"); refresh();
+};
+
+loadJobs().catch(e => $("#keys").innerHTML = `<p style="color:var(--bad)">${esc(e.message)}</p>`);
+setInterval(() => refresh().catch(() => {}), 4000);
+</script>
+</body>
+</html>

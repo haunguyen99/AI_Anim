@@ -97,15 +97,16 @@
     if (list === null) { load(); return '<div class="sub" style="padding:10px">Đang tải ghi chú…</div>'; }
     const open = list.filter(n => n.status !== "done"), unsent = open.filter(n => !n.sent);
     const head = `<div class="row" style="padding:8px 10px;flex-wrap:wrap"><button data-n="new">✎ Vẽ ghi chú mới</button>` +
-      `<button class="on" data-n="send" ${unsent.length ? "" : "disabled"} title="Đánh dấu các ghi chú đang mở là đã gửi; rồi nhắn Claude /check_fb (lệnh được chép sẵn)">Gửi cho AI${unsent.length ? " (" + unsent.length + ")" : ""}</button>` +
-      `<span class="sub">${open.length} đang mở${open.length - unsent.length ? " · " + (open.length - unsent.length) + " đã gửi, chờ AI" : ""}</span></div>` +
-      `<p class="note" style="padding:0 10px" title="Bộ canh chạy trong phiên chat Claude của dự án này; Claude tự bật khi có trang Studio mở">${watching ? "● Claude đang canh: bấm Gửi là AI nhận ngay" : "○ Claude không canh: gửi xong nhắn Claude bất kỳ câu nào (hoặc /check_fb)"}</p>` +
-      (sentMsg && unsent.length === 0 && open.some(n => n.sent && !n.picked) ? `<p class="note" style="padding:0 10px">${sentMsg}</p>` : "");
-    if (!list.length) return head + '<p class="note" style="padding:0 10px">Chưa có ghi chú. Bấm ✎ ở góc viewport, khoanh chỗ cần sửa, gõ một dòng rồi Lưu.</p>';
-    return head + `<div class="notes">${list.map(n => `<div class="nt ${n.status === "done" ? "done" : ""}" data-id="${esc(n.id)}">
+      `<span class="sub">${open.length} đang mở${open.length - unsent.length ? " · " + (open.length - unsent.length) + " đã gửi, chờ AI" : ""}</span></div>`;
+    // chân panel (dockfoot, user 2026-10-29): nút Gửi cho AI + trạng thái bộ canh luôn ở cạnh dưới; trong tab Góp ý của Pose nút này ẩn (đã có Gửi tất cả)
+    const foot = `<div class="nfoot dockfoot" style="padding:8px 10px"><div class="row" style="flex-wrap:wrap"><button class="on" data-n="send" ${unsent.length ? "" : "disabled"} title="Đánh dấu các ghi chú đang mở là đã gửi; rồi nhắn Claude /check_fb (lệnh được chép sẵn)">Gửi cho AI${unsent.length ? " (" + unsent.length + ")" : ""}</button></div>` +
+      `<p class="note" style="margin:4px 0 0" title="Bộ canh chạy trong phiên chat Claude của dự án này; Claude tự bật khi có trang Studio mở">${watching ? "● Claude đang canh: bấm Gửi là AI nhận ngay" : "○ Claude không canh: gửi xong nhắn Claude bất kỳ câu nào (hoặc /check_fb)"}</p>` +
+      (sentMsg && unsent.length === 0 && open.some(n => n.sent && !n.picked) ? `<p class="note" style="margin:4px 0 0">${sentMsg}</p>` : "") + `</div>`;
+    if (!list.length) return `<div class="nwrap">${head}<p class="note" style="padding:0 10px">Chưa có ghi chú. Bấm ✎ ở góc viewport, khoanh chỗ cần sửa, gõ một dòng rồi Lưu.</p>${foot}</div>`;
+    return `<div class="nwrap">` + head + `<div class="notes">${list.map(n => `<div class="nt ${n.status === "done" ? "done" : ""}" data-id="${esc(n.id)}">
       ${n.img ? `<img alt="Ảnh ghi chú" data-n="view" hidden>` : ""}
       <div class="nb"><b>${esc(n.text || "(không chữ)")}</b><small>${esc(String(n.at).slice(0, 16).replace("T", " "))} · ${esc(where(n.ctx))}${n.status === "done" ? " · AI đã sửa" : n.picked ? " · AI đã nhận, đang sửa" : n.sent ? " · đã gửi AI" : ""}</small>
-      <div class="row"><button data-n="view" title="Mở lại góc nhìn + nét vẽ">${ic("eye")} Xem</button><button data-n="done" title="${n.status === "done" ? "Mở lại" : "Đánh dấu đã sửa"}">${n.status === "done" ? "Mở lại" : "Đã sửa"}</button><button data-n="del" class="bad" title="Xoá ghi chú">${ic("trash")}</button></div></div></div>`).join("")}</div>`;
+      <div class="row"><button data-n="view" title="Mở lại góc nhìn + nét vẽ">${ic("eye")} Xem</button><button data-n="done" title="${n.status === "done" ? "Mở lại" : "Đánh dấu đã sửa"}">${n.status === "done" ? "Mở lại" : "Đã sửa"}</button><button data-n="del" class="bad" title="Xoá ghi chú">${ic("trash")}</button></div></div></div>`).join("")}</div>${foot}</div>`;
   };
   N.panelKey = () => (list ? list.map(n => n.id + n.status + (n.sent ? "s" : "") + (n.picked ? "p" : "")).join(",") : "-") + sentMsg.length + (watching ? "w" : "");
   N.panelStatic = true;
