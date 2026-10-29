@@ -408,15 +408,35 @@ function renderLanes() {
     for (const i of $("laneS").children) { const f = +i.dataset.f; i.style.background = on && f >= R.from ? "rgba(255,159,67," + (0.12 + 0.88 * Math.min(1, ragStrength(f))).toFixed(2) + ")" : ""; } }
   for (const i of $("laneI").children) { const f = +i.dataset.f; i.classList.toggle("on", impAt(f) >= 0); i.classList.toggle("step", st.some(s => f >= s.f0 && f <= s.f1)); }
 }
+// timeline theo đối tượng đang chọn (user 2026-10-29 "key trên timeline đang hiển thị chung cho tất cả đối tượng"):
+// chọn vật thể phụ = key riêng của nó; chọn khớp = key cả người nhưng key mà khớp đó giữ nguyên (so key trước) vẽ rỗng; không chọn = như cũ
+const boneDiff = (a, b) => { if (!a || !b) return !!(a || b); const d = Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]); return d < 0.99999 || Math.hypot(a[4] - b[4], a[5] - b[5], a[6] - b[6]) > 1e-4; };
+function keyFilter() {
+  const pk = host.propKeys ? host.propKeys() : null;
+  if (pk) return { kind: "prop", name: pk.name, keys: new Set(pk.keys) };
+  const js = [...selSet].filter(n => B[n]); if (!js.length || !keysMode()) return null;
+  const ks = [...KEYS.keys()].sort((a, b) => a - b), moved = new Set();
+  ks.forEach((f, i) => { const a = i ? (KEYS.get(ks[i - 1]).pose || {}) : null, b = KEYS.get(f).pose || {}; if (!a || js.some(n => boneDiff(a[n], b[n]))) moved.add(f); });
+  return { kind: "joint", name: js.map(n => NAMES[n] || n).join(", "), keys: moved };
+}
+let stripSig = "";
+const stripSigNow = () => { const pk = host.propKeys ? host.propKeys() : null; return (pk ? pk.name + ":" + pk.keys.join(",") : "") + "|" + [...selSet].join(","); };
 function renderStrip() {
   if (!model) return;
+  const KF = keyFilter(); stripSig = stripSigNow();
+  { let tag = $("kfTag"); if (!tag) { tag = document.createElement("span"); tag.id = "kfTag"; tag.className = "kftag"; $("fcount").after(tag); }
+    tag.hidden = !KF; tag.textContent = KF ? (KF.kind === "prop" ? "Key: " + KF.name : "Key: " + KF.name + " (rỗng = khớp giữ nguyên)") : "";
+    tag.title = KF ? (KF.kind === "prop" ? "Timeline đang hiện key của vật thể " + KF.name + ". Bỏ chọn để thấy key cả người." : "Key đặc = khớp đang chọn đổi so với key trước, rỗng = giữ nguyên. Bỏ chọn để thấy mọi key.") : ""; }
   const saved = new Set(mine().filter(a => a.status !== "done").map(a => a.frame || 1));
   const live = new Set(Object.keys(drafts).map(Number)); if (editedList().length) live.add(frame); else live.delete(frame);
   const km = keysMode();
   for (const c of $("strip").children) {
     const f = +c.dataset.f; c.classList.toggle("cur", f === frame);
-    if (km) { c.classList.toggle("key", f === cyc(f) && KEYS.has(f)); c.classList.toggle("knew", f === cyc(f) && KEYS.has(f) && NEWK.has(f)); c.classList.toggle("loopend", f !== cyc(f) && KEYS.has(cyc(f)));
+    if (KF && KF.kind === "prop") { c.classList.toggle("key", KF.keys.has(f)); c.classList.add("kprop"); c.classList.remove("knew", "loopend", "khold", "kdrop"); }
+    else if (km) { c.classList.remove("kprop"); c.classList.toggle("key", f === cyc(f) && KEYS.has(f)); c.classList.toggle("knew", f === cyc(f) && KEYS.has(f) && NEWK.has(f) && !KF); c.classList.toggle("loopend", f !== cyc(f) && KEYS.has(cyc(f)));
+              c.classList.toggle("khold", !!KF && f === cyc(f) && KEYS.has(f) && !KF.keys.has(f));
               c.classList.toggle("kdrop", !!keyDrag && keyDrag.to === f); }
+    else c.classList.remove("kprop", "khold");
     c.querySelectorAll(".dot").forEach(d => d.remove());
     if (live.has(f)) { const d = document.createElement("i"); d.className = "dot draft"; c.append(d); }
     if (saved.has(f)) { const d = document.createElement("i"); d.className = "dot saved"; c.append(d); }
@@ -432,7 +452,7 @@ let scrubbing = false, keyDrag = null;
 $("strip").addEventListener("pointerdown", e => {
   stopPlay(); try { $("strip").setPointerCapture(e.pointerId); } catch {}
   const f = frameAtX(e.clientX);
-  if (keysMode() && (e.button === 1 || e.shiftKey || TM.add) && KEYS.has(cyc(f))) {     // Shift / middle drag = move the key
+  if (keysMode() && !(host.propKeys && host.propKeys()) && (e.button === 1 || e.shiftKey || TM.add) && KEYS.has(cyc(f))) {     // Shift / middle drag = move the key (không khi timeline đang hiện key vật thể)
     e.preventDefault(); keyDrag = { from: cyc(f), to: f }; renderStrip(); return;
   }
   scrubbing = true; goto(f);
@@ -4484,7 +4504,7 @@ function trailUpdate() {
   }
   if (trailData) { const p = trailData.cur[Math.max(0, Math.min(trailData.cur.length - 1, frame - 1))]; const a = trailData.now.geometry.attributes.position; a.setXYZ(0, p.x, p.y, p.z); a.needsUpdate = true; tag.hidden = false; tag.textContent = trailData.text; }
 }
-host.onFrame(now => { tickPlay(now || performance.now()); if (model) placeMarkers(); if (model && trailOn) trailUpdate(); });
+host.onFrame(now => { tickPlay(now || performance.now()); if (model) placeMarkers(); if (model && trailOn) trailUpdate(); if (model && stripSigNow() !== stripSig) renderStrip(); });
 setCam("right"); renderPoses(); openPose(POSES[0]);
 
 (async () => {
@@ -4687,5 +4707,5 @@ const AI = (() => {
 })();
 return { get: () => ({ P, frame, sel, selSet, B, markers, model, playing, mode }), select: n => select(n), setSelection, setMode, goto, undo: () => $("undo").click(),
   canUndo: () => undoStack.length > 0, openPose, reopen: () => openPose(P), isLive: () => !!LIVE, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS,
-  sampleBones, ai: AI };
+  sampleBones, ai: AI, renderStrip: () => { if (model) renderStrip(); } };
 };

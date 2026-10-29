@@ -286,12 +286,14 @@
 
   // ---- chọn + gizmo (lớp Anim): bấm vật thể trong viewport / Outliner / panel
   P.sel = () => sel;
+  P.selKeys = () => { const o = sel && objs.find(x => x.id === sel); return o ? { name: o.name, keys: keysOf(o) } : null; };   // timeline: key của vật thể đang chọn
   function select(id) {
     sel = id; const L = id && live.get(id), tc = V.gizmo.tc;
     if (L) {
       const e = eng(); if (e && e.get().sel) e.select(null);
       tc.attach(L.root); tc.setMode(ST.tool === "rot" ? "rotate" : "translate"); tc.setSpace("world");
     } else if (tc.object && tc.object.userData.prop) tc.detach();
+    { const e = eng(); if (e && e.renderStrip) e.renderStrip(); }   // timeline đổi ngay sang key của vật thể đang chọn
     ST.refresh();
   }
   P.select = select;

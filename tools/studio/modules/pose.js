@@ -90,7 +90,7 @@
     };
     return {
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
-      cam: () => V.active.cam, alive, liveModel, setOrtho: on => V.setOrtho(on),
+      cam: () => V.active.cam, alive, liveModel, setOrtho: on => V.setOrtho(on), propKeys: () => ST.mods.props && ST.mods.props.selKeys ? ST.mods.props.selKeys() : null,   // timeline hiện key của vật thể phụ đang chọn
       panes: {   // nút [ ] của thanh Pose = lệnh Cửa sổ → Outliner / Dock phải của Studio
         toggle: k => ST.run(k === "list" ? "win.outliner" : "win.dock"),
         on: k => !document.body.classList.contains(k === "list" ? "noout" : "nodock"),

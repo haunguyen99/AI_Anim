@@ -274,3 +274,9 @@ body.noting #noteCv{pointer-events:auto;cursor:crosshair}
 .notes .nt .nkebab:hover{color:var(--text,#fff)}
 .notes .nt .nmenu{position:fixed;z-index:50;min-width:90px;flex-direction:column;align-items:stretch;gap:4px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
 .notes .nt .nb>b{padding-right:28px}
+/* timeline theo đối tượng đang chọn (2026-10-29): key khớp giữ nguyên = kim cương rỗng, key vật thể phụ = màu xanh lơ */
+.pz .cell.key.khold{background:transparent}
+.pz .cell.key.khold::before{background:none;border:1.5px solid var(--joint);width:7px;height:7px}
+.pz .cell.key.kprop{background:#4dd0e114}
+.pz .cell.key.kprop::before{background:#4dd0e1}
+.pz .kftag{font-size:11px;color:var(--mute);margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
