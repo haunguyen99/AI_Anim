@@ -6,12 +6,14 @@ Trang: /keypose  (tools/keypose/index.html)
 API:
   GET /api/keypose/jobs           các job có thư mục keys/ + Claude có đang canh không
   GET /api/keypose/job?id=<p/job> nhóm key, ảnh (url, prompt, thời gian), ref
+  GET /api/keypose/clients        số trang Key Pose đang mở (hỏi trong 10 s gần nhất); hook notes_watch_hook.py dùng để nhắc bật bộ canh
+Mỗi máy chạy Home riêng (tools/home/start.bat) nên trang đọc ảnh và lưu đánh dấu / yêu cầu trên chính máy đó.
 Đánh dấu và yêu cầu ghi qua kho chung /api/store/keypose/...:
   marks/<p__job>.json      {"<tên ảnh>": {"mark": "star"|"reject"|"", "note": "...", "by": "..."}}
   requests/<id>.json       {job, key, base, text, n, by, sent, picked, status, progress, results[], error}
   tools/notes_watch.py bắt yêu cầu mới (kind keypose_req), Claude chạy tools/keypose_gen.py <id>.
 """
-import glob, json, os, re, time
+import getpass, glob, json, os, re, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 WORK = os.path.join(ROOT, "work")
@@ -19,6 +21,14 @@ PAGE = os.path.join(ROOT, "tools", "keypose")
 BEAT = os.path.join(WORK, "store", "_sys", "watch", "notes.json")
 VARIANT = re.compile(r"_(?:v|m|r)\d+$")
 IMG = (".png", ".jpg", ".jpeg", ".webp")
+SEEN = {"t": 0}   # lần cuối một trang Key Pose hỏi server
+
+
+def user():
+    try:
+        return getpass.getuser()
+    except Exception:
+        return ""
 
 
 def rel(p):
@@ -60,7 +70,7 @@ def jobs():
                     "keys": len({key_of(os.path.splitext(f)[0]) for f in imgs}),
                     "mtime": max(os.path.getmtime(os.path.join(kd, f)) for f in imgs)})
     out.sort(key=lambda j: -j["mtime"])
-    return {"jobs": out, "watching": watching()}
+    return {"jobs": out, "watching": watching(), "user": user(), "root": ROOT}
 
 
 def refs_for(jd):
@@ -104,6 +114,10 @@ def handle_get(h, path, qs):
     if path in ("/keypose", "/keypose/"):
         h.send_bytes(open(os.path.join(PAGE, "index.html"), "rb").read(), "text/html; charset=utf-8", True)
         return True
+    if path == "/api/keypose/clients":
+        h.send_json({"open": 1 if time.time() - SEEN["t"] < 10 else 0})
+        return True
+    SEEN["t"] = time.time()
     try:
         if path == "/api/keypose/jobs":
             h.send_json(jobs())

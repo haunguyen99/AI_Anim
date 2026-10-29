@@ -1,5 +1,5 @@
 """Hook Claude Code (SessionStart + UserPromptSubmit, cấu hình ở .claude/settings.json).
-Có trang Studio đang mở (GET /api/studio/clients) mà không có bộ canh ghi chú nào chạy
+Có trang Studio hoặc Key Pose đang mở (GET /api/studio/clients, /api/keypose/clients) mà không có bộ canh ghi chú nào chạy
 (nhịp tim tools/notes_watch.py cũ hơn 10 s) → nhắc Claude bật bộ canh nền. Còn lại im lặng.
 Không bao giờ chặn lượt chat: lỗi gì cũng thoát 0.
 """
@@ -17,17 +17,25 @@ def studio_open():
         return False
 
 
+def keypose_open():
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:8780/api/keypose/clients", timeout=1) as r:
+            return bool(json.loads(r.read() or b"{}").get("open"))
+    except Exception:
+        return False
+
+
 def main():
     try:
         ev = json.load(sys.stdin).get("hook_event_name") or "UserPromptSubmit"
     except Exception:
         ev = "UserPromptSubmit"
-    if alive() or not studio_open():
+    if alive() or not (studio_open() or keypose_open()):
         return 0
-    msg = ("Studio đang mở nhưng chưa có bộ canh ghi chú vẽ. Trước việc khác, bật nó nền (Bash, run_in_background): "
+    msg = ("Studio / Key Pose đang mở nhưng chưa có bộ canh ghi chú vẽ. Trước việc khác, bật nó nền (Bash, run_in_background): "
            "`.venv/Scripts/python.exe -I tools/notes_watch.py`. Khi nó thoát và in danh sách ghi chú: làm theo /check_fb "
            "(phần Studio notes), sửa, `studio_cmd.py note-done`; mục kind rig_gate (Duyệt / Cần sửa một bước Rig) thì theo /rig mục 2 Studio: "
-           "duyệt = tự làm bước kế, cần sửa = sửa bước đó, xong `studio_cmd.py gate-done`; rồi bật lại bộ canh. Không cần báo người dùng việc bật.")
+           "duyệt = tự làm bước kế, cần sửa = sửa bước đó, xong `studio_cmd.py gate-done`; mục kind keypose_req (trang Key Pose xin thêm ảnh) thì viết lại phần sửa bằng tiếng Anh rồi chạy nền `tools/keypose_gen.py <id> --extra '...'` (knowledge/details/gdd_stage0.md G4b); rồi bật lại bộ canh. Không cần báo người dùng việc bật.")
     sys.stdout.reconfigure(encoding="utf-8")
     print(json.dumps({"hookSpecificOutput": {"hookEventName": ev, "additionalContext": msg}}, ensure_ascii=False))
     return 0
