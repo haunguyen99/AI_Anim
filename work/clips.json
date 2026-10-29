@@ -18,6 +18,9 @@
   "Zom2 Map3": {
    "rig_url": ""
   },
+  "Ninja": {
+   "rig_url": ""
+  },
   "SDR03": {
    "rig_url": "",
    "rig_page": "mc_map3"
@@ -351,6 +354,41 @@
    }
   },
   {
+   "id": "ninja_idle",
+   "character": "Ninja",
+   "stage": "p0",
+   "note": "Pose F1 k10_v2 dựng theo ảnh concept k1r2_v1, chờ duyệt",
+   "dir": "work/infinite_defense/ninja_idle",
+   "frames": 41,
+   "fps": 30,
+   "ref": "Không có video ref của rig. Ref dáng: https://www.reddit.com/r/PixelArt/comments/1tnpj6v/ninja_idle/ ; hạ trọng tâm: https://www.reddit.com/r/blender/comments/woha4h/ninja_idle_animation/",
+   "desc": "[GDD] Ninja đứng thủ thế hơi khom người, tay phải cầm ngược kunai trước ngực, tay trái thả lỏng. Khăn quàng bay nhẹ theo nhịp thở. Khoảng mỗi 4–6 giây xoay kunai một vòng trong tay (optional). Animation loop liền mạch.\n\n[GDD] Ref: tay duỗi kiếm trong ref là tay không của ninja, tay kia là tay cầm kunai, tư thế hơi khom người một chút.\n\nNguồn: FDD Hero Ninja v1.1 (work/infinite_defense/gdd/ninja_fdd_v1.1.txt, https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k).\nModel: C:/Users/Admin/Documents/Ngoc/EndlessKicker/Hero_Ninja/Rig/MC_Ninja.fbx (mesh body_ninja, weapon, weapon_explode; chưa có xương). Texture T_Colorpalette.tga.",
+   "created": "2026-10-28",
+   "updated": "2026-10-28",
+   "review": {
+    "key": "ninja_idle",
+    "clip": "Idle",
+    "title": "Ninja Idle Review Lab",
+    "crumb": "Ninja · anim",
+    "name": "Idle",
+    "parts": [
+     "Đầu",
+     "Thân",
+     "Tay phải + kunai",
+     "Tay trái",
+     "Khăn quàng",
+     "Chân"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "ninja_idle",
+    "clip": "Ninja_Idle",
+    "title": "Ninja Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
    "id": "ball_bounceroll",
    "character": "Ball",
    "stage": "polish",
@@ -446,6 +484,18 @@
    "characters": [],
    "labels": {},
    "created": "2026-10-27"
+  },
+  {
+   "id": "infinite_defense",
+   "name": "Infinite Defense",
+   "desc": "Tower defense, hero Ninja (FDD v1.1)",
+   "characters": [
+    "Ninja"
+   ],
+   "labels": {
+    "Ninja": "hero · shuriken + kunai"
+   },
+   "created": "2026-10-28"
   }
  ]
 }

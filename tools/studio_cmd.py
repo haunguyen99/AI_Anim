@@ -11,7 +11,7 @@
   python tools/studio_cmd.py cmds [chữ cần tìm]            # mọi lệnh: id, nhãn, module, phím, dùng được ngay không
 Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace nào (run tự focus sang module của lệnh).
 
-  Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] | snap [file.png] [WxH]   (ảnh viewport để AI tự kiểm)
+  Chung:  undo | redo | save | view [1|4] [persp|top|front|side] [all|sel] [az=độ el=độ d=m] | snap [file.png] [WxH]   (ảnh viewport để AI tự kiểm)
   Rig:    rig lms | rig lm Elbow_R x,y,z | rig sel Elbow_R Wrist_R | rig step 4 (1–5; 6 = panel Vật lý)
   Anim:   anim clips | anim clip gaygor_walk (đổi anim: trang tải lại) | anim info | anim joints | anim read [khớp…] | anim select khớp… | anim frame 12 | anim play on|off
           anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
@@ -180,6 +180,7 @@ def main(argv):
             if x in ("1", "4"): a["layout"] = x
             elif x in ("persp", "top", "front", "side"): a["cam"] = x
             elif x in ("all", "sel"): a["frame"] = x
+            elif "=" in x and x.split("=")[0] in ("az", "el", "d"): a[x.split("=")[0]] = float(x.split("=")[1])   # góc persp: az=35 el=25 d=4
         res = call("view", a)
     elif op == "snap":
         size = next((x for x in rest if "x" in x and x.replace("x", "").isdigit()), None)   # snap [file] [2400x2400]
