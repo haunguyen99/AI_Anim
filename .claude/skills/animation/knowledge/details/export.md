@@ -71,3 +71,25 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
   S = column norms of the local 3x3, rotation = pre^T (L/S) post. Forcing S = 1 (Gaygor template) would blow the crossbow up 100x.
 - Pose source = rigpose local matrices (`spline/<ver>/F##.json`) = fbxanim.local of the same rig, so no axis conversion.
 - Verify: fbxanim.local per bone/frame (0.00000 cm), rigpose.frame_of world (0.0000 cm), take name, 12 keys F0..F11; events JSON beside it.
+
+## FBX tự ghi (fbxbin) phải giữ mã chân file của khuôn (2026-10-29)
+- Lỗi: Unity "ImportFBX Errors: Couldn't read file …SDR03_MC_Shoot/Reload.fbx" (kéo theo "Copied Avatar Rig Configuration mis-match"),
+  Maya "File is corrupted". Bộ đọc của ta vẫn đọc lại 0,00000 cm nên self-check cũ không bắt được.
+- Nguyên nhân: export giữ FileId / CreationTime của file khuôn team nhưng `fbxbin` ghi mã chân file (footer, 16 byte sau sentinel
+  gốc) cố định kiểu Blender; FBX SDK tính mã chân từ FileId/CreationTime, không khớp → coi là hỏng. Phiên bản 7400/7700 không phải
+  nguyên nhân (đã thử cả hai). SDR06 không dính vì đi đường khác; Gaygor Attack/Hit (khuôn Bloking50.fbx) cũng dính, đã vá.
+- Luật: `fbxbin.serialize(top, ver, fbxbin.foot_id_of(SRC))` (ghi đúng phiên bản khuôn, `fbxbin` đã hỗ trợ 7500+ bản ghi 64-bit).
+  File đã xuất mà hỏng: vá 16 byte mã chân bằng `foot_id_of(khuôn)`, không cần xuất lại.
+- **Kiểm bằng FBX SDK trước khi giao**: `mayapy` + `FBXImport` (cmds.loadPlugin("fbxmaya")) cho mọi FBX tự ghi; không tin chỉ bộ đọc
+  của ta. Script kiểm đừng đặt tên `imp.py` (trùng module `imp`, mayapy crash).
+
+## Anim cho Unity Humanoid: không dời xương người, .meta phải tạo khi FBX đọc được (SDR03, 2026-10-29)
+- Rig MC map3 nhập dạng **Humanoid** (animationType 3, avatar copy từ rig). Dời vị trí (translation) mọi xương người trừ hông bị
+  bỏ: Shoot p3 dời Scapula_R 7,75 cm (giật lùi) → Unity cảnh báo "'Scapula_R' has translation animation that will be discarded",
+  vai đứng yên, tay lệch nỏ. Xương phụ (slingshot_*, bím tóc) dời được. Luật: giật vai/nhún vai = **xoay** Scapula (Humanoid chỉ
+  cho khoảng −15…30°), không dời; trước khi xuất, đo mọi xương người trừ Root_M: translation phải = rest (`shoot_humanoid.py` có mẫu:
+  dời → xoay bả vai ≤12° + `ik_min` tay giữ cổ tay world, F đầu/cuối giữ nguyên từng số để nối clip; đừng dùng `rig.ik_arm` cho việc
+  này: chọn chiều bản lề khác nhau giữa các frame → tay lật 180°).
+- `.meta` Unity tạo ra lúc FBX còn hỏng giữ thiết lập kiểu cũ: `useFileScale: 0`, `fileIdsGeneration: 1`, materialImportMode 1…
+  → anim chạy sai dù FBX đã sửa. Sau khi sửa FBX: so `.meta` với clip chạy đúng (Idle / file team), dựng lại từ `.meta` đúng, giữ guid +
+  internalID + tên clip, chỉ đổi lastFrame. Kiểm Unity bằng `%LOCALAPPDATA%\Unity\Editor\Editor.log` (dòng SDR…, cảnh báo import).
