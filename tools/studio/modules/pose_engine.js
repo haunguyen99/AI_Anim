@@ -147,9 +147,9 @@ let frame = 1, drafts = {}, mixers = [], playing = false, playT0 = 0, playF0 = 1
 const DOT_PX = 3.5, STICK_PX = 0.8;
 const markerGeo = new THREE.SphereGeometry(1, 12, 8);
 const stickGeo = new THREE.CylinderGeometry(1, 1, 1, 6, 1); stickGeo.translate(0, 0.5, 0);
-const COL = { joint: new THREE.Color(css("--joint")), edit: new THREE.Color(css("--edit")), sel: new THREE.Color(css("--accent")) };
+const COL = { joint: new THREE.Color(css("--joint")), edit: new THREE.Color(css("--edit")), sel: new THREE.Color(css("--accent")), hot: new THREE.Color(0xffffff) };
 const jointMat = () => new THREE.MeshBasicMaterial({ color: COL.joint.clone(), depthTest: false, transparent: true, opacity: .5 });
-let sticks = {}, selSet = new Set(), hoverXY = null, multiQ0 = null;
+let sticks = {}, selSet = new Set(), hoverXY = null, multiQ0 = null, hotEl = null, hotN = null;
 
 const CAMS = {   // glTF world: Y up, character faces +Z, its right side is -X
   right: { pos: [-6.5, 1.0, 0], tgt: [0, 0.9, 0], label: "Right (ingame)" },
@@ -667,7 +667,10 @@ function placeMarkers() {
     dmin = Math.min(dmin, D[n]); dmax = Math.max(dmax, D[n]);
   }
   const op = {}, SZ = {};
-  const pxW = 2 * Math.tan(THREE.MathUtils.degToRad(CAM().fov) / 2) / Math.max(1, canvas.clientHeight);
+  // khớp sẽ được chọn nếu bấm ngay (user 2026-10-29: rê chuột thì nhiều khớp cùng sáng, không biết bấm trúng khớp nào):
+  // đúng luật của pickAt, tô trắng + to hơn + tên cạnh chuột
+  let hot = null; try { hot = show && hoverXY && !gizmo.dragging && !(marq && marq.on) ? pickAt(hoverXY[0], hoverXY[1]) : null; } catch (e) {}
+  hotTag(hot);
   for (const [n, m] of Object.entries(markers)) {
     const far = dmax > dmin ? (D[n] - dmin) / (dmax - dmin) : 0;          // 0 = nearest joint, 1 = farthest
     let o = 0.5 * (1 - 0.55 * far);                                        // default 50 %, fading with distance
@@ -676,13 +679,13 @@ function placeMarkers() {
       o += (1 - o) * Math.max(0, Math.min(1, 1 - (px - 12) / 60));         // mouse close -> 100 %
     }
     const on = selSet.has(n);
-    if (on) o = 1;
+    if (on || n === hot) o = 1;
     op[n] = o;
     m.position.copy(P3[n]); m.visible = show;
-    m.material.color.copy(on ? COL.sel : edited.has(n) ? COL.edit : COL.joint);
+    m.material.color.copy(n === hot && !on ? COL.hot : on ? COL.sel : edited.has(n) ? COL.edit : COL.joint);
     m.material.opacity = o;
     SZ[n] = pxAt(D[n]);                                                    // world size of 1 screen pixel there
-    m.scale.setScalar(SZ[n] * DOT_PX * (n === sel ? 1.5 : on ? 1.25 : 1));
+    m.scale.setScalar(SZ[n] * DOT_PX * (n === sel ? 1.5 : n === hot ? 1.7 : on ? 1.25 : 1));
   }
   for (const [n, t] of Object.entries(sticks)) {
     const a = P3[t.userData.from], b = P3[n], d = b.clone().sub(a), len = d.length();
@@ -701,6 +704,14 @@ function placeMarkers() {
 // on the last picked joint; in rotate mode the other selected joints turn by the same world rotation.
 let downAt = null, marq = null, marqDiv = null;
 const visJoints = () => $("tJoints").classList.contains("on") ? Object.keys(markers) : [];
+function hotTag(n) {   // tên khớp sắp chọn, cạnh con trỏ
+  if (!hotEl) { hotEl = document.createElement("div"); hotEl.className = "jhot"; hotEl.style.cssText = "position:absolute;pointer-events:none;z-index:7;padding:1px 6px;border-radius:4px;background:#000c;color:#fff;font:11px/1.5 system-ui,sans-serif;white-space:nowrap;display:none"; viewer.appendChild(hotEl); }
+  if (n !== hotN) { hotN = n; hotEl.textContent = n ? (NAMES[n] || n) : ""; }
+  canvas.style.cursor = n ? "pointer" : "";
+  if (!n || !hoverXY) { hotEl.style.display = "none"; return; }
+  const r = canvas.getBoundingClientRect(), vr = viewer.getBoundingClientRect();
+  hotEl.style.display = "block"; hotEl.style.left = (r.left - vr.left + hoverXY[0] + 14) + "px"; hotEl.style.top = (r.top - vr.top + hoverXY[1] + 10) + "px";
+}
 function pickAt(x, y) {
   const R = TM.on ? 30 : 14; let best = null, bd = R, bz = Infinity;
   for (const n of visJoints()) {
@@ -728,7 +739,7 @@ canvas.addEventListener("pointermove", e => {
   Object.assign(marqDiv.style, { left: (r.left - vr.left + Math.min(x, marq.x0)) + "px", top: (r.top - vr.top + Math.min(y, marq.y0)) + "px",
     width: Math.abs(x - marq.x0) + "px", height: Math.abs(y - marq.y0) + "px", display: "block" });
 });
-canvas.addEventListener("pointerleave", () => { hoverXY = null; });
+canvas.addEventListener("pointerleave", () => { hoverXY = null; hotTag(null); });
 canvas.addEventListener("pointerup", e => {
   const m = marq; marq = null;
   if (marqDiv) marqDiv.style.display = "none";
@@ -934,7 +945,7 @@ $("resetJoint").onclick = () => {
 };
 document.addEventListener("keydown", e => {
   if (!host.alive()) return;
-  if (e.target.matches("textarea, input")) return;
+  if (e.target.matches && e.target.matches("textarea, input")) return;
   const k = e.key.toLowerCase();
   if (e.key === "Alt") { e.preventDefault(); return; }        // keep the browser menu bar from taking the focus
   if (e.ctrlKey || e.metaKey) {
