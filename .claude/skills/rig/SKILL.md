@@ -30,6 +30,12 @@ Capabilities đã khai: `db`, `user`, `downloads` (publish lại thì bỏ trố
 
 ### 2. Đọc phản hồi từ db (không polling)
 
+**Studio: AI làm, người dùng chỉ duyệt (người dùng, 2026-10-28).** Mỗi bước Rig trong Studio có cổng Duyệt / Cần sửa; bấm là gửi cho AI. Bộ canh nền `tools/notes_watch.py` (cùng bộ canh ghi chú vẽ) thấy cổng mới thì thoát, in mục `{"kind": "rig_gate", ns, char, step, step_name, status, note}`, Claude được gọi dậy:
+- `status: ok` → **tự làm bước kế tiếp** (2 Khớp: đặt khớp theo giải phẫu bằng `studio_cmd.py rig lm …`; 3 Xương: kiểm `skelChecks`, sửa khớp gây lỗi; 4 Skin: skin tự động + Hammer + `mirror_skin.py`, đo `lbs_test.py`; 5 Thử khớp: thử góc hay dùng, sửa skin; 6 Vật lý), chuyển trang sang bước đó (`rig step <n>`), tự kiểm bằng `snap`, rồi dừng chờ người dùng duyệt. Không sang hai bước một lần.
+- Bước 6 (panel Vật lý, mở bằng `rig step 6`) cũng có cổng: duyệt = rig xong, báo người dùng và gợi ý gửi rig sang Pose (`rig.toPose`); cần sửa = chỉnh khớp điều khiển / giới hạn / collider / khối lượng theo note.
+- `status: fix` → sửa đúng bước đó theo `note` (+ ghi chú vẽ nếu có), không đi tiếp.
+- Xong thì `studio_cmd.py gate-done <id> <bước> "việc đã làm"` (trang hiện "AI đã xong: …"), báo một dòng trong chat, bật lại bộ canh.
+
 **Studio (nhân vật mới, 2026-10-28):** ghi chú cổng duyệt ở `work/store/<id>_rig_lab/rig/gates.json`; ghi chú vẽ (nút ✎ góc viewport) đọc bằng `.venv/Scripts/python.exe -I tools/studio_cmd.py notes <id> --out <scratchpad>`: mở từng ảnh, xem khớp bị khoanh + `ctx` (bước Rig, khớp đang chọn, góc camera) rồi mới sửa; xong thì `note-done <id>`. Phần dưới là Rig Lab cũ trên claude.ai.
 
 

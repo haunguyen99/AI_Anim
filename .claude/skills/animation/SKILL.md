@@ -16,6 +16,7 @@ Cả ba chạy trên Pose Lab. Đăng ký clip và nối các trang bằng `/new
 - **A — từ video ref** (mặc định): phân tích ref → P0 → blocking → spline → polish (xem phần dưới và `docs/pipeline_v2.md` §2, bỏ phần Blender).
 - **B — từ blocking của người dùng** (FBX đã có key của chính rig, vd `Bloking50.fbx`): nạp vào Pose Lab, khớp file → phân tích nhân vật + đòn từ blocking → sửa lỗi blocking → AI thêm pose chuyển tiếp → trọng lượng → spline + polish nướng từng frame → FBX từ chính file của team. Bước, cổng duyệt, lệnh, luật: `knowledge/details/user_blocking.md`; bộ script mẫu `work/boss_gaygor/gaygor_attack_50_blocking/` (duyệt 2026-10-23).
 - **C — chỉ có yêu cầu bằng lời** (không ref, không blocking): intake gộp → bản thiết kế + bảng timing (duyệt) → pose kể chuyện 10% trên Pose Lab, người dùng chỉnh được (duyệt) → blocking 25–50% (duyệt) → đi tiếp nhánh B từ bước 3. `knowledge/details/text_brief.md`.
+- **Giai đoạn 0 — có GDD** (chạy trước A/B/C khi người dùng đưa GDD hoặc cần ref mà không có video): đọc GDD → danh sách anim + câu hỏi → phân tích có nhãn nguồn → ảnh key pose bằng Codex (`tools/codex_img.py`, ref = render model thật `tools/render_fbx_tex.py`, đo `tools/keypose_scale.py`) → trang duyệt. `knowledge/details/gdd_stage0.md`. Rig team có prop/tóc mà Studio bỏ xương: dựng bằng `tools/rigpose.py`, đưa Pose Lab bằng `tools/poselab_model.py`.
 
 Mọi quy trình có **cổng duyệt**: không sang bước sau khi người dùng chưa duyệt bước trước.
 

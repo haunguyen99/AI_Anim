@@ -6,6 +6,22 @@ chest_roll trục world → `torso_head.md#world-axis-roll`; sửa hông giữ t
 xoắn → `arms_hands.md#shoulder-compression`; spline tay IK, review từ phía tay thay đạn, FK → `arms_hands.md#spline-ik-arms`,
 `#prop-hand-side-fk`; action slot → `blender_tools.md#action-slot`; ngưỡng da áo khoác → `arms_hands.md#shoulder-compression`.
 
+## crossbow-map3
+SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
+- **Đọc file anim có sẵn của team trước** (`Assets/_Game/Animations/<Map>/*_shoot.fbx`): nó cho cách cầm prop, vị trí dây/chốt,
+  nhịp của team. P0 v1 lấy F0 của nó (báng tì vai, ngực mở 68° ra cam, nỏ ngang yaw 0). Ghi rõ là lấy từ file team.
+- Nỏ: `slingshot_0` con `Wrist_L` (tay trái mang nỏ), dây + tên trên `slingshot_1`: chốt z≈0, bật ra z≈+22 cm trong hệ nỏ.
+- **Rig Studio làm mất xương phụ**: `rig.useFbx` chỉ giữ 25 xương thân (bỏ prop, tóc, root). Clip có prop/tóc trên rig team thì
+  dựng bằng `sdr03/rigpose.py` trên khung xương FBX gốc; Pose Lab cần bộ chuyển FBX → model giữ đủ xương (chưa có, việc trước blocking).
+
+- **Blocking Shoot b1 (2026-10-28, `sdr03/shoot_block.py`):** key = bảng (nỏ hếch/lùi, ngực cúi/xoay, đầu, tóc, dây). Nỏ = Δ·G0
+  với Δ xoay quanh **điểm báng** + lùi theo nòng; hai cổ tay IK tới Δ·W0 nên bám nỏ (lệch ≤ 0,23 cm); đặt lại `slingshot_0` =
+  Δ·G0 sau IK. Key có Δ = 0 (F1, F12) giữ nguyên tay P0 (IK giải lại lệch ~2 mm). Chọn chiều trục hếch một lần rồi dùng góc có
+  dấu (bản đầu tự lật dấu → F7 "chúc −1°" thành hếch +1°). Xoay ngực 3° chỉ lùi vai phải ~1,8 cm: muốn vai lùi nhiều hơn phải
+  dời bả vai, không tăng xoay ngực.
+- Model Pose Lab cho rig team: `sdr03/poselab_model.py` (đủ xương + texture); khớp thêm của clip qua `clip_registry.py
+  pose-version --names "slingshot_1=Dây nỏ,joint1_M=Bím tóc 1,…"`.
+
 ## trigger-hand
 - **Reload: tay cầm cò không rời cán** (review Reload b3 F30: "giữ tay này ở đây, không bỏ ra để gạt như F36"). Kéo khóa nòng
   bằng tay kia (tay trái vươn lên nóc hộp khóa). Tay cầm cò rời cán thì đọc ra là sai tư thế cầm súng.

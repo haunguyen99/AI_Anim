@@ -1,0 +1,31 @@
+{
+ "id": "mc_map3",
+ "name": "mc_map3",
+ "ref_dir": "ref_mc_map3",
+ "scale": 1,
+ "body": "MC_char_map3_Body",
+ "clothes": [],
+ "extra": [
+  "MC_char_map1_V2_VK_bow",
+  "MC_char_map1_V2_VK_crossbow",
+  "MC_char_map3_Hair",
+  "MC_char_map3_Items"
+ ],
+ "names_from": "ref_mc_map3",
+ "cfg": {
+  "name": "MC_char_map3_Body",
+  "fingers": [
+   "Middle"
+  ],
+  "fseg": 2,
+  "toes": true,
+  "toesEnd": false,
+  "fingerEnd": false,
+  "headEnd": true,
+  "dress": false,
+  "prop": false,
+  "weapon": false
+ },
+ "source": "Studio Nhập FBX 2026-10-28: MC_char_map3_Rig.fbx",
+ "texture": "T_Color_ShotDieRepeat.tga"
+}

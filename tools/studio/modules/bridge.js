@@ -89,7 +89,11 @@
       if (d === "lms" || !d) return Object.fromEntries(Object.entries(g.LM).filter(([, v]) => Array.isArray(v) && v.length === 3).map(([k, v]) => [k, r3(v)]));
       if (d === "lm") { need(g.LM[name], "Không có khớp " + name); need(Array.isArray(xyz) && xyz.length === 3, "xyz = x,y,z (cm)"); e.setLM(name, xyz.map(Number)); return { [name]: r3(e.get().LM[name]), mirror: g.mirror }; }
       if (d === "sel") { const L = names || []; L.forEach(k => need(g.LM[k], "Không có khớp " + k)); if (g.step !== 2) ST.run("rig.step2"); e.applySel(L, {}); return { sel: [...e.get().S] }; }
-      if (d === "step") { need(n >= 1 && n <= 5, "Bước 1–5"); ST.run("rig.step" + n); return { step: e.get().step }; }
+      if (d === "step" && +n === 6) {   // bước 6 Vật lý = panel rig:s6 (modules/rig_setup.js); bố cục lưu cũ thiếu tab thì thêm vào
+        const L = ST.tabs(); if (!L.includes("rig:s6")) ST.pref.set("tabs:" + ST.ws, L.concat("rig:s6"));
+        ST.showTab("rig:s6"); ST.refresh(); return { step: 6, tab: ST.curTab() };
+      }
+      if (d === "step") { need(n >= 1 && n <= 5, "Bước 1–6"); ST.run("rig.step" + n); return { step: e.get().step }; }
       throw new Error("rig: lms | lm | sel | step");
     },
     async anim(a) {

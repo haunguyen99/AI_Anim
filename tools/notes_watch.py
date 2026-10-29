@@ -1,4 +1,5 @@
-"""Canh ghi chú vẽ Studio đã bấm "Gửi cho AI": chờ tới khi có ghi chú mới (đã gửi, chưa xong, chưa nhận), đánh dấu đã nhận, in danh sách rồi thoát.
+"""Canh ghi chú vẽ Studio đã bấm "Gửi cho AI", yêu cầu thêm ảnh ở trang Key Pose (kind keypose_req → tools/keypose_gen.py <id>) và cổng duyệt Rig (nút Duyệt / Cần sửa ở mỗi bước Rig): chờ tới khi có mục mới
+(đã gửi, chưa nhận), đánh dấu đã nhận, in danh sách rồi thoát. Mục cổng Rig có "kind": "rig_gate" (ns, char, step, status ok|fix, note).
 Claude chạy file này nền (run_in_background) trong phiên chat: thoát = Claude được gọi dậy để sửa, xong thì chạy lại để canh tiếp.
 Không tốn lượt AI khi chờ (chỉ đọc thư mục work/store/*_studio/notes mỗi 2 giây).
 
@@ -49,6 +50,37 @@ def pending():
     return out
 
 
+def keypose_pending():
+    """Key Pose (/keypose): work/store/keypose/requests/<id>.json gửi mà chưa nhận. Claude chạy tools/keypose_gen.py <id>."""
+    out = []
+    for f in glob.glob(os.path.join(STORE, "keypose", "requests", "*.json")):
+        try:
+            d = json.load(open(f, encoding="utf8"))
+        except (OSError, ValueError):
+            continue
+        if d.get("sent") and not d.get("picked"):
+            out.append((f, d))
+    return out
+
+
+GATE_NAMES = {1: "Mesh", 2: "Khớp", 3: "Xương", 4: "Skin", 5: "Thử khớp", 6: "Vật lý"}
+
+
+def gates_pending():
+    """Cổng Rig: work/store/<id>_rig_lab/rig/gates.json, g[n] có sent mà chưa picked."""
+    out = []
+    for f in glob.glob(os.path.join(STORE, "*_rig_lab", "rig", "gates.json")):
+        try:
+            raw = json.load(open(f, encoding="utf8"))
+        except (OSError, ValueError):
+            continue
+        d = raw["data"] if isinstance(raw, dict) and isinstance(raw.get("data"), dict) else raw
+        for n, g in (d.get("g") or {}).items():
+            if isinstance(g, dict) and g.get("sent") and not g.get("picked"):
+                out.append((f, raw, d, n, g))
+    return out
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -66,16 +98,29 @@ def main():
 def loop(once):
     end = time.time() + 8 * 3600
     while True:
-        P = pending()
-        if P:
+        P, G, K = pending(), gates_pending(), keypose_pending()
+        if P or G or K:
             time.sleep(1.5)                      # người dùng có thể đang gửi nhiều ghi chú liền: gom một lượt
-            P = pending()
+            P, G, K = pending(), gates_pending(), keypose_pending()
             now = time.strftime("%Y-%m-%dT%H:%M:%S")
             for f, raw, d in P:
                 d["picked"] = now                # trang hiện "AI đã nhận, đang sửa"
                 json.dump(raw, open(f, "w", encoding="utf8"), ensure_ascii=False)
-            print(json.dumps([{"ns": os.path.basename(os.path.dirname(os.path.dirname(f))), "id": d["id"], "text": d.get("text"),
-                               "focus": (d.get("ctx") or {}).get("focus"), "char": (d.get("ctx") or {}).get("char")} for f, _, d in P], ensure_ascii=False))
+            for f, raw, d, n, g in G:
+                g["picked"] = now
+            for f in {x[0] for x in G}:
+                raw = next(x[1] for x in G if x[0] == f)
+                json.dump(raw, open(f, "w", encoding="utf8"), ensure_ascii=False)
+            for f, d in K:
+                d["picked"] = now; d["status"] = "picked"
+                json.dump(d, open(f, "w", encoding="utf8"), ensure_ascii=False)
+            res = [{"kind": "note", "ns": os.path.basename(os.path.dirname(os.path.dirname(f))), "id": d["id"], "text": d.get("text"),
+                    "focus": (d.get("ctx") or {}).get("focus"), "char": (d.get("ctx") or {}).get("char")} for f, _, d in P]
+            res += [{"kind": "rig_gate", "ns": os.path.basename(os.path.dirname(os.path.dirname(f))), "char": g.get("char"), "step": int(n),
+                     "step_name": GATE_NAMES.get(int(n)), "status": g.get("status"), "note": g.get("note")} for f, _, _, n, g in G]
+            res += [{"kind": "keypose_req", "id": os.path.basename(f)[:-5], "job": d.get("job"), "key": d.get("key"), "base": d.get("base"),
+                     "n": d.get("n"), "by": d.get("by"), "text": d.get("text")} for f, d in K]
+            print(json.dumps(res, ensure_ascii=False))
             return 0
         if once or time.time() > end:
             print("[]"); return 0
