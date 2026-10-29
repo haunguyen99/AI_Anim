@@ -22,6 +22,8 @@
   C({ id: "view.toggle4", menu: "Display", sep: true, label: "1 khung / 4 khung", icon: "view4", key: "space", check: () => V.layout === "4", run: () => V.toggle4() });
   ["persp", "top", "front", "side"].forEach(id => C({ id: "view.cam." + id, menu: "Display", label: "Khung: " + V.panes[id].label, icon: "view1", check: () => V.layout === "1" && V.single === id, run: () => V.setLayout("1", id) }));
   C({ id: "view.grid", menu: "Display", sep: true, label: "Lưới sàn", icon: "grid", check: () => V.showGrid, run: () => { V.showGrid = !V.showGrid; ST.pref.set("grid", V.showGrid); } });
+  C({ id: "view.gate", menu: "Display", label: "Gate (khung hình)", icon: "view1", check: () => V.gate.on, run: () => V.setGate(!V.gate.on) });
+  V.gateRatios.forEach(r => C({ id: "view.gate." + r.replace(/[:.]/g, "_"), menu: "Display", label: "Gate " + r, check: () => V.gate.on && V.gate.ratio === r, run: () => V.setGate(true, r) }));
   C({ id: "view.touch", menu: "Display", label: "Chế độ cảm ứng", icon: "touch", check: () => V.TM.on, run: () => V.setTouch(!V.TM.on) });
   C({ id: "view.theme", menu: "Display", label: "Đổi sáng / tối", run: () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme = dark ? "light" : "dark"; ST.pref.set("theme", r.dataset.theme); } });
   const panel = (k, label) => C({ id: "win." + k, menu: "Window", label, keep: true, check: () => ui()[k], run: () => { const u = ui(); u[k] = !u[k]; ST.pref.set("ui:" + ST.ws, u); applyLayout(); } });
@@ -119,9 +121,13 @@
       const m = ST.mods[mid]; if (!m || !(L === "anim" ? (ST.char || ST.clip) : ST.char)) return;
       const open = ST.pref.get("ol:open:" + L, false), lay = ST.LAYER_OF[mid], on = ST.layerOn[lay];
       const ownTree = !(sharedTree || L === "rig");   // W3c: chỉ Anim không có nhân vật mới có cây riêng
-      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, fold: ownTree ? (open ? 0 : 1) : undefined, act: ST.focus === mid,
+      const props = L === "anim" && ST.mods.props && ST.mods.props.loaded() ? ST.mods.props.outline() : [];   // vật thể phụ của anim (modules/props.js)
+      const hasKids = ownTree || props.length > 0;
+      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, fold: hasKids ? (open ? 0 : 1) : undefined, act: ST.focus === mid,
         tip: L === "rig" ? "Bấm: sửa rig của nhân vật (khớp, skin, thử khớp)" : "Bấm: làm việc với lớp " + label + " · mắt: bật lớp (Shift: hiện chồng)" });
-      if (!open || !ownTree) return;
+      if (!open || !hasKids) return;
+      props.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: 1, dim: !on })));
+      if (!ownTree) return;
       const kids = m.loaded && m.loaded() && m.outline ? m.outline() : null;
       if (kids) kids.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: (r.d || 0) + 1, dim: !on })));
       else rows.push({ id: "@" + L + ":hint", m: mid, d: 1, label: m.loadMsg ? m.loadMsg() : "Chưa nạp: bấm mắt để nạp", grp: true });

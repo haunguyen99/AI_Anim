@@ -64,6 +64,10 @@ ST.poseDB = function (NS) {
 
 ST.poseEngine = function (POSES_IN, host) {
 const CAM = host.cam;
+// camera Orthographic ở các góc thẳng (user 2026-10-29): cỡ 1 pixel màn hình (m) tại điểm cách camera d, đổi tỉ lệ khung, kéo xa / lại gần
+const pxAt = d => { const c = CAM(), h = Math.max(1, canvas.clientHeight); return c.isOrthographicCamera ? (c.top - c.bottom) / c.zoom / h : 2 * Math.tan(THREE.MathUtils.degToRad(c.fov) / 2) * d / h; };
+const camAspect = a => { const c = CAM(); if (c.isOrthographicCamera) { c.left = -a; c.right = a; c.top = 1; c.bottom = -1; } else c.aspect = a; c.updateProjectionMatrix(); };
+const camDolly = k => { const c = CAM(), t = orbit.target; if (c.isOrthographicCamera) { c.zoom /= k; c.updateProjectionMatrix(); } else { c.position.sub(t).multiplyScalar(k).add(t); c.lookAt(t); } };
 // ---------------------------------------------------------------- data
 // One entry per VERSION, newest first, like CLIPS on the playblast review page. This master keeps every clip;
 // work/pose_lab/split_pages.py writes one page per animation (own artifact + own db), so map2 and map06 never mix.
@@ -162,12 +166,16 @@ let curCam = "right", camFit = 1;
 function setCam(k) {
   const c = CAMS[k]; curCam = k; if (typeof renderRef === "function") renderRef();
   const t = new V3(...c.tgt).multiplyScalar(camFit);
-  CAM().position.copy(new V3(...c.pos).sub(new V3(...c.tgt)).multiplyScalar(camFit).add(t)); orbit.target.copy(t); orbit.update();
+  if (host.setOrtho) host.setOrtho(k !== "persp");   // Studio: góc thẳng = camera Orthographic, 3/4 = phối cảnh
+  const cam = CAM(), off = new V3(...c.pos).sub(new V3(...c.tgt)).multiplyScalar(camFit);
+  if (cam.isOrthographicCamera) { cam.zoom = 1 / (off.length() * Math.tan(THREE.MathUtils.degToRad(30) / 2)); cam.position.copy(t).addScaledVector(off.normalize(), Math.max(20, 8 * camFit)); cam.up.set(0, 1, 0); cam.lookAt(t); cam.updateProjectionMatrix(); }
+  else cam.position.copy(off.add(t));
+  orbit.target.copy(t); orbit.update();
   document.querySelectorAll(".cams button").forEach(b => b.classList.toggle("on", b.dataset.cam === k));
   $("camTag").innerHTML = "Camera: <b></b>"; $("camTag").querySelector("b").textContent = c.label;
 }
 document.querySelectorAll(".cams button").forEach(b => b.onclick = () => setCam(b.dataset.cam));
-orbit.addEventListener("start", () => document.querySelectorAll(".cams button").forEach(b => b.classList.remove("on")));
+orbit.addEventListener("start", () => { document.querySelectorAll(".cams button").forEach(b => b.classList.remove("on")); if (curCam !== "persp" && CAM().isPerspectiveCamera) { curCam = "persp"; $("camTag").innerHTML = "Camera: <b>persp (tự do)</b>"; } });
 
 function resize() { host.resize(); }
 
@@ -653,7 +661,7 @@ function placeMarkers() {
     m.position.copy(P3[n]); m.visible = show;
     m.material.color.copy(on ? COL.sel : edited.has(n) ? COL.edit : COL.joint);
     m.material.opacity = o;
-    SZ[n] = D[n] * pxW;                                                    // world size of 1 screen pixel there
+    SZ[n] = pxAt(D[n]);                                                    // world size of 1 screen pixel there
     m.scale.setScalar(SZ[n] * DOT_PX * (n === sel ? 1.5 : on ? 1.25 : 1));
   }
   for (const [n, t] of Object.entries(sticks)) {
@@ -819,7 +827,7 @@ function placePoles() {
     o.mesh.visible = o.line.visible = vis; if (!vis) continue;
     if (!gizmo.dragging || poleSel !== k) o.handle.position.copy(pt);
     const pos = o.handle.position, mid = wp(B[poleChain(k)[1]]);
-    o.mesh.position.copy(pos); o.mesh.scale.setScalar(CAM().position.distanceTo(pos) * pxW * 6 * (poleSel === k ? 1.5 : 1));
+    o.mesh.position.copy(pos); o.mesh.scale.setScalar(pxAt(CAM().position.distanceTo(pos)) * 6 * (poleSel === k ? 1.5 : 1));
     o.mesh.material.color.set(poleSel === k ? 0xffe0a0 : 0xffa63d);
     o.line.geometry.setFromPoints([mid, pos]);
   }
@@ -1323,10 +1331,10 @@ async function aisSheets(frames) {
       const out = document.createElement("canvas"); out.width = cw * cols; out.height = ch * rows + 26; const c = out.getContext("2d");
       c.fillStyle = "#15181f"; c.fillRect(0, 0, out.width, out.height);
       c.fillStyle = "#fff"; c.font = "bold 15px sans-serif"; c.fillText(P.clip.replace(/_/g, " ") + " · " + P.version + " · góc " + CAMS[k].label, 8, 18);
-      renderer.setSize(cw, ch, false); CAM().aspect = cw / ch; CAM().updateProjectionMatrix();
+      renderer.setSize(cw, ch, false); camAspect(cw / ch);
       frames.forEach((f, i) => {
         goto(f); model.updateMatrixWorld(true); setCam(k);
-        { const t = orbit.target; CAM().position.sub(t).multiplyScalar(1.5).add(t); CAM().lookAt(t); }   // square cell: pull back so the 2.5 m mace stays in frame (polish_v2 review cropped it at F33)
+        camDolly(1.5);   // square cell: pull back so the 2.5 m mace stays in frame (polish_v2 review cropped it at F33)
         renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, CAM());
         const x = (i % cols) * cw, y = 26 + Math.floor(i / cols) * ch; c.drawImage(renderer.domElement, x, y, cw, ch);
         c.strokeStyle = "#333"; c.lineWidth = 1; c.strokeRect(x + .5, y + .5, cw - 1, ch - 1);
@@ -4556,9 +4564,9 @@ window.DDC.playblast = async function (opt) {
     for (let f = 1; f <= n; f++) {
       msg.textContent = "Đang quay playblast " + f + " / " + n; prog(f, n);
       goto(f); model.updateMatrixWorld(true);
-      renderer.setSize(cw, ch, false); CAM().aspect = cw / ch; CAM().updateProjectionMatrix();
+      renderer.setSize(cw, ch, false); camAspect(cw / ch);
       ctx.fillStyle = "#15181f"; ctx.fillRect(0, 0, out.width, ch);
-      cams.forEach((k, i) => { setCam(k); if (dist !== 1) { const t = orbit.target; CAM().position.sub(t).multiplyScalar(dist).add(t); CAM().lookAt(t); } renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, CAM()); ctx.drawImage(renderer.domElement, i * cw, 0, cw, ch); });
+      cams.forEach((k, i) => { setCam(k); if (dist !== 1) camDolly(dist); renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, CAM()); ctx.drawImage(renderer.domElement, i * cw, 0, cw, ch); });
       if (f === mid) thumb = await new Promise(r => out.toBlob(r, "image/jpeg", 0.85));
       track.requestFrame();
       await new Promise(r => setTimeout(r, 1000 / fps));
@@ -4596,7 +4604,7 @@ window.DDC.askPlayblast = function () {
     const cams = ov.querySelector("#pbCams"), szb = ov.querySelector("#pbSz"), info = ov.querySelector("#pbInfo"), go = ov.querySelector("#pbGo");
     const dEl = ov.querySelector("#pbD"), dv = ov.querySelector("#pbDv");
     const prev = () => {   // xem thử khoảng cách ngay trên viewport (CAM() đầu tiên đã chọn)
-      const k = order.find(x => on.has(x)) || wasCam; setCam(k); if (dist !== 1) { const t = orbit.target; CAM().position.sub(t).multiplyScalar(dist).add(t); CAM().lookAt(t); }
+      const k = order.find(x => on.has(x)) || wasCam; setCam(k); if (dist !== 1) camDolly(dist);
     };
     dEl.value = dist; dv.textContent = "×" + dist.toFixed(2);
     dEl.addEventListener("input", () => { dist = +dEl.value; dv.textContent = "×" + dist.toFixed(2); prev(); });
