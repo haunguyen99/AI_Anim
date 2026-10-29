@@ -122,11 +122,14 @@
       const open = ST.pref.get("ol:open:" + L, false), lay = ST.LAYER_OF[mid], on = ST.layerOn[lay];
       const ownTree = !(sharedTree || L === "rig");   // W3c: chỉ Anim không có nhân vật mới có cây riêng
       const props = L === "anim" && ST.mods.props && ST.mods.props.loaded() ? ST.mods.props.outline() : [];   // vật thể phụ của anim (modules/props.js)
-      const hasKids = ownTree || props.length > 0;
-      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, fold: hasKids ? (open ? 0 : 1) : undefined, act: ST.focus === mid,
+      const clipRows = L === "anim" && m.clipRows ? m.clipRows() : [];   // các anim của nhân vật: bấm để đổi anim
+      const hasKids = ownTree || props.length > 0 || clipRows.length > 0;
+      rows.push({ id: "@" + L, m: mid, node: L, d: 0, label: m.nodeLabel ? m.nodeLabel() : label, icon, vis: L === "rig" ? undefined : on, add: L === "anim" && !!ST.char && ST.cmds.has("pose.new"), fold: hasKids ? (open ? 0 : 1) : undefined, act: ST.focus === mid,
         tip: L === "rig" ? "Bấm: sửa rig của nhân vật (khớp, skin, thử khớp)" : "Bấm: làm việc với lớp " + label + " · mắt: bật lớp (Shift: hiện chồng)" });
       if (!open || !hasKids) return;
-      props.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: 1, dim: !on })));
+      const propRows = () => props.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: clipRows.length ? 2 : 1, dim: !on })));
+      clipRows.forEach(c => { rows.push(Object.assign({}, c, { m: mid, d: 1, act: c.cur, sel: c.cur })); if (c.cur) propRows(); });
+      if (!clipRows.some(c => c.cur)) propRows();
       if (!ownTree) return;
       const kids = m.loaded && m.loaded() && m.outline ? m.outline() : null;
       if (kids) kids.forEach(r => rows.push(Object.assign({}, r, { m: mid, d: (r.d || 0) + 1, dim: !on })));
@@ -139,11 +142,14 @@
     $("olBody").innerHTML = rows.map(r => `<div class="olr ${r.grp ? "grp" : ""} ${r.sel ? "sel" : ""} ${r.act ? "act" : ""} ${r.dim ? "dim" : ""} ${r.node ? "node" : ""}" style="--d:${r.d || 0}" data-id="${esc(r.id)}" data-m="${esc(r.m || "")}">` +
       (r.fold !== undefined ? `<button data-a="fold" class="fold" title="${r.fold ? "Mở" : "Gập"}" aria-label="${r.fold ? "Mở" : "Gập"}" aria-expanded="${!r.fold}">${r.fold ? "▸" : "▾"}</button>` : '<span class="fold"></span>') +
       `<span class="nm" title="${esc(r.tip || r.label)}${r.rename ? " · bấm đúp để đổi tên" : ""}">${r.icon ? ic(r.icon) : ""}${renaming === r.m + "|" + r.id ? `<input id="olRn" value="${esc(r.label)}">` : `<span class="tx">${esc(r.label)}</span>`}</span>` +
-      (r.count !== undefined ? `<small>${esc(r.count)}</small>` : "") + (r.del ? `<button data-a="del" class="del" title="Xoá" aria-label="Xoá">${ic("trash")}</button>` : "") +
+      (r.count !== undefined ? `<small>${esc(r.count)}</small>` : "") + (r.add ? `<button data-a="add" class="add" title="Anim mới…" aria-label="Thêm anim mới">${ic("plus")}</button>` : "") + (r.del ? `<button data-a="del" class="del" title="Xoá" aria-label="Xoá">${ic("trash")}</button>` : "") +
       (r.lock !== undefined ? `<button data-a="lock" class="lk ${r.lock ? "on" : "off"}" title="Khoá: không chọn, không sửa" aria-label="Khoá">${ic(r.lock ? "lock" : "unlock")}</button>` : "") +
       (r.vis !== undefined ? `<button data-a="vis" class="${r.vis ? "" : "off"}" title="Ẩn / hiện" aria-label="Ẩn hoặc hiện">${ic(r.vis ? "eye" : "eyeoff")}</button>` : "") + `</div>`).join("") ||
       '<div class="sub" style="padding:8px 10px">Trống.</div>';
   }
+  // bấm nút Rig / Anim = sang workspace hợp với nó (Rig / Pose), không chỉ đổi focus (user 2026-10-29: "khi bấm vào đây sẽ tự động
+  // nhảy sang chế độ phù hợp"); workspace nào có focus là module đó thì dùng workspace đó
+  const goMode = mid => { const ws = Object.keys(ST.WS).find(k => ST.WS[k].focus === mid); if (ws && ws !== ST.ws) ST.setWS(ws); ST.setFocus(mid); };
   const olB = $("olBody");
   const rowOf = el => olRows.find(x => String(x.id) === el.dataset.id && (x.m || "") === el.dataset.m);
   olB.addEventListener("click", e => {
@@ -151,10 +157,12 @@
     const r = rowOf(el), a = b ? b.dataset.a : "pick"; if (!r || (r.grp && !b)) return;
     if (r.node) {   // nút lớp Rig / Anim
       if (a === "fold") ST.pref.set("ol:open:" + r.node, !ST.pref.get("ol:open:" + r.node, false));
+      else if (a === "add") ST.run("pose.new");   // dấu + trên nút Anim: tạo anim mới (user 2026-10-29)
       else if (a === "vis") { const lay = ST.LAYER_OF[r.m]; ST.showLayer(lay, !ST.layerOn[lay], !e.shiftKey); }
-      else ST.setFocus(r.m);
+      else goMode(r.m);
       ST.refresh(); return;
     }
+    if (a === "pick" && r.m === "pose" && String(r.id).startsWith("c:")) goMode("pose");   // bấm một anim: sang Pose rồi mở anim đó
     const m = ST.mods[r.m]; if (!m) return;
     const j = r.m === "mesh" && typeof r.id === "string" && r.id.startsWith("j:") ? r.id.slice(2) : null;
     if (j && a === "pick" && ST.focus !== "mesh" && ST.mod().selectJoint) {   // W3c: khớp trong cây chung → chọn ở chế độ đang sửa

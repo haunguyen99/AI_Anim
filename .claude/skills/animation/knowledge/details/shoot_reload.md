@@ -50,6 +50,26 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
   0,3 cm), găng trái siết 8° khi giật; nỏ rung xoay quanh nòng (`make_key` spec[8], áp trước Δ để tay IK bám theo). Ở cam game
   găng gần như không đọc được: đừng tốn vòng chỉnh ngón trên rig găng. Tên phiên bản s/p so chuỗi sai ("p1" < "s2"): dùng
   `shoot_spline.level()`.
+- **Reload b1 (2026-10-29, `sdr03/reload_block.py`):** đo tầm với trước khi dựng: vai phải → giữa dây nghỉ 66 cm, tay 47 cm (+ găng 13):
+  phải có bả vai tiến (~7 cm) + ngực xoay 4°. Tay phải lấy local Scapula/Shoulder/Elbow/Wrist/găng từ frame file team (cùng khung
+  xương nên khuỷu đúng hướng, không lật), rồi `ik_min` chỉnh nhỏ tới điểm nắm (dây của mình cao/xa hơn team ~4 cm). Lúc kéo: đặt
+  dây theo tỉ lệ u (nghỉ → chốt), cổ tay = dây + offset tay–dây đo trên team (nắm/chốt). Kiểm ở top: dây gập chữ V theo găng.
+- **Reload b2 (2026-10-29, ghi chú b1 F1/F12 "mũi tên đang ẩn / bật trở lại", F30 "dây bị kéo xuống thấp quá"):** mesh tên trên
+  `slingshot_1` luôn hiện, nên trong Studio làm tên thành vật thể phụ (`props`, src = mesh tên, `hideSrc`) gắn `slingshot_0` ở chỗ
+  trên rãnh của P0, key ẩn F1 → hiện ở `cocked`. Dây ở chốt cũng thấp 2,55 cm như lúc nghỉ: nâng cả ở chốt (giữa dây ngang đường
+  hai đầu cánh), tên gắn thân nỏ nên không bị nâng theo.
+- **Reload spline s1 (2026-10-29, `sdr03/reload_spline.py`):** tay theo đường file team = cột `tf` (frame team, số thực) nội suy
+  slerp local giữa hai frame team, rồi `ik_min`; cột `g` trộn đích đường team ↔ đích bám dây. Đo spacing cổ tay cm/F: file team
+  đứng yên F1–F6 nên key gần đầu phải trỏ tf = 6, không 0 (s1 đầu: F4 phí, F4→F5 nhảy 14 cm; F7→F8 18 cm/42°). Khuỷu gần duỗi
+  (với 0,97) đổi 30° khi dây kéo 6 cm là hình học bình thường, không phải lật.
+- **Reload polish p1 (2026-10-29):** găng bám dây bằng cách giữ VECTOR găng→giữa dây (hệ nỏ) bằng lúc nắm, dời đích cổ tay rồi
+  `ik_min` lại 2 vòng (trôi 1 cm → 0). Găng phải: mở −10…−12° khi với và khi dây vào chốt, siết vượt khi về báng; găng trái siết
+  ~7° khi kéo; nỏ rung quanh nòng khi dây vào chốt (±0,8° tắt dần). `studio_cmd anim version` báo "Không có phiên bản" khi
+  trang chưa tải lại danh sách: `open <nhân vật> pose` rồi `anim clip`, `anim version`.
+- **Mặt nhìn thẳng (2026-10-29, ghi chú Reload F1 "Cho nhân vật ngẩng đầu lên, để mặt nhìn thẳng về phía trước", rồi "Sửa cả
+  Shoot"):** P0 cúi đầu 7° + cổ 3° để ngắm dọc nỏ đọc ra là cúi gằm ở cam game ngang. Mặt đo bằng trục local nhìn +Z ở rest:
+  P0 cúi 7,3°, quay về cam 42°. Bỏ phần cúi gốc ở MỌI frame của cả hai clip (`reload_spline.lift_head`, `shoot_head_lift.py`),
+  giữ quay về cam và các cử động tương đối; sửa cả hai clip nối nhau để F cuối Shoot = F1 Reload (lệch 0).
 - Bản mới đăng bằng `clip_registry.py pose-version` chưa có `work/store/<ns>/anims/<clip>-<ver>.json` nên Studio mở ở spline:
   chép file của bản trước (đổi `version`) để giữ `interp: step`, rồi `studio_cmd.py anim clip <id>` cho trang tải lại.
 - Model Pose Lab cho rig team: `sdr03/poselab_model.py` (đủ xương + texture); khớp thêm của clip qua `clip_registry.py
