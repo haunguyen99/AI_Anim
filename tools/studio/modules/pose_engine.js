@@ -141,10 +141,10 @@ let model = null, ghost = null, B = {}, base = {}, edited = new Set(), sel = nul
 let footT = {}, footQ = {}, lockFeet = true, markers = {}, undoStack = [];
 let frame = 1, drafts = {}, mixers = [], playing = false, playT0 = 0, playF0 = 1, cache = {}, gB = {};
 // Joints as a stick figure (user 2026-10-22 "điểm khớp chồng lên nhau rối mắt, đổi thành dạng que"): a small dot per
-// joint + a thin stick to its parent joint. Opacity 50 % by default, fading with CAM() distance (near = clearest),
+// joint + a thin stick to its parent joint. Opacity 20 % by default (JOINT_BASE), fading with CAM() distance (near = clearest),
 // 100 % when the mouse comes close or the joint is selected. Several joints can be selected (Shift, marquee drag).
 // sizes in screen pixels (user 2026-10-22 "Kích thước khớp to quá"): dot radius DOT_PX, stick radius STICK_PX
-const DOT_PX = 3.5, STICK_PX = 0.8;
+const DOT_PX = 3.5, STICK_PX = 0.8, JOINT_BASE = 0.2;   // độ đậm khớp khi chuột chưa lại gần (trước 0.5); rê tới / chọn = 100 %
 const markerGeo = new THREE.SphereGeometry(1, 12, 8);
 const stickGeo = new THREE.CylinderGeometry(1, 1, 1, 6, 1); stickGeo.translate(0, 0.5, 0);
 const COL = { joint: new THREE.Color(css("--joint")), edit: new THREE.Color(css("--edit")), sel: new THREE.Color(css("--accent")), hot: new THREE.Color(0xffffff) };
@@ -673,7 +673,7 @@ function placeMarkers() {
   hotTag(hot);
   for (const [n, m] of Object.entries(markers)) {
     const far = dmax > dmin ? (D[n] - dmin) / (dmax - dmin) : 0;          // 0 = nearest joint, 1 = farthest
-    let o = 0.5 * (1 - 0.55 * far);                                        // default 50 %, fading with distance
+    let o = JOINT_BASE * (1 - 0.55 * far);                                 // mặc định mờ (user 2026-10-29 "độ mờ của khớp ban đầu mờ hơn nữa"), nhạt dần theo khoảng cách
     if (hoverXY) {
       const sp = toScreen(P3[n]), px = Math.hypot(sp.x - hoverXY[0], sp.y - hoverXY[1]);
       o += (1 - o) * Math.max(0, Math.min(1, 1 - (px - 12) / 60));         // mouse close -> 100 %
