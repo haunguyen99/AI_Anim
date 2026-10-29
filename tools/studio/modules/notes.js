@@ -7,6 +7,9 @@
   const N = ST.mods.notes = { id: "notes" };
   const COLORS = ["#ff4d4d", "#ffd23f", "#3ddc97", "#4db3ff"];
   let on = false, color = COLORS[0], strokes = [], cur = null, list = null, viewing = null;
+  let redo = [], lastAct = "";   // hoàn tác nét vẽ (user 2026-10-29 "vẽ fb không nhận undo"): Ctrl+Z bỏ nét cuối, Ctrl+Shift+Z / Ctrl+Y vẽ lại
+  const undoStroke = () => { if (!strokes.length) return; redo.push(strokes.pop()); paint(); };
+  const redoStroke = () => { if (!redo.length) return; strokes.push(redo.pop()); lastAct = "stroke"; paint(); };
   const q = new URLSearchParams(location.search);
   const ns = () => q.get("ns") ? q.get("ns") + "_notes" : (ST.char ? ST.slug(ST.char.name) : ST.clip ? ST.slug(ST.clip) : "scene") + "_studio";
   const api = (col, id) => "/api/store/" + encodeURIComponent(ns()) + "/" + col + (id ? "/" + encodeURIComponent(id) : "");
@@ -25,12 +28,12 @@
       `<button data-a="undo" title="Bỏ nét cuối">${ic("undo")}</button><button data-a="clear" title="Xoá hết nét">${ic("trash")}</button>` +
       `<input id="noteText" type="text" placeholder="Ghi chú: sai gì, sửa thế nào" aria-label="Ghi chú">` +
       `<button class="on" data-a="save" title="Lưu ảnh khung nhìn + nét vẽ + ghi chú">Lưu</button><button data-a="cancel" title="Thôi vẽ">Huỷ</button>`;
-    const t = $("noteText"); if (t) { t.onkeydown = e => { e.stopPropagation(); if (e.key === "Enter") save(); if (e.key === "Escape") stop(); }; setTimeout(() => t.focus(), 0); }
+    const t = $("noteText"); if (t) { t.oninput = () => { lastAct = "text"; }; t.onkeydown = e => { e.stopPropagation(); if (e.key === "Enter") save(); if (e.key === "Escape") stop(); }; setTimeout(() => t.focus(), 0); }
   }
   bar.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.c) { color = b.dataset.c; drawBar(); return; }
-    ({ start, cancel: stop, undo: () => { strokes.pop(); paint(); }, clear: () => { strokes = []; paint(); }, save, close: () => { viewing = null; paint(); drawBar(); } })[b.dataset.a]();
+    ({ start, cancel: stop, undo: undoStroke, clear: () => { strokes = []; redo = []; paint(); }, save, close: () => { viewing = null; paint(); drawBar(); } })[b.dataset.a]();
   });
   function size() { const r = vp.getBoundingClientRect(), d = devicePixelRatio || 1; cv.width = Math.max(1, r.width * d); cv.height = Math.max(1, r.height * d); cv.style.width = r.width + "px"; cv.style.height = r.height + "px"; paint(); }
   new ResizeObserver(size).observe(vp);
@@ -49,11 +52,11 @@
   const rel = e => { const r = vp.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; };
   cv.addEventListener("pointerdown", e => { if (!on || e.button !== 0) return; e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (x) {} cur = { c: color, pts: [rel(e)] }; paint(); });
   cv.addEventListener("pointermove", e => { if (!cur) return; cur.pts.push(rel(e)); paint(); });
-  const end = () => { if (!cur) return; if (cur.pts.length) strokes.push({ c: cur.c, pts: cur.pts.map(p => p.map(v => +v.toFixed(4))) }); cur = null; paint(); };
+  const end = () => { if (!cur) return; if (cur.pts.length) strokes.push({ c: cur.c, pts: cur.pts.map(p => p.map(v => +v.toFixed(4))) }); redo = []; lastAct = "stroke"; cur = null; paint(); };
   cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
 
-  function start() { if (!ST.char && !ST.clip) return ST.toast("Mở nhân vật hoặc anim trước."); viewing = null; on = true; strokes = []; document.body.classList.add("noting"); paint(); drawBar(); }
-  function stop() { on = false; strokes = []; cur = null; document.body.classList.remove("noting"); paint(); drawBar(); }
+  function start() { if (!ST.char && !ST.clip) return ST.toast("Mở nhân vật hoặc anim trước."); viewing = null; on = true; strokes = []; redo = []; lastAct = ""; document.body.classList.add("noting"); paint(); drawBar(); }
+  function stop() { on = false; strokes = []; redo = []; cur = null; document.body.classList.remove("noting"); paint(); drawBar(); }
 
   // ---- bối cảnh lúc lưu: đủ để Claude (và người khác) mở lại đúng chỗ
   function context() {
@@ -195,5 +198,14 @@
 
   ST.cmd({ id: "notes.draw", menu: "Window", sep: true, label: "Vẽ ghi chú lên viewport", icon: "pen", keep: true, global: true, check: () => on, run: () => on ? stop() : start() });
   ST.on("char", () => { list = null; }); ST.on("init", () => { drawBar(); size(); });
+  // trước mọi phím tắt khác (capture): đang vẽ thì Ctrl+Z / Ctrl+Y là của nét vẽ, trừ khi vừa gõ chữ trong ô ghi chú (để Ctrl+Z sửa chữ)
+  addEventListener("keydown", e => {
+    if (!on || !(e.ctrlKey || e.metaKey)) return;
+    const k = e.key.toLowerCase(), isUndo = k === "z" && !e.shiftKey, isRedo = (k === "z" && e.shiftKey) || k === "y";
+    if (!isUndo && !isRedo) return;
+    if (e.target && e.target.id === "noteText" && lastAct === "text") return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (isUndo) undoStroke(); else redoStroke();
+  }, true);
   addEventListener("keydown", e => { if (on && e.key === "Escape" && !/INPUT|TEXTAREA/.test((e.target || {}).tagName || "")) stop(); });
 })();
