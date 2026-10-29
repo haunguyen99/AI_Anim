@@ -90,7 +90,9 @@
     };
     return {
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
-      cam: () => V.active.cam, alive, liveModel, setOrtho: on => V.setOrtho(on), propKeys: () => ST.mods.props && ST.mods.props.selKeys ? ST.mods.props.selKeys() : null,   // timeline hiện key của vật thể phụ đang chọn
+      cam: () => V.active.cam, alive, liveModel, setOrtho: on => { if (V.active === V.panes.persp) V.setOrtho(on); },
+      gate: () => { const g = V.gate, p = V.active; if (!g || !g.on || !p) return null; const [a, b] = g.ratio.split(":").map(Number), A = a / b, w = Math.min(p.rect.w * 0.92, p.rect.h * 0.92 * A); return { A, frac: (w / A) / p.rect.h }; },   // playblast "Đang xem" quay đúng khung Gate
+      propKeys: () => ST.mods.props && ST.mods.props.selKeys ? ST.mods.props.selKeys() : null,   // timeline hiện key của vật thể phụ đang chọn
       panes: {   // nút [ ] của thanh Pose = lệnh Cửa sổ → Outliner / Dock phải của Studio
         toggle: k => ST.run(k === "list" ? "win.outliner" : "win.dock"),
         on: k => !document.body.classList.contains(k === "list" ? "noout" : "nodock"),

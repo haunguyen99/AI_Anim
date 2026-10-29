@@ -4569,6 +4569,19 @@ setCam("right"); renderPoses(); openPose(POSES[0]);
 })();
 
 /*PLAYBLAST*/
+// góc "Đang xem" (user 2026-10-29 "playblast đưa nhân vật về chính giữa, không lấy được view mong muốn"): chụp camera viewport lúc mở hộp,
+// quay đúng góc đó (Gate bật: ô theo tỉ lệ Gate, khung = phần trong Gate), xong / huỷ thì trả viewport về đúng góc cũ
+const viewSnap = () => { const c = CAM(); return { ortho: !!c.isOrthographicCamera, pos: c.position.clone(), q: c.quaternion.clone(), up: c.up.clone(), tgt: orbit.target.clone(), zoom: c.zoom, fov: c.fov, cam: curCam, tag: $("camTag").innerHTML }; };
+function viewSet(v, frac) {
+  if (host.setOrtho) host.setOrtho(v.ortho);
+  const c = CAM(); c.up.copy(v.up); c.position.copy(v.pos); c.quaternion.copy(v.q); orbit.target.copy(v.tgt);
+  if (c.isOrthographicCamera) c.zoom = v.zoom / (frac || 1);
+  else if (v.fov) c.fov = frac ? 2 * THREE.MathUtils.radToDeg(Math.atan(Math.tan(THREE.MathUtils.degToRad(v.fov) / 2) * frac)) : v.fov;
+  c.updateProjectionMatrix(); curCam = v.cam; $("camTag").innerHTML = v.tag;
+  document.querySelectorAll(".cams button").forEach(b => b.classList.toggle("on", b.dataset.cam === v.cam));
+}
+const pbGate = () => host.gate ? host.gate() : null;   // { A: rộng/cao, frac: cao Gate / cao khung } hoặc null
+const pbLabel = k => k === "view" ? "Đang xem" : CAMS[k].label;
 // Quay playblast: mỗi frame goto(f) rồi vẽ N CAM() cạnh nhau (chỉ scene, không overlay) vào canvas ghép, MediaRecorder thu theo nhịp fps.
 window.DDC = window.DDC || {};
 window.DDC.playblast = async function (opt) {
@@ -4577,6 +4590,7 @@ window.DDC.playblast = async function (opt) {
   const cams = opt.cams || ["right", "left", "front", "top"], cw = opt.cw || 450, ch = opt.ch || 600, dist = opt.dist || 1, n = P.frames || 1, fps = P.fps || 30;
   const mime = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
   if (!mime) throw new Error("Trình duyệt không quay được video (MediaRecorder).");
+  const VIEW = opt.view || viewSnap(), G = pbGate();
   const wasFrame = frame, wasCam = curCam, wasGhost = ghost && ghost.visible, wasSize = renderer.getSize(new THREE.Vector2()), prog = opt.onProgress || (() => {});
   const out = document.createElement("canvas"); out.width = cw * cams.length; out.height = ch;
   const ctx = out.getContext("2d"), stream = out.captureStream(0), track = stream.getVideoTracks()[0];
@@ -4594,16 +4608,16 @@ window.DDC.playblast = async function (opt) {
       goto(f); model.updateMatrixWorld(true);
       renderer.setSize(cw, ch, false); camAspect(cw / ch);
       ctx.fillStyle = "#15181f"; ctx.fillRect(0, 0, out.width, ch);
-      cams.forEach((k, i) => { setCam(k); if (dist !== 1) camDolly(dist); renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, CAM()); ctx.drawImage(renderer.domElement, i * cw, 0, cw, ch); });
+      cams.forEach((k, i) => { if (k === "view") viewSet(VIEW, G && G.frac); else { setCam(k); if (dist !== 1) camDolly(dist); } renderer.setClearColor(bg, 1); renderer.clear(); renderer.render(scene, CAM()); ctx.drawImage(renderer.domElement, i * cw, 0, cw, ch); });
       if (f === mid) thumb = await new Promise(r => out.toBlob(r, "image/jpeg", 0.85));
       track.requestFrame();
       await new Promise(r => setTimeout(r, 1000 / fps));
     }
     await new Promise(r => setTimeout(r, 200)); rec.stop(); await done;
   } finally {
-    msg.remove(); if (ghost) ghost.visible = wasGhost; ONION.off = Math.max(0, ONION.off - 1); renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
+    msg.remove(); if (ghost) ghost.visible = wasGhost; ONION.off = Math.max(0, ONION.off - 1); renderer.setSize(wasSize.x, wasSize.y, false); resize(); viewSet(VIEW); goto(wasFrame); renderer.setClearColor(0x000000, 0);
   }
-  return { webm: new Blob(chunks, { type: "video/webm" }), thumb, n, fps, w: cw * cams.length, h: ch, views: cams.map(k => CAMS[k].label.toLowerCase()).join(" | ") };
+  return { webm: new Blob(chunks, { type: "video/webm" }), thumb, n, fps, w: cw * cams.length, h: ch, views: cams.map(k => pbLabel(k).toLowerCase()).join(" | ") };
 };
 $("bPB").addEventListener("click", async () => {
   try { const o = await window.DDC.askPlayblast(); if (!o) return; const r = await window.DDC.playblast(o); const u = URL.createObjectURL(r.webm), a = document.createElement("a"); a.href = u; a.download = idOf(P.clip, P.version) + ".webm"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); $("p_status").textContent = "Đã quay playblast " + r.n + " frame."; }
@@ -4615,9 +4629,11 @@ $("bPB").addEventListener("click", async () => {
 window.DDC.askPlayblast = function () {
   return new Promise(res => {
     let saved = {}; try { saved = JSON.parse(localStorage.getItem("poselab:pb") || "{}"); } catch {}
-    const wasCam = curCam; let dist = saved.dist >= 0.3 && saved.dist <= 3 ? saved.dist : 1;
-    const order = ["right", "left", "front", "back", "top", "bottom", "persp"], on = new Set(saved.cams || ["right", "left", "front", "top"]);
-    const sizes = { s: [300, 400, "Nhỏ"], m: [450, 600, "Vừa"], l: [600, 800, "Lớn"] }; let sz = saved.size && sizes[saved.size] ? saved.size : "m";
+    const view0 = viewSnap(), G = pbGate(); let dist = saved.dist >= 0.3 && saved.dist <= 3 ? saved.dist : 1;
+    const order = ["view", "right", "left", "front", "back", "top", "bottom", "persp"], on = new Set(saved.cams || ["view"]);
+    const ev = n => Math.max(2, Math.round(n / 2) * 2), cell = h => G ? [ev(h * G.A), h] : [h * 3 / 4, h];   // Gate bật: ô theo tỉ lệ Gate
+    const sizes = { s: [...cell(400), "Nhỏ"], m: [...cell(600), "Vừa"], l: [...cell(800), "Lớn"] }; let sz = saved.size && sizes[saved.size] ? saved.size : "m";
+    const back = () => viewSet(view0);
     const ov = document.createElement("div");
     ov.style.cssText = "position:fixed;inset:0;z-index:100;background:#0008;display:flex;align-items:center;justify-content:center;padding:12px";
     ov.innerHTML = '<div style="background:var(--panel,#1a1e26);color:var(--ink,#e6e9ee);border:1px solid var(--line,#2c3441);border-radius:12px;padding:16px;width:min(360px,100%);font:13px/1.45 system-ui,sans-serif">'
@@ -4631,25 +4647,25 @@ window.DDC.askPlayblast = function () {
     document.body.appendChild(ov);
     const cams = ov.querySelector("#pbCams"), szb = ov.querySelector("#pbSz"), info = ov.querySelector("#pbInfo"), go = ov.querySelector("#pbGo");
     const dEl = ov.querySelector("#pbD"), dv = ov.querySelector("#pbDv");
-    const prev = () => {   // xem thử khoảng cách ngay trên viewport (CAM() đầu tiên đã chọn)
-      const k = order.find(x => on.has(x)) || wasCam; setCam(k); if (dist !== 1) camDolly(dist);
+    const prev = () => {   // xem thử ngay trên viewport: CAM() đầu tiên đã chọn ("Đang xem" = giữ nguyên góc của người dùng)
+      const k = order.find(x => on.has(x)); if (!k || k === "view") return back(); setCam(k); if (dist !== 1) camDolly(dist);
     };
     dEl.value = dist; dv.textContent = "×" + dist.toFixed(2);
     dEl.addEventListener("input", () => { dist = +dEl.value; dv.textContent = "×" + dist.toFixed(2); prev(); });
     const refresh = () => {
       prev();
-      cams.innerHTML = order.map(k => `<label style="display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line,#2c3441);border-radius:8px;cursor:pointer;${on.has(k) ? "background:color-mix(in srgb,var(--accent,#2fb67d) 18%,transparent)" : ""}"><input type="checkbox" data-k="${k}" ${on.has(k) ? "checked" : ""}> ${CAMS[k].label}</label>`).join("");
+      cams.innerHTML = order.map(k => `<label style="display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line,#2c3441);border-radius:8px;cursor:pointer;${on.has(k) ? "background:color-mix(in srgb,var(--accent,#2fb67d) 18%,transparent)" : ""}"><input type="checkbox" data-k="${k}" ${on.has(k) ? "checked" : ""}> ${pbLabel(k)}${k === "view" ? ' <small style="color:var(--muted,#8d97a8)">(góc viewport' + (G ? ", khung Gate" : "") + ")</small>" : ""}</label>`).join("");
       szb.innerHTML = Object.entries(sizes).map(([k, v]) => `<button data-s="${k}" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--line,#2c3441);cursor:pointer;color:inherit;background:${k === sz ? "var(--accent,#2fb67d)" : "transparent"}">${v[2]}<br><small>${v[0]}×${v[1]}</small></button>`).join("");
-      const [w, h] = sizes[sz], n = on.size; info.textContent = n ? "Video " + (w * n) + "×" + h + " · " + (P.frames || 1) + " frame · " + (P.fps || 30) + " fps" : "Chọn ít nhất một CAM().";
+      const [w, h] = sizes[sz], n = on.size; info.textContent = n ? "Video " + (w * n) + "×" + h + " · " + (P.frames || 1) + " frame · " + (P.fps || 30) + " fps" + (on.has("view") ? (G ? " · ô theo Gate" : " · bật Gate để quay đúng khung") : "") : "Chọn ít nhất một CAM().";
       go.disabled = !n; go.style.opacity = n ? 1 : .5;
     };
     ov.addEventListener("click", e => {
       const c = e.target.closest("input[data-k]"), b = e.target.closest("button[data-s]");
       if (c) { c.checked ? on.add(c.dataset.k) : on.delete(c.dataset.k); refresh(); } else if (b) { sz = b.dataset.s; refresh(); }
-      else if (e.target.closest("#pbNo") || e.target === ov) { ov.remove(); setCam(wasCam); res(null); }
+      else if (e.target.closest("#pbNo") || e.target === ov) { ov.remove(); back(); res(null); }
       else if (e.target.closest("#pbGo") && on.size) {
         const list = order.filter(k => on.has(k)); try { localStorage.setItem("poselab:pb", JSON.stringify({ cams: list, size: sz, dist })); } catch {}
-        ov.remove(); setCam(wasCam); res({ cams: list, cw: sizes[sz][0], ch: sizes[sz][1], dist });
+        ov.remove(); back(); res({ cams: list, cw: sizes[sz][0], ch: sizes[sz][1], dist, view: view0 });
       }
     });
     refresh();
