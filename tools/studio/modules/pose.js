@@ -12,17 +12,47 @@
   const cvEl = $("cv");
 
   // ---- anim cần mở: ?clip, anim của Home, lần trước, hoặc anim đầu tiên của nhân vật
-  async function loadClips() {
-    if (clips) return clips;
-    try { clips = await (await fetch("/api/poses" + (ST.char ? "?char=" + encodeURIComponent(ST.char.id) : ""))).json(); } catch (e) { clips = []; }
-    return clips;
+  let clipsP = null, clipsFor = null;   // danh sách theo nhân vật: nạp lại khi nhân vật đổi (Outliner có thể hỏi trước khi nhân vật nạp xong)
+  function loadClips() {
+    const who = ST.char ? ST.char.id : "";
+    if (clipsP && clipsFor === who) return clipsP;
+    clipsFor = who; clips = null;
+    return (clipsP = fetch("/api/poses" + (who ? "?char=" + encodeURIComponent(who) : "")).then(r => r.json()).catch(() => [])
+      .then(L => { if (clipsFor === who) clips = Array.isArray(L) ? L : []; return clips || []; }));
   }
   const prefKey = () => "pose:clip:" + (ST.char ? ST.char.id : "_");
   async function pickClip() {
     const L = await loadClips(), want = q.get("clip") || ST.clip || ST.pref.get(prefKey(), null);
     return (L.find(c => c.id === want) || L[0] || {}).id || null;
   }
-  const goClip = id => { const u = new URL(location.href); u.searchParams.set("clip", id); if (ST.ws) u.searchParams.set("ws", ST.ws); ST.pref.set(prefKey(), id); location.href = u; };
+  const clipUrl = id => { const u = new URL(location.href); u.searchParams.set("clip", id); if (ST.ws) u.searchParams.set("ws", ST.ws); return u; };
+  const reloadTo = id => { ST.pref.set(prefKey(), id); location.href = clipUrl(id); };
+  // đổi anim tại chỗ (user 2026-10-29: "toàn trang phải load lại từ đầu ... chỉ lên load lại key thôi"): giữ nhân vật, rig, camera,
+  // lõi Pose; chỉ thay danh sách phiên bản + kho key / ghi chú rồi mở phiên bản đầu. Lõi chưa nạp hoặc lỗi thì tải lại trang như cũ.
+  let swapping = null;
+  const goClip = id => {
+    if (!(eng && clipInfo && state === "ready")) return reloadTo(id);
+    if (clipInfo.id === id) return;
+    if (swapping) return;
+    swapping = swapClip(id).catch(e => { console.error(e); ST.toast("Không đổi anim tại chỗ được (" + (e.message || e) + "): tải lại trang…"); reloadTo(id); }).finally(() => { swapping = null; ST.refresh(); });
+  };
+  const parsePoses = info => {
+    const L = new Function("return " + info.js)();
+    const fix = o => { for (const k in o) { const v = o[k]; if (typeof v === "string" && /^(models|refs|fbx)\//.test(v)) o[k] = "/work/pose_lab/" + v; else if (v && typeof v === "object") fix(v); } };
+    L.forEach(fix); return L;
+  };
+  async function swapClip(id) {
+    const r = await fetch("/api/poses/" + encodeURIComponent(id)), info = await r.json(); if (!r.ok) throw new Error(info.error || r.status);
+    const list = parsePoses(info);
+    ST.toast("Đang mở " + info.name + "…");
+    clipInfo = info; ST.pref.set(prefKey(), id);
+    try { choices = (await modelStore().get("studio/model")) || {}; } catch (e) { choices = {}; }
+    await eng.swapClip(list, q.get("ns") ? null : info.ns);
+    history.replaceState(null, "", clipUrl(id));
+    fillPicker();
+    ST.$("charName").textContent = ST.char ? ST.char.name + " · " + info.name : info.name;
+    ST.emit("pose:clip", id);
+  }
 
   // ---- dựng giao diện Pose Lab, chia khối cho các vùng của Studio
   function buildDom() {
@@ -115,10 +145,8 @@
     ST.refresh();
     try {
       const r = await fetch("/api/poses/" + encodeURIComponent(id)); clipInfo = await r.json(); if (!r.ok) throw new Error(clipInfo.error || r.status);
-      const POSES = new Function("return " + clipInfo.js)();
+      const POSES = parsePoses(clipInfo);
       try { choices = (await modelStore().get("studio/model")) || {}; } catch (e) { choices = {}; }
-      const fix = o => { for (const k in o) { const v = o[k]; if (typeof v === "string" && /^(models|refs|fbx)\//.test(v)) o[k] = "/work/pose_lab/" + v; else if (v && typeof v === "object") fix(v); } };
-      POSES.forEach(fix);
       ST.pref.set(prefKey(), id);
       if (!parts) buildDom();
       window.__rigSetup = null;   // bước 6 Vật lý của Rig (khớp điều khiển, giới hạn, collider, khối lượng): lõi Pose đọc thay CHAR_PHYS
@@ -170,14 +198,14 @@
   };
   M.loaded = () => !!eng && !!eng.get().model;
   M.clipList = async () => (await loadClips()).map(c => ({ id: c.id, name: c.name, character: c.character, stage: c.stage, versions: c.versions, open: !!(clipInfo && c.id === clipInfo.id) }));
-  M.goClip = id => goClip(id);   // tải lại trang với ?clip=…
+  M.goClip = id => goClip(id);   // đổi anim tại chỗ (lõi chưa nạp thì tải lại trang với ?clip=…)
   // W3c: khớp dùng chung (khớp có chấm chọn của model anim)
   M.curJoint = () => eng ? eng.get().sel : null;
   M.hasJoint = n => !!(eng && eng.get().markers[n]);
   M.selectJoint = async n => { if (!(await M.whenReady())) return; if (eng.get().markers[n]) eng.select(n); };
   // chờ lõi nạp xong (cầu nối AI gọi lệnh ngay sau khi focus)
   M.whenReady = async () => {
-    ensure(); const busy = () => ["none", "loading"].includes(state) || (state === "ready" && !(eng && eng.get().model));
+    ensure(); const busy = () => ["none", "loading"].includes(state) || !!swapping || (state === "ready" && !(eng && eng.get().model));
     for (let i = 0; i < 400 && busy(); i++) await new Promise(r => setTimeout(r, 100));
     return state === "ready";
   };
@@ -279,7 +307,15 @@
     walk(kids[""] || [], 0);
     return rows;
   };
+  // anim của nhân vật làm con của lớp Anim trong Outliner (user 2026-10-29: "khi mở layer Anim ra, các layer bên trong sẽ là
+  // các anim của nhân vật ... click trực tiếp để đổi anim"); anim đang mở sáng lên, vật thể phụ của nó nằm ngay dưới
+  M.clipRows = () => {
+    if (!clips || clipsFor !== (ST.char ? ST.char.id : "")) { loadClips().then(() => ST.refresh()); return []; }
+    return clips.map(c => ({ id: "c:" + c.id, label: c.name, icon: "pose", count: c.versions + " bản", cur: !!clipInfo && c.id === clipInfo.id, del: true,
+      tip: (clipInfo && c.id === clipInfo.id ? "Anim đang mở" : "Bấm: mở anim này") + " · " + c.versions + " bản · " + (c.stage || "") }));
+  };
   M.olAct = (id, a, e, val) => {
+    if (String(id).startsWith("c:")) { const c = String(id).slice(2); if (a === "del") return M.deleteClip(c); if (a === "pick" && !(clipInfo && clipInfo.id === c)) goClip(c); return; }
     if (!eng) return; const n = String(id).slice(2);
     if (String(id).startsWith("o:")) return PR() && PR().olAct(id, a, e, val);   // vật thể phụ
     if (a === "fold") { open.has(n) ? open.delete(n) : open.add(n); ST.pref.set("pose:open", [...open]); return; }
@@ -316,8 +352,62 @@
       ST.toast(choices[k] === "live" ? "Anim dùng nhân vật hiện tại." : "Anim dùng model chụp của phiên bản."); eng.reopen();
     } });
   ST.cmd({ id: "pose.oldlab", mod: "pose", keep: true, menu: "Animate", label: "Mở Pose Lab cũ của anim này", icon: "ext", on: () => !!clipInfo, run: () => window.open("/lab/pose/" + encodeURIComponent(clipInfo.id), "_blank") });
+  // Anim mới (user 2026-10-29 "trong menu này hãy thêm new anim"): đăng ký anim như Home + phiên bản Pose đầu tiên từ rig hiện tại,
+  // rồi mở luôn anim đó (server: /api/clip/studio-new)
+  ST.cmd({ id: "pose.new", menu: "Animate", label: "Anim mới…", icon: "plus", global: true, on: () => !!ST.char, run: () => {
+    ST.dialog("Anim mới · " + ST.char.name, `<div class="col" style="display:grid;gap:8px;min-width:300px">
+      <label class="sub">Tên anim <input id="naName" placeholder="vd Walk, Attack_02" style="width:100%"></label>
+      <div class="row" style="gap:8px"><label class="sub">Số frame <input id="naFrames" type="number" min="1" value="30" style="width:80px"></label>
+        <label class="sub">FPS <input id="naFps" type="number" min="1" value="30" style="width:70px"></label></div>
+      <label class="sub">Mô tả <textarea id="naDesc" rows="3" style="width:100%" placeholder="Anim làm gì, nhịp, cảm xúc (không bắt buộc)"></textarea></label>
+      <p class="note" style="margin:0">Frame 1 là pose đứng của rig hiện tại; anim mở ngay sau khi tạo.</p>
+      <p class="s-bad" id="naErr" style="margin:0"></p>
+      <div class="row" style="gap:8px;justify-content:flex-end"><button id="naNo">Huỷ</button><button class="on" id="naOk">Tạo anim</button></div></div>`, b => {
+      const $b = s => b.querySelector(s), nm = $b("#naName"); nm.focus();
+      b.querySelectorAll("input,textarea").forEach(i => i.addEventListener("keydown", e => { e.stopPropagation(); if (e.key === "Escape") ST.closeDialog(); if (e.key === "Enter" && i.tagName === "INPUT") $b("#naOk").click(); }));
+      $b("#naNo").onclick = () => ST.closeDialog();
+      $b("#naOk").onclick = async () => {
+        const name = nm.value.trim(), err = $b("#naErr"), ok = $b("#naOk");
+        if (!name) { err.textContent = "Nhập tên anim."; return nm.focus(); }
+        ok.disabled = true; err.textContent = ""; ok.textContent = "Đang tạo…";
+        try {
+          const R = ST.mods.rig; if (!R || !(await R.whenReady())) throw new Error("rig chưa nạp được" + (R && R.loadMsg ? ": " + R.loadMsg() : ""));
+          const j = await (await fetch("/api/clip/studio-new", { method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ char: ST.char.id, name: ST.char.name, clip: name, frames: $b("#naFrames").value, fps: $b("#naFps").value, desc: $b("#naDesc").value, gltf: ST.rigEng().buildGltf() }) }).then(r => r.status === 404 ? { error: "server Home cũ chưa có lệnh này: tắt và bật lại tools/home/start.bat" } : r.json()));
+          if (!j.ok) throw new Error(j.error);
+          ST.closeDialog(); ST.toast("Đã tạo anim " + j.id); if (ST.ws !== "pose") ST.setWS("pose"); clipsP = null; clips = null; await loadClips(); goClip(j.id);
+        } catch (e) { err.textContent = "Không tạo được: " + (e.message || e); ok.disabled = false; ok.textContent = "Tạo anim"; }
+      };
+    });
+  } });
+  // Xoá anim (user 2026-10-29 "Thêm nút xoá"): hỏi lại, server chuyển anim vào work/_trash/<anim>_<giờ>/ (khôi phục được), không xoá hẳn
+  M.deleteClip = id => {
+    const c = (clips || []).find(x => x.id === id) || { id, name: id, versions: "?" };
+    ST.dialog("Xoá anim", `<div style="display:grid;gap:8px;max-width:380px">
+      <p style="margin:0">Xoá <b>${esc(c.name)}</b> (${c.versions} bản)? Anim biến mất khỏi Studio, Home, Pose Lab và Review Lab.</p>
+      <p class="note" style="margin:0">Không xoá hẳn: mọi thứ của anim (sổ clip, phiên bản, key, ghi chú, video, thư mục) được chuyển vào <code>work/_trash/</code>, nhờ Claude khôi phục được.</p>
+      <p class="s-bad" id="daErr" style="margin:0"></p>
+      <div class="row" style="gap:8px;justify-content:flex-end"><button id="daNo">Huỷ</button><button class="on" id="daOk" style="background:var(--bad,#c0392b);border-color:transparent">Xoá anim</button></div></div>`, b => {
+      const ok = b.querySelector("#daOk"); b.querySelector("#daNo").onclick = () => ST.closeDialog(); ok.focus();
+      ok.onclick = async () => {
+        ok.disabled = true; ok.textContent = "Đang xoá…";
+        try {
+          const j = await fetch("/api/clip/studio-delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
+            .then(r => r.status === 404 ? { error: "server Home cũ chưa có lệnh này: tắt và bật lại tools/home/start.bat" } : r.json());
+          if (!j.ok) throw new Error(j.error);
+          ST.closeDialog(); ST.toast("Đã xoá " + c.name + " (chuyển vào " + j.id.trash + ")");
+          if (clipInfo && clipInfo.id === id) {   // đang mở anim vừa xoá: sang anim khác của nhân vật, hết thì về cảnh không có anim
+            const next = (clips || []).find(x => x.id !== id); ST.pref.set(prefKey(), next ? next.id : null);
+            clipsP = null; clips = null; await loadClips();
+            if (next) goClip(next.id); else { const u = new URL(location.href); u.searchParams.delete("clip"); location.href = u; }   // hết anim: về cảnh không có anim
+          } else { clipsP = null; clips = null; loadClips().then(() => { fillPicker(); ST.refresh(); }); }
+        } catch (e) { b.querySelector("#daErr").textContent = "Không xoá được: " + (e.message || e); ok.disabled = false; ok.textContent = "Xoá anim"; }
+      };
+    });
+  };
+  ST.cmd({ id: "pose.delete", menu: "Animate", label: "Xoá anim này…", icon: "trash", on: () => !!clipInfo, run: () => M.deleteClip(clipInfo.id) });
   ST.cmd({ id: "pose.clip", menu: "Animate", label: "Đổi anim…", icon: "pose", global: true, run: async () => {
     await loadClips();
-    ST.dialog("Mở anim", (clips || []).length ? `<div class="list">${clips.map(c => `<button class="it" data-id="${esc(c.id)}">${ic("pose")}<span>${esc(c.name)}</span><small>${c.versions} bản · ${esc(c.stage)}</small></button>`).join("")}</div>` : '<p class="note">Chưa có anim nào.</p>', b => { b.onclick = e => { const x = e.target.closest("[data-id]"); if (x) goClip(x.dataset.id); }; });
+    ST.dialog("Mở anim", (clips || []).length ? `<div class="list">${clips.map(c => `<button class="it" data-id="${esc(c.id)}">${ic("pose")}<span>${esc(c.name)}</span><small>${c.versions} bản · ${esc(c.stage)}</small></button>`).join("")}</div>` : '<p class="note">Chưa có anim nào.</p>', b => { b.onclick = e => { const x = e.target.closest("[data-id]"); if (x) { ST.closeDialog(); goClip(x.dataset.id); } }; });
   } });
 })();

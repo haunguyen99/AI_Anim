@@ -31,8 +31,15 @@ Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã củ
    powershell -ExecutionPolicy Bypass -File tools\setup.ps1
    ```
    Lệnh này tạo `.venv` và cài các thư viện trong `requirements.txt`.
+   Nó cũng tạo nhánh làm việc **`master`** trên máy (từ `main`) và chuyển sang đó; máy cài từ trước sẽ tự tạo ở lần mở Home kế tiếp (`tools\home\start.bat`). Xem [Nhánh git](#nhánh-git).
 4. **Mở thư mục trong Claude Code.** Các skill trong `.claude/skills` tự có sẵn, không cần cài thêm.
 5. **Mở Home:** gõ `/project` trong Claude Code, hoặc bấm đúp `tools\home\start.bat` (tự mở http://127.0.0.1:8780 = Studio; dự án ở /home). Các Lab cần mạng (tải three.js từ CDN). ffmpeg có thì playblast được nén lại để tua mượt; không có thì vẫn dùng được.
+
+## Nhánh git
+
+- **`master`**: nhánh làm việc của từng máy, chứa cả dữ liệu (model, video, kho key). Chỉ nằm trên máy, **không bao giờ đẩy lên GitHub**. Được tạo tự động từ `main` (`tools/ensure_master.py`, chạy trong `setup.ps1` và `start.bat`; máy đã có `master` thì bỏ qua).
+- **`main`** (GitHub): chỉ mã nguồn. Lấy mã mới của team về `master`: `git pull origin main`. Đẩy mã nguồn: `/push` (dựng commit từ `origin/main`, đứng nhánh nào cũng được, không kéo dữ liệu theo).
+- **`spine-live`** (GitHub): chỉnh sửa Spine Live, đẩy bằng `/push` (`--spine-live`).
 
 ## Bắt đầu dùng
 

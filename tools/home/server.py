@@ -431,6 +431,80 @@ def rig_to_pose(b):
     return ver
 
 
+def studio_new_clip(b):
+    """Studio Animate → Anim mới…: đăng ký anim cho nhân vật Studio (?char=<id>) như Home, rồi tạo phiên bản Pose đầu tiên
+    (p0_v1, dạng key, frame 1 = pose đứng) từ rig hiện tại (glTF do trang dựng) để anim mở được ngay trong Studio."""
+    d = load(); cid = (b.get("char") or "").strip()
+    names = [n for n in (d.get("characters") or {}) if rig_page_of(n, d, "mesh") == cid or n.lower() == cid.lower()]
+    used = {c["character"] for c in d["clips"]}
+    ch = next((n for n in names if n in used), names[0] if names else (b.get("name") or cid))
+    if not ch:
+        raise ValueError("Thiếu nhân vật")
+    if not b.get("gltf"):
+        raise ValueError("Thiếu model của rig")
+    nid = new_clip({"character": ch, "clip": b.get("clip"), "frames": b.get("frames"), "fps": b.get("fps"), "desc": b.get("desc", ""), "ref": ""})
+    d = load(); c = clip_of(d, nid); p = c["pose"]
+    c["note"] = "Tạo từ Studio (Animate → Anim mới): P0 từ rig hiện tại, chờ phân tích / blocking"; save(d)
+    frames = int(b["frames"]) if str(b.get("frames", "")).isdigit() and int(b["frames"]) > 0 else 1
+    mdir = os.path.join(ROOT, "work", "pose_lab", "models"); os.makedirs(mdir, exist_ok=True)
+    fn = "%s_rig_v1.json" % safe(p["clip"]).lower()
+    with open(os.path.join(mdir, fn), "w", encoding="utf8") as f:
+        json.dump(b["gltf"], f, separators=(",", ":"))
+    run_registry("pose-version", nid, "--version", "p0_v1", "--label", "P0 từ rig Studio", "--glb", "models/" + fn, "--frames", str(frames),
+                 "--fps", str(c.get("fps") or 30), "--keys", "1", "--mode", "keys", "--note", "Tạo từ Studio (Animate → Anim mới): frame 1 = pose đứng của rig hiện tại.")
+    run_registry("stage", nid, "p0")
+    run_registry("build")
+    return nid
+
+
+def studio_delete_clip(b):
+    """Studio → Xoá anim: không xoá hẳn mà chuyển mọi thứ của anim vào work/_trash/<anim>_<giờ>/ (khôi phục được):
+    mục trong clips.json (clip.json), dòng phiên bản Pose / Review (lines.json), trang Pose / Review, model, video, kho key / ghi chú,
+    thư mục work/<dự án>/<anim>. Thứ dùng chung với anim khác (tên clip Review trùng, model, thư mục chung) được giữ nguyên."""
+    d = load(); c = clip_of(d, b.get("id")); others = [x for x in d["clips"] if x is not c]
+    T = os.path.join(ROOT, "work", "_trash", "%s_%s" % (safe(c["id"]), time.strftime("%Y%m%d-%H%M%S")))
+    os.makedirs(T, exist_ok=True); moved = []
+
+    def move(rel):
+        src = os.path.join(ROOT, *rel.split("/"))
+        if os.path.exists(src):
+            dst = os.path.join(T, "files", *rel.split("/")); os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.move(src, dst); moved.append(rel)
+
+    lines = {}
+    for lab, marker, kind in (("pose_lab", "const POSES = [", "pose"), ("review_page", "const CLIPS = [", "review")):
+        name = (c.get(kind) or {}).get("clip")
+        if not name or any((x.get(kind) or {}).get("clip") == name for x in others):
+            continue   # tên clip dùng chung với anim khác: không đụng dòng phiên bản
+        P = os.path.join(ROOT, "work", lab, "index.html"); src = open(P, "rb").read().decode("utf8")
+        i = src.index(marker); j = src.index("\n];", i)
+        tag = "{ clip: " + json.dumps(name, ensure_ascii=False) + ","
+        body = src[i:j].split("\n"); mine = [l for l in body if l.strip().startswith(tag)]
+        if not mine:
+            continue
+        lines[kind] = mine
+        rest = src[:i] + "\n".join(l for l in body if not l.strip().startswith(tag)) + src[j:]
+        open(P, "wb").write(rest.encode("utf8"))
+        for l in mine:   # model / video / ảnh của các dòng này, nếu không dòng nào khác dùng
+            for f in re.findall(r'(?:glb|src|thumb): "([^"]+)"', l):
+                if '"' + f + '"' not in rest:
+                    move("work/%s/%s" % (lab, f))
+        key = (c.get(kind) or {}).get("key")
+        if key:
+            move("work/%s/pages/%s" % (lab, key))
+    for kind in ("pose", "review"):   # kho key / ghi chú (<tiêu đề trang>_pose_lab, _review_lab)
+        t = (c.get(kind) or {}).get("title")
+        if t:
+            move("work/store/" + pose_data.slug(t))
+    dr = c.get("dir")
+    if dr and dr.startswith("work/") and dr.count("/") >= 2 and not any(x.get("dir") == dr for x in others):
+        move(dr)
+    with open(os.path.join(T, "clip.json"), "w", encoding="utf8") as f:
+        json.dump({"clip": c, "lines": lines, "moved": moved, "deleted": time.strftime("%Y-%m-%d %H:%M:%S")}, f, ensure_ascii=False, indent=1)
+    d["clips"] = others; save(d)
+    return {"trash": os.path.relpath(T, ROOT).replace("\\", "/"), "moved": moved, "lines": {k: len(v) for k, v in lines.items()}}
+
+
 def playblast_to_review(b):
     """Pose Lab → Review Lab: lưu video playblast, nén lại bằng ffmpeg (có thể tua), đăng ký version Review và build lại trang."""
     d = load(); c = clip_of(d, b.get("clip")); r = c.get("review") or {}
@@ -507,7 +581,7 @@ def scene_open(b):
     return scene_file.open_scene(base64.b64decode(b.get("zip_b64") or ""), dry=bool(b.get("dry")))
 
 
-ROUTES = {"/api/scene/open": scene_open, "/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip,
+ROUTES = {"/api/scene/open": scene_open, "/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip, "/api/clip/studio-new": studio_new_clip, "/api/clip/studio-delete": studio_delete_clip,
           "/api/clip/update": update_clip, "/api/project/update": update_project}
 
 

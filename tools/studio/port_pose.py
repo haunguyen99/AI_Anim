@@ -6,7 +6,7 @@ OrbitControls / TransformControls / vòng vẽ / kho lưu bằng của Studio (�
 từ HTML gốc (POSE_HTML) rồi modules/pose.js đặt từng khối vào vùng của Studio (shelf, dock, timeline, lớp phủ viewport).
 Chạy lại khi Pose Lab đổi:  python tools/studio/port_pose.py   (mỗi phép thay có assert).
 """
-import json, os, re
+import json, os, re, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 SRC = os.path.join(ROOT, "work", "pose_lab", "index.html")
@@ -39,7 +39,7 @@ studio_ids = set(re.findall(r'id="([^"]+)"', open(os.path.join(ROOT, "tools", "s
 studio_ids |= {"panel", "jbox", "empty", "emptyList"}
 body, _ = between(t, "</style>", "<script src=")
 pose_ids = set(re.findall(r'id="([^"]+)"', body))
-RENAME = {i: "p_" + i for i in pose_ids & studio_ids if i not in ("cv",)}
+RENAME = {i: "p_" + i for i in sorted(pose_ids & studio_ids) if i not in ("cv",)}
 
 
 def ren_ids(s):
@@ -280,5 +280,12 @@ function sampleBones(f, names) {
 }
 // ---- API cho cầu nối AI""", 1)
 out = head + m + "\n" + tail + foot
+# bản vá Studio (tools/studio/pose_patches.py): áp sau cùng, mỗi đoạn cũ phải có đúng một lần
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from pose_patches import PATCHES  # noqa: E402
+for i, (old, new) in enumerate(PATCHES):
+    if out.count(old) != 1:
+        raise SystemExit("pose_patches.py mục %d: đoạn cũ có %d lần (cần đúng 1): Pose Lab gốc đã đổi chỗ này, sửa lại mục đó: %r" % (i, out.count(old), old[:120]))
+    out = out.replace(old, new, 1)
 open(OUT_JS, "w", encoding="utf8", newline=chr(10)).write(out)
 print(len(out) // 1024, "KB ->", OUT_JS, "|", len(pcss) // 1024, "KB css | đổi id:", RENAME)
