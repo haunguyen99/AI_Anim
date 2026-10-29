@@ -300,7 +300,7 @@
   {
    "id": "sdr03_shoot",
    "character": "SDR03",
-   "stage": "blocking",
+   "stage": "spline",
    "note": "Blocking b1 (12F stepped) chờ duyệt",
    "review": {
     "key": "sdr03_shoot",

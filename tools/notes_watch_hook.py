@@ -35,7 +35,7 @@ def main():
     msg = ("Studio / Key Pose đang mở nhưng chưa có bộ canh ghi chú vẽ. Trước việc khác, bật nó nền (Bash, run_in_background): "
            "`.venv/Scripts/python.exe -I tools/notes_watch.py`. Khi nó thoát và in danh sách ghi chú: làm theo /check_fb "
            "(phần Studio notes), sửa, `studio_cmd.py note-done`; mục kind rig_gate (Duyệt / Cần sửa một bước Rig) thì theo /rig mục 2 Studio: "
-           "duyệt = tự làm bước kế, cần sửa = sửa bước đó, xong `studio_cmd.py gate-done`; mục kind keypose_req (trang Key Pose xin thêm ảnh) thì viết lại phần sửa bằng tiếng Anh rồi chạy nền `tools/keypose_gen.py <id> --extra '...'` (knowledge/details/gdd_stage0.md G4b); rồi bật lại bộ canh. Không cần báo người dùng việc bật.")
+           "duyệt = tự làm bước kế, cần sửa = sửa bước đó, xong `studio_cmd.py gate-done`; mục kind keypose_req (trang Key Pose xin thêm ảnh) thì viết lại phần sửa bằng tiếng Anh rồi chạy nền `tools/keypose_gen.py <id> --extra '...'` (knowledge/details/gdd_stage0.md G4b); mục kind pose_adjust (góp ý tab Góp ý cho AI của Pose, đọc đủ ở work/store/<ns>/adjusts) thì sửa thành version mới như /check_fb rồi `tools/notes_watch.py --pose-done <ns> <clip> <version> \"ghi chú\"`; rồi bật lại bộ canh. Không cần báo người dùng việc bật.")
     sys.stdout.reconfigure(encoding="utf-8")
     print(json.dumps({"hookSpecificOutput": {"hookEventName": ev, "additionalContext": msg}}, ensure_ascii=False))
     return 0
