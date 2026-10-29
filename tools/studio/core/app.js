@@ -12,10 +12,33 @@
   ST.on = (n, f) => { (L[n] || (L[n] = [])).push(f); };
   ST.emit = (n, ...a) => { (L[n] || []).forEach(f => { try { f(...a); } catch (e) { console.error(e); } }); };
 
-  // ---- cài đặt riêng máy này
+  // ---- cài đặt riêng máy này, lưu về Home server (user 2026-10-29 "mọi thay đổi layout, UI setting chưa được lưu, load lại là về mặc định"):
+  // work/store/studio_prefs/prefs/local.json là bản gốc; localStorage chỉ là bản đệm. Mở Studio ở trình duyệt nào, bằng localhost hay 127.0.0.1
+  // (hai kho localStorage khác nhau), hay trình duyệt không giữ localStorage, đều nhận cùng bộ cài đặt. Đồng bộ cả khoá của lõi Pose
+  // (poselab:, pl:, plsec:) vì lõi ghi thẳng localStorage. Nạp đồng bộ trước khi module nào đọc cài đặt.
+  const PREF_URL = "/api/store/studio_prefs/prefs/local", PREF_RX = /^(studio:|poselab:|pl:|plsec:)/, PM = {};
+  const lsOK = (() => { try { const k = "studio:__t"; localStorage.setItem(k, "1"); localStorage.removeItem(k); return true; } catch (e) { return false; } })();
+  let prefSrv = false;
+  try {
+    const x = new XMLHttpRequest(); x.open("GET", PREF_URL, false); x.send();
+    if (x.status === 200) { prefSrv = true; const d = (JSON.parse(x.responseText) || {}).data || {};
+      for (const k of Object.keys(d)) if (PREF_RX.test(k) && typeof d[k] === "string") { PM[k] = d[k]; if (lsOK) try { localStorage.setItem(k, d[k]); } catch (e) {} } }
+  } catch (e) {}
+  if (lsOK) for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (PREF_RX.test(k) && !(k in PM)) PM[k] = localStorage.getItem(k); }   // khoá chỉ có ở trình duyệt này: giữ, gửi lên
+  let prefT = 0;
+  const prefFlush = () => { clearTimeout(prefT); prefT = 0; if (!prefSrv) return; try { fetch(PREF_URL, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(PM), keepalive: true }).catch(() => {}); } catch (e) {} };
+  const prefPush = () => { clearTimeout(prefT); prefT = setTimeout(prefFlush, 400); };
+  if (lsOK) {   // lõi Pose / module khác ghi thẳng localStorage: bắt lại để lưu về server
+    const S = Storage.prototype, set0 = S.setItem, rm0 = S.removeItem;
+    S.setItem = function (k, v) { set0.call(this, k, v); if (this === localStorage && PREF_RX.test(k)) { PM[k] = String(v); prefPush(); } };
+    S.removeItem = function (k) { rm0.call(this, k); if (this === localStorage && PREF_RX.test(k) && k in PM) { delete PM[k]; prefPush(); } };
+  }
+  addEventListener("pagehide", () => { if (prefT) prefFlush(); });
+  if (prefSrv) prefPush();
   ST.pref = {
-    get(k, d) { try { const v = localStorage.getItem("studio:" + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem("studio:" + k, JSON.stringify(v)); } catch (e) {} },
+    get(k, d) { const v = PM["studio:" + k]; if (v == null) return d; try { return JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { const kk = "studio:" + k, s = JSON.stringify(v); PM[kk] = s; if (lsOK) { try { localStorage.setItem(kk, s); } catch (e) {} } else prefPush(); },
+    server: () => prefSrv,
   };
 
   // ---- icon (nét 24×24, cùng kiểu với các Lab)
