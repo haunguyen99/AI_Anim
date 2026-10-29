@@ -91,6 +91,11 @@
     return {
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
       cam: () => V.active.cam, alive, liveModel, setOrtho: on => V.setOrtho(on),
+      panes: {   // nút [ ] của thanh Pose = lệnh Cửa sổ → Outliner / Dock phải của Studio
+        toggle: k => ST.run(k === "list" ? "win.outliner" : "win.dock"),
+        on: k => !document.body.classList.contains(k === "list" ? "noout" : "nodock"),
+        onChange: f => new MutationObserver(f).observe(document.body, { attributes: true, attributeFilter: ["class"] }),
+      },
       scenes: (s, o) => { scenes = { scene: s, overlay: o }; if (ST.layerOn.anim) V.extra = scenes; },
       resize: () => V.resize(), renderNow: () => V.renderNow(),
       onFrame: f => V.onFrame(now => { if (ST.layerOn.anim && parts && parts.overlay.isConnected) f(now); }),   // lớp hiện là chạy (phát anim cả khi đang sửa thứ khác)

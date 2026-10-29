@@ -3512,9 +3512,17 @@ function applyPanes() {
   try { localStorage.setItem("poselab:panes", JSON.stringify(PANES)); } catch {}
   window.dispatchEvent(new Event("resize"));
 }
-$("tList").onclick = () => { PANES.list = !PANES.list; applyPanes(); };
-$("tSide").onclick = () => { PANES.side = !PANES.side; applyPanes(); };
-applyPanes();
+if (host.panes) {   // Studio (user 2026-10-29 "hai nút này đang không hoạt động"): [ = cột trái (Outliner / Phiên bản), ] = dock phải của Studio
+  const sync = () => { $("tList").classList.toggle("on", host.panes.on("list")); $("tSide").classList.toggle("on", host.panes.on("side")); };
+  $("tList").onclick = () => { host.panes.toggle("list"); sync(); };
+  $("tSide").onclick = () => { host.panes.toggle("side"); sync(); };
+  $("tList").title = "Ẩn / hiện cột trái (Outliner, Phiên bản) ( [ )"; $("tSide").title = "Ẩn / hiện dock phải (Khớp, Vật lý, Góp ý cho AI) ( ] )";
+  host.panes.onChange(sync); sync();
+} else {
+  $("tList").onclick = () => { PANES.list = !PANES.list; applyPanes(); };
+  $("tSide").onclick = () => { PANES.side = !PANES.side; applyPanes(); };
+  applyPanes();
+}
 
 // ---------------------------------------------------------------- vẽ ghi chú trên viewport (một ảnh mỗi lần lưu, tải lên assets)
 const DV = { on: false, color: "#ff4d4d", strokes: [], cur: null };

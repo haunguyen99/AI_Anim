@@ -59,6 +59,8 @@ body.noout #main{grid-template-columns:44px 0 0 minmax(0,1fr) 5px var(--dockW,32
 body.nodock #main{grid-template-columns:44px var(--olW,240px) 5px minmax(0,1fr) 0 0}
 body.noout.nodock #main{grid-template-columns:44px 0 0 minmax(0,1fr) 0 0}
 body.nodock #dock,body.nodock #splitR{display:none}
+/* cột cố định: ẩn Outliner (display:none) không làm viewport / dock dồn sang cột khác (user 2026-10-29, nút [ của thanh Pose) */
+@media (min-width:901px){#toolbox{grid-column:1}#outliner{grid-column:2}#splitO{grid-column:3}#vp{grid-column:4}#splitR{grid-column:5}#dock{grid-column:6}#main>*{grid-row:1}}
 #toolbox{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;overflow-y:auto}
 #toolbox button{width:34px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-color:transparent;background:transparent;flex:none}
 #toolbox button:hover:not(:disabled){background:var(--hover)}
