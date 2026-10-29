@@ -143,11 +143,43 @@
   // Ẩn / hiện mesh (mắt Outliner, Ctrl+H) là của mesh trong Cảnh, áp sang lõi Rig theo tên.
   function syncVis() {
     if (!eng) return; const g = eng.get(), on = n => { const o = ST.mods.mesh.byName(n); return !o || o.vis; };
-    g.vis.body = on(g.DATA.body.name); g.vis.cloth = (g.DATA.clothes || []).length ? g.DATA.clothes.some(c => on(c.name)) : g.vis.cloth;
+    g.vis.body = on(g.DATA.body.name); g.vis.cloth = (g.DATA.clothes || []).length ? g.DATA.clothes.some(c => on(c.name)) : g.vis.cloth; g.vis.clothI = (g.DATA.clothes || []).map(c => on(c.name));
     (g.DATA.props || []).forEach((p, i) => { g.vis.props[i] = on(p.name); });
   }
   M.syncVis = () => { syncVis(); if (eng) eng.syncScene(); };
-  M.focusIn = () => { if (root) root.visible = act(); ensure().then(() => { if (root) root.visible = act(); if (eng && ST.focus === "rig") { syncVis(); eng.setMode(TOOL2MODE[ST.tool] || "select"); eng.syncScene(); } ST.refresh(); }); };
+  // ---- texture trên mesh của lõi Rig (user 2026-10-29: "Gắn texture"): lớp phủ không chỉ số, UV theo góc tam giác lấy từ mesh cùng tên trong Cảnh,
+  // vị trí chép từ hình lõi Rig đang vẽ mỗi khi đổi (đi theo pose thử). Thân ở bước 4 (tô skin) và khi xem độ giãn ở bước 5 thì bỏ phủ để thấy màu.
+  function texOverlay(m, name, isSkin, isCloth) {
+    if (!m || m.userData.texO) return;
+    const o = ST.mods.mesh.byName(name), I = m.geometry.index; if (!o || !o.uvc || !I || o.uvc.length !== I.count * 2) return;
+    const n = I.count, g = new THREE.BufferGeometry();
+    // normal tạo sẵn trước lần vẽ đầu: thêm thuộc tính sau khi đã vẽ thì three r128 không gắn nó (Lambert ra đen)
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(n * 3), 3)); g.setAttribute("normal", new THREE.BufferAttribute(new Float32Array(n * 3), 3));
+    g.setAttribute("uv", new THREE.BufferAttribute(Float32Array.from(o.uvc), 2));
+    const copy = () => { const pa = m.geometry.attributes.position, src = pa.array, ix = m.geometry.index.array, P = g.attributes.position.array; t.userData.v = pa.version;
+      for (let k = 0; k < n; k++) { const v = 3 * ix[k]; P[3 * k] = src[v]; P[3 * k + 1] = src[v + 1]; P[3 * k + 2] = src[v + 2]; }
+      g.attributes.position.needsUpdate = true; g.computeVertexNormals(); g.computeBoundingSphere(); };
+    // vật liệu tạo khi đã có texture (đổi map giữa lúc vẽ không dựng lại shader kịp), mỗi texture một vật liệu
+    const mats = new Map(), matOf = tex => { if (!mats.has(tex)) mats.set(tex, new THREE.MeshLambertMaterial({ map: tex, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 })); return mats.get(tex); };
+    const tex0 = ST.mods.mesh.texture && ST.mods.mesh.texture();
+    const t = new THREE.Mesh(g, tex0 ? matOf(tex0) : new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false })); t.raycast = () => {}; copy(); m.add(t); m.userData.texO = t;
+    t.onBeforeRender = () => {
+      const tex = ST.mods.mesh.texture && ST.mods.mesh.texture(), st = eng ? eng.get() : null;
+      const on = !!tex && !(st && ((isSkin || isCloth) && st.step === 4 || isSkin && st.strainOn));
+      if (tex && t.material.map !== tex) t.material = matOf(tex);
+      t.material.colorWrite = on; t.material.depthWrite = on; if (!on) return;
+      if (t.userData.v !== m.geometry.attributes.position.version) copy();
+    };
+  }
+  function rigTex() {
+    if (!eng || !eng.meshes) return; const R = eng.meshes();
+    texOverlay(R.body, R.names.body, false); texOverlay(R.skin, R.names.body, true);
+    R.cloth.forEach((m, i) => texOverlay(m, R.names.cloth[i], false, true)); R.props.forEach((m, i) => texOverlay(m, R.names.props[i], false));
+  }
+  // mesh nào lõi Rig tự vẽ (chưa nạp lõi = coi như tất cả, tránh vẽ đôi thân); mesh còn lại Cảnh vẫn hiện khi focus Rig
+  M.owns = n => { if (!eng) return true; const D = eng.get().DATA; return n === D.body.name || (D.clothes || []).some(c => c.name === n) || (D.props || []).some(p => p.name === n); };
+  const meshVis = () => { const m = ST.mods.mesh; if (m && m.display && ST.focus === "rig") m.layer(); };
+  M.focusIn = () => { if (root) root.visible = act(); ensure().then(() => { if (root) root.visible = act(); if (eng && ST.focus === "rig") { syncVis(); eng.setMode(TOOL2MODE[ST.tool] || "select"); eng.syncScene(); meshVis(); rigTex(); } ST.refresh(); }); };
   M.focusOut = () => { if (root) root.visible = false; V.gizmo.detach(); ST.rigSetup.hide(); };
   ST.on("layer", () => { if (root) root.visible = act(); });
   ST.on("ws", () => { if (eng) syncTab(step()); });   // đổi workspace: tab Rig theo bước đang làm, không kéo lõi về bước của tab cũ

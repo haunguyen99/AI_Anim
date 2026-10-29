@@ -17,6 +17,14 @@ Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace 
           anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
           anim pos Root_M 0,0,-5              # dời thêm (cm, trục Blender, Z lên); hông / cổ chân / cổ tay theo IK
           anim key [f] | anim unkey [f] | anim versions | anim version v3
+          anim playblast [right,front,top | view] [--dist 1] [--label "…"] [--note "…"]   # quay bản đang mở, gửi sang Review Lab (thêm version pbN); view = camera viewport đang đặt, ô theo tỉ lệ khung
+  Vật thể phụ của anim (mũi tên, hình nộm: key riêng, thấy khi phát + playblast, không vào FBX; cm, trục Blender, Z lên):
+          obj list [f] | obj read <tên> [f]                                   # vị trí, hướng (fwd = trục --axis), cha, key
+          obj add <tên> --mesh MC_char_map1_V2_VK_bow [--bone slingshot_1|world] [--f 1] [--keep-src]   # bản sao mesh ở frame đang xem
+          obj add dummy --capsule 25,180 --at 0,-500,0 | obj add box1 --box 20,20,20 --at x,y,z [--bone B] [--color #hex]
+          obj key <tên> <f> [--at x,y,z] [--move x,y,z] [--along cm] [--rot x,y,z] [--aim x,y,z] [--par B|world] [--interp step|linear|spline] [--hide|--show]
+          obj parent <tên> <xương|world> <f>     # key ở f với cha mới, giữ nguyên chỗ (gắn / thả)
+          obj unkey <tên> <f> | obj set <tên> [--interp …] [--axis +z] [--rename X] [--hide-src on|off] [--off on|off] | obj del <tên> | obj select [tên]
   Cổng duyệt Rig (nút Duyệt / Cần sửa): gate-done <chữ trong tên kho> <bước> ["việc đã làm"]   # trang hiện "AI đã xong"
   Ghi chú vẽ (nút ✎ trong viewport): notes [chữ trong tên kho] [--all] [--out DIR]   # in ghi chú đang mở + ghi ảnh (đọc thẳng work/store/*_studio)
           note-done <id> [--open]                                                    # đánh dấu đã sửa (hoặc mở lại)
@@ -120,6 +128,31 @@ def gate_done(rest):
     print(json.dumps({"ok": True, "step": int(n), "status": g.get("status")}, ensure_ascii=False)); return 0
 
 
+def obj_args(rest):
+    """obj <do> [tên] [f] [--cờ giá-trị …] → args của lệnh obj (modules/props.js)."""
+    d = (rest[0] if rest else "list").lower(); a = {"do": d}; pos = []; i = 1
+    VEC = {"at", "move", "rot", "aim", "box", "capsule", "size"}
+    FLAG = {"--hide": ("vis", False), "--show": ("vis", True), "--keep-src": ("hideSrc", False)}
+    while i < len(rest):
+        x = rest[i]
+        if x in FLAG: k, v = FLAG[x]; a[k] = v; i += 1; continue
+        if x.startswith("--"):
+            k, v = x[2:], rest[i + 1]; i += 2
+            k = {"hide-src": "hideSrc", "parent": "par"}.get(k, k)
+            if k in VEC: a[k] = vec(v)
+            elif k in ("along", "f"): a[k] = float(v)
+            elif k in ("hideSrc", "off"): a[k] = v.lower() in ("on", "1", "true", "yes")
+            else: a[k] = v
+            continue
+        pos.append(x); i += 1
+    if d in ("list",) and pos: a["f"] = int(pos[0])
+    elif pos:
+        a["name"] = pos[0]
+        if d == "parent" and len(pos) > 1: a["par"] = pos[1]; pos = pos[1:]
+        if len(pos) > 1: a["f"] = int(pos[1])
+    return a
+
+
 def main(argv):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -207,7 +240,14 @@ def main(argv):
         elif d in ("key", "unkey") and r: a = {"f": int(r[0])}
         elif d == "version": a = {"v": r[0]}
         elif d == "clip": a = {"id": r[0]}
-        res = call("anim", dict(a, do=d), timeout=90)
+        elif d == "playblast":
+            opt = lambda k: r[r.index(k) + 1] if k in r and r.index(k) + 1 < len(r) else None
+            pos = [x for i, x in enumerate(r) if not x.startswith("--") and (i == 0 or not r[i - 1].startswith("--"))]
+            a = {"cams": pos[0].split(",") if pos else None, "label": opt("--label"), "note": opt("--note"), "dist": opt("--dist"),
+                 "cw": opt("--cw"), "ch": opt("--ch")}
+        res = call("anim", dict(a, do=d), timeout=300 if d == "playblast" else 90)
+    elif op == "obj":
+        res = call("obj", obj_args(rest), timeout=90)
     elif op == "cmds":
         res = call("cmds", {"q": " ".join(rest)})
     elif op == "open":

@@ -10,7 +10,10 @@ xoắn → `arms_hands.md#shoulder-compression`; spline tay IK, review từ phí
 SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
 - **Đọc file anim có sẵn của team trước** (`Assets/_Game/Animations/<Map>/*_shoot.fbx`): nó cho cách cầm prop, vị trí dây/chốt,
   nhịp của team. P0 v1 lấy F0 của nó (báng tì vai, ngực mở 68° ra cam, nỏ ngang yaw 0). Ghi rõ là lấy từ file team.
-- Nỏ: `slingshot_0` con `Wrist_L` (tay trái mang nỏ), dây + tên trên `slingshot_1`: chốt z≈0, bật ra z≈+22 cm trong hệ nỏ.
+- Nỏ: `slingshot_0` con `Wrist_L` (tay trái mang nỏ), mũi tên (mesh `_bow`) trên `slingshot_1`; dây nằm trong mesh `_crossbow`:
+  8 đỉnh giữa trên `slingshot_1`, hai đầu trên cánh cung (`slingshot_0`). Chốt z≈0; **dây thẳng (nghỉ) ở z≈+26,4, y +2,6 cm**
+  trong hệ nỏ (đo trên mesh, b6), không phải +22 (số đọc từ file team làm giữa dây còn gập chữ V, ghi chú b5 "dây cung ở
+  trạng thái nghỉ chưa được thẳng"). Đo bằng mesh: giữa dây (đỉnh `slingshot_1`) phải trùng đường nối đầu hai cánh.
 - **Rig Studio làm mất xương phụ**: `rig.useFbx` chỉ giữ 25 xương thân (bỏ prop, tóc, root). Clip có prop/tóc trên rig team thì
   dựng bằng `sdr03/rigpose.py` trên khung xương FBX gốc; Pose Lab cần bộ chuyển FBX → model giữ đủ xương (chưa có, việc trước blocking).
 
@@ -19,6 +22,36 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
   Δ·G0 sau IK. Key có Δ = 0 (F1, F12) giữ nguyên tay P0 (IK giải lại lệch ~2 mm). Chọn chiều trục hếch một lần rồi dùng góc có
   dấu (bản đầu tự lật dấu → F7 "chúc −1°" thành hếch +1°). Xoay ngực 3° chỉ lùi vai phải ~1,8 cm: muốn vai lùi nhiều hơn phải
   dời bả vai, không tăng xoay ngực.
+- **b1 bị làm lại (2026-10-29, user: "Chốt f1. hãy blocking lại các frame khác"):** biên độ theo analysis (nỏ 6°, lùi 3,5 cm,
+  ngực 3,5°) ở cam game ngang trông như MỘT pose, không đọc ra lực. Blocking phải đọc được ở thumbnail cam game: b2 nỏ hếch
+  12°, lùi 7 cm, ngực ngả 6° (dưới mức 12° bị chê "giật về sau hơi nhiều"), bả vai phải dời lùi theo báng, thêm key lắng F9
+  (stepped F7→F12 đứng rồi bật). Số trong analysis là sàn, không phải trần: kiểm sheet key ở cam game, F2–F12 phải khác nhau
+  rõ bằng mắt. Kiểm báng/đầu: khoảng đầu–nỏ mọi key ≥ khoảng ở P0 đã duyệt (b2: 2,7–3,5 cm, P0 3,2).
+- **`rigpose.ik_arm` lật khớp tay 180° (b2, review F2/F7 "xoắn vặn", F4/F6 "sao lỗi này gặp nhiều thế", "lại lỗi này"):**
+  nó dựng lại tay từ đầu, đoán trục khuỷu = Z local và chọn chiều xoắn theo sai số nhỏ nhất, nên chọn nghiệm lật (vai/cổ tay
+  trái 180°, khuỷu phải 130° lật vào hông) dù cổ tay vẫn tới đích. Khi prop chỉ dời vài cm quanh pose đã duyệt, dùng IK ít đổi
+  nhất `shoot_block.ik_min`: gập khuỷu quanh CHÍNH trục gập hiện tại (pháp tuyến vai–khuỷu–cổ tay), vai xoay `rot_between`
+  góc nhỏ nhất, cổ tay lấy hướng đích. **Quét trước khi gửi:** góc xoay local của Shoulder/Elbow/Wrist mỗi key so với P0;
+  > 45° ở key dời nhỏ là lật khớp (b2: 157–180°, b3: ≤ 17°). Lỗi lặp lại nhiều lần vì trước đó chỉ đo vị trí cổ tay, không đo xoay.
+- **Nỏ/súng vác vai: GD muốn giật LÙI, không hếch (b3 → b4, 2026-10-29, "GD không muốn vũ khí giật lên trên quá nhiều.
+  thay vào đó là đẩy về sau nhiều hơn"):** đỉnh dư chấn hếch ≤ 4°, lùi theo nòng ~10 cm, bả vai bên báng lùi gần bằng nòng
+  (8 cm) để báng không lún vào vai. Mặc định cho vũ khí tì vai lần sau: lực đi dọc nòng ra sau, hếch chỉ phụ.
+- **Dây nỏ phải rung sau khi bắn (b4 → b5, ghi chú F5 "Phần dây cung đang hơi tĩnh"):** dây bật ra rồi đứng im đọc ra là chết
+  ngay từ blocking. Cho `slingshot_1` vượt điểm nghỉ ~5 cm ở frame bắn rồi tắt dần dấu đổi mỗi key (−4/+3/−1,5/+1/−0,4 cm dọc
+  nòng, ±1,5 cm lên xuống), xong trước frame cuối. Vật thể phụ (Studio `props`) theo phiên bản: bản mới chép
+  `work/store/<ns>/props/<clip>-<ver cũ>.json` sang tên mới, nếu không bản mới mất mũi tên/hình nộm.
+- **Spline s1 (2026-10-29, `sdr03/shoot_spline.py`, từ b6 đã duyệt):** dựng lại từ BẢNG THÔNG SỐ key (không nội suy xoay
+  từng khớp): mỗi cột = monotone cubic qua key (không vượt), mỗi bộ phận lấy mẫu trễ (ngực 0,5F, đầu 1,6F, tóc 2,2F, về 0 ở 3F
+  cuối), rồi `make_key` + IK ít đổi nhất ở MỌI frame nên tay bám nỏ ≤ 0,02 cm. **Bả vai bên báng không được trễ** (bị báng
+  đẩy: trễ 0,4F làm báng lún vai ở frame bắn). Quét mọi frame bằng scratchpad scan (lật khớp so P0, bước/F, trượt tay,
+  đầu–nỏ, tay–thân, báng–vai) so với blocking đã duyệt.
+- **Polish p1 (2026-10-29, từ s6 đã duyệt):** găng map3 là bao tay liền, chỉ `MiddleFinger1_*` có đỉnh (MF2 không), trục gập
+  = local y (trục găng gập sẵn ở P0; xác định bằng cross(cổ tay→MF1, MF1→MF2) trong hệ MF1). Bóp cò 8° (12° lấn báng thêm
+  0,3 cm), găng trái siết 8° khi giật; nỏ rung xoay quanh nòng (`make_key` spec[8], áp trước Δ để tay IK bám theo). Ở cam game
+  găng gần như không đọc được: đừng tốn vòng chỉnh ngón trên rig găng. Tên phiên bản s/p so chuỗi sai ("p1" < "s2"): dùng
+  `shoot_spline.level()`.
+- Bản mới đăng bằng `clip_registry.py pose-version` chưa có `work/store/<ns>/anims/<clip>-<ver>.json` nên Studio mở ở spline:
+  chép file của bản trước (đổi `version`) để giữ `interp: step`, rồi `studio_cmd.py anim clip <id>` cho trang tải lại.
 - Model Pose Lab cho rig team: `sdr03/poselab_model.py` (đủ xương + texture); khớp thêm của clip qua `clip_registry.py
   pose-version --names "slingshot_1=Dây nỏ,joint1_M=Bím tóc 1,…"`.
 

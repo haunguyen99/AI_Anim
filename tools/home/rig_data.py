@@ -41,6 +41,12 @@ def data(cid):
             body = next((m for m in json.load(open(os.path.join(ref, "ref_mesh.json"))) if m["name"] == d["body"]["name"]), None)
             if body and len(body["verts"]) == len(d["body"]["verts"]) and body.get("weights"):
                 d["refW"] = {k: [v[0], [round(x, 3) for x in v[1]]] for k, v in body["weights"].items()}
+            # mesh phụ (tóc, phụ kiện, nỏ) có skin khách: lõi Rig giữ trọng số đó thay vì suy theo đỉnh thân gần nhất
+            byn = {m["name"]: m for m in json.load(open(os.path.join(ref, "ref_mesh.json")))}
+            for c in d.get("clothes", []):
+                m = byn.get(c["name"])
+                if m and m.get("weights") and len(m["verts"]) == len(c["verts"]):
+                    c["refW"] = {k: [v[0], [round(x, 3) for x in v[1]]] for k, v in m["weights"].items()}
         except (OSError, ValueError, KeyError):
             pass
     return d

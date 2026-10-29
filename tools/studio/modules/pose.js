@@ -90,7 +90,15 @@
     };
     return {
       canvas, viewer: parts.viewer, renderer: V.renderer, orbit: V.orbit, gizmo: V.gizmo.tc,
-      cam: () => V.active.cam, alive, liveModel,
+      cam: () => V.active.cam, alive, liveModel, setOrtho: on => { if (V.active === V.panes.persp) V.setOrtho(on); },
+      gate: () => { const g = V.gate, p = V.active; if (!g || !g.on || !p) return null; const [a, b] = g.ratio.split(":").map(Number), A = a / b, w = Math.min(p.rect.w * 0.92, p.rect.h * 0.92 * A); return { A, frac: (w / A) / p.rect.h }; },   // playblast "Đang xem" quay đúng khung Gate
+      savedView: () => V.savedView(), applyView: sv => V.applyView(sv), camName: k => { V.camName = k; },   // nhớ góc camera qua reload
+      propKeys: () => ST.mods.props && ST.mods.props.selKeys ? ST.mods.props.selKeys() : null,   // timeline hiện key của vật thể phụ đang chọn
+      panes: {   // nút [ ] của thanh Pose = lệnh Cửa sổ → Outliner / Dock phải của Studio
+        toggle: k => ST.run(k === "list" ? "win.outliner" : "win.dock"),
+        on: k => !document.body.classList.contains(k === "list" ? "noout" : "nodock"),
+        onChange: f => new MutationObserver(f).observe(document.body, { attributes: true, attributeFilter: ["class"] }),
+      },
       scenes: (s, o) => { scenes = { scene: s, overlay: o }; if (ST.layerOn.anim) V.extra = scenes; },
       resize: () => V.resize(), renderNow: () => V.renderNow(),
       onFrame: f => V.onFrame(now => { if (ST.layerOn.anim && parts && parts.overlay.isConnected) f(now); }),   // lớp hiện là chạy (phát anim cả khi đang sửa thứ khác)
@@ -180,6 +188,7 @@
   M.hit = (x, y, p) => {
     if (!eng || !ST.layerOn.anim) return false;
     const g = eng.get(); if (!g.model) return false;
+    if (PR() && PR().hit(x, y, p)) return true;
     const w = new THREE.Vector3(), R = V.TM && V.TM.on ? 26 : 12;
     if (Object.values(g.markers).some(m => { if (!m.visible) return false; m.getWorldPosition(w); const s = V.toScreen(w, p); return s.z < 1 && Math.hypot(s.x - x, s.y - y) < R; })) return true;
     return V.raycaster(x, y, p).intersectObject(g.model, true).length > 0;
@@ -239,7 +248,12 @@
   };
   M.info = () => { if (!eng) return "Pose · " + ({ loading: "đang nạp", noclip: "chưa có anim", error: "lỗi" }[state] || ""); const g = eng.get(); return (clipInfo ? clipInfo.name : "") + " · " + (g.P ? g.P.version : "") + (eng.isLive() ? " · nhân vật hiện tại" : "") + " · F" + g.frame + "/" + (g.P ? g.P.frames : 1) + (g.sel ? " · " + g.sel : ""); };
   M.frameAll = () => { if (!eng || !eng.frameAll || !eng.get().model || !V.active.cam.isPerspectiveCamera) return false; eng.frameAll(); return true; };   // khung phối cảnh theo lõi Pose; khung trực giao dùng bounds
-  M.undo = () => eng && eng.undo(); M.canUndo = () => !!eng && eng.canUndo();
+  // vật thể phụ (modules/props.js) đang chọn: Hoàn tác đi vào vật thể trước
+  const PR = () => ST.mods.props;
+  M.undo = () => eng && eng.undo();   // bấm #undo của lõi; modules/props.js bắt trước nếu sửa cuối là vật thể phụ
+  M.canUndo = () => (PR() && PR().canUndo()) || (!!eng && eng.canUndo());
+  M.store = () => clipInfo ? modelStore() : null;   // kho Pose của anim (vật thể phụ lưu ở props/<clip>-<version>)
+  M.pointerDown = (e, p) => !!(PR() && ST.layerOn.anim && eng && eng.get().model && PR().pointerDown(e, p));
   M.bounds = selOnly => {   // vùng chọn: theo khớp; toàn bộ: lấy mẫu đỉnh mesh đã pose (đồ cầm tay như chùy vươn xa ngoài khớp)
     if (!eng || !eng.get().model) return null; const g = eng.get(), b = new THREE.Box3(), w = new THREE.Vector3();
     if (selOnly && g.selSet.size) { [...g.selSet].forEach(n => { const m = g.markers[n]; if (m) b.expandByPoint(m.getWorldPosition(w)); }); return b.isEmpty() ? null : b.expandByScalar(0.25); }
@@ -265,8 +279,9 @@
     walk(kids[""] || [], 0);
     return rows;
   };
-  M.olAct = (id, a, e) => {
+  M.olAct = (id, a, e, val) => {
     if (!eng) return; const n = String(id).slice(2);
+    if (String(id).startsWith("o:")) return PR() && PR().olAct(id, a, e, val);   // vật thể phụ
     if (a === "fold") { open.has(n) ? open.delete(n) : open.add(n); ST.pref.set("pose:open", [...open]); return; }
     const g = eng.get();
     if (ST.addSel(e)) { const s = new Set(g.selSet); s.has(n) ? s.delete(n) : s.add(n); eng.setSelection([...s], n); } else eng.select(n);
@@ -274,14 +289,19 @@
   ST.on("prerender", () => { if (ST.layerOn.anim && eng) { const g = eng.get(); const sig = (g.model ? g.model.uuid : "-") + ":" + g.frame + ":" + g.sel + ":" + g.selSet.size + ":" + g.playing; if (sig !== M._sig) { M._sig = sig; ST.refresh(); } } });
 
   // playblast → Review (như nút 🎞 của Home cũ): quay trên trang, server lưu webm + nén + thêm version Review
+  // quay + gửi (dùng chung cho lệnh menu và cầu nối `anim playblast`, 2026-10-29 user: "Đưa lên reviewlap")
+  M.sendPlayblast = async (o, label, note) => {
+    ST.toast("Đang quay playblast…"); const r = await window.DDC.playblast(o);
+    const b64 = b => new Promise(res => { const f = new FileReader(); f.onload = () => res(String(f.result).split(",")[1]); f.readAsDataURL(b); });
+    ST.toast("Đang lưu và nén video…");
+    const j = await (await fetch("/api/playblast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clipInfo.id, n: r.n, fps: r.fps, w: r.w, h: r.h, views: r.views, label: label || "", note: note || "", webm_b64: await b64(r.webm), thumb_b64: r.thumb ? await b64(r.thumb) : "" }) })).json();
+    if (!j.ok) throw new Error(j.error); ST.toast("Đã thêm version " + j.id.version + " vào Review Lab");
+    return { version: j.id.version, reencoded: j.id.reencoded, n: r.n, w: r.w, h: r.h, views: r.views };
+  };
   ST.cmd({ id: "pose.playblast", mod: "pose", menu: "Animate", sep: true, label: "Quay playblast và gửi sang Review…", icon: "export", on: () => !!eng && !!window.DDC && !!window.DDC.askPlayblast, run: async () => {
     try {
       const o = await window.DDC.askPlayblast(); if (!o) return;
-      ST.toast("Đang quay playblast…"); const r = await window.DDC.playblast(o);
-      const b64 = b => new Promise(res => { const f = new FileReader(); f.onload = () => res(String(f.result).split(",")[1]); f.readAsDataURL(b); });
-      ST.toast("Đang lưu và nén video…");
-      const j = await (await fetch("/api/playblast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clipInfo.id, n: r.n, fps: r.fps, w: r.w, h: r.h, views: r.views, webm_b64: await b64(r.webm), thumb_b64: r.thumb ? await b64(r.thumb) : "" }) })).json();
-      if (!j.ok) throw new Error(j.error); ST.toast("Đã thêm version " + j.id.version + " vào Review Lab");
+      await M.sendPlayblast(o);
     } catch (e) { ST.toast("Không gửi được: " + (e.message || e)); }
   } });
   // W3a: anim chạy trên nhân vật hiện tại hay model chụp của phiên bản

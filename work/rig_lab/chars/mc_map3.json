@@ -24,8 +24,132 @@
   "headEnd": true,
   "dress": false,
   "prop": false,
-  "weapon": false
+  "weapon": false,
+  "extra": [
+   {
+    "name": "joint1_M",
+    "parent": "Head_M",
+    "label": "joint1_M",
+    "noBody": true,
+    "pos": [
+     0.0,
+     144.38,
+     -9.99
+    ]
+   },
+   {
+    "name": "joint2_M",
+    "parent": "joint1_M",
+    "label": "joint2_M",
+    "noBody": true,
+    "pos": [
+     0.0,
+     134.09,
+     -16.33
+    ]
+   },
+   {
+    "name": "joint3_M",
+    "parent": "joint2_M",
+    "label": "joint3_M",
+    "noBody": true,
+    "pos": [
+     0.0,
+     118.81,
+     -16.66
+    ]
+   },
+   {
+    "name": "joint4_M",
+    "parent": "joint3_M",
+    "label": "joint4_M",
+    "noBody": true,
+    "pos": [
+     0.0,
+     103.81,
+     -16.98
+    ]
+   },
+   {
+    "name": "joint5_M",
+    "parent": "joint4_M",
+    "label": "joint5_M",
+    "noBody": true,
+    "pos": [
+     0.0,
+     91.85,
+     -17.24
+    ]
+   },
+   {
+    "name": "joint6_M",
+    "parent": "joint5_M",
+    "label": "joint6_M",
+    "noBody": true,
+    "pos": [
+     0.0,
+     80.39,
+     -17.49
+    ]
+   },
+   {
+    "name": "slingshot_0",
+    "parent": "Wrist_L",
+    "label": "slingshot_0",
+    "noBody": true,
+    "pos": [
+     -0.0,
+     -0.0,
+     134.22
+    ]
+   },
+   {
+    "name": "slingshot_1",
+    "parent": "slingshot_0",
+    "label": "slingshot_1",
+    "noBody": true,
+    "pos": [
+     -0.0,
+     14.61,
+     134.57
+    ]
+   },
+   {
+    "name": "slingshot_2",
+    "parent": "slingshot_1",
+    "label": "slingshot_2",
+    "noBody": true,
+    "pos": [
+     -0.0,
+     14.61,
+     -32.2
+    ]
+   },
+   {
+    "name": "slingshot_3",
+    "parent": "slingshot_2",
+    "label": "slingshot_3",
+    "noBody": true,
+    "pos": [
+     5.9,
+     14.61,
+     -26.54
+    ]
+   },
+   {
+    "name": "slingshot_4",
+    "parent": "slingshot_2",
+    "label": "slingshot_4",
+    "noBody": true,
+    "pos": [
+     -6.0,
+     14.61,
+     -26.34
+    ]
+   }
+  ]
  },
  "source": "Studio Nhập FBX 2026-10-28: MC_char_map3_Rig.fbx",
- "texture": "T_Color_ShotDieRepeat.tga"
+ "texture": "T_Color_ShotDieRepeat.tga",
+ "note_extra": "cfg.extra: xương phụ của rig team (bím tóc joint1-6, nỏ slingshot_0-4), vị trí = tư thế nghỉ của MC_char_map3_Rig.fbx (rigpose)"
 }

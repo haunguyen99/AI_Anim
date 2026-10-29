@@ -59,6 +59,8 @@ body.noout #main{grid-template-columns:44px 0 0 minmax(0,1fr) 5px var(--dockW,32
 body.nodock #main{grid-template-columns:44px var(--olW,240px) 5px minmax(0,1fr) 0 0}
 body.noout.nodock #main{grid-template-columns:44px 0 0 minmax(0,1fr) 0 0}
 body.nodock #dock,body.nodock #splitR{display:none}
+/* cột cố định: ẩn Outliner (display:none) không làm viewport / dock dồn sang cột khác (user 2026-10-29, nút [ của thanh Pose) */
+@media (min-width:901px){#toolbox{grid-column:1}#outliner{grid-column:2}#splitO{grid-column:3}#vp{grid-column:4}#splitR{grid-column:5}#dock{grid-column:6}#main>*{grid-row:1}}
 #toolbox{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;overflow-y:auto}
 #toolbox button{width:34px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-color:transparent;background:transparent;flex:none}
 #toolbox button:hover:not(:disabled){background:var(--hover)}
@@ -68,6 +70,12 @@ body.nodock #dock,body.nodock #splitR{display:none}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #panes{position:absolute;inset:0;pointer-events:none}
 #panes .pane{position:absolute;border:1px solid transparent}
+#panes .pane{overflow:hidden}
+#panes .pane .gate{position:absolute;border:1px solid #ffffffb0;box-shadow:0 0 0 9999px #0000006b;pointer-events:none}
+#panes .pane .gate span{position:absolute;right:4px;top:2px;font:11px var(--mono);color:#ffffffc0}
+#gateBar{position:absolute;right:8px;top:6px;z-index:6;display:flex;gap:6px;align-items:center;padding:2px 6px;border-radius:6px;background:color-mix(in srgb,var(--panel) 80%,transparent);font-size:12px;color:var(--fg)}
+#gateBar label{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+#gateBar select{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:0 4px;height:22px}
 #panes .pane.act{border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
 #panes .pane .pl{position:absolute;left:6px;top:4px;font:11px var(--mono);color:var(--mute);background:color-mix(in srgb,var(--panel) 70%,transparent);padding:1px 6px;border-radius:4px}
 .marquee{position:absolute;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);display:none;pointer-events:none;z-index:5}
@@ -266,3 +274,9 @@ body.noting #noteCv{pointer-events:auto;cursor:crosshair}
 .notes .nt .nkebab:hover{color:var(--text,#fff)}
 .notes .nt .nmenu{position:fixed;z-index:50;min-width:90px;flex-direction:column;align-items:stretch;gap:4px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
 .notes .nt .nb>b{padding-right:28px}
+/* timeline theo đối tượng đang chọn (2026-10-29): key khớp giữ nguyên = kim cương rỗng, key vật thể phụ = màu xanh lơ */
+.pz .cell.key.khold{background:transparent}
+.pz .cell.key.khold::before{background:none;border:1.5px solid var(--joint);width:7px;height:7px}
+.pz .cell.key.kprop{background:#4dd0e114}
+.pz .cell.key.kprop::before{background:#4dd0e1}
+.pz .kftag{font-size:11px;color:var(--mute);margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}

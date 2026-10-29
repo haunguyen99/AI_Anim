@@ -55,6 +55,28 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
   không nằm ở điểm treo thật).
 - "làm thêm anim cho các chi tiết phụ": vải/phụ kiện có xương phải được animate (kiểm kê bằng `rig_inventory.py`).
 
+- **Bím tóc / dây treo trên clip one-shot ngắn (SDR03 Shoot s1 → s2, 2026-10-29, "đuôi tóc đang khá cứng chưa được tự nhiên"):**
+  nội suy vài góc blocking cho từng đốt = cả bím vung như que. Làm lò xo tắt dần theo xung (frame giật): mỗi đốt trễ thêm ~0,4F,
+  biên độ tăng dần xuống đuôi (sóng truyền dọc bím, bím uốn cong), lắc ngang 35% lệch pha, chút trễ ngược ở frame lấy đà; tổng góc
+  đuôi đỉnh ~ bằng blocking đã duyệt; cửa sổ về 0 ở 2–3 frame cuối để frame cuối = P0 (`sdr03/shoot_spline.py` `hair_spring`).
+  **→ s3 bị chê "cứng như lò xo":** chu kỳ 4,5F nảy qua lại đều đọc ra lò xo. Bím dài nặng là con lắc CHẬM (~50 cm → ~1,4 s =
+  42F): trong clip ngắn nó chỉ kéo trễ một nhịp rồi trôi về, không nảy. Mô phỏng con lắc giảm chấn kích bằng chuyển động thật
+  của gốc bím đo trên frame (`hair_drag`), ×3 cho đọc được, chia đốt có trễ 0,5F. Chu kỳ phải theo chiều dài thật của chi tiết.
+  **→ s4, user: "Sao cứng vậy cho nó overlap manh lên chứ":** chia một góc cho các đốt + trễ cố định thì không có follow-through
+  (tín hiệu gáy chỉ dài F3–F7, đốt trễ rơi vào lúc đã về). Overlap thật = CHUỖI: đốt j bám hướng đốt j−1 (lò xo nặng giảm chấn,
+  `chain_sim`), góc local = hiệu hướng hai đốt; sóng chạy xuống đuôi, đuôi đi tiếp sau khi gốc dừng. Chỉnh chu kỳ đốt để đuôi
+  xong nhịp trước 2–3 frame cuối (5F: tới đuôi F10–11 rồi bị ép về 0 = giật; 2,6F: đỉnh F7–8, tự về). Đuôi vung ~26 cm là vừa.
+  **→ s5, user: "bạn chỉ làm có một khớp của tóc":** chuỗi lò xo hướng-đốt dồn 17° vào khớp gốc, khớp dưới bẻ ngược = cả bím
+  xoay như que. Người xem đánh giá theo GÓC LOCAL từng khớp: mỗi khớp phải tự gập rõ (đỉnh 7–12°, gốc nhẹ ~3°), đỉnh lần lượt
+  khớp sau trễ ~0,75F (`hair_wave`). Đo bảng gập local từng khớp mỗi frame trước khi gửi; chỉ skin vào khớp có đỉnh (khớp cuối
+  của bím thường không có đỉnh mesh).
+  **→ s6, user: "hãy nhớ đến bài tập anim quả bóng nảy có đuôi… các khớp bị kéo theo nhau":** đặt góc từng khớp bằng công thức
+  (s2–s5) không ra cảm giác kéo. Cách đúng = **đuôi đi theo đường của đầu** (`rope_follow`): điểm j của chi tiết = dáng nghỉ
+  (đầu mang) + G·(độ dời gốc lúc t − j·0,8F − độ dời gốc lúc t); xoay khớp j cho hướng đoạn HIỆN TẠI (sau khi cha đã xoay)
+  khớp hướng đoạn mô phỏng (lấy độ lệch so với dáng nghỉ rồi cộng dồn qua cha = gấp đôi góc, đuôi văng 35 cm). G vừa với đoạn
+  ngắn 10–14 cm là 2–3 (4–8 lệch 70–130°); làm mượt 1-2-1 một lượt theo thời gian. Verlet + lò xo về dáng nghỉ cho đoạn ngắn
+  quay lung tung, bỏ.
+
 ## loop
 - Frame cuối = frame 1; playblast phát f1..f(N-1); bắt đầu loop ở điểm đứng yên (đáy) cho chỗ nối mượt.
 - Sau khi đổi giá trị key luôn chạy lại `match_seam` (SKILL.md).
