@@ -93,3 +93,18 @@ Idle 1 pose (SDR - lính La Mã ném dao, camera ingame = góc right, không ref
 - **SDR chốt (v19 / Attack blocking_v7, thay v18):** chỉ chỉnh hông từ v4 — chậu hông xoay đổ trước 7,5°, đẩy trước 3 cm, hạ 1,2 cm
   (giữ chân sau không duỗi quá khớp), thân trên đổ theo. User chọn "50% của A" sau khi xem ảnh tĩnh v4 | A (15°, 6 cm) | B (thân
   giữ nguyên).
+
+## ninja-guard-pose
+Ninja Idle F1 (chibi, kunai cầm ngược tay trái), user tự chỉnh pose AI dựng rồi bảo "bạn học theo nhé" (2026-10-29).
+Pose chuẩn: `work/infinite_defense/ninja_idle/keys/F1_user_k10_v5.json` (giá trị khớp), script `pose_k10v3.py` (P = pose user).
+Những gì user sửa so với bản AI (đo bằng mesh đã pose, cm):
+- **Tấn so le trước–sau, không trung bình tấn:** chân sau lùi thêm 12 cm (so le ~30, rộng ~40), chậu hạ 2. Trước đó user đã chê
+  tấn rộng sâu: "nâng trọng tâm lên, khép chân lại". Chibi chân ngắn: tấn rộng trông như ngồi xổm.
+- **Hông xoay ~12° về phía tay cầm vũ khí** (vai trái dẫn). AI từng bỏ xoay hông vì gối chụm; user vẫn xoay, gối theo IK vẫn ổn.
+- **Đổ người dồn ở lưng dưới** (Spine1 13°), ngực ít; **đầu bù ngược ~15°** để vẫn nhìn thẳng → đầu chúi ra trước 5 cm, dáng rình.
+- **Tay vũ khí:** nắm tay ở giữa bụng (đường giữa thân), khuỷu khép sát; lưỡi kunai chĩa **xuống** và hơi ra ngoài, không chĩa ra trước.
+- **Tay tự do:** kéo hẳn ra sau hông (lùi 28 cm so với bản AI). Concept/ghi chú trước đó đã nói "tay chưa đánh ra sau".
+- **Khăn:** rủ ra sau ~45° ở gốc, không bay ngang sang một bên.
+Quy trình: user đã tự sửa pose thì **không chạy lại script dựng pose đè lên version đó**; đọc khớp (`anim read`), lưu json, rút bài học.
+Tự kiểm pose trên mesh đã skin: `pose_check.py` (xuyên kunai/tay/khăn, giãn da, sàn); khăn rời quay quanh gốc dễ lún vào lưng —
+gốc khăn gập trong mặt phẳng dải khăn, dời gốc ra sau khi thân đổ / tay kéo sau.

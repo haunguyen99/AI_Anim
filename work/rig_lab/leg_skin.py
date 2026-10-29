@@ -59,6 +59,11 @@ for i in range(NV):
     for s, k in (("L", sL), ("R", 1 - sL)):
         if k <= 0: continue
         for b, w in chain(p, s).items(): new[b] += k * w
+    # đáy chậu: đỉnh giữa háng đi theo xương chậu, không chia đôi cho hai đùi (tấn rộng làm háng toạc 478 %, 2026-10-29)
+    cr = (1 - ss(2, 7, abs(p[0]))) * (1 - ss(hipY - 4, hipY + 2, p[1])) * ss(hipY - 20, hipY - 12, p[1])
+    if cr > 0:
+        for b in list(new): new[b] *= 1 - 0.7 * cr
+        new["Root_M"] += 0.7 * cr
     a = 1 - ss(hipY + 6, hipY + 14, p[1])   # 1 dưới hông+6, 0 trên hông+14
     old = collections.Counter({names[I[i, k]]: W[i, k] for k in range(4) if W[i, k] > 0})
     mix = collections.Counter()

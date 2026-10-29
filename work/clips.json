@@ -357,7 +357,7 @@
    "id": "ninja_idle",
    "character": "Ninja",
    "stage": "p0",
-   "note": "Pose F1 k10_v2 dựng theo ảnh concept k1r2_v1, chờ duyệt",
+   "note": "Pose F1 k10_v5 dựng theo bảng ref 6 góc đã chốt, chờ duyệt",
    "dir": "work/infinite_defense/ninja_idle",
    "frames": 41,
    "fps": 30,

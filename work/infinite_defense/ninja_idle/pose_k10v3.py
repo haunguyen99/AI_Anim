@@ -8,14 +8,20 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ninja_pose as N
 
 u = N.unit
-P = dict(   # số đo từ bảng ref (ô FRONT / LEFT SIDE): chân cách ~76 cm ngang, ~30 cm trước-sau, hông cao ~40 cm
-    root_drop=20, root_rot=(9, 0, 0),
-    spine=(6, 4, 0), chest=(6, 4, 0), neck=(-9, 2, 0), head=(-9, 3, 0),
-    ankle_L=(36, 12, 16), ankle_R=(-36, 12, -14), pole_L=(1, 0, 0.45), pole_R=(-1, 0, 0.45), yaw_L=15, yaw_R=-30,
-    wristL_from_neck=(31, -14, 12), poleL=(1, -0.5, 0.1), blade=(0.4, -0.7, -0.55),
-    wristR_from_root=(-30, 10, 6), poleR=(-1, 0, -0.2),
-    scarf1=(-50, 10, 40), scarf=((-10, 0, 0), (-8, 0, 0), (-6, 0, 0)),
+P = dict(   # = pose user tự chỉnh trên k10_v5 F1 (2026-10-29 10:49, keys/F1_user_k10_v5.json): "bạn học theo nhé"
+    root_drop=7.5, root_rot=(5, -12, 0),                          # hông xoay 12° cho vai trái (tay kunai) dẫn về phía địch
+    spine=(13.2, 4, -0.6), chest=(4, 4, 0), neck=(-3, 2, 0), head=(-14.9, 2.9, 0.7),   # đổ người dồn vào lưng dưới, đầu bù ngược nhìn thẳng
+    ankle_L=(20, 12, 9), ankle_R=(-20, 12, -20.6), pole_L=(0.6, 0, 1), pole_R=(-0.6, 0, 1), yaw_L=15, yaw_R=-25,   # tấn so le trước–sau ~30 cm, rộng ~40 cm
+    wristL_from_neck=(12.5, -32.1, 18.1), poleL=(1, -0.6, 0), blade=(0.52, -0.84, 0.17),   # nắm tay giữa bụng, khuỷu khép; kunai chĩa xuống, hơi ra ngoài
+    wristR_from_root=(-30.2, 8.9, -12), poleR=(-0.6, 0, -1),     # tay phải kéo hẳn ra sau hông
+    scarf1=(-44, 3, 0), scarf=((-3, 0, 0), (-3, 0, 0), (-3, 0, 0)),
+    scarf_yaw=0, scarf_yaw_R=0, scarf_back=6, scarf_extra_R=(-3, 4, 0),
+    scarf_exact={"Scarf1_L": (-46.86, -1.84, -12.53), "Scarf1_R": (-42, 9.68, 4.25)},   # khăn rủ ra sau, đuôi trái lệch trái (giá trị user)
 )
+
+
+def rest_pos(n):
+    return N.REST[n][1]
 
 
 def rot(v, ax, deg):
@@ -36,6 +42,13 @@ def main():
         hip = t3(R["Hip_" + s]["pos"]); an = np.array(P["ankle_" + s], float)
         k = N.two_bone(hip, an, L("Hip_" + s, "Knee_" + s), L("Knee_" + s, "Ankle_" + s), P["pole_" + s])
         out["leg" + s] = N.leg_fk(br, s, hip, k, an, P["yaw_" + s]); out["knee" + s] = k.round(1)
+    # IK chân của Studio giữ điểm đặt bàn chân cũ: dời cổ chân về đúng điểm (giữ mặt phẳng gối vừa đặt), rồi đặt bàn chân phẳng
+    import math as _m
+    for s in "LR":
+        an = np.array(P["ankle_" + s], float); want = [an[0], -an[2], an[1]]
+        cur = br.read(["Ankle_" + s])["Ankle_" + s]["pos"]
+        br.anim(do="pos", name="Ankle_" + s, t=[round(w - c, 3) for w, c in zip(want, cur)])
+        a2 = _m.radians(P["yaw_" + s]) / 2; br.set_world("Ankle_" + s, np.array([0, _m.sin(a2), 0, _m.cos(a2)]))
     # tay trái: cổ tay dưới-trước cổ, khuỷu ra ngoài-xuống; kunai cầm ngược, lưỡi xuống-ngoài-trước (về phía camera trong ảnh)
     S = t3(R["Shoulder_L"]["pos"]); W = t3(R["Neck_M"]["pos"]) + np.array(P["wristL_from_neck"], float)
     E = N.two_bone(S, W, L("Shoulder_L", "Elbow_L"), L("Elbow_L", "Wrist_L"), P["poleL"])
@@ -53,9 +66,19 @@ def main():
         br.anim(do="rot", name=n, r=list(r), abs=True)
     x1, y1, z1 = P["scarf1"]
     for s, sg in (("L", -1), ("R", 1)):
-        br.anim(do="rot", name="Scarf1_" + s, r=[x1, sg * y1, -sg * z1], abs=True)   # roll quanh dọc đuôi để dải khăn đứng dọc, rủ xuống
+        br.anim(do="rot", name="Scarf1_" + s, r=[x1, sg * y1 + (P.get("scarf_yaw_R", P.get("scarf_yaw", 0)) if s == "R" else P.get("scarf_yaw", 0)), -sg * z1], abs=True)   # roll quanh dọc đuôi để dải khăn đứng dọc, rủ xuống
         for i, (x, y, z) in enumerate(P["scarf"], 2):
             br.anim(do="rot", name=f"Scarf{i}_{s}", r=[x, sg * y, -sg * z], abs=True)
+    for n, r in P.get("scarf_exact", {}).items():
+        br.anim(do="rot", name=n, r=list(r), abs=True)
+    # gốc đuôi khăn dời ra sau (thân đổ trước + tay phải kéo sau làm lưng lấn vào gốc khăn); chỉ dời khi chưa dời (chạy lại không cộng dồn)
+    R2 = br.read(["Chest_M", "Scarf1_L", "Scarf1_R"])
+    for s in "LR":
+        rest = float(np.linalg.norm(rest_pos("Scarf1_" + s) - rest_pos("Chest_M")))
+        now = float(np.linalg.norm(np.array(R2["Scarf1_" + s]["pos"]) - np.array(R2["Chest_M"]["pos"])))
+        if abs(now - rest) < 1.0 and P.get("scarf_back"):
+            ex = P.get("scarf_extra_" + s, (0, 0, 0))   # gốc đuôi phải thêm ra ngoài-sau khi khăn lắc ngang (không lấn bả vai)
+            br.anim(do="pos", name="Scarf1_" + s, t=[ex[0], P["scarf_back"] + ex[1], ex[2]])
     br.anim(do="key")
     chk = br.read(["Ankle_L", "Ankle_R", "Toes_L", "Toes_R", "Knee_L", "Knee_R", "Weapon", "Wrist_R"])
     for k, v in out.items(): print(k, v)

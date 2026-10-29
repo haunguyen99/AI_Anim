@@ -10,7 +10,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 ## Trạng thái theo loại anim
 | Loại | File | Trạng thái |
 |---|---|---|
-| Idle | `idle.md` | Gaygor Idle 133F (duyệt), Idle_Front 60F (duyệt v14), SDR Idle 1 pose (v19) |
+| Idle | `idle.md` | Gaygor Idle 133F (duyệt), Idle_Front 60F (duyệt v14), SDR Idle 1 pose (v19), Ninja Idle F1 (user chỉnh, `#ninja-guard-pose`) |
 | Attack | `attack.md` | Gaygor Attack 68F (làm cũ) tạm dừng; **Gaygor Attack 50 Blocking (quy trình B) polish v3 duyệt, xuất FBX 2026-10-23**; SDR Attack chốt polish v5 (xuất) |
 | Shoot / Reload | `shoot_reload.md` | SDR map06 đang làm (Reload spline v3) |
 | Walk/Run, Hit, Death, Skill, Jump/khác | `other_types.md` | chưa làm - khung trống + mẫu file |
@@ -105,6 +105,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#goals` `#breath-recipe` `#params` | làm idle thở / idle mới (công thức Idle_Front v14) |
 | `#feedback` `#errors` `#qa-checklist` `#tools` | sửa feedback idle; QA idle |
 | `#sdr-one-pose` | idle 1 pose theo concept; tấn đứng, đổ người, xoắn eo |
+| `#ninja-guard-pose` | thế thủ chibi cầm vũ khí ngắn; user tự chỉnh pose AI; khăn rời lún vào lưng |
 | **attack.md** | |
 | `#status` `#goals` `#recipe` `#params` | làm attack; Gaygor Attack |
 | `#feedback` `#errors` | tra feedback/lỗi Attack đã gặp (con trỏ tới mục chủ đề) |
