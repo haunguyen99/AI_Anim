@@ -37,6 +37,19 @@ if C.get("auto_from_ref"):
     for k in L:
         if pos.get(k): L[k] = [round(v * sc, 2) for v in pos[k]]
     json.dump(auto, open(f"{out}/landmarks_auto.json", "w"), indent=1)
+# mọi mesh trong cảnh đều vào lõi Rig: mesh phụ (chars/<id>.json "extra": tóc, phụ kiện, vũ khí) không phải prop thì là lớp mặc thêm
+propn = {p["name"] for p in C.get("props", [])}
+C["clothes"] = list(C.get("clothes", [])) + [n for n in C.get("extra", []) if n in byn and n not in propn and n not in C.get("clothes", [])]
+# xương khách chỉ mesh phụ dùng (nỏ slingshot_*, bím tóc joint*): thêm thành joint phụ noBody (không nhận đỉnh thân khi skin tự động)
+if sk:
+    par = {s["name"]: s["parent"] for s in sk}; bw = set(body.get("weights", {}))
+    used = {b for n in C["clothes"] for b in byn[n].get("weights", {}) if b not in bw}
+    have = {e["name"] for e in cfg.get("extra", [])}; add = []
+    def need(b):
+        if b in have or b in bw or not pos.get(b) or not par.get(b): return
+        need(par[b]); have.add(b); add.append({"name": b, "parent": par[b], "label": b, "noBody": True})
+    for b in sorted(used): need(b)
+    if add: cfg["extra"] = list(cfg.get("extra", [])) + add
 # joint phụ (cfg.extra): vị trí ghi sẵn trong cấu hình, không có thì lấy theo xương khách
 for e in cfg.get("extra", []):
     p = e.get("pos") or pos.get(e["name"])

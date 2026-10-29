@@ -67,12 +67,14 @@ Cách làm:
 
 ## Bẫy đã gặp (đừng lặp lại)
 
+- **Mọi mesh trong cảnh đều nằm trong lõi Rig** (user 2026-10-29, mc_map3): mesh phụ (`extra` trong `chars/<id>.json`: tóc, phụ kiện, vũ khí) thành lớp mặc thêm; có skin khách thì giữ trọng số khách theo tên xương (`rig_data.py` điền `clothes[i].refW`), xương khách chỉ mesh phụ dùng (nỏ `slingshot_*`, bím `joint*`) thành joint phụ `noBody` (skin tự động của thân bỏ qua). Sửa `rig_data.py` thì khởi động lại server Home. `rig_engine.js` đang sửa thẳng (có phần chưa có trong `template.html`): đừng chạy `port_rig.py` đè.
 - **Nhân vật mới giờ làm trong Studio** (2026-10-28, Zom2 Map3): `/api/fbx/new-char` (= Tệp → Nhập FBX → nhân vật mới) → nếu có rig Unity cùng mesh thì lấy xương của nó làm gợi ý khớp + tên (`ref_<id>_unity/ref_skeleton.json`, `names_from` + `auto_from_ref` trong `chars/<id>.json`; dời cho khớp mesh: so trung bình đỉnh hai bản) → `/api/rig/build` → Studio Rig bước 2–5. Điều khiển qua `studio_cmd.py --cid <trang>`.
 - `lbs_test.py` cần `rig/landmarks.json` trong kho: chưa đổi khớp nào thì Studio chưa lưu, ghi lại một khớp đúng vị trí cũ (`rig lm Root_M x,y,z`) để lưu.
 - **Đặt khớp theo giải phẫu mesh**, không chỉ "nằm giữa": đo hồ sơ mặt cắt dọc tay / chân / thân (độ rộng, chỗ thắt, chỗ lồi): gối ở bánh chè (đùi dài hơn ống chân ~1,25×), hông trên đũng ~6 cm, cột sống ở ~40% độ dày tính từ lưng, khuỷu ở u khuỷu, cổ tay ở chỗ thắt trước bàn tay, Toes ở ụ bàn chân sát đất. Bộ khớp của rig cũ (thân khác) không dùng nguyên được (Zom2 Map3, user: "Các khớp chưa đúng vị trí").
 - Làm sạch skin dọc tay theo luật "hai xương kề nhau" (đã thử 2026-10-28 trên mesh 507 đỉnh): khuỷu gập sâu đỡ nhưng góc 60–90° xấu đi rõ, giữ skin tự động + Hammer. So bằng `lbs_test.py --wire KHỚP TRỤC ĐỘ` ở góc hay dùng, không chỉ bảng góc cực.
 - **Hammer tự động chỉ sửa bên phải** (bộ pose căng chỉ giơ tay phải): chạy xong thì chép skin phải → trái bằng `work/rig_lab/mirror_skin.py <id>` (đóng trang Rig trước, không thì trang ghi đè skin cũ trong bộ nhớ), rồi đo lại bằng `lbs_test.py`.
 
+- Lớp phủ three.js (r128): tạo đủ thuộc tính (position, normal, uv) và vật liệu có `map` TRƯỚC lần vẽ đầu; thêm `normal` sau khi đã vẽ thì không được gắn, Lambert ra đen (texture lõi Rig, 2026-10-29).
 - Sửa template bằng script Python: viết script ra file rồi chạy, không dùng heredoc Python trong Bash có ngoặc kép lồng (đã hỏng hai lần).
 - `javascript_tool` trên preview: trang có thể cache bản cũ, `navigate` lại trước khi thử.
 - Raycast gán khối rời phải bỏ khối thân chính (>30% đỉnh), nếu không gán nhầm cả thân.

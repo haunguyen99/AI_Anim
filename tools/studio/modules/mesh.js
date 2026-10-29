@@ -53,6 +53,7 @@
       if (TEX) TEX.dispose(); TEX = t; OBJ.forEach(o => { dropTex(o); syncTex(o); applyVis(o); }); ST.refresh && ST.refresh();
     }, undefined, () => say("Không nạp được texture " + url));
   }
+  M.texture = () => TEX && showTex ? TEX : null;   // lõi Rig phủ cùng texture (rig.js)
   M.texInfo = () => ({ loaded: !!TEX, on: showTex, meshes: OBJ.filter(texOk).length, of: OBJ.length });
   function buildGeo(o) {
     if (o.mesh) disposeObj(o);
@@ -106,11 +107,13 @@
   function touchGeo(o, full) { const g = o.mesh.geometry; g.attributes.position.needsUpdate = true; g.computeVertexNormals(); if (full) { g.computeBoundingSphere(); g.computeBoundingBox(); } if (o.tex) syncTex(o); }
   function applyVis(o) {
     const edit = style === "edit", mat = o.mesh.material;
-    o.mesh.visible = o.vis && style !== "hidden"; o.wire.visible = edit && showWire; o.pts.visible = edit && mode === "v" && o === active;
+    // đang focus Rig: lõi Rig chỉ vẽ thân / quần áo / prop của nó; mesh phụ kiện, vũ khí, tóc (lõi Rig không có) vẫn hiện từ Cảnh
+    const keep = style === "hidden" && ST.focus === "rig" && ST.layerOn.scene && !!ST.mods.rig && !!ST.mods.rig.owns && !ST.mods.rig.owns(o.name);
+    o.mesh.visible = o.vis && (style !== "hidden" || keep); o.wire.visible = edit && showWire; o.pts.visible = edit && mode === "v" && o === active;
     mat.transparent = style === "rig"; mat.opacity = style === "rig" ? 0.35 : 1; mat.depthWrite = style !== "rig"; mat.color.setHex(o.color);
     const sel = edit && selO.has(o.id) && mode === "o" ? 0x2a3f7a : 0x000000;
     mat.emissive.setHex(sel);
-    const tex = !!(o.tex && showTex && edit);   // texture chỉ ở kiểu hiển thị sửa (kiểu rig mờ giữ màu đơn)
+    const tex = !!(o.tex && showTex && (edit || keep));   // texture chỉ ở kiểu hiển thị sửa (kiểu rig mờ giữ màu đơn)
     if (o.tex) { o.tex.visible = tex; o.tex.material.emissive.setHex(sel); }
     mat.colorWrite = !tex;   // mesh gốc vẫn ghi độ sâu (bị polygonOffset đẩy lùi) và nhận click chọn
   }

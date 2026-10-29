@@ -20,6 +20,8 @@ const isFinger = k => /Finger(\d|End)_/.test(k);
 // joint phụ theo nhân vật (giáp vai, túi, vạt…): CFG.extra = [{name, parent, label}], theo thứ tự cha trước con; vị trí trong landmark như khớp thường
 const EXTRA = (CFG.extra || []).filter(e => e && e.name && e.parent);
 EXTRA.forEach(e => { if (e.label) LM_LABEL[e.name.replace(/_[RL]$/, "")] = e.label; });
+// joint phụ chỉ cho mesh phụ (nỏ, bím tóc: noBody) không nhận đỉnh thân khi skin tự động
+const NOBODY = new Set(EXTRA.filter(e => e.noBody).map(e => e.name));
 const LM_ORDER = [...CENTER.slice(0, NC), ...["Scapula", "Shoulder", "Elbow", "Wrist"].map(n => n + "_R"), ...LEG_J.map(n => n + "_R"),
   ...["Scapula", "Shoulder", "Elbow", "Wrist"].map(n => n + "_L"), ...LEG_J.map(n => n + "_L"), ...CENTER.slice(NC),
   ...FKEYS.map(n => n + "_R"), ...FKEYS.map(n => n + "_L"), ...EXTRA.map(e => e.name)];
@@ -92,14 +94,14 @@ function meshFrom(m, color, opacity) {
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(m.verts, 3));
   g.setIndex(m.tris); g.computeVertexNormals();
-  const mat = new THREE.MeshLambertMaterial({ color, transparent: true, opacity, side: THREE.DoubleSide, depthWrite: false });
+  const mat = new THREE.MeshLambertMaterial({ color, transparent: false, opacity: 1, side: THREE.DoubleSide, depthWrite: true });   // mesh đặc (user 2026-10-29: không muốn trong suốt); khớp / xương vẽ đè (depthTest false) nên vẫn thấy
   const mesh = new THREE.Mesh(g, mat);
   const wire = new THREE.LineSegments(new THREE.WireframeGeometry(g), new THREE.LineBasicMaterial({ color: 0x8aa0c0, transparent: true, opacity: .35 }));
   wire.visible = false; mesh.add(wire); mesh.userData.wire = wire;
   return mesh;
 }
 const bodyMesh = meshFrom(DATA.body, 0x8a96aa, 0.55); scene.add(bodyMesh);
-const clothMeshes = (DATA.clothes || []).map(c => { const m = meshFrom(c, 0xc9a77a, 0.4); scene.add(m); return m; });
+const clothMeshes = (DATA.clothes || []).map(c => { const m = meshFrom(c, 0xc9a77a, 0.4); m.userData.baseCol = 0xc9a77a; scene.add(m); return m; });
 const propMeshes = DATA.props.map(p => { const m = meshFrom(p, 0xb59a6a, 0.55); scene.add(m); return m; });
 
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -206,11 +208,12 @@ function syncScene(dragging) {
   skelLines.material.color.set(css("--fg")); skelPts.material.color.set(css("--accent"));
   skelLines.visible = skelPts.visible = step >= 3 || (step === 2 && showSkel); twPts.visible = step >= 3;
   refLines.material.color.set(css("--ref")); refLines.visible = showRef; if (typeof updateSelPt === "function") updateSelPt();
-  bodyMesh.material.opacity = step === 3 ? 0.28 : 0.5;
+  bodyMesh.material.opacity = 1;
   bodyMesh.visible = vis.body && step < 4; skinMesh.visible = vis.body && step >= 4 && !!SK; skinWire.visible = step >= 4 && showWire;
   if (SK && step >= 4) skinMesh.material.opacity = 1;
   propMeshes.forEach((m, i) => m.visible = vis.props[i]);
-  clothMeshes.forEach(m => { m.visible = vis.cloth; m.material.opacity = step >= 4 ? 0.35 : 0.4; m.userData.wire.visible = showWire; });
+  try { const on = !!SK && step === 4; if (on !== lastClothOn) { paintCloth(); lastClothOn = on; } } catch (e) {}   // vào / rời bước 4: bật / tắt màu skin trên mesh phụ
+  clothMeshes.forEach((m, i) => { m.visible = vis.cloth && !(vis.clothI && vis.clothI[i] === false); m.material.opacity = 1; m.userData.wire.visible = showWire; });
   bodyMesh.userData.wire.visible = showWire; propMeshes.forEach(m => m.userData.wire.visible = showWire);
   if (!dragging) host.placeGizmo(gzPlace(), mode);
 }
@@ -530,8 +533,8 @@ function boneSegments(B) {
   B.forEach(b => { if (b.parent) (kids[b.parent] = kids[b.parent] || []).push(b); });
   const segs = [], lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
   for (const b of B) {
-    if (noSkin(b.name) || b.twist) continue;
-    const ks = (kids[b.name] || []).filter(k => !k.twist && k.name !== "Weapon");
+    if (noSkin(b.name) || b.twist || NOBODY.has(b.name)) continue;
+    const ks = (kids[b.name] || []).filter(k => !k.twist && k.name !== "Weapon" && !NOBODY.has(k.name));
     let end = ks.length ? ks[0].pos : b.pos.slice();   // xương lá (Prop_M, váy): điểm seed, không kéo dài
     let leafExt = false;
     if (!ks.length && /^Ankle_/.test(b.name) && !CFG.toes) {   // bàn chân không có xương ngón: đoạn cổ chân → mũi chân (landmark ToesEnd nếu có)
@@ -669,6 +672,27 @@ function paintSkin() {
     col[i * 3] = c[0]; col[i * 3 + 1] = c[1]; col[i * 3 + 2] = c[2];
   }
   skinGeo.attributes.color.needsUpdate = true;
+  try { paintCloth(); } catch (e) { if (__err) __err('màu skin quần áo: ' + (e.message || e)); }
+}
+// mesh phụ (tóc, phụ kiện, nỏ) cũng hiện màu skin ở bước 4, cùng kiểu xem với thân: xương chính (màu theo xương) hoặc trọng số xương đang chọn
+var lastClothOn = null;
+function clothNamedW(c) { const G = clothGuest(c); if (G) return G; return clothWeights(c).map(L => L.map(([b, w]) => [SK.names[b], w])); }
+function paintCloth() {
+  const on = !!SK && step === 4, extraIdx = {}; EXTRA.forEach((e, k) => extraIdx[e.name] = SK ? SK.names.length + k : k);
+  clothMeshes.forEach((m, c) => {
+    const g = m.geometry, mat = m.material, n = g.attributes.position.count;
+    if (mat.vertexColors !== on) { mat.vertexColors = on; mat.color.setHex(on ? 0xffffff : m.userData.baseCol); mat.needsUpdate = true; }
+    if (!on) return;
+    if (!g.attributes.color) g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(n * 3), 3));
+    const col = g.attributes.color.array, CW = clothNamedW(c);
+    for (let i = 0; i < n; i++) {
+      const L = CW[i] || []; let cc;
+      if (skinView === "dom") { let bn = "", bw = -1; L.forEach(([b, w]) => { if (w > bw) { bw = w; bn = b; } }); cc = hueCol(SK.idx[bn] !== undefined ? SK.idx[bn] : (extraIdx[bn] || 0)); }
+      else { let w = 0; L.forEach(([b, x]) => { if (b === skinBone) w += x; }); cc = ramp(skinView === "diff" ? 0 : w); }
+      col[i * 3] = cc[0]; col[i * 3 + 1] = cc[1]; col[i * 3 + 2] = cc[2];
+    }
+    g.attributes.color.needsUpdate = true;
+  });
 }
 
 // ---- FK + LBS để thử khớp
@@ -753,12 +777,23 @@ function clothWeights(c) {   // mỗi đỉnh quần áo: 4 xương mạnh nhấ
     return o; });
   return cur.map(m => { const top = [...m.entries()].sort((p, q) => q[1] - p[1]).slice(0, 4), sum = top.reduce((s, e) => s + e[1], 0) || 1; return top.map(([b, w]) => [b, w / sum]); });
 }
-function poseCloth(M) {
+// mesh phụ có skin khách (FBX đã rig: tóc, phụ kiện, nỏ): giữ trọng số khách theo TÊN xương; xương khách không có trong rig này dồn lên cha gần nhất có
+function clothGuest(c) {
+  const rw = (DATA.clothes[c] || {}).refW; if (!rw || !Object.keys(rw).length) return null;
+  const have = new Set(buildSkeleton(LM).map(b => b.name)), gpar = Object.fromEntries((DATA.ref || []).map(b => [b.name, b.parent])), upC = {};
+  const up = b => { if (b in upC) return upC[b]; let n = b, d = 0; while (n && !have.has(n) && d++ < 40) n = gpar[n]; return (upC[b] = n && have.has(n) ? n : "Root_M"); };
+  const n = CLOTH_MAP[c].rest.length / 3, acc = Array.from({ length: n }, () => new Map());
+  for (const b in rw) { const [ix, wt] = rw[b], m = up(b); ix.forEach((v, i) => { if (v < n && wt[i] > 0) acc[v].set(m, (acc[v].get(m) || 0) + wt[i]); }); }
+  return acc.map(m => { const top = [...m.entries()].sort((p, q) => q[1] - p[1]).slice(0, 4), t = top.reduce((x, e) => x + e[1], 0);
+    return t > 0 ? top.map(([b, w]) => [b, w / t]) : [["Root_M", 1]]; });
+}
+function poseCloth(M, Wn) {
+  const IDN = new THREE.Matrix4();
   clothMeshes.forEach((m, c) => {
     const g = m.geometry, pos = g.attributes.position.array, { rest } = CLOTH_MAP[c], v = new THREE.Vector3(), o = new THREE.Vector3();
-    const CW = clothWeights(c);
+    const G = Wn ? clothGuest(c) : null, CW = G || clothWeights(c), mat = b => G ? (Wn[b] || IDN) : M[b];
     for (let i = 0; i < rest.length / 3; i++) { o.set(0, 0, 0);
-      for (const [b, w] of CW[i]) { v.set(rest[3 * i], rest[3 * i + 1], rest[3 * i + 2]).applyMatrix4(M[b]); o.addScaledVector(v, w); }
+      for (const [b, w] of CW[i]) { v.set(rest[3 * i], rest[3 * i + 1], rest[3 * i + 2]).applyMatrix4(mat(b)); o.addScaledVector(v, w); }
       pos[3 * i] = o.x; pos[3 * i + 1] = o.y; pos[3 * i + 2] = o.z; }
     g.attributes.position.needsUpdate = true; g.computeVertexNormals(); g.computeBoundingSphere();
     m.userData.wire.geometry.dispose(); m.userData.wire.geometry = new THREE.WireframeGeometry(g);
@@ -782,7 +817,7 @@ function poseSkin() {
     for (let k = 0; k < 4; k++) { const w = SK.W[i * 4 + k]; if (w <= 0) continue; v.set(...bodyV[i]).applyMatrix4(M[SK.I[i * 4 + k]]); o.addScaledVector(v, w); }
     pos[i * 3] = o.x; pos[i * 3 + 1] = o.y; pos[i * 3 + 2] = o.z;
   }
-  try { poseCloth(M); } catch (e) { if (__err) __err('quần áo: ' + (e.message || e)); }
+  try { poseCloth(M, W); } catch (e) { if (__err) __err('quần áo: ' + (e.message || e)); }
   poseProps(W);
   skinGeo.attributes.position.needsUpdate = true; skinGeo.computeVertexNormals(); skinGeo.computeBoundingSphere(); skinGeo.computeBoundingBox(); skinWire.geometry.dispose(); skinWire.geometry = new THREE.WireframeGeometry(skinGeo);
   const sum = new Float64Array(NV), cnt = new Int32Array(NV);
@@ -1290,7 +1325,9 @@ function buildGltf() {
   };
   const toJ = n => jIdx[n];
   bakeMesh(DATA.body.name || "Body", DATA.body.verts, DATA.body.tris, i => { const o = []; for (let k = 0; k < 4; k++) { const w = SK.W[i * 4 + k]; if (w > 0 && toJ(SK.names[SK.I[i * 4 + k]]) !== undefined) o.push([toJ(SK.names[SK.I[i * 4 + k]]), w]); } return o; });
-  (DATA.clothes || []).forEach((c, ci) => { const CW = clothWeights(ci); bakeMesh(c.name || "Cloth" + ci, c.verts, c.tris, i => CW[i].filter(([b]) => toJ(SK.names[b]) !== undefined).map(([b, w]) => [toJ(SK.names[b]), w])); });
+  (DATA.clothes || []).forEach((c, ci) => { const G = clothGuest(ci);
+    if (G) { bakeMesh(c.name || "Cloth" + ci, c.verts, c.tris, i => G[i].filter(([b]) => toJ(b) !== undefined).map(([b, w]) => [toJ(b), w])); return; }
+    const CW = clothWeights(ci); bakeMesh(c.name || "Cloth" + ci, c.verts, c.tris, i => CW[i].filter(([b]) => toJ(SK.names[b]) !== undefined).map(([b, w]) => [toJ(SK.names[b]), w])); });
   const propJ = jIdx.Weapon !== undefined ? jIdx.Weapon : (jIdx.Prop_M !== undefined ? jIdx.Prop_M : jIdx.Chest_M);
   (DATA.props || []).forEach(p => bakeMesh(p.name || "Prop", p.verts, p.tris, () => [[propJ, 1]]));
   const ibm = new Float32Array(B.length * 16); B.forEach((b, i) => { const m = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -b.pos[0] * S, -b.pos[1] * S, -b.pos[2] * S, 1]; ibm.set(m, i * 16); });
@@ -1356,7 +1393,8 @@ return {
   ready, renderPanel, renderAll, go, setMode, pick, setSel, applySel, pickLM, boxLM, pickJoint, selectBoneByName, gzStart, gzChange, gzEnd, syncScene,
   snapStr: snap, applySnap, skinSnapshotOf, restoreSkin, scheduleSkinSave, saveLM, saveSkin, exportRig, exportGltf, buildGltf, adoptGuestJoints, adoptGuestSkin, assignIslandOf, stripBoneFromBody, moveWeight, cleanWeights, guestJ, guestS,
   setSkTool, assignIsland, computeSkin, hammerCurrent, hammerAuto, runSelfTest, exportWeights, renderPanelLight, buildSkeleton: () => buildSkeleton(LM), LM_ORDER, GROUPS, isFinger, mirrorKey, sideOf, centroid, dirty, commit, initFingers,
-  get: () => ({ step, sel, S, mode, mirror, showRef, showWire, showSkel, showFing, vis, SK, skTool, saveMsg, gates, jointSel, poseBone, skinBone, LM, TW, CFG, DATA, clothN: clothMeshes.length, propN: propMeshes.length }),
+  meshes: () => ({ body: bodyMesh, skin: skinMesh, cloth: clothMeshes, props: propMeshes, names: { body: DATA.body.name, cloth: (DATA.clothes || []).map(c => c.name), props: (DATA.props || []).map(p => p.name) } }),   // Studio phủ texture (rig.js)
+  get: () => ({ strainOn, step, sel, S, mode, mirror, showRef, showWire, showSkel, showFing, vis, SK, skTool, saveMsg, gates, jointSel, poseBone, skinBone, LM, TW, CFG, DATA, clothN: clothMeshes.length, propN: propMeshes.length }),
   set(k, v) {
     if (k === "mirror") mirror = v; else if (k === "showRef") showRef = v; else if (k === "showWire") showWire = v; else if (k === "showSkel") showSkel = v;
     else if (k === "showFing") { showFing = v; if (!v) { [...S].filter(isFinger).forEach(x => S.delete(x)); sel = [...S].pop() || null; } }
