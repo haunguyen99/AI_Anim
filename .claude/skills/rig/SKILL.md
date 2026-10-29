@@ -73,6 +73,8 @@ Cách làm:
 - Làm sạch skin dọc tay theo luật "hai xương kề nhau" (đã thử 2026-10-28 trên mesh 507 đỉnh): khuỷu gập sâu đỡ nhưng góc 60–90° xấu đi rõ, giữ skin tự động + Hammer. So bằng `lbs_test.py --wire KHỚP TRỤC ĐỘ` ở góc hay dùng, không chỉ bảng góc cực.
 - **Hammer tự động chỉ sửa bên phải** (bộ pose căng chỉ giơ tay phải): chạy xong thì chép skin phải → trái bằng `work/rig_lab/mirror_skin.py <id>` (đóng trang Rig trước, không thì trang ghi đè skin cũ trong bộ nhớ), rồi đo lại bằng `lbs_test.py`.
 
+- **Skin lấn sang bộ phận khác** (Ninja 2026-10-29, user: "các joint đang ảnh hưởng đến cả những vertex ở ngoài bộ phận"): skin tự động để xương đùi lấn qua đường giữa và lên bụng, xương tay/ngực lấn nhau ở gốc tay. Dọn bằng `work/rig_lab/clean_skin.py <id> [--dry]` (luật theo vùng, chỉ mảnh thân chính, tự sao lưu), rồi tải lại trang Rig ngay. Màu "xương chiếm ưu thế" giờ cố định theo bộ phận (`BONE_HUE` trong template); trước đó màu theo thứ tự xương nên Root_M và Hip_R cùng đỏ, nhìn như lấn dù không lấn.
+- **Hông/gối gãy khi gập chân** (Ninja 2026-10-29, ghi chú "phần này paint vẫn chưa được xử lí đẹp"): chỗ chuyển chậu→đùi, đùi→ống chân quá gắt. `work/rig_lab/leg_skin.py <id> [--out f] [--write] [--bands …]` viết lại trọng số chân theo smoothstep dọc trục xương (mặc định -8..10 / -8..8 / -8..6 / -5..4 cm, chọn bằng dò `lbs_test.py <id> <skin.json>`); so bằng `--wire Hip_R x -90` và `Knee_R x 100` trước khi ghi.
 - Sửa template bằng script Python: viết script ra file rồi chạy, không dùng heredoc Python trong Bash có ngoặc kép lồng (đã hỏng hai lần).
 - `javascript_tool` trên preview: trang có thể cache bản cũ, `navigate` lại trước khi thử.
 - Raycast gán khối rời phải bỏ khối thân chính (>30% đỉnh), nếu không gán nhầm cả thân.

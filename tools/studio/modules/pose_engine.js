@@ -88,6 +88,8 @@ function jointLabel(n) {    // nhãn tiếng Việt cho khớp thêm từ rig: "
   const side = n.endsWith("_R") ? " phải" : n.endsWith("_L") ? " trái" : "", m = n.match(/^(\w+?)Finger(\d)_/);
   if (m) return FINGER_VI[m[1]][0].toUpperCase() + FINGER_VI[m[1]].slice(1) + " " + m[2] + side;
   if (/^Toes_/.test(n)) return "Mũi chân" + side;
+  if (/^Scarf\d/.test(n)) return "Khăn " + n.match(/^Scarf(\d+)/)[1] + side;
+  if (n === "Weapon") return "Vũ khí";
   return n.replace(/_[LR]$/, "") + side;
 }
 function useNames(p) {      // per-clip labels / extra joints (SDR06: gun, drum, fingers)
@@ -251,7 +253,7 @@ async function openPose(p) {
       LIVE = { rest, snap };
     }
     // rig dựng ở Studio (Rig): đốt ngón, mũi chân, joint phụ (giáp vai, túi…) cũng là điểm khớp chọn / xoay / key được (user 2026-10-27)
-    for (const n of Object.keys(B)) if (!NAMES[n] && /^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+)_[LR]$/.test(n)) { NAMES[n] = jointLabel(n); JOINTS.push(n); }
+    for (const n of Object.keys(B)) if (!NAMES[n] && (/^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+|Scarf\d+)_[LR]$/.test(n) || n === "Weapon")) { NAMES[n] = jointLabel(n); JOINTS.push(n); }
     if (RIGSET() && RIGSET().joints) JOINTS = JOINTS.filter(n => { const j = RIGSET().joints[n]; return !j || j.ctl !== false; });   // Rig: khớp không điều khiển thì không có điểm
     gB = {}; ghost.traverse(o => { if (o.isBone) gB[o.name] = o; });
     buildCache(g1.animations[0]);
