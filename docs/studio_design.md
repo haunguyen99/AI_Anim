@@ -304,3 +304,6 @@ studio_cmd.py obj key arrow 6 --at -27.96,-471.01,131.14 --aim -27.96,-629.98,12
 Đổi anim của nỏ quanh frame thả thì chạy lại `obj parent … world 3` (key world lưu chỗ của lúc đặt).
 
 Đã thử (kho thử `studio_test_obj_pose`, đã xoá): mũi tên theo dây nỏ F1–F3, F3 nối liền, F4–F5 bay thẳng (~43 m/s), F6 cắm hình nộm rồi giữ; mesh mũi tên gốc ẩn; tải lại trang key còn; playblast đặt mũi tên đúng từng frame; FBX xuất ra (76 xương) không có mũi tên / hình nộm; chọn từ Outliner + gizmo, kéo thả = key, key từ panel, hoàn tác; hộp gắn `Wrist_R`.
+
+### Cầu nối: playblast → Review (2026-10-29, user: "Đưa lên reviewlap")
+`studio_cmd.py anim playblast [right,front,top] [--dist 1] [--label …] [--note …]`: quay bản anim đang mở (không hộp thoại) rồi gửi `/api/playblast` (lưu webm, nén, thêm version pbN, build trang Review). Dùng chung `ST.mods.pose.sendPlayblast` với lệnh menu Animate → Quay playblast. Vật thể phụ ở xa (hình nộm) có thể chắn góc front: `obj set <tên> --off on` trước khi quay.

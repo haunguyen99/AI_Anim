@@ -17,6 +17,7 @@ Workspace chỉ là bố cục: lệnh nào cũng chạy được ở workspace 
           anim rot Chest_M 0,0,15 [--abs]     # xoay thêm quanh trục local (độ); --abs: góc local XYZ tuyệt đối
           anim pos Root_M 0,0,-5              # dời thêm (cm, trục Blender, Z lên); hông / cổ chân / cổ tay theo IK
           anim key [f] | anim unkey [f] | anim versions | anim version v3
+          anim playblast [right,front,top | view] [--dist 1] [--label "…"] [--note "…"]   # quay bản đang mở, gửi sang Review Lab (thêm version pbN); view = camera viewport đang đặt, ô theo tỉ lệ khung
   Vật thể phụ của anim (mũi tên, hình nộm: key riêng, thấy khi phát + playblast, không vào FBX; cm, trục Blender, Z lên):
           obj list [f] | obj read <tên> [f]                                   # vị trí, hướng (fwd = trục --axis), cha, key
           obj add <tên> --mesh MC_char_map1_V2_VK_bow [--bone slingshot_1|world] [--f 1] [--keep-src]   # bản sao mesh ở frame đang xem
@@ -239,7 +240,12 @@ def main(argv):
         elif d in ("key", "unkey") and r: a = {"f": int(r[0])}
         elif d == "version": a = {"v": r[0]}
         elif d == "clip": a = {"id": r[0]}
-        res = call("anim", dict(a, do=d), timeout=90)
+        elif d == "playblast":
+            opt = lambda k: r[r.index(k) + 1] if k in r and r.index(k) + 1 < len(r) else None
+            pos = [x for i, x in enumerate(r) if not x.startswith("--") and (i == 0 or not r[i - 1].startswith("--"))]
+            a = {"cams": pos[0].split(",") if pos else None, "label": opt("--label"), "note": opt("--note"), "dist": opt("--dist"),
+                 "cw": opt("--cw"), "ch": opt("--ch")}
+        res = call("anim", dict(a, do=d), timeout=300 if d == "playblast" else 90)
     elif op == "obj":
         res = call("obj", obj_args(rest), timeout=90)
     elif op == "cmds":

@@ -64,3 +64,10 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
   key count, last key, take name and span; for a clip that ends on Idle compare the last frame to Idle F1 (here 0 cm/0 deg).
 - Writing Python with a "\x00" literal through a heredoc + str.replace can drop a real NUL byte into the source (SyntaxError,
   "Binary file matches"): patch such lines with bytes([92]) + b"x00" or a script file.
+
+## FBX from the team's anim-only file, rig with scaled bones (2026-10-29, SDR03 Shoot p1 12F, `work/shoot_die_repeat/sdr03/export_fbx.py`)
+- Template = the team's own clip `Assets/_Game/Animations/Map03/MC_char_map3_shoot.fbx` (38 LimbNodes all with curves, no mesh:
+  the team ships anim-only FBX for map3); same curve swap as Gaygor Hit. **Keep each bone's scale** (`slingshot_*` are 0.01):
+  S = column norms of the local 3x3, rotation = pre^T (L/S) post. Forcing S = 1 (Gaygor template) would blow the crossbow up 100x.
+- Pose source = rigpose local matrices (`spline/<ver>/F##.json`) = fbxanim.local of the same rig, so no axis conversion.
+- Verify: fbxanim.local per bone/frame (0.00000 cm), rigpose.frame_of world (0.0000 cm), take name, 12 keys F0..F11; events JSON beside it.

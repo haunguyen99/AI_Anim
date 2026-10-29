@@ -45,6 +45,11 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
   cuối), rồi `make_key` + IK ít đổi nhất ở MỌI frame nên tay bám nỏ ≤ 0,02 cm. **Bả vai bên báng không được trễ** (bị báng
   đẩy: trễ 0,4F làm báng lún vai ở frame bắn). Quét mọi frame bằng scratchpad scan (lật khớp so P0, bước/F, trượt tay,
   đầu–nỏ, tay–thân, báng–vai) so với blocking đã duyệt.
+- **Polish p1 (2026-10-29, từ s6 đã duyệt):** găng map3 là bao tay liền, chỉ `MiddleFinger1_*` có đỉnh (MF2 không), trục gập
+  = local y (trục găng gập sẵn ở P0; xác định bằng cross(cổ tay→MF1, MF1→MF2) trong hệ MF1). Bóp cò 8° (12° lấn báng thêm
+  0,3 cm), găng trái siết 8° khi giật; nỏ rung xoay quanh nòng (`make_key` spec[8], áp trước Δ để tay IK bám theo). Ở cam game
+  găng gần như không đọc được: đừng tốn vòng chỉnh ngón trên rig găng. Tên phiên bản s/p so chuỗi sai ("p1" < "s2"): dùng
+  `shoot_spline.level()`.
 - Bản mới đăng bằng `clip_registry.py pose-version` chưa có `work/store/<ns>/anims/<clip>-<ver>.json` nên Studio mở ở spline:
   chép file của bản trước (đổi `version`) để giữ `interp: step`, rồi `studio_cmd.py anim clip <id>` cho trang tải lại.
 - Model Pose Lab cho rig team: `sdr03/poselab_model.py` (đủ xương + texture); khớp thêm của clip qua `clip_registry.py

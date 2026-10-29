@@ -2,7 +2,7 @@
 (đã gửi, chưa nhận), đánh dấu đã nhận, in danh sách rồi thoát. Mục cổng Rig có "kind": "rig_gate" (ns, char, step, status ok|fix, note).
 Thêm (2026-10-29, user: "cho vào bộ canh luôn đi"): góp ý tab "Góp ý cho AI" của Pose (kind pose_adjust) ở
 work/store/*_pose_lab/adjusts: nhận ngay khi bấm "Gửi tất cả cho AI" (rounds/<clip-ver> status sent), còn góp ý mới lưu mà
-chưa gửi thì nhận khi người dùng ngừng thêm góp ý 45 s. Sửa xong: python tools/notes_watch.py --pose-done <ns> <clip> <ver> "ghi chú"
+chưa gửi thì nhận khi người dùng ngừng thêm góp ý 3 s. Sửa xong: python tools/notes_watch.py --pose-done <ns> <clip> <ver> "ghi chú"
 (đánh dấu các góp ý đó "AI đã áp", vòng = fixed).
 Claude chạy file này nền (run_in_background) trong phiên chat: thoát = Claude được gọi dậy để sửa, xong thì chạy lại để canh tiếp.
 Không tốn lượt AI khi chờ (chỉ đọc thư mục work/store/*_studio/notes mỗi 2 giây).
@@ -67,7 +67,7 @@ def keypose_pending():
     return out
 
 
-POSE_QUIET = 45   # s: góp ý chưa gửi được nhận khi không có góp ý mới trong chừng này giây
+POSE_QUIET = 3   # s: góp ý chưa gửi được nhận khi không có góp ý mới trong chừng này giây (user: "nhận luôn sau 3 giây")
 
 
 def _load(f):
