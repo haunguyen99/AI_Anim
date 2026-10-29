@@ -67,9 +67,9 @@ body.nodock #dock,body.nodock #splitR{display:none}
 #vp{position:relative;min-width:0;min-height:0;background:var(--view);overflow:hidden;touch-action:none}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #panes{position:absolute;inset:0;pointer-events:none}
-.pane{position:absolute;border:1px solid transparent}
-.pane.act{border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
-.pane .pl{position:absolute;left:6px;top:4px;font:11px var(--mono);color:var(--mute);background:color-mix(in srgb,var(--panel) 70%,transparent);padding:1px 6px;border-radius:4px}
+#panes .pane{position:absolute;border:1px solid transparent}
+#panes .pane.act{border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
+#panes .pane .pl{position:absolute;left:6px;top:4px;font:11px var(--mono);color:var(--mute);background:color-mix(in srgb,var(--panel) 70%,transparent);padding:1px 6px;border-radius:4px}
 .marquee{position:absolute;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);display:none;pointer-events:none;z-index:5}
 .split{background:var(--bg);touch-action:none}
 .split.v{cursor:col-resize;border-left:1px solid var(--line)}
@@ -214,6 +214,8 @@ body.tm input{font-size:16px}
 #dock .body > .rigp,#dock .body > .fbwrap,#dock .body > .nwrap{flex:1 0 auto}
 .fbwrap,.nwrap{display:flex;flex-direction:column}
 .dockfoot,.rigp .gate{position:sticky;bottom:0;z-index:3;margin-top:auto;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 12px -10px #0007}
+.fbfoot .compose{border-top:0;padding:8px 10px 0}
+.fbfoot .fbtop{border-top:1px solid var(--line)}
 .fbwrap .nfoot{position:static;margin-top:0;box-shadow:none;border-top:0;background:none}
 .fbwrap .nfoot [data-n=send]{display:none}
 .rigp .big{font-size:14px;font-weight:600;margin:6px 0}.rigp .big.ok{color:var(--ok)}.rigp .big.warn{color:var(--warn)}.rigp .big.bad{color:var(--bad)}

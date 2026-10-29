@@ -207,12 +207,15 @@
       fb = document.createElement("div"); fb.className = "fbwrap"; fb.dataset.park = "poseStash";
       fb.innerHTML = `<section class="fbsec"><h3>Ghi chú vẽ</h3><div class="fbnotes" id="fbNotes"></div></section>
         <section class="fbsec"><h3>Điều chỉnh key</h3><div id="fbAdj"></div></section>
-        <div class="fbtop dockfoot"><button class="on" id="fbSendAll">${ic("send")} Gửi tất cả cho AI</button><span class="sub" id="fbCount"></span></div>`;   // nút gửi ghim đáy panel (user 2026-10-29)
+        <div class="fbfoot dockfoot"><div class="pz pzdock" id="fbCompose"></div>
+          <div class="fbtop"><button class="on" id="fbSendAll">${ic("send")} Gửi tất cả cho AI</button><span class="sub" id="fbCount"></span></div></div>`;   // chân panel ghim đáy (user 2026-10-29): khối soạn điều chỉnh + nút gửi
     }
     const notesBox = fb.querySelector("#fbNotes"), adj = fb.querySelector("#fbAdj");
     notesBox.innerHTML = N && N.panel ? N.panel() : '<p class="sub" style="padding:0 10px">Không có module ghi chú vẽ.</p>';
     if (N && N.panelMounted) setTimeout(() => N.panelMounted(), 0);   // ảnh nhỏ của ghi chú
     if (adj.firstChild !== parts.notes) adj.replaceChildren(parts.notes);
+    const cp = parts.notes.querySelector(".compose"), cpBox = fb.querySelector("#fbCompose");   // ô ghi chú + Lưu / Gửi + vòng review: xuống chân panel, danh sách cuộn phía trên
+    if (cp && cp.parentElement !== cpBox) cpBox.appendChild(cp);
     const nOpen = N && N.unsentCount ? N.unsentCount() : 0, aiBtn = $("aiSend"), canAdj = !!(aiBtn && !aiBtn.disabled);
     fb.querySelector("#fbSendAll").disabled = !nOpen && !canAdj;
     fb.querySelector("#fbCount").textContent = (nOpen ? nOpen + " ghi chú vẽ" : "") + (nOpen && canAdj ? " + " : "") + (canAdj ? "điều chỉnh key" : "") + (nOpen || canAdj ? " chờ gửi" : "Chưa có gì để gửi");

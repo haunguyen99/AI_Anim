@@ -60,11 +60,19 @@
     undo() { const own = !!ST.mod().undo; ST.run("edit.undo"); return { focus: ST.focus, history: own ? "lõi " + ST.focus : "chung", next: own ? null : (ST.hist.U.length ? ST.hist.U[ST.hist.U.length - 1].label : null) }; },
     redo() { ST.run("edit.redo"); return {}; },
     save() { ST.run("file.save"); return { save: (ST.$("stSave") || {}).textContent || "" }; },
-    view({ layout, cam, frame }) {
+    view({ layout, cam, frame, az, el, d }) {
       const V = ST.view;
       if (layout || cam) { need(!cam || V.panes[cam], "Khung là persp, top, front hoặc side"); V.setLayout(String(layout || (cam ? "1" : V.layout)), cam || undefined); }
       if (frame === "all") V.frameAll(); else if (frame === "sel") V.frameSel();
-      return { layout: V.layout, cam: V.single };
+      // góc camera persp cố định (để so với ảnh ref): az = độ quanh trục đứng tính từ +Z (trước mặt nhân vật) sang +X
+      // (bên trái nhân vật), el = độ ngẩng từ trên xuống, d = khoảng cách (m), quanh tâm đang nhìn
+      if (az !== undefined || el !== undefined || d !== undefined) {
+        if (V.single !== "persp") V.setLayout("1", "persp");
+        const p = V.panes.persp, c = p.cam, cur = c.position.clone().sub(p.target), r0 = cur.length();
+        const A = THREE.MathUtils.degToRad(az !== undefined ? +az : Math.atan2(cur.x, cur.z) * 180 / Math.PI), E = THREE.MathUtils.degToRad(el !== undefined ? +el : Math.asin(cur.y / r0) * 180 / Math.PI), R = d !== undefined ? +d : r0;
+        c.position.set(p.target.x + R * Math.sin(A) * Math.cos(E), p.target.y + R * Math.sin(E), p.target.z + R * Math.cos(A) * Math.cos(E)); c.lookAt(p.target); c.updateProjectionMatrix(); V.orbit.update();
+      }
+      return { layout: V.layout, cam: V.single, pos: ST.view.panes.persp.cam.position.toArray().map(v => +v.toFixed(3)), target: ST.view.panes.persp.target.toArray().map(v => +v.toFixed(3)) };
     },
     snap({ w, h } = {}) {   // ảnh viewport để AI tự kiểm; vẽ lại ngay rồi đọc canvas trong cùng lượt
       const V = ST.view, cv = ST.$("cv");

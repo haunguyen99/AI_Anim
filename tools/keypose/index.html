@@ -131,6 +131,14 @@ $("#onlyStar").onchange = () => { ls("kp_onlyStar", $("#onlyStar").checked ? "1"
 async function loadJobs() {
   const j = await api("/api/keypose/jobs");
   setWatch(j.watching);
+  if (!$("#who").value && j.user) { $("#who").value = j.user; }   // mặc định: tên tài khoản máy này
+  if (!j.jobs.length) {
+    $("#keys").innerHTML = `<section class="key"><h2 style="font-size:14px;margin:0 0 6px">Máy này chưa có ảnh key pose</h2>
+      <p>Trang đọc ảnh trên chính máy đang chạy Home (<code>${esc(j.root)}</code>). Đặt ảnh vào <code>work/&lt;dự án&gt;/&lt;job&gt;/keys/</code>,
+      tên theo key: <code>k1_ready.png</code>, <code>k1_ready_v2.png</code>… (prompt kèm: <code>keys/prompts/&lt;tên ảnh&gt;.txt</code>; ảnh model làm ref: <code>model_ref/</code>).
+      Hoặc nhờ Claude trên máy này làm giai đoạn 0 (GDD → ảnh key pose). Tải lại trang sau khi có ảnh.</p></section>`;
+    $("#newReq").disabled = true;
+  }
   const sel = $("#jobSel");
   const want = new URLSearchParams(location.search).get("job") || ls("kp_job");
   sel.innerHTML = j.jobs.map(x => `<option value="${esc(x.id)}">${esc(x.id)} · ${x.keys} key · ${x.count} ảnh</option>`).join("") || "<option value=''>Chưa có job nào có keys/</option>";

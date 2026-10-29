@@ -44,6 +44,24 @@ def git(*args, env=None, inp=None, check=True):
     return r.stdout.decode("utf8", "replace")
 
 
+def _blob(h):
+    return subprocess.run(["git", "cat-file", "blob", h], cwd=ROOT, capture_output=True).stdout
+
+
+def keep_eol(p, h, rh, write):
+    """Giữ kiểu xuống dòng của bản trên GitHub. Repo lưu nhiều file dạng CRLF, còn hash-object
+    (autocrlf) băm thành LF: không giữ thì file chỉ khác CRLF/LF cũng bị viết lại cả file,
+    và lần kéo sau xung đột toàn file."""
+    remote_b = _blob(rh)
+    if b"\r\n" not in remote_b:
+        return h
+    raw = open(os.path.join(ROOT, p), "rb").read()
+    if raw.replace(b"\r\n", b"\n") == remote_b.replace(b"\r\n", b"\n"):
+        return rh                                  # chỉ khác kiểu xuống dòng: giữ bản trên GitHub
+    crlf = raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    return git("hash-object", "--stdin", *(["-w"] if write else []), inp=crlf).strip()
+
+
 def _rx(p):   # glob: ** qua nhiều thư mục, * không qua dấu /
     out, i = "", 0
     while i < len(p):
@@ -103,6 +121,8 @@ def main():
             if os.path.getsize(os.path.join(ROOT, p)) > MAX_BYTES:
                 big.append(p); continue
             h = git("hash-object", *(["-w"] if a.yes and not a.dry_run else []), p).strip()
+            if p in remote and remote[p] != h:
+                h = keep_eol(p, h, remote[p], a.yes and not a.dry_run)
         new_hash[p] = h
         if p not in remote: add.append(p)
         elif remote[p] != h: mod.append(p)
