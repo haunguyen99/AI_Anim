@@ -184,7 +184,7 @@
       if (edit && edit.id === o.id) edit = null;   // đổi frame: bỏ phần kéo chưa key
       const w = evalAt(o, g.frame); if (!w) { L.root.visible = false; return; }
       L.root.position.copy(w.p); L.root.quaternion.copy(w.q); L.root.visible = w.vis && !o.off; L.root.updateMatrixWorld(true);
-      if (o.hideSrc && o.src && L.root.visible) hide.add(o.src);
+      if (o.hideSrc && o.src && !o.off) hide.add(o.src);   // vật thể thay mesh gốc cả khi đang ẩn theo key (Reload: tên chưa có trên rãnh tới F20)
     });
     g.model.traverse(x => { if (!x.isMesh) return; if (hide.has(x.name)) { if (x.visible) { x.visible = false; hidSrc.add(x); } } else if (hidSrc.has(x)) { x.visible = true; hidSrc.delete(x); } });
   }

@@ -301,7 +301,7 @@
    "id": "sdr03_shoot",
    "character": "SDR03",
    "stage": "export",
-   "note": "Polish p1 duyệt, đã xuất FBX 2026-10-29 (chưa đẩy repo Unity)",
+   "note": "p3 (= p1 + mặt nhìn thẳng + dây chốt ngang đầu cánh) xuất lại FBX 2026-10-29, nối khớp Reload (chưa đẩy repo Unity)",
    "review": {
     "key": "sdr03_shoot",
     "clip": "SDR03_Shoot",
@@ -328,8 +328,8 @@
   {
    "id": "sdr03_reload",
    "character": "SDR03",
-   "stage": "analysis",
-   "note": "Phân tích D2 (30 F, với/kéo/chốt/về báng) chờ duyệt 2026-10-29; P0 v1 dùng chung với Shoot",
+   "stage": "polish",
+   "note": "s1 duyệt; polish p1 chờ duyệt 2026-10-29",
    "review": {
     "key": "sdr03_reload",
     "clip": "Reload",
