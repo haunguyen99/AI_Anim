@@ -10,7 +10,7 @@ skill /new_clip và /check_fb đọc/ghi qua script này. Chạy bằng .venv\\S
   set-url <id|char:Tên> <rig|pose|review> <url>   ghi link artifact vừa đăng
   review-version <id> --version V --label L --src clips/x.webm --thumb clips/x.jpg --n N [--fps 30 --w 1200 --h 600 --views "..." --note "..."]
                                           thêm một version vào đầu CLIPS của work/review_page/index.html
-  pose-version <id> --version V --label L --glb models/x.json --frames N [--fps 30 --keys 1,5 --mode keys --loop --seed-from V --note "..."]
+  pose-version <id> --version V --label L --glb models/x.json --frames N [--fps 30 --keys 1,5 --mode keys --note "..."]
                                           thêm một dòng vào đầu POSES của work/pose_lab/index.html
   build                                   chạy split_pages.py của Review Lab và Pose Lab
 """
@@ -127,8 +127,6 @@ def cmd_pose_version(a):
     fields = [f"clip: {js(p['clip'])}", f"project: {js(c['character'])}", f"version: {js(a.version)}", f"date: {js(a.date)}", f"frames: {a.frames}",
               f"fps: {a.fps}", f"keys: {keys}"]
     if a.mode: fields.append(f"mode: {js(a.mode)}")
-    if a.loop: fields.append("loop: true")            # F cuối = F1
-    if a.seed_from: fields.append(f"seedFrom: {js(a.seed_from)}")   # chép key của version này (db) làm điểm bắt đầu
     if a.main: fields.append("main: [" + ", ".join(x.strip() for x in a.main.split(",")) + "]")    # main keys (phase starts) for the Timing panel
     if a.phases: fields.append("phases: " + json.dumps([x.strip() for x in a.phases.split(",")], ensure_ascii=False))
     fields += [f"label: {js(a.label)}", f"note: {js(a.note or '')}", f"glb: {js(a.glb)}"]
@@ -157,7 +155,7 @@ def main():
     r.set_defaults(f=cmd_review_version)
     p = sp.add_parser("pose-version"); p.add_argument("id")
     for k in ("version", "label", "glb"): p.add_argument("--" + k, required=True)
-    p.add_argument("--frames", type=int, required=True); p.add_argument("--fps", type=int, default=30); p.add_argument("--keys"); p.add_argument("--mode"); p.add_argument("--note"); p.add_argument("--main"); p.add_argument("--phases"); p.add_argument("--loop", action="store_true"); p.add_argument("--seed-from")
+    p.add_argument("--frames", type=int, required=True); p.add_argument("--fps", type=int, default=30); p.add_argument("--keys"); p.add_argument("--mode"); p.add_argument("--note"); p.add_argument("--main"); p.add_argument("--phases")
     p.add_argument("--date", default=__import__("datetime").date.today().isoformat()); p.set_defaults(f=cmd_pose_version)
     a = ap.parse_args(); a.f(a)
 

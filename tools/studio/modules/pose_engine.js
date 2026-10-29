@@ -88,8 +88,6 @@ function jointLabel(n) {    // nhãn tiếng Việt cho khớp thêm từ rig: "
   const side = n.endsWith("_R") ? " phải" : n.endsWith("_L") ? " trái" : "", m = n.match(/^(\w+?)Finger(\d)_/);
   if (m) return FINGER_VI[m[1]][0].toUpperCase() + FINGER_VI[m[1]].slice(1) + " " + m[2] + side;
   if (/^Toes_/.test(n)) return "Mũi chân" + side;
-  if (/^Scarf\d/.test(n)) return "Khăn " + n.match(/^Scarf(\d+)/)[1] + side;
-  if (n === "Weapon") return "Vũ khí";
   return n.replace(/_[LR]$/, "") + side;
 }
 function useNames(p) {      // per-clip labels / extra joints (SDR06: gun, drum, fingers)
@@ -242,9 +240,9 @@ async function openPose(p) {
     if (tok !== openTok) return;          // a newer version was opened while this one loaded: its model must not stay in the scene (two maces, 2026-10-27)
     if (model) { scene.remove(model); scene.remove(ghost); }
     model = posed(g1); ghost = posed(g2);
-    ghost.traverse(o => { if (o.isMesh) { o.material = new THREE.MeshBasicMaterial({ color: 0x8fd3ff, transparent: true, opacity: .18, depthWrite: false }); o.renderOrder = 2; } });
-    ghost.visible = $("tGhost").classList.contains("on");
-    scene.add(model, ghost);
+    ghost.traverse(o => { if (o.isMesh) { o.material = new THREE.MeshBasicMaterial({ color: 0x8fd3ff, transparent: true, opacity: .18, depthWrite: false, skinning: !!o.isSkinnedMesh }); o.renderOrder = 2; } });
+    ghost.visible = $("tGhost").classList.contains("on") && ONION.mode === "orig";
+    scene.add(model, ghost); onionReset(src);
     B = {}; model.traverse(o => { if (o.isBone) B[o.name] = o; });
     LIVE = null;
     if (live) {   // vị trí nghỉ của rig hiện tại và của model chụp (nếu còn file) để đổi vị trí key qua lại
@@ -253,8 +251,7 @@ async function openPose(p) {
       LIVE = { rest, snap };
     }
     // rig dựng ở Studio (Rig): đốt ngón, mũi chân, joint phụ (giáp vai, túi…) cũng là điểm khớp chọn / xoay / key được (user 2026-10-27)
-    // Ninja (2026-10-28): xương khăn Scarf1–4 và kunai Weapon (con của Wrist_L) cũng chọn / xoay / key được
-    for (const n of Object.keys(B)) if (!NAMES[n] && (/^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+|Scarf\d+)_[LR]$/.test(n) || n === "Weapon")) { NAMES[n] = jointLabel(n); JOINTS.push(n); }
+    for (const n of Object.keys(B)) if (!NAMES[n] && /^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+)_[LR]$/.test(n)) { NAMES[n] = jointLabel(n); JOINTS.push(n); }
     if (RIGSET() && RIGSET().joints) JOINTS = JOINTS.filter(n => { const j = RIGSET().joints[n]; return !j || j.ctl !== false; });   // Rig: khớp không điều khiển thì không có điểm
     gB = {}; ghost.traverse(o => { if (o.isBone) gB[o.name] = o; });
     buildCache(g1.animations[0]);
@@ -318,10 +315,57 @@ function stashDraft() {   // keep this frame's unsaved edits (local transforms o
   if (list.length) drafts[frame] = Object.fromEntries(list.map(n => [n, { q: B[n].quaternion.clone(), p: B[n].position.clone() }]));
   else delete drafts[frame];
 }
+// ---------------------------------------------------------------- onion skin kiểu Maya Ghost (user 2026-10-28)
+// Bóng mờ = pose ở các key (hoặc frame) TRƯỚC (cam) và SAU (xanh) frame đang xem, càng xa càng mờ. Chế độ "Pose gốc" = bóng cũ
+// (pose key chưa cộng điều chỉnh / vật lý). Mỗi bóng là một bản model nạp thêm (không mixer), nạp lười khi cần.
+const ONION = { mode: "k1", frames: "", src: null, list: [], loading: null, off: 0 };
+try { ONION.frames = localStorage.getItem("pl:onionF") || ""; } catch (e) {}
+const onionOn = () => $("tGhost") && $("tGhost").classList.contains("on");
+function onionReset(src) { ONION.list.forEach(o => scene.remove(o.root)); ONION.list = []; ONION.src = src; ONION.loading = null; }
+function onionFrames(f) {
+  const n = NFR(), want = [...new Set(String(ONION.frames || "").split(/[^0-9]+/).filter(Boolean).map(Number).filter(x => x >= 1 && x <= n))].slice(0, 6);
+  if (want.length) return want.map(x => ({ f: x, side: x < f ? -1 : x > f ? 1 : 0, i: 0 }));   // frame người dùng nhập
+  const m = ONION.mode;
+  if (m === "orig") return [];
+  if (m[0] === "k") {
+    const c = +m.slice(1), ks = keyList();
+    return ks.filter(k => k < f).slice(-c).reverse().map((k, i) => ({ f: k, side: -1, i })).concat(ks.filter(k => k > f).slice(0, c).map((k, i) => ({ f: k, side: 1, i })));
+  }
+  const step = +m.slice(1), out = [];
+  for (let i = 1; i <= 3; i++) { if (f - i * step >= 1) out.push({ f: f - i * step, side: -1, i: i - 1 }); if (f + i * step <= n) out.push({ f: f + i * step, side: 1, i: i - 1 }); }
+  return out;
+}
+function onionEnsure(n) {
+  if (ONION.list.length >= n || !ONION.src) return Promise.resolve();
+  if (ONION.loading) return ONION.loading;
+  const src = ONION.src;
+  return (ONION.loading = (async () => {
+    while (ONION.list.length < n) {
+      const g = await loadGlb(src); if (src !== ONION.src) return;
+      const root = g.scene, bones = {};
+      root.traverse(o => { if (o.isBone) bones[o.name] = o; if (o.isMesh) { o.frustumCulled = false; o.material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .2, depthWrite: false, skinning: !!o.isSkinnedMesh }); o.renderOrder = 2; } });
+      root.visible = false; scene.add(root); ONION.list.push({ root, bones });
+    }
+    ONION.loading = null;
+  })());
+}
+function onionUpdate(f) {          // gọi trong goto TRƯỚC khi dựng frame f (sampleAt ghi vào B; frame f dựng lại ngay sau)
+  const show = onionOn() && !playing && !ONION.off, list = show ? onionFrames(f) : [];
+  if (list.length > ONION.list.length) onionEnsure(list.length).then(() => { if (model) goto(frame); });
+  ONION.list.forEach((o, k) => {
+    const it = list[k]; if (!it) { o.root.visible = false; return; }
+    sampleAt(it.f);
+    for (const n in o.bones) if (B[n]) { o.bones[n].position.copy(B[n].position); o.bones[n].quaternion.copy(B[n].quaternion); }
+    const col = it.side < 0 ? 0xff8a3d : it.side > 0 ? 0x3da5ff : 0xc3c9d4, op = [0.3, 0.17, 0.09][it.i] || 0.07;
+    o.root.traverse(m => { if (m.isMesh) { m.material.color.setHex(col); m.material.opacity = op; } });
+    o.root.visible = true; o.root.updateMatrixWorld(true);
+  });
+}
 function goto(f, first) {
   if (!model) return;
   f = Math.max(1, Math.min(P.frames || 1, Math.round(f)));
   if (!first) stashDraft();
+  onionUpdate(f);
   frame = f; sampleAt(f); model.updateMatrixWorld(true); if (ghost) ghost.updateMatrixWorld(true);
   rebase();
   edited = new Set();
@@ -837,7 +881,18 @@ function afterEdit() {      // a joint was rotated / the hip moved (gizmo or Cha
 }
 $("tLock").onclick = () => { lockFeet = !lockFeet; $("tLock").classList.toggle("on", lockFeet); };
 $("tGunR").onclick = () => { gunFollow = !gunFollow; $("tGunR").classList.toggle("on", gunFollow); };
-$("tGhost").onclick = () => { const on = !$("tGhost").classList.contains("on"); $("tGhost").classList.toggle("on", on); if (ghost) ghost.visible = on; };
+$("tGhost").onclick = () => { const on = !$("tGhost").classList.contains("on"); $("tGhost").classList.toggle("on", on); if (ghost) ghost.visible = on && ONION.mode === "orig"; goto(frame); };
+(function () {   // ô nhập frame cho bóng mờ cạnh nút (như Ghost Options → custom frames của Maya)
+  const b = $("tGhost"); if (!b || $("tGhostF")) return;
+  const s = document.createElement("input"); s.id = "tGhostF"; s.type = "text"; s.inputMode = "numeric"; s.className = "ghostf";
+  s.style.cssText = "height:28px;width:72px;margin:0 4px 0 2px;font-size:12px;padding:0 6px";
+  s.placeholder = "F: 1, 7"; s.value = ONION.frames;
+  s.title = "Bóng mờ (như Ghost của Maya): gõ frame cần hiện pose, vd 1 hoặc 1, 7 rồi Enter. Trước frame đang xem = cam, sau = xanh. Để trống = key ngay trước + ngay sau";
+  const apply = () => { ONION.frames = s.value.trim(); try { localStorage.setItem("pl:onionF", ONION.frames); } catch (e) {} if (!b.classList.contains("on")) b.click(); else goto(frame); };
+  s.addEventListener("change", apply);
+  s.addEventListener("keydown", e => { e.stopPropagation(); if (e.key === "Enter") { apply(); s.blur(); } });   // phím gõ không chạy phím tắt của Pose
+  b.after(s);
+})();
 $("tJoints").onclick = () => $("tJoints").classList.toggle("on");
 $("tTrail").onclick = () => { trailOn = !trailOn; $("tTrail").classList.toggle("on", trailOn); trailSig = ""; if (!trailOn) trailClear(); };
 $("undo").onclick = () => { const sn = undoStack.pop(); if (sn) restore(sn); };
@@ -1230,7 +1285,7 @@ function aisFrames() {
 async function aisSheets(frames) {
   const cams = ["right", "front", "top"], cols = 6, cw = 220, ch = 220, rows = Math.ceil(frames.length / cols), sheets = [];
   const wasFrame = frame, wasCam = curCam, wasGhost = ghost && ghost.visible, wasSize = renderer.getSize(new THREE.Vector2()), bg = new THREE.Color(0x15181f);
-  stopPlay(); if (ghost) ghost.visible = false; gizmo.detach();
+  stopPlay(); if (ghost) ghost.visible = false; ONION.off++; goto(frame); gizmo.detach();
   try {
     for (const k of cams) {
       const out = document.createElement("canvas"); out.width = cw * cols; out.height = ch * rows + 26; const c = out.getContext("2d");
@@ -1248,7 +1303,7 @@ async function aisSheets(frames) {
       sheets.push(await new Promise(r => out.toBlob(r, "image/jpeg", 0.85)));
     }
   } finally {
-    if (ghost) ghost.visible = wasGhost; renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
+    if (ghost) ghost.visible = wasGhost; ONION.off = Math.max(0, ONION.off - 1); renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
   }
   return { sheets, cams };
 }
@@ -2683,8 +2738,9 @@ function buildBody() {
       // than its mirror takes the mirror's radius, the rest is armor
       let r = m && raw[m] != null && raw[b] > 1.3 * raw[m] ? raw[m] : raw[b];
       if (over[b] != null) r = over[b] * CM_W;
-      const inv = wmat4(B[b]).invert();
-      caps[b] = { a: A.clone().applyMatrix4(inv), b: E.clone().applyMatrix4(inv), r };
+      const inv = wmat4(B[b]).invert(), rc = RSc[b] || {}, dd = E.clone().sub(A).normalize();   // Rig 6: nới / rút hai đầu capsule (cm)
+      const A2 = A.clone().addScaledVector(dd, -(rc.e0 || 0) * CM_W), E2 = E.clone().addScaledVector(dd, (rc.e1 || 0) * CM_W);
+      caps[b] = { a: A2.applyMatrix4(inv), b: E2.applyMatrix4(inv), r };
       // surface points of the segment (armor included): another segment's surface inside this thin core = a real
       // intersection (capsule-vs-capsule flagged the head 17 cm into the arm where the meshes only touch)
       const st = Math.max(1, Math.floor(pts[b].length / 160)); shells[b] = pts[b].filter((_, i) => i % st === 0).map(p => p.clone().applyMatrix4(inv));
@@ -3115,7 +3171,7 @@ function renderView(v, shaded, cal) {    // -> {w, h, px: RGBA rows top-down} th
   const { w, h } = cellOf(v), W = shaded ? P.ref.views[v].w : w, H = shaded ? P.ref.views[v].h : h;
   if (!fitRT || fitRT.width !== W || fitRT.height !== H) { if (fitRT) fitRT.dispose(); fitRT = new THREE.WebGLRenderTarget(W, H); }
   setFitCam(v, cal);
-  const vis = [ghost.visible, grid.visible]; ghost.visible = false; grid.visible = false;
+  const vis = [ghost.visible, grid.visible]; ghost.visible = false; grid.visible = false; ONION.list.forEach(o => o.root.visible = false);
   scene.overrideMaterial = shaded ? greyMat : fitMat;
   const cc = renderer.getClearColor(new THREE.Color()), ca = renderer.getClearAlpha();
   renderer.setRenderTarget(fitRT); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.render(scene, fitCam);
@@ -4460,7 +4516,7 @@ window.DDC.playblast = async function (opt) {
   rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   const done = new Promise(r => rec.onstop = r);
   const msg = document.createElement("div"); msg.id = "pbMsg"; $("viewer").appendChild(msg);
-  stopPlay(); if (ghost) ghost.visible = false; gizmo.detach();
+  stopPlay(); if (ghost) ghost.visible = false; ONION.off++; goto(frame); gizmo.detach();
   const clear = css("--view") || "#101218", bg = new THREE.Color(0x15181f);
   let thumb = null; const mid = Math.max(1, Math.round(n / 2));
   try {
@@ -4477,7 +4533,7 @@ window.DDC.playblast = async function (opt) {
     }
     await new Promise(r => setTimeout(r, 200)); rec.stop(); await done;
   } finally {
-    msg.remove(); if (ghost) ghost.visible = wasGhost; renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
+    msg.remove(); if (ghost) ghost.visible = wasGhost; ONION.off = Math.max(0, ONION.off - 1); renderer.setSize(wasSize.x, wasSize.y, false); resize(); setCam(wasCam); goto(wasFrame); renderer.setClearColor(0x000000, 0);
   }
   return { webm: new Blob(chunks, { type: "video/webm" }), thumb, n, fps, w: cw * cams.length, h: ch, views: cams.map(k => CAMS[k].label.toLowerCase()).join(" | ") };
 };

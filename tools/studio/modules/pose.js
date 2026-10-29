@@ -195,7 +195,39 @@
     if (state === "error") return msg(`<span class="s-bad">Không nạp được anim: ${esc(err)}</span>`);
     if (state === "noclip") return msg(ST.char ? esc(ST.char.name) + " chưa có anim nào trong Pose Lab. Tạo anim ở Home (/home) hoặc gõ /new_clip." : "Chưa có anim nào trong Pose Lab.");
     if (t === "phys" && $("physBox") && $("physBox").hidden) return msg("Vật lý dùng cho phiên bản dạng key (làm trên trang). Phiên bản này là anim nướng sẵn: mở phiên bản key ở tab Phiên bản.");
+    if (t === "feedback") return feedbackNode();
     return { joint: parts.joint, phys: parts.phys, notes: parts.notes, versions: parts.versions }[t] || parts.joint;
+  };
+  // ---- tab "Góp ý cho AI" (user 2026-10-28: gộp "Ghi chú vẽ" + "Điều chỉnh gửi AI"): ghi chú vẽ trên, điều chỉnh key dưới,
+  // một nút gửi cả hai. Khối ghi chú vẽ do module notes vẽ (HTML), khối điều chỉnh là DOM của lõi Pose (parts.notes).
+  let fb = null;
+  function feedbackNode() {
+    const N = ST.mods.notes;
+    if (!fb) {
+      fb = document.createElement("div"); fb.className = "fbwrap"; fb.dataset.park = "poseStash";
+      fb.innerHTML = `<div class="fbtop"><button class="on" id="fbSendAll">${ic("send")} Gửi tất cả cho AI</button><span class="sub" id="fbCount"></span></div>
+        <section class="fbsec"><h3>Ghi chú vẽ</h3><div class="fbnotes" id="fbNotes"></div></section>
+        <section class="fbsec"><h3>Điều chỉnh key</h3><div id="fbAdj"></div></section>`;
+    }
+    const notesBox = fb.querySelector("#fbNotes"), adj = fb.querySelector("#fbAdj");
+    notesBox.innerHTML = N && N.panel ? N.panel() : '<p class="sub" style="padding:0 10px">Không có module ghi chú vẽ.</p>';
+    if (N && N.panelMounted) setTimeout(() => N.panelMounted(), 0);   // ảnh nhỏ của ghi chú
+    if (adj.firstChild !== parts.notes) adj.replaceChildren(parts.notes);
+    const nOpen = N && N.unsentCount ? N.unsentCount() : 0, aiBtn = $("aiSend"), canAdj = !!(aiBtn && !aiBtn.disabled);
+    fb.querySelector("#fbSendAll").disabled = !nOpen && !canAdj;
+    fb.querySelector("#fbCount").textContent = (nOpen ? nOpen + " ghi chú vẽ" : "") + (nOpen && canAdj ? " + " : "") + (canAdj ? "điều chỉnh key" : "") + (nOpen || canAdj ? " chờ gửi" : "Chưa có gì để gửi");
+    return fb;
+  }
+  async function sendAll() {
+    const N = ST.mods.notes, aiBtn = $("aiSend");
+    if (N && N.sendAll) await N.sendAll();
+    if (aiBtn && !aiBtn.disabled) aiBtn.click();
+    ST.refresh();
+  }
+  M.panel_click = (e, sub) => {
+    if (sub !== "feedback") return;
+    if (e.target.closest("#fbSendAll")) return sendAll();
+    if (e.target.closest("#fbNotes") && ST.mods.notes && ST.mods.notes.panel_click) return ST.mods.notes.panel_click(e);
   };
   M.info = () => { if (!eng) return "Pose · " + ({ loading: "đang nạp", noclip: "chưa có anim", error: "lỗi" }[state] || ""); const g = eng.get(); return (clipInfo ? clipInfo.name : "") + " · " + (g.P ? g.P.version : "") + (eng.isLive() ? " · nhân vật hiện tại" : "") + " · F" + g.frame + "/" + (g.P ? g.P.frames : 1) + (g.sel ? " · " + g.sel : ""); };
   M.frameAll = () => { if (!eng || !eng.frameAll || !eng.get().model || !V.active.cam.isPerspectiveCamera) return false; eng.frameAll(); return true; };   // khung phối cảnh theo lõi Pose; khung trực giao dùng bounds

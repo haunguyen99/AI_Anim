@@ -23,6 +23,14 @@ Không điều khiển được cửa sổ Spine đang mở. Mọi việc đi qu
 - Contact sheet (`render_spine.py`) vẫn dùng để tự kiểm; Spine Live là nơi người dùng theo dõi.
 - Ghép lên UI game trên Spine Live: `work/<game>/spine/<anim>/ui/<tên>.json` = `{"name", "image" (PNG cạnh file), "at": [x, y] px ảnh (y xuống) = gốc skeleton / điểm chạm, "scale": px ảnh mỗi đơn vị Spine}`; trang có ô "UI: <tên>", lệnh `show … --ui <tên>`. HandTut: `ui/equipment.json` (at 110,660, scale 0.55 như GIF đã duyệt).
 
+**Người dùng sửa trực tiếp trên Spine Live (2026-10-28, ô "Sửa"):**
+- Sửa bật sẵn. Như Spine: bấm gần xương để chọn, đã chọn thì kéo ở đâu trên hình cũng chỉnh xương đó; phím **C** xoay, **V** dời (Shift đảo tạm). Xương trong chuỗi IK (tô tím): kéo = dời tay cầm IK (ô cam) của chuỗi, vì IK luôn giải lại góc. Bảng bên phải chỉnh số Xoay / X / Y, Ctrl+Z, Esc. Bấm vào hình **không** phát / dừng (người dùng 2026-10-28), chỉ nút play hoặc Space. Ctrl+Z lùi từng thao tác, hết thì lùi lần Key pose; Ctrl+Y làm lại. Cuộn chuột zoom quanh con trỏ, kéo chuột giữa / phải / Alt+kéo dời khung nhìn, phím + − F (vừa khung); mức zoom giữ qua các lần nạp lại. Timeline dưới khung xem: bấm / kéo để dừng và tua frame, cuộn để giãn / thu, Shift+cuộn trượt ngang, dấu key (vàng = xương đang chọn). Tắt ô Xương khi đang Sửa: chỉ hiện xương đang chọn, vẫn kéo / xoay được.
+- Nút **Gen tiếp từ frame này (Claude)**: key pose đang sửa (nếu có) + ghi chú `request: "gen"` kèm pose đủ xương. Khi đang làm Spine với người dùng, chạy nền `tools/spine_live_cmd.py wait` (Bash `run_in_background`): lệnh thoát và in ghi chú ngay khi người dùng gửi; xử lý (gen các frame sau từ pose đó, ghi JSON, `show` frame mới), `note-done <id>`, rồi chạy lại `wait`.
+- "Key pose" ghi key vào chính file JSON tại frame đang xem (`POST /api/spine/key`, curve Ease / Linear / Stepped, gõ tên anim mới để tạo anim), có backup ở `work/store/_sys/spine_live/backup/` và nút "Hoàn tác key". Kèm ghi chú cho Claude; "Chỉ gửi ghi chú" gửi pose + ghi chú mà không sửa file.
+- Đầu mỗi lượt khi đang làm Spine: `.venv/Scripts/python.exe -I tools/spine_live_cmd.py notes --bones` đọc ghi chú + pose người dùng gửi; làm xong `note-done <id>`. Pose người dùng key là pose chuẩn: gen các frame sau tiếp từ đó (đọc key trong JSON), không đè.
+- **Script build đè file**: trước khi chạy lại `build_<anim>.py`, kiểm `notes --all` và so JSON với lần build trước; có key người dùng thì đưa vào script (hoặc sửa thẳng JSON bằng tool MCP), không chạy đè mất.
+- Đang có chỉnh sửa chưa key thì trang giữ nguyên khi file đổi (báo "đang giữ chỉnh sửa"), không nhảy theo Claude và không cho đổi frame.
+
 ## Công cụ
 
 | Việc | Công cụ |

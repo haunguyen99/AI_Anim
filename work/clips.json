@@ -21,6 +21,10 @@
   "Ninja": {
    "rig_url": ""
   },
+  "SDR03": {
+   "rig_url": "",
+   "rig_page": "mc_map3"
+  },
   "Ball": {
    "rig_url": ""
   }
@@ -294,6 +298,62 @@
    }
   },
   {
+   "id": "sdr03_shoot",
+   "character": "SDR03",
+   "stage": "blocking",
+   "note": "Blocking b1 (12F stepped) chờ duyệt",
+   "review": {
+    "key": "sdr03_shoot",
+    "clip": "Shoot",
+    "title": "SDR03 Shoot Review Lab",
+    "crumb": "SDR03 · anim",
+    "name": "Shoot",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Nỏ",
+     "Tóc"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr03_shoot",
+    "clip": "SDR03_Shoot",
+    "title": "SDR03 Shoot Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "sdr03_reload",
+   "character": "SDR03",
+   "stage": "analysis",
+   "note": "P0 chung đã duyệt 2026-10-28; chờ blocking Shoot",
+   "review": {
+    "key": "sdr03_reload",
+    "clip": "Reload",
+    "title": "SDR03 Reload Review Lab",
+    "crumb": "SDR03 · anim",
+    "name": "Reload",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Nỏ",
+     "Tóc"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr03_reload",
+    "clip": "SDR03_Reload",
+    "title": "SDR03 Reload Pose Lab",
+    "url": ""
+   }
+  },
+  {
    "id": "ninja_idle",
    "character": "Ninja",
    "stage": "p0",
@@ -394,13 +454,16 @@
    "characters": [
     "SDR",
     "SDR06",
-    "Zom2 Map3"
+    "Zom2 Map3",
+    "SDR03"
    ],
    "labels": {
     "SDR": "map2 · lính La Mã",
     "SDR06": "map06 · gangster + Thompson",
-    "Zom2 Map3": "Zombie 2 map03 (EN_zom2_map3_NEW)"
-   }
+    "Zom2 Map3": "Zombie 2 map03 (EN_zom2_map3_NEW)",
+    "SDR03": "map3 · người bộ tộc + nỏ (MC_char_map3)"
+   },
+   "char_notes": {}
   },
   {
    "id": "test",
