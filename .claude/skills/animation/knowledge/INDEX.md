@@ -77,6 +77,8 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#end-on-idle` | đuôi clip non-loop cho game |
 | **review_process.md** | |
 | `#reviewer-prefs` | trước khi trả lời/gửi bản cho user |
+| `#director` | trước mỗi cổng duyệt: gọi subagent animation-director, đọc director_log |
+| **director_standards.md** | trước khi director chấm; sau MỖI lần user duyệt/trả (so với director, ghi calibration) |
 | `#naming-principles` | ghi feedback vào knowledge |
 | `#self-measure` | trước khi gửi review; sau mỗi lần sửa |
 | `#eye-vs-iou` | so ref vs anim; IoU cao mà vẫn bị chê |
