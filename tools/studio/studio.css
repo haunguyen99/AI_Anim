@@ -1,0 +1,282 @@
+/* AI Anim Studio: một ứng dụng, một viewport. Bố cục kiểu Maya/Blender: menu, shelf, hộp công cụ, viewport, dock phải, timeline, dòng trạng thái. */
+:root{
+  --bg:#e9ebef; --panel:#f7f8fa; --raise:#ffffff; --line:#cfd3da; --fg:#1b2230; --mute:#5d6676;
+  --accent:#2f5fd0; --accent-fg:#ffffff; --view:#d9dde3; --hover:#e1e5ec;
+  --ok:#2c8a5a; --warn:#b9770e; --bad:#c23a30; --sel:#ff7a1a;
+  --right:#d4483c; --left:#2c8a5a; --mid:#3a4252; --ref:#a07a00;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c2028; --panel:#232832; --raise:#2b313c; --line:#353c48; --fg:#e4e8ef; --mute:#8d97a8;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#15191f; --hover:#2f3643; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; --right:#ef6d60; --left:#52c58a; --mid:#c3cad6; --ref:#e0be4a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c2028; --panel:#232832; --raise:#2b313c; --line:#353c48; --fg:#e4e8ef; --mute:#8d97a8;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#15191f; --hover:#2f3643; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; --right:#ef6d60; --left:#52c58a; --mid:#c3cad6; --ref:#e0be4a; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;background:var(--bg);color:var(--fg);font:13px/1.4 var(--sans)}
+button{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:4px 9px;cursor:pointer}
+button:hover{border-color:var(--accent)} button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+button.bad{border-color:var(--bad);color:var(--bad)}
+input[type=number],input[type=text],select{font:inherit;background:var(--raise);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:3px 5px}
+input[type=number]{width:70px}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;pointer-events:none}
+.sp{flex:1}
+.sub{color:var(--mute);font-size:12px}
+
+/* ---- menu bar + workspace tabs */
+#menubar{display:flex;align-items:center;gap:2px;height:32px;padding:0 6px;background:var(--panel);border-bottom:1px solid var(--line);min-width:0}
+#menubar .logo{color:inherit;text-decoration:none;font-weight:700;padding:0 10px 0 4px;letter-spacing:.02em;white-space:nowrap}
+#menus{display:flex;min-width:0;overflow:hidden}
+#menus>button{border:0;background:transparent;padding:4px 9px;border-radius:5px;white-space:nowrap}
+#menus>button:hover,#menus>button.open{background:var(--hover)}
+#charName{color:var(--mute);font-size:12px;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+#wstabs{display:flex;gap:2px;padding:2px;border-radius:7px;background:var(--bg);border:1px solid var(--line)}
+#wstabs button{border:0;background:transparent;padding:3px 12px;border-radius:5px;display:inline-flex;gap:6px;align-items:center}
+#wstabs button.on{background:var(--accent);color:var(--accent-fg)}
+#menuPop{position:fixed;z-index:80;min-width:250px;max-height:calc(100vh - 40px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 30px #0005;padding:4px;display:none}
+#menuPop.show{display:block}
+#menuPop .mi{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;border-radius:5px;padding:5px 8px;text-align:left}
+#menuPop .mi:hover:not(:disabled){background:var(--hover)}
+#menuPop .mi .k{margin-left:auto;color:var(--mute);font:11px var(--mono);padding-left:18px}
+#menuPop .mi .ck{width:16px;text-align:center;color:var(--accent)}
+#menuPop .sep{height:1px;background:var(--line);margin:4px 6px}
+#menuPop .hd{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:6px 8px 2px}
+
+/* ---- shelf */
+#shelf{display:flex;align-items:center;gap:2px;height:38px;padding:0 8px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
+#shelf button{width:32px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-color:transparent;background:transparent;flex:none}
+#shelf button:hover:not(:disabled){background:var(--hover)}
+#shelf button.on{background:var(--accent);color:var(--accent-fg)}
+#shelf .gap{width:1px;height:20px;background:var(--line);margin:0 6px;flex:none}
+body.noshelf #shelf{display:none}
+
+/* ---- main area */
+#main{display:grid;grid-template-columns:44px var(--olW,240px) 5px minmax(0,1fr) 5px var(--dockW,320px);min-height:0}
+body.noout #main{grid-template-columns:44px 0 0 minmax(0,1fr) 5px var(--dockW,320px)}
+body.nodock #main{grid-template-columns:44px var(--olW,240px) 5px minmax(0,1fr) 0 0}
+body.noout.nodock #main{grid-template-columns:44px 0 0 minmax(0,1fr) 0 0}
+body.nodock #dock,body.nodock #splitR{display:none}
+/* cột cố định: ẩn Outliner (display:none) không làm viewport / dock dồn sang cột khác (user 2026-10-29, nút [ của thanh Pose) */
+@media (min-width:901px){#toolbox{grid-column:1}#outliner{grid-column:2}#splitO{grid-column:3}#vp{grid-column:4}#splitR{grid-column:5}#dock{grid-column:6}#main>*{grid-row:1}}
+#toolbox{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;overflow-y:auto}
+#toolbox button{width:34px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-color:transparent;background:transparent;flex:none}
+#toolbox button:hover:not(:disabled){background:var(--hover)}
+#toolbox button.on{background:var(--accent);color:var(--accent-fg)}
+#toolbox .gap{height:1px;width:24px;background:var(--line);margin:4px 0;flex:none}
+#vp{position:relative;min-width:0;min-height:0;background:var(--view);overflow:hidden;touch-action:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#panes{position:absolute;inset:0;pointer-events:none}
+#panes .pane{position:absolute;border:1px solid transparent}
+#panes .pane{overflow:hidden}
+#panes .pane .gate{position:absolute;border:1px solid #ffffffb0;box-shadow:0 0 0 9999px #0000006b;pointer-events:none}
+#panes .pane .gate span{position:absolute;right:4px;top:2px;font:11px var(--mono);color:#ffffffc0}
+#gateBar{position:absolute;right:8px;top:6px;z-index:6;display:flex;gap:6px;align-items:center;padding:2px 6px;border-radius:6px;background:color-mix(in srgb,var(--panel) 80%,transparent);font-size:12px;color:var(--fg)}
+#gateBar label{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+#gateBar select{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:0 4px;height:22px}
+#panes .pane.act{border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
+#panes .pane .pl{position:absolute;left:6px;top:4px;font:11px var(--mono);color:var(--mute);background:color-mix(in srgb,var(--panel) 70%,transparent);padding:1px 6px;border-radius:4px}
+.marquee{position:absolute;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);display:none;pointer-events:none;z-index:5}
+.split{background:var(--bg);touch-action:none}
+.split.v{cursor:col-resize;border-left:1px solid var(--line)}
+.split.h{cursor:row-resize;height:5px;flex:none;border-top:1px solid var(--line)}
+.split:hover{background:var(--accent)}
+
+#empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;width:min(340px,calc(100% - 32px));background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px #0004;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+#empty[hidden]{display:none}
+#empty b{font-size:15px}
+#empty .row button{display:inline-flex;align-items:center;gap:6px}
+#empty .list{display:flex;flex-direction:column;max-height:40vh;overflow:auto}
+#empty .it{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:inherit;text-decoration:none}
+#empty .it:hover{background:var(--hover)} #empty .it small{margin-left:auto;color:var(--mute);font:11px var(--mono)}
+
+/* ---- Outliner (cột trái, như Maya) + dock phải (Channel Box, Công cụ, Kiểm tra) */
+#dock,#outliner{display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--panel)}
+#dock section{display:flex;flex-direction:column;min-height:0}
+#outliner{border-right:0}
+body.noout #outliner,body.noout #splitO{display:none}
+#outliner header,#dock header{display:flex;align-items:center;gap:6px;height:28px;padding:0 10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line);flex:none}
+#dock .body,#outliner .body{flex:1;min-height:0;overflow:auto}
+/* tab chỉ ghi số (PANELS.tab, vd bước Rig) + tiêu đề panel ở đầu nội dung */
+#attrTabs button.num{min-width:34px;font-variant-numeric:tabular-nums;font-weight:600}
+#attrTitle{flex:none;padding:10px 12px 6px;font-size:14px;font-weight:600;border-bottom:1px solid var(--line)}
+/* cột trái nhiều tab (ws.left, vd Pose · Phiên bản): tab dọc ở #toolbox, mỗi lúc hiện một tab đủ chiều cao */
+#olLeft{flex:1;min-height:0;display:flex;flex-direction:column}
+#olLeft .olsec{flex:1;min-height:0;display:flex;flex-direction:column}
+#outliner.lt-panel>header,#outliner.lt-panel>#olBody{display:none}
+#toolbox button.vtab{writing-mode:vertical-rl;transform:rotate(180deg);width:30px;height:auto;min-height:64px;padding:8px 0;font-size:11px;letter-spacing:.04em;color:var(--mute);border-radius:4px}
+#toolbox button.vtab.on{background:var(--hover);color:var(--fg,inherit);box-shadow:inset -2px 0 0 var(--accent)}
+/* tab Góp ý cho AI: ghi chú vẽ trên, điều chỉnh dưới; nút gửi riêng của ghi chú vẽ ẩn (dùng nút chung) */
+.fbtop{display:flex;align-items:center;gap:8px;padding:8px 10px}
+.fbtop .sub{font-size:11px}
+.fbsec>h3{margin:0;padding:8px 10px 2px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.fbnotes [data-n="send"]{display:none}
+/* tab Góp ý cho AI: bỏ khối vòng review + AI tự xem lại (user 2026-10-29 "bỏ cái này đi"); chỉ ẩn, lõi Pose vẫn tìm theo id */
+.fbwrap #round,.fbwrap #aiself{display:none!important}
+#attr{flex:1}
+#attrTabs{display:flex;gap:0;border-bottom:1px solid var(--line);flex:none}
+#attrTabs button{border:0;border-radius:0;background:transparent;padding:6px 12px;font-size:12px;color:var(--mute);border-bottom:2px solid transparent}
+#attrTabs button.on{color:var(--fg);border-bottom-color:var(--accent)}
+#attrBody{padding:10px 12px 16px}
+#attrBody h2{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px;font-weight:600}
+#attrBody h2:first-child{margin-top:0}
+
+/* outliner rows */
+.ol{font-size:13px;padding:2px 0}
+.olr{display:flex;align-items:center;gap:2px;height:26px;padding:0 4px 0 calc(8px + var(--d,0)*14px);cursor:pointer;user-select:none}
+.olr:hover{background:var(--hover)}
+.olr.sel{background:color-mix(in srgb,var(--accent) 22%,transparent);font-weight:600}
+.olr.act{box-shadow:inset 3px 0 0 var(--accent)}
+.olr.grp{color:var(--mute);cursor:default}
+.olr.dim .nm{opacity:.45} .olr.node{font-weight:600}
+.olr .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.olr .nm input{width:100%;font:inherit;padding:1px 4px;border:1px solid var(--accent)}
+.olr small{color:var(--mute);font:11px var(--mono);margin-right:2px}
+.olr button{width:24px;height:24px;padding:0;border:0;background:transparent;color:var(--mute);display:inline-flex;align-items:center;justify-content:center}
+.olr button:hover{color:var(--fg)} .olr button.off{opacity:.4}
+.olr .fold{width:16px;height:24px;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--mute);border:0;background:transparent;padding:0}
+.olr .del,.olr .lk.off{visibility:hidden} .olr:hover .del,.olr:hover .lk.off,.olr.sel .del,.olr.act .del{visibility:visible}
+@media (hover:none){.olr .del{visibility:visible}} body.tm .olr .del{visibility:visible}
+.olr .nm .tx{overflow:hidden;text-overflow:ellipsis}
+
+/* channel box */
+.chh{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px}
+.chh b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chs{padding:6px 0 2px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.chr{display:grid;grid-template-columns:1fr 92px;align-items:center;gap:6px;padding:1px 0}
+.chr label{color:var(--mute);cursor:ew-resize;user-select:none;touch-action:none;padding:3px 0}
+.chr label:hover{color:var(--fg)}
+.chr input{width:100%;font:12px var(--mono);text-align:right}
+.chn{color:var(--mute);padding:8px 0}
+
+/* tool panel parts */
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}
+.row label{font-size:12px;color:var(--mute);display:inline-flex;align-items:center;gap:4px}
+.row input[type=range]{flex:1;min-width:80px}
+.ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.ops button{display:flex;align-items:center;gap:6px;justify-content:flex-start;font-size:12.5px;padding:5px 8px;text-align:left}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12.5px}
+.kv span:nth-child(odd){color:var(--mute)} .kv span:nth-child(even){font-family:var(--mono);text-align:right}
+.chk{display:grid;grid-template-columns:18px 1fr;gap:1px 6px;font-size:12.5px;margin:3px 0}
+.chk i{font-style:normal;font-weight:700}.s-ok{color:var(--ok)}.s-warn{color:var(--warn)}.s-bad{color:var(--bad)}
+.note{font-size:12.5px;color:var(--mute);line-height:1.5}
+.note a{color:var(--accent)}
+
+/* ---- timeline */
+#timeline{height:64px;background:var(--panel);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px}
+body.notl #timeline{display:none}
+#timeline .tlbar{flex:1;height:30px;border:1px solid var(--line);border-radius:6px;background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 24px);opacity:.6}
+
+/* ---- status bar */
+#status{display:flex;align-items:center;gap:12px;height:24px;padding:0 10px;background:var(--panel);border-top:1px solid var(--line);font:11.5px var(--mono);color:var(--mute);white-space:nowrap;overflow:hidden}
+#stInfo{overflow:hidden;text-overflow:ellipsis}
+#stSave.dirty{color:var(--warn)} #stSave.err{color:var(--bad)}
+
+/* ---- command search + dialogs */
+.modal{position:fixed;inset:0;z-index:90;background:#0006;display:none;align-items:flex-start;justify-content:center;padding-top:12vh}
+.modal.show{display:flex}
+.modal .box{width:min(520px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 40px #0007;overflow:hidden}
+.modal .box>input{width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:12px 14px;font-size:14px;background:var(--panel)}
+.modal .list{max-height:50vh;overflow:auto;padding:4px}
+.modal .it{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;border-radius:6px;padding:7px 10px;text-align:left}
+.modal .it.on,.modal .it:hover{background:var(--hover)}
+.modal .it small{margin-left:auto;color:var(--mute);font:11px var(--mono)}
+.modal h3{margin:0;padding:12px 14px;font-size:14px;border-bottom:1px solid var(--line)}
+.modal .body{padding:12px 14px;max-height:60vh;overflow:auto}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:12.5px}
+.keys kbd{font:11.5px var(--mono);background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+#toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);z-index:95;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 14px;box-shadow:0 8px 24px #0005;display:none;max-width:calc(100vw - 32px)}
+#toast.show{display:block}
+
+/* ---- touch mode */
+#tmBar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:none;gap:6px;padding:5px;border-radius:12px;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line);z-index:6;pointer-events:auto}
+body.tm #tmBar{display:flex}
+#tmBar button{width:48px;height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+#tmBar svg.i{width:24px;height:24px}
+body.tm button{min-height:34px} body.tm #toolbox button{width:40px;height:40px} body.tm .olr{height:38px} body.tm .olr button{width:34px;height:34px}
+body.tm input{font-size:16px}
+
+@media (max-width:900px){
+  #main,body.noout #main,body.nodock #main{grid-template-columns:40px minmax(0,1fr);grid-template-rows:minmax(0,1fr) 42vh}
+  #splitR,#splitO,#outliner{display:none} #dock{grid-column:1 / -1;border-top:1px solid var(--line)}
+  #menus>button{padding:4px 6px} #charName{display:none}
+}
+
+/* ---- bảng điều khiển của lõi Rig (giữ class của Rig Lab) */
+.rigp{display:flex;flex-direction:column;font-size:13px}
+.rigp h2{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:12px 0 6px;font-weight:600}
+.rigp h2:first-child{margin-top:0}
+.rigp .chk{grid-template-columns:18px 1fr}
+.rigp .chk small{grid-column:2;color:var(--mute)}
+.rigp table{width:100%;border-collapse:collapse;font:12px var(--mono)}
+.rigp td,.rigp th{padding:2px 4px;border-bottom:1px solid var(--line);text-align:right} .rigp td:first-child,.rigp th:first-child{text-align:left}
+.rigp th{color:var(--mute);font-weight:500} .rigp tr.sel td{background:color-mix(in srgb,var(--accent) 16%,transparent)} .rigp tr.pick{cursor:pointer}
+.rigp label.t{display:flex;gap:6px;align-items:center;font-size:12.5px}
+.rigp .num{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.rigp .num label{font-size:11px;color:var(--mute);display:block} .rigp .num input{width:100%;font:12.5px var(--mono)}
+.rigp textarea{width:100%;min-height:44px;font:inherit;background:var(--raise);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:5px}
+.rigp .gate{margin-top:12px;padding-top:10px;padding-bottom:10px;border-top:1px solid var(--line)}
+/* Khối duyệt / gửi AI (cổng Rig, Gửi tất cả cho AI, Gửi cho AI) luôn ở cạnh dưới panel, nội dung ngắn hay phải cuộn
+   (user 2026-10-29, toàn Studio). Panel muốn có chân: gắn class dockfoot cho khối đó, khung ngoài là .rigp / .fbwrap / .nwrap. */
+#dock .body:has(> .rigp, > .fbwrap, > .nwrap){display:flex;flex-direction:column;padding-bottom:0}
+#dock .body > .rigp,#dock .body > .fbwrap,#dock .body > .nwrap{flex:1 0 auto}
+.fbwrap,.nwrap{display:flex;flex-direction:column}
+.dockfoot,.rigp .gate{position:sticky;bottom:0;z-index:3;margin-top:auto;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 12px -10px #0007}
+.fbfoot .compose{border-top:0;padding:8px 10px 0}
+.fbfoot .fbtop{border-top:1px solid var(--line)}
+.fbwrap .nfoot{position:static;margin-top:0;box-shadow:none;border-top:0;background:none}
+.fbwrap .nfoot [data-n=send]{display:none}
+.rigp .big{font-size:14px;font-weight:600;margin:6px 0}.rigp .big.ok{color:var(--ok)}.rigp .big.warn{color:var(--warn)}.rigp .big.bad{color:var(--bad)}
+.rigp details.more{margin:10px 0;border-top:1px solid var(--line);padding-top:6px}
+.rigp details.more>summary{cursor:pointer;color:var(--mute);font-size:12px;padding:2px 0}
+.rigp .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.rigp .chip{display:inline-block;padding:1px 8px;border-radius:10px;border:1px solid var(--line);font-size:11px;color:var(--mute)}
+.rigp .chip.ok{color:var(--ok);border-color:var(--ok)}.rigp .chip.fix{color:var(--bad);border-color:var(--bad)}
+.rigp .ghead{display:flex;align-items:center;gap:8px;margin-bottom:6px}.rigp .ghead .msg{margin-left:auto}
+.rigp .msg{font-size:12px;color:var(--mute);min-height:1.4em}
+.rigp .err-hi{color:var(--bad)} .rigp .err-mid{color:var(--warn)}
+.rigp .ltxt{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.rigp button.pri,.jbox button.pri{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.jbox{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:12px;background:var(--raise)}
+.jbox[hidden]{display:none}
+.jbox .jhead{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px}
+.jbox .jrow{display:flex;align-items:center;gap:8px}.jbox .jrow label{width:70px}.jbox .jrow input{flex:1;min-width:0}.jbox .jrow span{width:40px;text-align:right;font-family:var(--mono)}
+/* ---- vẽ ghi chú lên viewport (modules/notes.js) */
+#noteCv{position:absolute;inset:0;z-index:6;pointer-events:none}
+body.noting #noteCv{pointer-events:auto;cursor:crosshair}
+#noteBar{position:absolute;left:10px;bottom:10px;z-index:7;display:flex;align-items:center;gap:6px;padding:4px;border-radius:10px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);max-width:calc(100% - 20px)}
+#noteBar button{display:inline-flex;align-items:center;gap:4px}
+#noteBar .sw{width:22px;height:22px;padding:0;border-radius:50%;border:2px solid transparent}
+#noteBar .sw.on{border-color:var(--fg)}
+#noteBar input{min-width:120px;flex:1 1 220px}
+#noteBar .sub{max-width:40ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.notes{display:flex;flex-direction:column;gap:8px;padding:0 10px 10px}
+.notes .nt{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.notes .nt.done{opacity:.55}
+.notes .nt img{display:block;width:100%;cursor:pointer}
+.notes .nb{display:flex;flex-direction:column;gap:4px;padding:6px 8px}
+.notes .nb small{color:var(--mute)}
+
+/* tab Góp ý cho AI gọn (user 2026-10-29 "mấy cái này cũng đang chiếm nhiều diện tích"): bỏ tiêu đề, hướng dẫn, chân ghi chú vẽ, nút gửi nhỏ;
+   hàng đầu = ✎ + chấm canh + số đếm; chân = Lưu + Gửi tất cả một hàng */
+.fbwrap .fbsec>h3,.fbwrap #adjList>h2,.fbwrap #adjEmpty,.fbwrap .fbnotes p.note,.fbwrap .fbnotes .nfoot,.fbwrap #aiSend,.fbwrap .fbtop{display:none!important}
+.fbwrap .fbnotes .nhead{padding:6px 10px!important;gap:8px;align-items:center}
+.wdot{font-size:12px;color:var(--mute);cursor:help}
+.fbwrap #fbCompose .row{display:flex;gap:6px;align-items:center;flex-wrap:nowrap}
+.fbwrap #fbCompose #fbSendAll{flex:1;white-space:nowrap}
+
+/* ghi chú vẽ: Sửa / Đã sửa / Xoá thu vào menu ⋯ ở góc phải trên (user 2026-10-29 "icon 3 chấm ở góc này") */
+.notes .nt{position:relative;overflow:visible}
+.notes .nt img{border-radius:8px 8px 0 0}
+.notes .nt .nkebab{position:absolute;top:4px;right:6px;background:transparent;border:0;padding:0 8px;height:22px;line-height:20px;font-size:16px;color:var(--mute);cursor:pointer}
+.notes .nt .nkebab:hover{color:var(--text,#fff)}
+.notes .nt .nmenu{position:fixed;z-index:50;min-width:90px;flex-direction:column;align-items:stretch;gap:4px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.notes .nt .nb>b{padding-right:28px}
+/* timeline theo đối tượng đang chọn (2026-10-29): key khớp giữ nguyên = kim cương rỗng, key vật thể phụ = màu xanh lơ */
+.pz .cell.key.khold{background:transparent}
+.pz .cell.key.khold::before{background:none;border:1.5px solid var(--joint);width:7px;height:7px}
+.pz .cell.key.kprop{background:#4dd0e114}
+.pz .cell.key.kprop::before{background:#4dd0e1}
+.pz .kftag{font-size:11px;color:var(--mute);margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}

@@ -1,0 +1,87 @@
+---
+name: rig
+description: Gọi tool rigging Rig Lab (trang web, không Blender). Dùng khi người dùng gõ /rig, muốn rig hoặc skin một nhân vật, mở lại trang Rig Lab, hoặc đã duyệt hoặc ghi note ở các cổng của Rig Lab. Có ba chế độ: mở trang, đọc phản hồi (db), dựng nhân vật mới.
+---
+
+# /rig: Rig Lab
+
+Rig Lab là trang web một-file (three.js) để rig từ mesh: kiểm mesh, đặt khớp, sinh xương (có twist), skin tự động + tô tay, thử khớp. Trả lời bằng tiếng Việt. Không dùng Blender, kể cả headless (người dùng 2026-10-23).
+
+Thiết kế: `docs/rig_lab_design.md`. Bản đồ file: mục `work/rig_lab/` trong `MAP.md`.
+
+## Trang hiện có
+
+| Nhân vật | Artifact | Nguồn |
+|---|---|---|
+| Gaygor | https://claude.ai/artifact/UgRawtmJZW6biJZVbUK4Rs | `work/rig_lab/template.html` → `build_page.py` → `pages/gaygor/index.html` |
+| Zom1 Map1 (EN_zom1_map1, Body + QA) | https://claude.ai/artifact/X6coV21xjfQohDtbVRdK7W | `chars/zom1_map1.json` → `build_char.py zom1_map1` → `pages/zom1_map1/index.html` |
+
+Capabilities đã khai: `db`, `user`, `downloads` (publish lại thì bỏ trống `capabilities`, giữ khai báo cũ). Preview cục bộ: `preview_start` tên `rig-lab` (cổng 8772).
+
+## Chọn chế độ theo lời người dùng
+
+- **Chỉ gõ `/rig` hoặc "mở Rig Lab"** → chế độ 1.
+- **"/rig fb", đã duyệt, đã ghi note, đã lưu skin** → chế độ 2.
+- **Nhân vật mới / mesh mới** → chế độ 3.
+
+### 1. Mở trang
+
+`Artifact` action `open` với URL bảng trên. Nói một dòng: đang ở bước nào (đọc `rig/gates`, xem chế độ 2) và nhắc phím tắt chính: Alt+chuột trái xoay, Alt+chuột giữa kéo, Alt+chuột phải hoặc lăn zoom, Q W E R công cụ, F nhìn vùng chọn, A nhìn toàn bộ, Ctrl+Z hoàn tác, nút `?` góc viewport.
+
+### 2. Đọc phản hồi từ db (không polling)
+
+**Studio: AI làm, người dùng chỉ duyệt (người dùng, 2026-10-28).** Mỗi bước Rig trong Studio có cổng Duyệt / Cần sửa; bấm là gửi cho AI. Bộ canh nền `tools/notes_watch.py` (cùng bộ canh ghi chú vẽ) thấy cổng mới thì thoát, in mục `{"kind": "rig_gate", ns, char, step, step_name, status, note}`, Claude được gọi dậy:
+- `status: ok` → **tự làm bước kế tiếp** (2 Khớp: đặt khớp theo giải phẫu bằng `studio_cmd.py rig lm …`; 3 Xương: kiểm `skelChecks`, sửa khớp gây lỗi; 4 Skin: skin tự động + Hammer + `mirror_skin.py`, đo `lbs_test.py`; 5 Thử khớp: thử góc hay dùng, sửa skin; 6 Vật lý), chuyển trang sang bước đó (`rig step <n>`), tự kiểm bằng `snap`, rồi dừng chờ người dùng duyệt. Không sang hai bước một lần.
+- Bước 6 (panel Vật lý, mở bằng `rig step 6`) cũng có cổng: duyệt = rig xong, báo người dùng và gợi ý gửi rig sang Pose (`rig.toPose`); cần sửa = chỉnh khớp điều khiển / giới hạn / collider / khối lượng theo note.
+- `status: fix` → sửa đúng bước đó theo `note` (+ ghi chú vẽ nếu có), không đi tiếp.
+- Xong thì `studio_cmd.py gate-done <id> <bước> "việc đã làm"` (trang hiện "AI đã xong: …"), báo một dòng trong chat, bật lại bộ canh.
+
+**Studio (nhân vật mới, 2026-10-28):** ghi chú cổng duyệt ở `work/store/<id>_rig_lab/rig/gates.json`; ghi chú vẽ (nút ✎ góc viewport) đọc bằng `.venv/Scripts/python.exe -I tools/studio_cmd.py notes <id> --out <scratchpad>`: mở từng ảnh, xem khớp bị khoanh + `ctx` (bước Rig, khớp đang chọn, góc camera) rồi mới sửa; xong thì `note-done <id>`. Phần dưới là Rig Lab cũ trên claude.ai.
+
+
+Dữ liệu nằm trong db của artifact (`ArtifactData`, nạp bằng ToolSearch `select:ArtifactData` nếu chưa có), collection `rig`:
+
+| doc | nội dung |
+|---|---|
+| `gates` | `g[1..5] = {status: "ok"\|"fix", note, at}` (bước 1 Mesh, 2 Khớp, 3 Xương, 4 Skin, 5 Thử khớp) |
+| `landmarks` | `lm` (tên khớp → [x,y,z] cm), `tw` (số xương twist mỗi đoạn: Shoulder, Elbow, Hip, Knee) |
+| `skin` | `names`, `I`, `W` (4 ảnh hưởng/đỉnh, phẳng), `sig`, `nv` |
+
+Cách làm:
+1. `list` collection `rig` với `out_dir` vào scratchpad, đọc các file.
+2. Báo tóm tắt: bước nào đã duyệt, bước nào cần sửa kèm note; có skin đã lưu không (`sig` khớp `landmarks` hiện tại không).
+3. Không có doc nào hoặc `gates` trống: người dùng chưa lưu được, nói thẳng (trang báo "chỉ trình duyệt này" khi db không nối).
+4. Note sửa → sửa **gộp một lần** trong `template.html`, rồi chạy `build_page.py`, xem thử bằng preview, publish lại cùng file path (`pages/gaygor/index.html`). Muốn thử trên dữ liệu của người dùng: chép `landmarks` từ db ra file JSON trong `pages/<nv>/` tạm, nạp bằng `fetch` trong `javascript_tool`, **xóa file tạm trước khi publish**.
+5. Khi người dùng duyệt xong bước: `git commit` nêu lý do, cập nhật `.claude/skills/animation/knowledge/details/blender_tools.md` (mục Rig Lab) nếu có bài học mới.
+
+### 3. Nhân vật mới
+
+`build_page.py` và `propose.py` còn viết cứng cho Gaygor (tên xương theo rig khách, tỉ lệ khớp tuned trên Gaygor, `pages/gaygor`). Dựng nhân vật mới theo thứ tự:
+
+1. **Hỏi người dùng (một lần, gộp):** mesh/FBX ở đâu, rig có sẵn hay mesh trần, template (biped, biped+đuôi, quadruped, nhện 8 chân), quy ước tên xương, có prop rời không, khớp cha của prop.
+2. **Mesh:** FBX → `python work/rig_lab/extract_fbx.py <fbx> work/rig_lab/ref_<tên>` (dùng `.venv\Scripts\python.exe -I`). GLB/OBJ: viết bộ đọc cùng đầu ra (`verts`, `tris`, nhiều mesh thì mesh nhiều đỉnh nhất = thân, còn lại = prop).
+3. **Gợi ý khớp:** `propose.py` chỉ đúng cho biped giống Gaygor. Tỉ lệ khớp (trong code) tuned trên Gaygor nên nhân vật khác phải đối chiếu bằng mắt ở view Trước và Cạnh; đầu và cổ theo z/y sai nhiều nhất.
+4. **Trang:** nhân bản `build_page.py` thành tham số (tên nhân vật, đường dẫn ref), thêm một mục `rig-lab-<tên>` vào `.claude/launch.json`, `pages/<tên>/index.html`, publish trang MỚI (không đè trang Gaygor; mỗi nhân vật một artifact và một db), thêm dòng vào bảng "Trang hiện có" ở trên và `MAP.md`.
+5. **Ghi sổ clip:** `clip_registry.py set-url char:<Tên> rig <url>` (xem skill `/new_clip`); `/check_fb` và `/new_clip` đọc link từ `work/clips.json`.
+6. **Giữ cổng duyệt từng bước.** Không sang bước sau khi bước trước chưa duyệt.
+
+## Bẫy đã gặp (đừng lặp lại)
+
+- **Mọi mesh trong cảnh đều nằm trong lõi Rig** (user 2026-10-29, mc_map3): mesh phụ (`extra` trong `chars/<id>.json`: tóc, phụ kiện, vũ khí) thành lớp mặc thêm; có skin khách thì giữ trọng số khách theo tên xương (`rig_data.py` điền `clothes[i].refW`), xương khách chỉ mesh phụ dùng (nỏ `slingshot_*`, bím `joint*`) thành joint phụ `noBody` (skin tự động của thân bỏ qua). Sửa `rig_data.py` thì khởi động lại server Home. `rig_engine.js` đang sửa thẳng (có phần chưa có trong `template.html`): đừng chạy `port_rig.py` đè.
+- **Nhân vật mới giờ làm trong Studio** (2026-10-28, Zom2 Map3): `/api/fbx/new-char` (= Tệp → Nhập FBX → nhân vật mới) → nếu có rig Unity cùng mesh thì lấy xương của nó làm gợi ý khớp + tên (`ref_<id>_unity/ref_skeleton.json`, `names_from` + `auto_from_ref` trong `chars/<id>.json`; dời cho khớp mesh: so trung bình đỉnh hai bản) → `/api/rig/build` → Studio Rig bước 2–5. Điều khiển qua `studio_cmd.py --cid <trang>`.
+- `lbs_test.py` cần `rig/landmarks.json` trong kho: chưa đổi khớp nào thì Studio chưa lưu, ghi lại một khớp đúng vị trí cũ (`rig lm Root_M x,y,z`) để lưu.
+- **Đặt khớp theo giải phẫu mesh**, không chỉ "nằm giữa": đo hồ sơ mặt cắt dọc tay / chân / thân (độ rộng, chỗ thắt, chỗ lồi): gối ở bánh chè (đùi dài hơn ống chân ~1,25×), hông trên đũng ~6 cm, cột sống ở ~40% độ dày tính từ lưng, khuỷu ở u khuỷu, cổ tay ở chỗ thắt trước bàn tay, Toes ở ụ bàn chân sát đất. Bộ khớp của rig cũ (thân khác) không dùng nguyên được (Zom2 Map3, user: "Các khớp chưa đúng vị trí").
+- Làm sạch skin dọc tay theo luật "hai xương kề nhau" (đã thử 2026-10-28 trên mesh 507 đỉnh): khuỷu gập sâu đỡ nhưng góc 60–90° xấu đi rõ, giữ skin tự động + Hammer. So bằng `lbs_test.py --wire KHỚP TRỤC ĐỘ` ở góc hay dùng, không chỉ bảng góc cực.
+- **Hammer tự động chỉ sửa bên phải** (bộ pose căng chỉ giơ tay phải): chạy xong thì chép skin phải → trái bằng `work/rig_lab/mirror_skin.py <id>` (đóng trang Rig trước, không thì trang ghi đè skin cũ trong bộ nhớ), rồi đo lại bằng `lbs_test.py`.
+
+- Lớp phủ three.js (r128): tạo đủ thuộc tính (position, normal, uv) và vật liệu có `map` TRƯỚC lần vẽ đầu; thêm `normal` sau khi đã vẽ thì không được gắn, Lambert ra đen (texture lõi Rig, 2026-10-29).
+- Sửa template bằng script Python: viết script ra file rồi chạy, không dùng heredoc Python trong Bash có ngoặc kép lồng (đã hỏng hai lần).
+- `javascript_tool` trên preview: trang có thể cache bản cũ, `navigate` lại trước khi thử.
+- Raycast gán khối rời phải bỏ khối thân chính (>30% đỉnh), nếu không gán nhầm cả thân.
+- Tô skin ở bước 4 đang pose: dùng vị trí đã pose, và phải `computeBoundingSphere` sau khi pose.
+- Gaygor: khiên rời 90 đỉnh bên R (x≈−118) gán 100% cho joint twist cẳng tay; xương cuối (`*End_*`, `Finger3`, `Weapon`) không skin.
+
+- Chỉ chụp màn hình khi người dùng yêu cầu: họ xem trang trực tiếp. Kiểm bằng `javascript_tool` / `read_page`, báo bằng chữ (xem `CLAUDE.md`).
+## Chưa làm
+
+Xuất FBX có skin (writer `work/pose_lab/fbx/fbxwrite.py` mới ghi xương và animation), Pose Lab đọc `rig.json` và xương twist, template quadruped/nhện 8 chân. Khi người dùng đòi, kiểm sớm bằng một FBX tối thiểu nạp lại vào Pose Lab (so vị trí xương như `fbx/cmp_page_track.py`).

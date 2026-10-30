@@ -1,0 +1,915 @@
+<meta charset="utf-8">
+<title>__NAME__ Mesh Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Mesh Lab: sửa mesh cơ bản trước khi rig. Viewport 3D bên trái, bảng bên phải; hẹp thì xếp dọc. */
+:root{
+  --bg:#f3f4f6; --panel:#ffffff; --line:#d5d8de; --fg:#1b2230; --mute:#5d6676;
+  --accent:#2f5fd0; --accent-fg:#ffffff; --view:#e6e9ee; --raise:#f3f4f6;
+  --ok:#2c8a5a; --warn:#b9770e; --bad:#c23a30;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --panel:#1a202a; --line:#2c3441; --fg:#e4e8ef; --mute:#8d97a8; --raise:#141a23;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#0d1117; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --panel:#1a202a; --line:#2c3441; --fg:#e4e8ef; --mute:#8d97a8; --raise:#141a23;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#0d1117; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font:14px/1.45 var(--sans);padding:10px max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px))}
+h1{font-size:16px;margin:0;font-weight:600}
+header{flex:none;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-bottom:10px}
+header .sp{flex:1}
+.sub{color:var(--mute);font-size:12px}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px}
+#vp{position:relative;min-height:320px;background:var(--view);border:1px solid var(--line);border-radius:8px;overflow:hidden;touch-action:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+button{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 9px;cursor:pointer}
+button:hover{border-color:var(--accent)} button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button:disabled{opacity:.45;cursor:default}
+button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+button.bad{border-color:var(--bad);color:var(--bad)}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;pointer-events:none}
+.tb{position:absolute;left:8px;top:8px;display:flex;gap:4px;flex-wrap:wrap;max-width:calc(100% - 16px);z-index:3}
+.tb .grp{display:flex;gap:2px;padding:2px;border-radius:8px;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line)}
+.tb button{width:32px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-color:transparent;background:transparent}
+.tb button.on{background:var(--accent);color:var(--accent-fg)}
+.vinfo{position:absolute;left:8px;bottom:8px;font-size:12px;font-family:var(--mono);background:color-mix(in srgb,var(--panel) 85%,transparent);padding:3px 8px;border-radius:6px;z-index:3;max-width:calc(100% - 16px)}
+.marquee{position:absolute;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);display:none;pointer-events:none}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+aside .pbody{flex:1;min-height:0;overflow:auto;padding:10px 12px 14px}
+aside h2{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px;font-weight:600}
+aside h2:first-child{margin-top:0}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0}
+.row label{font-size:12px;color:var(--mute)}
+.row input[type=range]{flex:1;min-width:80px}
+.row input[type=number]{width:70px;font:inherit;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:3px 5px}
+.ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.ops button{display:flex;align-items:center;gap:6px;justify-content:flex-start;font-size:12.5px;padding:5px 8px;text-align:left}
+.olist{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.orow{display:flex;align-items:center;gap:2px;height:30px;padding:0 3px 0 8px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--line)}
+.orow:last-child{border-bottom:0}
+.orow.sel{background:color-mix(in srgb,var(--accent) 20%,transparent);font-weight:600}
+.orow.act{box-shadow:inset 3px 0 0 var(--accent)}
+.orow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.orow .nm input{width:100%;font:inherit;background:var(--panel);color:var(--fg);border:1px solid var(--accent);border-radius:4px}
+.orow small{color:var(--mute);font-family:var(--mono);font-size:11px;margin-right:2px}
+.orow button{width:26px;height:26px;padding:0;border:0;background:transparent;color:var(--mute);display:inline-flex;align-items:center;justify-content:center}
+.orow button:hover{color:var(--fg)} .orow button.off{opacity:.45}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:13px}
+.kv span:nth-child(odd){color:var(--mute)} .kv span:nth-child(even){font-family:var(--mono);text-align:right;font-size:12.5px}
+.chk{display:grid;grid-template-columns:18px 1fr;gap:1px 6px;font-size:13px;margin:3px 0}
+.chk i{font-style:normal;font-weight:700}.s-ok{color:var(--ok)}.s-warn{color:var(--warn)}.s-bad{color:var(--bad)}
+.msg{font-size:12px;color:var(--mute);min-height:1.4em;margin-top:6px}
+.tmchk{display:inline-flex;align-items:center;gap:4px;cursor:pointer;user-select:none;color:var(--mute);padding:0 6px}
+.tmchk input{width:16px;height:16px;margin:0;accent-color:var(--accent)}
+#tmBar{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);display:none;gap:6px;padding:5px;border-radius:12px;background:color-mix(in srgb,var(--panel) 85%,transparent);border:1px solid var(--line);z-index:6}
+body.tm #tmBar{display:flex}
+#tmBar button{width:48px;height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+#tmBar svg.i{width:24px;height:24px}
+body.tm button{min-height:38px} body.tm .tb button{width:40px;height:38px} body.tm .orow{height:40px} body.tm .orow button{width:36px;height:36px}
+body.tm input{font-size:16px}
+@media (max-width:900px){html,body{height:auto} body{display:block} main{display:block} aside{margin-top:10px} #vp{height:62vh}}
+@media (min-width:901px){html,body{overflow:hidden}}
+
+/*CHBOX*/
+#chbox{position:absolute;right:8px;top:8px;width:196px;z-index:4;background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--line);border-radius:10px;font-size:12px;overflow:hidden;backdrop-filter:blur(4px)}
+#chbox .chh{display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:pointer;user-select:none;border-bottom:1px solid var(--line)}
+#chbox .chh b{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+#chbox .chh span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg)}
+#chbox .chh svg{width:14px;height:14px;transition:transform .15s}
+#chbox.fold .chh{border-bottom:0} #chbox.fold .chh svg{transform:rotate(-90deg)} #chbox.fold .chr,#chbox.fold .chf{display:none}
+#chbox .chr{display:grid;grid-template-columns:1fr 74px;align-items:center;gap:6px;padding:1px 8px}
+#chbox .chr label{color:var(--mute);cursor:ew-resize;user-select:none;touch-action:none;padding:3px 0}
+#chbox .chr label:hover{color:var(--fg)}
+#chbox .chr input{width:100%;font:12px var(--mono);text-align:right;background:var(--raise);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:2px 5px}
+#chbox .chs{padding:5px 8px 2px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+#chbox .chf{display:flex;gap:6px;padding:6px 8px 8px}
+#chbox .chf button{flex:1;font-size:11.5px;padding:3px 4px}
+#chbox .chn{padding:8px;color:var(--mute)}
+body.tm #chbox .chr{padding:3px 8px} body.tm #chbox .chr input{padding:6px 5px;font-size:14px}
+@media (max-width:900px){#chbox{width:176px}}
+</style>
+
+<header>
+  <div><h1>__NAME__ Mesh Lab</h1><div class="sub" id="hsub"></div></div>
+  <span class="sp"></span>
+  <label class="tmchk" id="tmLbl" title="Chế độ cảm ứng (iPad / điện thoại)"><input type="checkbox" id="tmChk" aria-label="Chế độ cảm ứng"><svg class="i" viewBox="0 0 24 24"><path d="M9 11V5a1.6 1.6 0 013.2 0v5l3.3.7a2 2 0 011.5 2.3L16.4 19a2 2 0 01-2 1.6H11a2 2 0 01-1.6-.8L6 14.6a1.5 1.5 0 012.2-1.9z"/></svg></label>
+</header>
+<main>
+  <div id="vp">
+    <canvas id="cv"></canvas>
+    <div class="tb" id="tb"></div>
+    <div class="vinfo" id="vinfo"></div>
+    <div id="chbox"></div>
+    <div id="tmBar" role="toolbar" aria-label="Thao tác cảm ứng"></div>
+  </div>
+  <aside><div class="pbody" id="panel"></div></aside>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+<script>
+/*LOCALDB*/
+// Kho dữ liệu trên máy cho các Lab khi không có db của claude.ai: nói chuyện với Home server (tools/home/store.py), ghi file thật vào work/store/<ns>/.
+// Cùng giao diện với db của artifact (doc/collection, get/set/update/delete/add/onSnapshot) nên mã Lab không phải đổi.
+// Kèm nút "Lưu trữ" (xuất / mở file .json). Nguồn: tools/home/localdb.js, nhúng bằng work/patch_localdb.py.
+(function () {
+  const API = (window.LOCALDB_API || "http://127.0.0.1:8780") + "/api/store";
+  const slug = s => String(s || "page").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "page";
+  const NS = (new URLSearchParams(location.search).get("ns")) || slug(document.title);
+  const enc = encodeURIComponent;
+  async function call(method, path, body) {
+    const r = await fetch(API + "/" + path, { method, headers: body !== undefined ? { "Content-Type": "application/json" } : {}, body: body !== undefined ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error("store " + r.status);
+    return r.json();
+  }
+  const snapOf = (id, data) => ({ id, exists: data !== null && data !== undefined, data: () => data });
+  const watchers = {};   // col → { subs:Set, last:string, timer }
+  async function fetchCol(col) { const r = await call("GET", enc(NS) + "/" + enc(col)); return r.docs; }
+  const colSnap = docs => { const d = docs.map(x => snapOf(x.id, x.data)); return { docs: d, size: d.length, empty: !d.length, forEach: f => d.forEach(f) }; };
+  async function tick(col) {
+    const w = watchers[col]; if (!w || !w.subs.size) return;
+    try {
+      const docs = await fetchCol(col), sig = JSON.stringify(docs);
+      if (sig !== w.last) { w.last = sig; const sn = colSnap(docs); w.subs.forEach(f => { try { f(sn); } catch (e) { console.error(e); } }); }
+    } catch (e) {}
+  }
+  const poke = col => { if (watchers[col]) tick(col); };
+  function docRef(col, id) {
+    const base = () => enc(NS) + "/" + enc(col) + "/" + id.split("/").map(enc).join("/");
+    return {
+      id, path: col + "/" + id,
+      get: async () => { const r = await call("GET", base()); return snapOf(id, r.exists ? r.data : null); },
+      set: async d => { await call("PUT", base(), d); poke(col); },
+      update: async d => { await call("PATCH", base(), d); poke(col); },
+      delete: async () => { await call("DELETE", base()); poke(col); },
+    };
+  }
+  function colRef(col) {
+    return {
+      id: col, doc: id => docRef(col, id),
+      get: async () => colSnap(await fetchCol(col)),
+      add: async d => { const r = await call("POST", enc(NS) + "/" + enc(col), d); poke(col); return docRef(col, r.id); },
+      onSnapshot: cb => {
+        const w = watchers[col] || (watchers[col] = { subs: new Set(), last: null, timer: 0 });
+        w.subs.add(cb); w.last = null; tick(col);
+        if (!w.timer) w.timer = setInterval(() => tick(col), 2000);
+        return () => { w.subs.delete(cb); if (!w.subs.size) { clearInterval(w.timer); w.timer = 0; } };
+      },
+    };
+  }
+  const db = { isLocal: true, ns: NS, doc: path => { const [c, ...r] = path.split("/"); return docRef(c, r.join("/")); }, collection: colRef };
+  window.localDB = async function () {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1200);
+      const r = await fetch(API + "/_ping", { signal: ctl.signal }); clearTimeout(t);
+      if (!r.ok) return null; await r.json(); return db;
+    } catch (e) { return null; }
+  };
+
+  // ---- nút Lưu trữ: nơi lưu hiện tại, xuất / mở file .json
+  const ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.700 3.100 3 7 3s7-1.300 7-3V6M5 12v6c0 1.700 3.100 3 7 3s7-1.300 7-3v-6"/></svg>';
+  const css = document.createElement("style");
+  css.textContent = ".dbw{position:relative;display:inline-flex;align-items:center}.dbw>button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--panel,#1d2026));color:var(--fg,var(--text,#e6e9ee));cursor:pointer;position:relative}.dbw>button i{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;background:#3ab06f}.dbw>button.warn i{background:#e3a008}.dbm{position:fixed;z-index:60;min-width:250px;max-width:min(340px,calc(100vw - 16px));padding:10px;border-radius:10px;background:var(--panel,#1d2026);color:var(--fg,var(--text,#e6e9ee));border:1px solid var(--line,#2a2f38);box-shadow:0 8px 24px #0004;font:12px/1.4 system-ui,sans-serif;display:none}.dbm.show{display:block}.dbm b{display:block;font-size:12px;margin-bottom:2px}.dbm p{margin:0 0 8px;color:var(--mute,var(--muted,#8b93a0));word-break:break-all}.dbm .r{display:flex;gap:6px}.dbm button{flex:1;height:32px;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--bg,#14161a));color:inherit;cursor:pointer;font:inherit}.dbm .t{margin-top:8px;color:var(--accent,#4aa3ff)}body.tm .dbw>button{width:40px;height:40px}body.tm .dbm button{height:40px}";
+  document.head.appendChild(css);
+  window.dbWidget = function (o) {
+    const { db: d, cols, host } = o;
+    if (document.getElementById("dbW")) document.getElementById("dbW").remove();
+    const local = !!(d && d.isLocal), ok = !!d;
+    const where = local ? "Máy này: work/store/" + NS : ok ? "claude.ai: AI đọc được" : "Chỉ trình duyệt này (chưa nối kho)";
+    const w = document.createElement("span"); w.className = "dbw"; w.id = "dbW";
+    w.innerHTML = '<button type="button" title="Lưu trữ: xuất / mở file" aria-label="Lưu trữ" class="' + (ok ? "" : "warn") + '">' + ICON + '<i></i></button><div class="dbm" role="dialog"><b>Nơi lưu</b><p>' + where + '</p><div class="r"><button type="button" data-a="ex">Xuất file</button><button type="button" data-a="im">Mở file</button></div><div class="t" hidden></div><input type="file" accept=".json,application/json" hidden></div>';
+    const hostEl = (host && document.querySelector(host)) || null;
+    if (hostEl) hostEl.appendChild(w); else { w.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:50"; document.body.appendChild(w); }
+    const btn = w.querySelector("button"), menu = w.querySelector(".dbm"), msg = w.querySelector(".t"), file = w.querySelector("input");
+    const say = t => { msg.textContent = t; msg.hidden = !t; };
+    btn.onclick = e => { e.stopPropagation(); const on = !menu.classList.contains("show"); menu.classList.toggle("show", on); if (on) { const r = btn.getBoundingClientRect(); menu.style.top = Math.min(r.bottom + 6, innerHeight - menu.offsetHeight - 8) + "px"; menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + "px"; } };
+    document.addEventListener("click", e => { if (!w.contains(e.target)) menu.classList.remove("show"); });
+    w.addEventListener("click", async e => {
+      const a = e.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "im") { file.click(); return; }
+      if (!d) { say("Chưa có kho để xuất. Mở bằng Home hoặc trên claude.ai."); return; }
+      try {
+        const out = { format: "ddc-store-v1", ns: NS, title: document.title, at: new Date().toISOString(), collections: {} };
+        for (const c of cols) { const sn = await d.collection(c).get(); out.collections[c] = {}; sn.docs.forEach(s => { if (s.exists) out.collections[c][s.id] = s.data(); }); }
+        const n = Object.values(out.collections).reduce((s, c) => s + Object.keys(c).length, 0);
+        const name = NS + "_" + new Date().toISOString().slice(0, 10) + ".json", blob = new Blob([JSON.stringify(out)], { type: "application/json" });
+        let saved = false;
+        try { if (window.claude && window.claude.use) { const dl = await window.claude.use("downloads"); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } } catch (e2) {}
+        if (!saved) { const u = URL.createObjectURL(blob), an = document.createElement("a"); an.href = u; an.download = name; document.body.appendChild(an); an.click(); an.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+        say("Đã xuất " + n + " mục → " + name);
+      } catch (err) { say("Không xuất được: " + (err.message || err)); }
+    });
+    file.onchange = async () => {
+      const f = file.files[0]; file.value = ""; if (!f) return;
+      try {
+        const o2 = JSON.parse(await f.text());
+        if (o2.format !== "ddc-store-v1" || !o2.collections) throw new Error("không phải file lưu của Lab");
+        if (!d) throw new Error("chưa có kho để ghi");
+        let n = 0; for (const c in o2.collections) for (const id in o2.collections[c]) { await d.doc(c + "/" + id).set(o2.collections[c][id]); n++; }
+        say("Đã mở " + n + " mục từ " + f.name + (o2.ns && o2.ns !== NS ? " (nguồn: " + o2.ns + ")" : "") + ". Tải lại trang để thấy.");
+      } catch (err) { say("Không mở được: " + (err.message || err)); }
+    };
+  };
+})();
+</script>
+<script>
+const DATA = /*DATA*/null;   // {name, meshes:[{name, verts:[x,y,z,...] (cm), tris:[a,b,c,...]}]}
+const $ = id => document.getElementById(id);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const IC = {
+  obj: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+  vert: '<circle cx="6" cy="6" r="1.8"/><circle cx="18" cy="8" r="1.8"/><circle cx="10" cy="18" r="1.8"/><path d="M7.5 7l9 .8M17 9.500l-6 7M8.500 16.500L6.500 8" opacity=".5"/>',
+  face: '<path d="M4 19L12 4l8 15z"/>',
+  island: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5" opacity=".6"/>',
+  sel: '<path d="M6 4l11 6-5 1.500L10 17z"/>', move: '<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>',
+  rot: '<path d="M20 12a8 8 0 11-3-6.200"/><path d="M20 4v5h-5"/>', scl: '<path d="M5 19L19 5M13 5h6v6M5 13v6h6"/>',
+  undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/>', redo: '<path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 000 10h3"/>',
+  wire: '<path d="M12 3l8 4.500v9L12 21l-8-4.500v-9z"/><path d="M4 7.500l8 4.500 8-4.500M12 12v9" opacity=".6"/>', frame: '<path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3"/><circle cx="12" cy="12" r="2"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', eyeoff: '<path d="M3 3l18 18M10.600 6.100A9.800 9.800 0 0112 6c6 0 10 6 10 6a17 17 0 01-3.200 3.700M6.400 7.500C3.600 9.300 2 12 2 12s4 7 10 7a9.700 9.700 0 004.100-.9"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>', unlock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017.600-1.700"/>',
+  trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', plus: '<path d="M12 5v14M5 12h14"/>', orbit: '<path d="M12 3a9 9 0 109 9"/><path d="M12 3l3 3M12 3L9 6"/><circle cx="12" cy="12" r="2.400"/>',
+  box: '<path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3"/><path d="M10 12h4"/>', cut: '<circle cx="6" cy="18" r="2.500"/><circle cx="18" cy="18" r="2.500"/><path d="M7.500 16L18 4M16.500 16L6 4"/>',
+  merge: '<path d="M4 6h5v12H4zM15 6h5v12h-5z"/><path d="M9 12h6M12 9l3 3-3 3"/>', weld: '<path d="M4 12h6M14 12h6"/><circle cx="12" cy="12" r="2"/>', flip: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  smooth: '<path d="M3 15c3-8 6 8 9 0s6 8 9 0"/>', copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/>', floor: '<path d="M3 19h18M7 19V9l5-5 5 5v10"/>',
+  clean: '<path d="M5 19l9-9M14 10l-2-5 5 2 2 5-5-2z"/>', height: '<path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/>', flipx: '<path d="M12 3v18M7 8L3 12l4 4zM17 8l4 4-4 4z"/>', save: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>',
+  free: '<rect x="6" y="6" width="12" height="12" stroke-dasharray="2 2"/><rect x="3" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/>',
+  all: '<path d="M5 12.500l4.500 4.500L19 7"/>', none: '<path d="M6 6l12 12M18 6L6 18"/>', invert: '<path d="M4 7h14l-3-3M20 17H6l3 3"/>', grow: '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" opacity=".5"/>'
+};
+const ic = n => `<svg class="i" viewBox="0 0 24 24">${IC[n]}</svg>`;
+
+// ---------------------------------------------------------------- scene
+const vp = $("vp"), cv = $("cv");
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(30, 1, 1, 6000);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+scene.add(new THREE.HemisphereLight(0xffffff, 0x556070, 0.95));
+const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(200, 400, 500); scene.add(dl);
+const grid = new THREE.GridHelper(400, 40, 0x6b7380, 0x9aa1ad); grid.material.transparent = true; grid.material.opacity = 0.4; scene.add(grid);
+const orbit = new THREE.OrbitControls(cam, cv);
+orbit.enableDamping = true; orbit.dampingFactor = 0.15;
+const MB = THREE.MOUSE, NONE = -1;
+orbit.mouseButtons = { LEFT: NONE, MIDDLE: MB.PAN, RIGHT: MB.ROTATE };
+const tc = new THREE.TransformControls(cam, cv); tc.setSize(0.85); tc.setSpace("world"); scene.add(tc);
+const pivot = new THREE.Object3D(); scene.add(pivot);
+function resize() { const r = vp.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); cam.aspect = r.width / Math.max(1, r.height); cam.updateProjectionMatrix(); }
+addEventListener("resize", resize); new ResizeObserver(resize).observe(vp);
+(function frame() { requestAnimationFrame(frame); orbit.update(); renderer.setClearColor(css("--view")); renderer.render(scene, cam); })();
+
+// ---------------------------------------------------------------- state
+const TM = { on: false, mode: "orbit", add: false };   // chế độ cảm ứng
+let OBJ = [], active = null, selO = new Set(), selV = new Set(), selF = new Set();
+let mode = "o", tool = "sel", showWire = true, soft = { on: false, r: 12 }, sym = false, frontOnly = true, uid = 1, saveMsg = "";
+let undoS = [], redoS = [], dirty = false, saveT = 0;
+const COLORS = [0x9bb0d0, 0xd0b08a, 0x9fcfa8, 0xd09fb8, 0xb9a9e0, 0xd7d08a];
+const selPts = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 7, sizeAttenuation: false, color: 0xff7a1a, depthTest: false, transparent: true }));
+selPts.renderOrder = 20; scene.add(selPts);
+const selMesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: 0xff7a1a, transparent: true, opacity: 0.55, side: THREE.DoubleSide, depthTest: false }));
+selMesh.renderOrder = 19; scene.add(selMesh);
+
+function makeObj(name, pos, idx, extra) {
+  const o = Object.assign({ id: uid++, name, pos, idx, vis: true, lock: false }, extra || {});
+  o.color = o.color || COLORS[(o.id - 1) % COLORS.length];
+  buildGeo(o);
+  OBJ.push(o); return o;
+}
+function buildGeo(o) {
+  if (o.mesh) { scene.remove(o.mesh); o.mesh.geometry.dispose(); o.mesh.material.dispose(); o.wire.material.dispose(); o.pts.material.dispose(); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(o.pos, 3)); g.setIndex(new THREE.BufferAttribute(o.idx, 1));
+  g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox();
+  o.mesh = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: o.color, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
+  o.mesh.userData.oid = o.id;
+  o.wire = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x1b2230, wireframe: true, transparent: true, opacity: 0.22, depthWrite: false }));
+  o.pts = new THREE.Points(g, new THREE.PointsMaterial({ size: 3.5, sizeAttenuation: false, color: 0x1b2230 }));
+  o.mesh.add(o.wire); o.mesh.add(o.pts); scene.add(o.mesh); o.mirror = null; o.adj = null;
+  applyVis(o);
+}
+function touchGeo(o, full) {
+  const g = o.mesh.geometry; g.attributes.position.needsUpdate = true; g.computeVertexNormals();
+  if (full) { g.computeBoundingSphere(); g.computeBoundingBox(); }
+}
+function applyVis(o) {
+  o.mesh.visible = o.vis; o.wire.visible = showWire; o.pts.visible = mode === "v" && o === active;
+  o.mesh.material.opacity = 1; o.mesh.material.color.setHex(o.color);
+  o.mesh.material.emissive.setHex(selO.has(o.id) && mode === "o" ? 0x2a3f7a : 0x000000);
+}
+function allVis() { OBJ.forEach(applyVis); }
+const get = id => OBJ.find(o => o.id === id);
+function removeObj(o) {
+  scene.remove(o.mesh); o.mesh.geometry.dispose(); OBJ = OBJ.filter(x => x !== o); selO.delete(o.id);
+  if (active === o) active = OBJ[0] || null;
+}
+
+// ---------------------------------------------------------------- undo
+function snap() { return { act: active && active.id, sel: [...selO], o: OBJ.map(o => ({ id: o.id, name: o.name, vis: o.vis, lock: o.lock, color: o.color, pos: o.pos.slice(), idx: o.idx.slice() })) }; }
+function restore(s) {
+  OBJ.slice().forEach(o => { scene.remove(o.mesh); o.mesh.geometry.dispose(); }); OBJ = [];
+  s.o.forEach(d => { const o = Object.assign({}, d); buildGeo(o); OBJ.push(o); });
+  active = get(s.act) || OBJ[0] || null; selO = new Set(s.sel.filter(i => get(i))); clearSel(); allVis(); rebuildAll();
+}
+function pushUndo() { undoS.push(snap()); if (undoS.length > 40) undoS.shift(); redoS = []; }
+function undo() { if (!undoS.length) return; redoS.push(snap()); restore(undoS.pop()); changed(); }
+function redo() { if (!redoS.length) return; undoS.push(snap()); restore(redoS.pop()); changed(); }
+function changed() { dirty = true; saveMsg = "Đang lưu…"; clearTimeout(saveT); saveT = setTimeout(save, 1500); rebuildAll(); }
+
+// ---------------------------------------------------------------- selection
+function clearSel() { selV = new Set(); selF = new Set(); }
+function facesOfVerts(o, vs, all) {      // mặt có TẤT CẢ (all) hoặc BẤT KỲ đỉnh trong vs
+  const f = new Set(), I = o.idx;
+  for (let t = 0; t < I.length / 3; t++) { const a = vs.has(I[3 * t]), b = vs.has(I[3 * t + 1]), c = vs.has(I[3 * t + 2]); if (all ? (a && b && c) : (a || b || c)) f.add(t); }
+  return f;
+}
+function vertsOfFaces(o, fs) { const v = new Set(); fs.forEach(t => { v.add(o.idx[3 * t]); v.add(o.idx[3 * t + 1]); v.add(o.idx[3 * t + 2]); }); return v; }
+function setVerts(vs) { selV = new Set(vs); selF = active ? facesOfVerts(active, selV, true) : new Set(); refreshSel(); }
+function setFaces(fs) { selF = new Set(fs); selV = active ? vertsOfFaces(active, selF) : new Set(); refreshSel(); }
+function adjacency(o) {   // đỉnh → các mặt, dùng cho khối rời và làm mượt
+  if (o.adj) return o.adj;
+  const n = o.pos.length / 3, vf = Array.from({ length: n }, () => []);
+  for (let t = 0; t < o.idx.length / 3; t++) for (let k = 0; k < 3; k++) vf[o.idx[3 * t + k]].push(t);
+  return (o.adj = vf);
+}
+function islandFrom(o, f0) {
+  const vf = adjacency(o), seen = new Set([f0]), q = [f0];
+  while (q.length) { const t = q.pop(); for (let k = 0; k < 3; k++) for (const u of vf[o.idx[3 * t + k]]) if (!seen.has(u)) { seen.add(u); q.push(u); } }
+  return seen;
+}
+function refreshSel() {
+  const o = active, P = [], F = [];
+  if (o && mode !== "o") {
+    selV.forEach(i => P.push(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2]));
+    selF.forEach(t => { for (let k = 0; k < 3; k++) { const i = o.idx[3 * t + k]; F.push(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2]); } });
+  }
+  selPts.geometry.dispose(); selPts.geometry = new THREE.BufferGeometry(); selPts.geometry.setAttribute("position", new THREE.Float32BufferAttribute(P, 3));
+  selMesh.geometry.dispose(); selMesh.geometry = new THREE.BufferGeometry(); selMesh.geometry.setAttribute("position", new THREE.Float32BufferAttribute(F, 3));
+  selPts.visible = mode === "v" || mode === "f" || mode === "i"; selMesh.visible = mode === "f" || mode === "i";
+  placePivot(); renderInfo();
+}
+function selCenter() {
+  const c = new THREE.Vector3(); let n = 0;
+  if (mode === "o") { selO.forEach(id => { const o = get(id); if (!o || !o.vis) return; o.mesh.geometry.computeBoundingBox(); const b = o.mesh.geometry.boundingBox.getCenter(new THREE.Vector3()); c.add(b); n++; }); }
+  else if (active) selV.forEach(i => { c.x += active.pos[3 * i]; c.y += active.pos[3 * i + 1]; c.z += active.pos[3 * i + 2]; n++; });
+  return n ? c.multiplyScalar(1 / n) : null;
+}
+function placePivot() {
+  const c = tool === "sel" ? null : selCenter(), lockedObj = mode === "o" && [...selO].every(i => (get(i) || {}).lock);
+  tc.detach();
+  if (!c || lockedObj || (mode !== "o" && active && active.lock)) return;
+  pivot.position.copy(c); pivot.rotation.set(0, 0, 0); pivot.scale.set(1, 1, 1); pivot.updateMatrixWorld(true);
+  tc.attach(pivot); tc.setMode(tool === "move" ? "translate" : tool === "rot" ? "rotate" : "scale");
+}
+
+// ---------------------------------------------------------------- gizmo drag: chọn + falloff mềm + đối xứng X
+let drag = null;
+function mirrorMap(o) {
+  if (o.mirror) return o.mirror;
+  const n = o.pos.length / 3, q = 0.4, key = (x, y, z) => Math.round(x / q) + "," + Math.round(y / q) + "," + Math.round(z / q), H = new Map();
+  for (let i = 0; i < n; i++) { const k = key(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2]); (H.get(k) || H.set(k, []).get(k)).push(i); }
+  const m = new Int32Array(n).fill(-1);
+  for (let i = 0; i < n; i++) {
+    const x = -o.pos[3 * i], y = o.pos[3 * i + 1], z = o.pos[3 * i + 2]; let best = -1, bd = 0.35 * 0.35;
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (let dz = -1; dz <= 1; dz++) {
+      const c = H.get(key(x + dx * q, y + dy * q, z + dz * q)); if (!c) continue;
+      for (const j of c) { const d = (o.pos[3 * j] - x) ** 2 + (o.pos[3 * j + 1] - y) ** 2 + (o.pos[3 * j + 2] - z) ** 2; if (d < bd) { bd = d; best = j; } }
+    }
+    m[i] = best;
+  }
+  return (o.mirror = m);
+}
+function falloff(o, src, r) {   // trọng số mềm 0..1 theo khoảng cách tới tập đỉnh src
+  const n = o.pos.length / 3, w = new Float32Array(n), P = o.pos, S = [...src];
+  for (let i = 0; i < n; i++) {
+    let d2 = Infinity; for (const j of S) { const d = (P[3 * i] - P[3 * j]) ** 2 + (P[3 * i + 1] - P[3 * j + 1]) ** 2 + (P[3 * i + 2] - P[3 * j + 2]) ** 2; if (d < d2) d2 = d; }
+    const t = Math.sqrt(d2) / r; w[i] = t >= 1 ? 0 : (1 - t * t) * (1 - t * t);
+  }
+  return w;
+}
+function buildAffected() {
+  const list = [];   // {o, i, w, m} m=0 thường, 1 đối xứng
+  if (mode === "o") { selO.forEach(id => { const o = get(id); if (o && o.vis && !o.lock) for (let i = 0; i < o.pos.length / 3; i++) list.push({ o, i, w: 1, m: 0 }); }); return list; }
+  const o = active; if (!o) return list;
+  const S = selV, P = new Set();
+  if (sym) { const mm = mirrorMap(o); S.forEach(i => { const j = mm[i]; if (j >= 0 && j !== i && !S.has(j)) P.add(j); }); }
+  const n = o.pos.length / 3, w0 = soft.on && S.size ? falloff(o, S, soft.r) : null, w1 = soft.on && P.size ? falloff(o, P, soft.r) : null;
+  for (let i = 0; i < n; i++) {
+    if (S.has(i)) list.push({ o, i, w: 1, m: 0 });
+    else if (P.has(i)) list.push({ o, i, w: 1, m: 1 });
+    else { const a = w0 ? w0[i] : 0, b = w1 ? w1[i] : 0; if (a > 0 || b > 0) list.push({ o, i, w: Math.max(a, b), m: b > a ? 1 : 0 }); }
+  }
+  return list;
+}
+tc.addEventListener("mouseDown", () => {
+  if (!tc.object) return;
+  pushUndo(); pivot.updateMatrixWorld(true);
+  drag = { inv: pivot.matrixWorld.clone().invert(), aff: buildAffected() };
+  drag.aff.forEach(a => { a.p0 = new THREE.Vector3(a.o.pos[3 * a.i], a.o.pos[3 * a.i + 1], a.o.pos[3 * a.i + 2]); });
+});
+tc.addEventListener("objectChange", () => {
+  if (!drag) return; pivot.updateMatrixWorld(true);
+  const M = pivot.matrixWorld.clone().multiply(drag.inv), R = new THREE.Matrix4().makeScale(-1, 1, 1), Mm = R.clone().multiply(M).multiply(R), tmp = new THREE.Vector3(), os = new Set();
+  for (const a of drag.aff) {
+    tmp.copy(a.p0).applyMatrix4(a.m ? Mm : M);
+    const P = a.o.pos, i = a.i; P[3 * i] = a.p0.x + (tmp.x - a.p0.x) * a.w; P[3 * i + 1] = a.p0.y + (tmp.y - a.p0.y) * a.w; P[3 * i + 2] = a.p0.z + (tmp.z - a.p0.z) * a.w; os.add(a.o);
+  }
+  os.forEach(o => touchGeo(o, false)); refreshSelPositions();
+});
+tc.addEventListener("mouseUp", () => {
+  if (!drag) return; const os = new Set(drag.aff.map(a => a.o)); drag = null;
+  os.forEach(o => { touchGeo(o, true); o.mirror = null; }); changed(); refreshSel();
+});
+tc.addEventListener("dragging-changed", e => { orbit.enabled = !e.value; });
+function refreshSelPositions() {   // trong lúc kéo: chỉ cập nhật vị trí overlay, không dựng lại tâm gizmo
+  const o = active; if (!o || mode === "o") return;
+  const P = [], F = [];
+  selV.forEach(i => P.push(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2]));
+  selF.forEach(t => { for (let k = 0; k < 3; k++) { const i = o.idx[3 * t + k]; F.push(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2]); } });
+  selPts.geometry.setAttribute("position", new THREE.Float32BufferAttribute(P, 3)); selMesh.geometry.setAttribute("position", new THREE.Float32BufferAttribute(F, 3));
+}
+
+// ---------------------------------------------------------------- chọn bằng chuột / ngón tay
+const ray = new THREE.Raycaster(), marq = document.createElement("div"); marq.className = "marquee"; vp.appendChild(marq);
+let down = null, boxing = false;
+const ndc = (x, y) => { const r = cv.getBoundingClientRect(); return new THREE.Vector2(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1); };
+function hitObjects(x, y, only) {
+  ray.setFromCamera(ndc(x, y), cam);
+  const meshes = (only ? [only] : OBJ.filter(o => o.vis && !o.lock)).map(o => o.mesh);
+  return ray.intersectObjects(meshes, false)[0] || null;
+}
+function screenOf(o, i) { const v = new THREE.Vector3(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2]).project(cam), r = cv.getBoundingClientRect(); return { x: r.left + (v.x + 1) / 2 * r.width, y: r.top + (1 - v.y) / 2 * r.height, z: v.z }; }
+function facing(o, i) {   // mặt trước theo pháp tuyến đỉnh (không xuyên mesh)
+  const nrm = o.mesh.geometry.attributes.normal, d = new THREE.Vector3(cam.position.x - o.pos[3 * i], cam.position.y - o.pos[3 * i + 1], cam.position.z - o.pos[3 * i + 2]);
+  return nrm.getX(i) * d.x + nrm.getY(i) * d.y + nrm.getZ(i) * d.z > 0;
+}
+const addSel = e => (e && e.shiftKey) || TM.add;
+function pickAt(x, y, e) {
+  const add = addSel(e);
+  if (mode === "o") {
+    const h = hitObjects(x, y); if (!h) { if (!add) selO.clear(); } else { const o = get(h.object.userData.oid); if (add) { selO.has(o.id) ? selO.delete(o.id) : selO.add(o.id); } else selO = new Set([o.id]); active = o; }
+    allVis(); renderPanel(); refreshSel(); return;
+  }
+  if (!active) return;
+  let h = hitObjects(x, y, active);
+  if (mode === "v") {
+    const R = TM.on ? 30 : 14; let best = -1, bd = R, n = active.pos.length / 3;
+    for (let i = 0; i < n; i++) { if (frontOnly && !facing(active, i)) continue; const s = screenOf(active, i), d = Math.hypot(s.x - x, s.y - y); if (d < bd) { bd = d; best = i; } }
+    if (best >= 0) { const s = new Set(add ? selV : []); add && s.has(best) ? s.delete(best) : s.add(best); setVerts(s); return; }
+  } else if (h) {
+    const t = h.faceIndex;
+    if (mode === "f") { const s = new Set(add ? selF : []); add && s.has(t) ? s.delete(t) : s.add(t); setFaces(s); return; }
+    if (mode === "i") { const isl = islandFrom(active, t), s = new Set(add ? selF : []); isl.forEach(f => add && selF.has(t) ? s.delete(f) : s.add(f)); setFaces(s); return; }
+  }
+  const other = hitObjects(x, y);   // chạm sang mesh khác: đổi mesh đang sửa
+  if (other && get(other.object.userData.oid) !== active) { active = get(other.object.userData.oid); selO = new Set([active.id]); clearSel(); allVis(); refreshSel(); renderPanel(); return; }
+  if (!add) { clearSel(); refreshSel(); }
+}
+function boxSelect(x0, y0, x1, y1, e) {
+  if (!active) return;
+  const xa = Math.min(x0, x1), xb = Math.max(x0, x1), ya = Math.min(y0, y1), yb = Math.max(y0, y1), n = active.pos.length / 3, vs = new Set();
+  for (let i = 0; i < n; i++) { if (frontOnly && !facing(active, i)) continue; const s = screenOf(active, i); if (s.x >= xa && s.x <= xb && s.y >= ya && s.y <= yb) vs.add(i); }
+  const base = addSel(e) ? selV : new Set(); vs.forEach(i => base.add(i));
+  if (mode === "f" || mode === "i") { const fs = facesOfVerts(active, base, true); setFaces(fs); } else setVerts(base);
+}
+cv.addEventListener("pointerdown", e => {
+  down = [e.clientX, e.clientY]; boxing = false;
+  const orbitHere = e.altKey || (TM.on && TM.mode === "orbit" && e.pointerType !== "mouse");
+  if (e.pointerType === "mouse") orbit.mouseButtons = { LEFT: e.altKey ? MB.ROTATE : NONE, MIDDLE: MB.PAN, RIGHT: MB.ROTATE };
+  if (e.pointerType !== "mouse") orbit.touches = { ONE: TM.on && TM.mode === "orbit" ? THREE.TOUCH.ROTATE : (TM.on ? NONE : THREE.TOUCH.ROTATE), TWO: THREE.TOUCH.DOLLY_PAN };
+  tc.enabled = !orbitHere && !(TM.on && TM.mode === "orbit");
+  if (!orbitHere && !tc.axis && e.button === 0 && mode !== "o" && (!TM.on || TM.mode === "box") && tool === "sel") boxing = true;
+}, true);
+cv.addEventListener("pointermove", e => {
+  if (!boxing || !down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 5) return;
+  const r = vp.getBoundingClientRect();
+  Object.assign(marq.style, { display: "block", left: Math.min(down[0], e.clientX) - r.left + "px", top: Math.min(down[1], e.clientY) - r.top + "px", width: Math.abs(e.clientX - down[0]) + "px", height: Math.abs(e.clientY - down[1]) + "px" });
+});
+addEventListener("pointerup", e => {
+  if (!down) return; const d0 = down, was = boxing, moved = Math.hypot(e.clientX - d0[0], e.clientY - d0[1]) > 5; down = null; boxing = false; marq.style.display = "none";
+  if (drag || tc.dragging || e.target !== cv) return;
+  if (was && moved) return boxSelect(d0[0], d0[1], e.clientX, e.clientY, e);
+  if (moved || e.altKey) return;
+  if (tc.axis) return;
+  if (TM.on && TM.mode === "orbit" && e.pointerType !== "mouse") return;
+  pickAt(e.clientX, e.clientY, e);
+});
+cv.addEventListener("contextmenu", e => e.preventDefault());
+
+// ---------------------------------------------------------------- thao tác trên mesh
+const nV = o => o.pos.length / 3, nT = o => o.idx.length / 3;
+function compact(pos, idx) {
+  const n = pos.length / 3, map = new Int32Array(n).fill(-1); let k = 0;
+  for (let i = 0; i < idx.length; i++) if (map[idx[i]] < 0) map[idx[i]] = k++;
+  const np = new Float32Array(k * 3); for (let i = 0; i < n; i++) if (map[i] >= 0) { np[3 * map[i]] = pos[3 * i]; np[3 * map[i] + 1] = pos[3 * i + 1]; np[3 * map[i] + 2] = pos[3 * i + 2]; }
+  const ni = new Uint32Array(idx.length); for (let i = 0; i < idx.length; i++) ni[i] = map[idx[i]];
+  return { pos: np, idx: ni };
+}
+function setTopology(o, pos, idx) { const c = compact(pos, idx); o.pos = c.pos; o.idx = c.idx; buildGeo(o); clearSel(); }
+function facesToDelete(o) { if (mode === "v") return facesOfVerts(o, selV, false); return selF; }
+function opDelete() {
+  if (mode === "o") { if (!selO.size) return; pushUndo(); [...selO].forEach(id => removeObj(get(id))); selO.clear(); clearSel(); changed(); return renderPanel(); }
+  const o = active; if (!o) return; const del = facesToDelete(o); if (!del.size) return say("Chưa chọn gì để xoá.");
+  pushUndo(); const keep = []; for (let t = 0; t < nT(o); t++) if (!del.has(t)) keep.push(o.idx[3 * t], o.idx[3 * t + 1], o.idx[3 * t + 2]);
+  setTopology(o, o.pos, Uint32Array.from(keep)); changed(); say("Đã xoá " + del.size + " mặt."); refreshSel();
+}
+function opSeparate() {
+  const o = active; if (!o || mode === "o" || !selF.size) return say("Chọn mặt, khối hoặc điểm trước.");
+  if (selF.size === nT(o)) return say("Đã chọn cả mesh, không cần tách.");
+  pushUndo(); const a = [], b = [];
+  for (let t = 0; t < nT(o); t++) (selF.has(t) ? a : b).push(o.idx[3 * t], o.idx[3 * t + 1], o.idx[3 * t + 2]);
+  const c = compact(o.pos, Uint32Array.from(a)); setTopology(o, o.pos, Uint32Array.from(b));
+  const n = makeObj(o.name + "_tach", c.pos, c.idx); active = n; selO = new Set([n.id]); clearSel(); mode = "o"; allVis(); changed(); say("Đã tách " + (a.length / 3) + " mặt thành mesh mới."); refreshSel();
+}
+function opMerge() {
+  const L = [...selO].map(get).filter(Boolean); if (L.length < 2) return say("Chọn từ 2 mesh trở lên (chế độ Đối tượng, Shift hoặc + để chọn thêm).");
+  pushUndo(); let np = 0, ni = 0; L.forEach(o => { np += o.pos.length; ni += o.idx.length; });
+  const pos = new Float32Array(np), idx = new Uint32Array(ni); let po = 0, io = 0, base = 0;
+  L.forEach(o => { pos.set(o.pos, po); for (let i = 0; i < o.idx.length; i++) idx[io + i] = o.idx[i] + base; po += o.pos.length; io += o.idx.length; base += o.pos.length / 3; });
+  const m = makeObj(L[0].name, pos, idx); L.forEach(removeObj); active = m; selO = new Set([m.id]); allVis(); changed(); say("Đã gộp " + L.length + " mesh.");
+}
+function weldO(o, eps, only) {
+  const n = nV(o), q = Math.max(eps, 1e-4), key = (x, y, z) => Math.floor(x / q) + "," + Math.floor(y / q) + "," + Math.floor(z / q), H = new Map(), rep = new Int32Array(n);
+  for (let i = 0; i < n; i++) {
+    rep[i] = i; if (only && !only.has(i)) continue;
+    const x = o.pos[3 * i], y = o.pos[3 * i + 1], z = o.pos[3 * i + 2], cx = Math.floor(x / q), cy = Math.floor(y / q), cz = Math.floor(z / q); let found = -1;
+    for (let dx = -1; dx <= 1 && found < 0; dx++) for (let dy = -1; dy <= 1 && found < 0; dy++) for (let dz = -1; dz <= 1 && found < 0; dz++) {
+      const c = H.get((cx + dx) + "," + (cy + dy) + "," + (cz + dz)); if (!c) continue;
+      for (const j of c) if ((o.pos[3 * j] - x) ** 2 + (o.pos[3 * j + 1] - y) ** 2 + (o.pos[3 * j + 2] - z) ** 2 <= eps * eps) { found = j; break; }
+    }
+    if (found >= 0) rep[i] = rep[found]; else (H.get(key(x, y, z)) || H.set(key(x, y, z), []).get(key(x, y, z))).push(i);
+  }
+  let merged = 0; for (let i = 0; i < n; i++) if (rep[i] !== i) merged++;
+  const keep = []; for (let t = 0; t < nT(o); t++) { const a = rep[o.idx[3 * t]], b = rep[o.idx[3 * t + 1]], c = rep[o.idx[3 * t + 2]]; if (a !== b && b !== c && a !== c) keep.push(a, b, c); }
+  return { merged, idx: Uint32Array.from(keep) };
+}
+function opWeld() {
+  const o = active; if (!o) return; const eps = +($("weldEps") || { value: 0.05 }).value || 0.05;
+  pushUndo(); const r = weldO(o, eps, mode !== "o" && selV.size ? selV : null);
+  setTopology(o, o.pos, r.idx); changed(); say(r.merged ? "Đã hàn " + r.merged + " điểm trùng." : "Không có điểm nào trong " + eps + " cm."); refreshSel();
+}
+function opFlip() {
+  const o = active; if (!o) return; const fs = mode !== "o" && selF.size ? selF : null; pushUndo();
+  for (let t = 0; t < nT(o); t++) if (!fs || fs.has(t)) { const b = o.idx[3 * t + 1]; o.idx[3 * t + 1] = o.idx[3 * t + 2]; o.idx[3 * t + 2] = b; }
+  buildGeo(o); changed(); say("Đã lật pháp tuyến " + (fs ? fs.size + " mặt" : "cả mesh") + "."); refreshSel();
+}
+function opSmooth() {
+  const o = active; if (!o || mode === "o" || !selV.size) return say("Chọn điểm hoặc mặt cần làm mượt.");
+  pushUndo(); const vf = adjacency(o), P = o.pos, np = P.slice();
+  for (let pass = 0; pass < 2; pass++) { selV.forEach(i => { const nb = new Set(); vf[i].forEach(t => { for (let k = 0; k < 3; k++) { const j = o.idx[3 * t + k]; if (j !== i) nb.add(j); } }); if (!nb.size) return;
+    let x = 0, y = 0, z = 0; nb.forEach(j => { x += P[3 * j]; y += P[3 * j + 1]; z += P[3 * j + 2]; }); x /= nb.size; y /= nb.size; z /= nb.size;
+    np[3 * i] = P[3 * i] * 0.5 + x * 0.5; np[3 * i + 1] = P[3 * i + 1] * 0.5 + y * 0.5; np[3 * i + 2] = P[3 * i + 2] * 0.5 + z * 0.5; }); P.set(np); }
+  touchGeo(o, true); changed(); refreshSel();
+}
+function opDuplicate() {
+  const o = active; if (!o) return; pushUndo(); const n = makeObj(o.name + "_copy", o.pos.slice(), o.idx.slice()); active = n; selO = new Set([n.id]); allVis(); changed(); say("Đã nhân bản.");
+}
+function opFlipX() {
+  const L = mode === "o" && selO.size ? [...selO].map(get) : active ? [active] : []; if (!L.length) return; pushUndo();
+  L.forEach(o => { for (let i = 0; i < nV(o); i++) o.pos[3 * i] = -o.pos[3 * i]; for (let t = 0; t < nT(o); t++) { const b = o.idx[3 * t + 1]; o.idx[3 * t + 1] = o.idx[3 * t + 2]; o.idx[3 * t + 2] = b; } buildGeo(o); });
+  clearSel(); changed(); say("Đã lật trái/phải (trục X)."); refreshSel();
+}
+function bbox(list) { const b = new THREE.Box3(); (list || OBJ.filter(o => o.vis)).forEach(o => { for (let i = 0; i < nV(o); i++) b.expandByPoint(new THREE.Vector3(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2])); }); return b; }
+function opGround() {
+  const b = bbox(); if (b.isEmpty()) return; pushUndo(); const cx = (b.min.x + b.max.x) / 2, cz = (b.min.z + b.max.z) / 2;
+  OBJ.forEach(o => { for (let i = 0; i < nV(o); i++) { o.pos[3 * i] -= cx; o.pos[3 * i + 1] -= b.min.y; o.pos[3 * i + 2] -= cz; } touchGeo(o, true); o.mirror = null; });
+  changed(); say("Đã đặt chân xuống sàn (Y=0), tâm về X=Z=0."); refreshSel(); frameAll();
+}
+function opHeight() {
+  const h = +$("hgt").value, b = bbox(); if (!(h > 0) || b.isEmpty()) return; const f = h / (b.max.y - b.min.y), cx = (b.min.x + b.max.x) / 2, cz = (b.min.z + b.max.z) / 2; pushUndo();
+  OBJ.forEach(o => { for (let i = 0; i < nV(o); i++) { o.pos[3 * i] = cx + (o.pos[3 * i] - cx) * f; o.pos[3 * i + 1] = b.min.y + (o.pos[3 * i + 1] - b.min.y) * f; o.pos[3 * i + 2] = cz + (o.pos[3 * i + 2] - cz) * f; } touchGeo(o, true); o.mirror = null; });
+  changed(); say("Đã scale cả cảnh lên " + h + " cm (×" + f.toFixed(3) + ")."); refreshSel(); frameAll();
+}
+function stats(o) {
+  const n = nV(o), t = nT(o), used = new Uint8Array(n); let degen = 0; const E = new Map(), F = new Set(); let dupF = 0;
+  for (let f = 0; f < t; f++) {
+    const a = o.idx[3 * f], b = o.idx[3 * f + 1], c = o.idx[3 * f + 2]; used[a] = used[b] = used[c] = 1;
+    const ax = o.pos[3 * a], ay = o.pos[3 * a + 1], az = o.pos[3 * a + 2], ux = o.pos[3 * b] - ax, uy = o.pos[3 * b + 1] - ay, uz = o.pos[3 * b + 2] - az, vx = o.pos[3 * c] - ax, vy = o.pos[3 * c + 1] - ay, vz = o.pos[3 * c + 2] - az;
+    const cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx; if (a === b || b === c || a === c || cx * cx + cy * cy + cz * cz < 1e-12) degen++;
+    const k = [a, b, c].sort((x, y) => x - y).join("_"); F.has(k) ? dupF++ : F.add(k);
+    [[a, b], [b, c], [c, a]].forEach(([p, q]) => { const e = p < q ? p + "_" + q : q + "_" + p; E.set(e, (E.get(e) || 0) + 1); });
+  }
+  let loose = 0; for (let i = 0; i < n; i++) if (!used[i]) loose++;
+  let open = 0, nonman = 0; E.forEach(v => { if (v === 1) open++; else if (v > 2) nonman++; });
+  const w = weldO(o, 0.001, null), parent = new Int32Array(n).map((_, i) => i), find = x => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+  for (let f = 0; f < t; f++) { const a = find(o.idx[3 * f]), b = find(o.idx[3 * f + 1]), c = find(o.idx[3 * f + 2]); parent[b] = a; parent[find(c)] = find(a); }
+  const roots = new Set(); for (let f = 0; f < t; f++) roots.add(find(o.idx[3 * f]));
+  return { n, t, loose, degen, dupF, open, nonman, dupV: w.merged, islands: roots.size };
+}
+function opClean() {
+  const o = active; if (!o) return; pushUndo(); const s = stats(o), seen = new Set(), keep = [];
+  for (let f = 0; f < nT(o); f++) {
+    const a = o.idx[3 * f], b = o.idx[3 * f + 1], c = o.idx[3 * f + 2]; if (a === b || b === c || a === c) continue;
+    const ux = o.pos[3 * b] - o.pos[3 * a], uy = o.pos[3 * b + 1] - o.pos[3 * a + 1], uz = o.pos[3 * b + 2] - o.pos[3 * a + 2], vx = o.pos[3 * c] - o.pos[3 * a], vy = o.pos[3 * c + 1] - o.pos[3 * a + 1], vz = o.pos[3 * c + 2] - o.pos[3 * a + 2];
+    const cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx; if (cx * cx + cy * cy + cz * cz < 1e-12) continue;
+    const k = [a, b, c].sort((x, y) => x - y).join("_"); if (seen.has(k)) continue; seen.add(k); keep.push(a, b, c);
+  }
+  setTopology(o, o.pos, Uint32Array.from(keep)); changed(); say("Đã dọn: " + s.degen + " mặt hỏng, " + s.dupF + " mặt trùng, " + s.loose + " điểm lẻ."); refreshSel();
+}
+function selectAll() { if (mode === "o") { selO = new Set(OBJ.filter(o => o.vis && !o.lock).map(o => o.id)); allVis(); refreshSel(); renderPanel(); } else if (active) { mode === "v" ? setVerts(new Set(Array.from({ length: nV(active) }, (_, i) => i))) : setFaces(new Set(Array.from({ length: nT(active) }, (_, i) => i))); } }
+function selectNone() { selO.clear(); clearSel(); allVis(); refreshSel(); renderPanel(); }
+function selectInvert() { if (!active || mode === "o") return; if (mode === "v") setVerts(new Set(Array.from({ length: nV(active) }, (_, i) => i).filter(i => !selV.has(i)))); else setFaces(new Set(Array.from({ length: nT(active) }, (_, i) => i).filter(t => !selF.has(t)))); }
+function selectGrow() { const o = active; if (!o || mode === "o" || !selV.size) return; const vf = adjacency(o), n = new Set(selV); selV.forEach(i => vf[i].forEach(t => { for (let k = 0; k < 3; k++) n.add(o.idx[3 * t + k]); })); mode === "v" ? setVerts(n) : setFaces(facesOfVerts(o, n, false)); }
+
+// ---------------------------------------------------------------- giao diện
+function say(t) { saveMsg = t; const m = $("msg"); if (m) m.textContent = t; }
+function frameAll() {
+  const b = bbox(); if (b.isEmpty()) return; const c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()), d = Math.max(s.y, s.x / cam.aspect, 40) / Math.tan(cam.fov * Math.PI / 360) * 0.62 + s.z;
+  orbit.target.copy(c); cam.position.set(c.x + d * 0.35, c.y + s.y * 0.1, c.z + d); cam.near = Math.max(0.5, d / 200); cam.far = d * 12; cam.updateProjectionMatrix(); orbit.update();
+}
+function renderToolbar() {
+  const B = (id, i, t, on, extra) => `<button data-id="${id}" class="${on ? "on" : ""}" title="${t}" aria-label="${t}" ${extra || ""}>${ic(i)}</button>`;
+  $("tb").innerHTML = `<div class="grp">${B("m:o", "obj", "Chọn mesh (1)", mode === "o")}${B("m:v", "vert", "Chọn điểm (2)", mode === "v")}${B("m:f", "face", "Chọn mặt (3)", mode === "f")}${B("m:i", "island", "Chọn khối rời (4)", mode === "i")}</div>
+    <div class="grp">${B("t:sel", "sel", "Chỉ chọn (Q)", tool === "sel")}${B("t:move", "move", "Dời (W)", tool === "move")}${B("t:rot", "rot", "Xoay (E)", tool === "rot")}${B("t:scl", "scl", "Scale (R)", tool === "scl")}${B("t:free", "free", "Free Transform: hộp bao, kéo mặt / góc để giãn (T)", tool === "free")}</div>
+    <div class="grp">${B("undo", "undo", "Hoàn tác (Ctrl+Z)", false, undoS.length ? "" : "disabled")}${B("redo", "redo", "Làm lại (Ctrl+Shift+Z)", false, redoS.length ? "" : "disabled")}${B("wire", "wire", "Hiện lưới (V)", showWire)}${B("frame", "frame", "Nhìn toàn bộ (A)", false)}</div>`;
+}
+$("tb").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return; const id = b.dataset.id;
+  if (id[0] === "m" && id[1] === ":") setMode(id.slice(2)); else if (id.startsWith("t:")) { tool = id.slice(2); placePivot(); renderToolbar(); }
+  else if (id === "undo") undo(); else if (id === "redo") redo(); else if (id === "wire") { showWire = !showWire; allVis(); renderToolbar(); } else if (id === "frame") frameAll();
+});
+function setMode(m) {
+  mode = m; if (m === "o") clearSel(); else if (active) { selO = new Set([active.id]); if (selF.size && m !== "v") selV = vertsOfFaces(active, selF); }
+  allVis(); renderToolbar(); refreshSel(); renderPanel();
+}
+function renderInfo() {
+  const o = active, b = bbox(), h = b.isEmpty() ? 0 : b.max.y - b.min.y;
+  $("vinfo").textContent = (o ? o.name + " · " + nV(o) + " điểm · " + nT(o) + " tam giác" : "Chưa có mesh") + (mode !== "o" ? " · chọn " + (mode === "v" ? selV.size + " điểm" : selF.size + " mặt") : selO.size ? " · chọn " + selO.size + " mesh" : "") + " · cao " + h.toFixed(1) + " cm";
+  $("hsub").textContent = OBJ.length + " mesh · cao " + h.toFixed(1) + " cm" + (dirty ? " · " + saveMsg : "");
+}
+function renderPanel() {
+  const o = active, st = o ? stats(o) : null, b = bbox(), h = b.isEmpty() ? 0 : b.max.y - b.min.y;
+  const chk = (ok, bad, txt, detail) => `<i class="${bad ? "s-bad" : ok ? "s-ok" : "s-warn"}">${bad ? "✗" : ok ? "✓" : "!"}</i><span>${txt}${detail ? `<br><small class="sub">${detail}</small>` : ""}</span>`;
+  $("panel").innerHTML = `<h2>Mesh</h2><div class="olist">${OBJ.map(x => `<div class="orow ${selO.has(x.id) ? "sel" : ""} ${x === active ? "act" : ""}" data-id="${x.id}">
+      <button data-a="vis" class="${x.vis ? "" : "off"}" title="Ẩn / hiện" aria-label="Ẩn hoặc hiện">${ic(x.vis ? "eye" : "eyeoff")}</button><button data-a="lock" class="${x.lock ? "" : "off"}" title="Khoá: không chọn, không sửa" aria-label="Khoá">${ic(x.lock ? "lock" : "unlock")}</button>
+      <span class="nm" title="Bấm đôi để đổi tên">${renaming === x.id ? `<input id="rn" data-id="${x.id}" value="${esc(x.name)}">` : esc(x.name)}</span><small>${nT(x)}</small>
+      <button data-a="del" title="Xoá mesh" aria-label="Xoá mesh">${ic("trash")}</button></div>`).join("") || '<div class="sub" style="padding:8px">Chưa có mesh.</div>'}</div>
+  <h2>Chọn</h2>
+  <div class="row"><button data-s="all" title="Chọn tất cả (Ctrl+A)">${ic("all")}</button><button data-s="none" title="Bỏ chọn">${ic("none")}</button><button data-s="inv" title="Đảo vùng chọn">${ic("invert")}</button><button data-s="grow" title="Nới rộng vùng chọn một vòng">${ic("grow")}</button>
+    <label><input type="checkbox" id="fo" ${frontOnly ? "checked" : ""}> Chỉ mặt trước</label></div>
+  <div class="row"><label><input type="checkbox" id="sy" ${sym ? "checked" : ""}> Đối xứng X</label><label><input type="checkbox" id="so" ${soft.on ? "checked" : ""}> Mềm</label><input type="range" id="sr" min="2" max="60" step="1" value="${soft.r}" ${soft.on ? "" : "disabled"}><span class="sub" id="srv">${soft.r} cm</span></div>
+  <h2>Sửa</h2>
+  <div class="ops"><button data-o="delete" class="bad">${ic("trash")}Xoá</button><button data-o="separate">${ic("cut")}Tách mesh</button><button data-o="merge">${ic("merge")}Gộp mesh</button><button data-o="dup">${ic("copy")}Nhân bản</button>
+    <button data-o="flip">${ic("flip")}Lật pháp tuyến</button><button data-o="smooth">${ic("smooth")}Làm mượt</button><button data-o="flipx">${ic("flipx")}Lật trái/phải</button><button data-o="clean">${ic("clean")}Dọn mesh</button></div>
+  <div class="row"><button data-o="weld">${ic("weld")}Hàn điểm gần</button><input type="number" id="weldEps" value="0.05" step="0.01" min="0.001" title="Khoảng cách tối đa (cm)"><span class="sub">cm</span></div>
+  <h2>Cảnh</h2>
+  <div class="row"><button data-o="ground">${ic("floor")}Đặt xuống sàn</button><input type="number" id="hgt" value="${h ? h.toFixed(1) : 170}" step="1" min="1"><span class="sub">cm</span><button data-o="height" title="Scale cả cảnh về chiều cao này">${ic("height")}</button></div>
+  <h2>Kiểm tra${o ? " · " + esc(o.name) : ""}</h2>
+  ${st ? `<div class="chk">${chk(!st.loose, false, st.loose + " điểm lẻ (không thuộc mặt nào)")}${chk(!st.degen, st.degen > 0, st.degen + " mặt hỏng (diện tích 0)")}${chk(!st.dupF, false, st.dupF + " mặt trùng")}
+    ${chk(!st.dupV, false, st.dupV + " điểm trùng vị trí", st.dupV ? "Hàn điểm gần để nối lại" : "")}${chk(!st.nonman, st.nonman > 0, st.nonman + " cạnh chung > 2 mặt")}${chk(true, false, st.islands + " khối rời · " + st.open + " cạnh hở")}</div>
+    <div class="kv"><span>Điểm / tam giác</span><span>${st.n} / ${st.t}</span><span>Cao cảnh</span><span>${h.toFixed(1)} cm</span></div>` : ""}
+  <h2>Lưu và xuất</h2>
+  <div class="row"><button data-o="obj">${ic("save")}Xuất OBJ</button><button data-o="rig" title="mesh_cm.json: định dạng Rig Lab đọc">${ic("save")}Xuất cho Rig</button><button data-o="reset" class="bad" title="Bỏ mọi chỉnh sửa, về mesh gốc">Về bản gốc</button></div>
+  <div class="msg" id="msg">${esc(saveMsg)}</div>`;
+}
+$("panel").addEventListener("click", e => {
+  const r = e.target.closest(".orow");
+  if (r) {
+    const o = get(+r.dataset.id), a = (e.target.closest("[data-a]") || {}).dataset;
+    if (a && a.a === "vis") { o.vis = !o.vis; applyVis(o); renderPanel(); refreshSel(); return; }
+    if (a && a.a === "lock") { o.lock = !o.lock; if (o.lock) { selO.delete(o.id); if (active === o) { active = OBJ.find(x => !x.lock && x.vis) || null; clearSel(); } } dirty = true; allVis(); renderPanel(); refreshSel(); return; }
+    if (a && a.a === "del") { pushUndo(); removeObj(o); clearSel(); changed(); renderPanel(); return; }
+    if (e.target.closest("input")) return;
+    if (o.lock) return;
+    if (addSel(e)) { selO.has(o.id) ? selO.delete(o.id) : selO.add(o.id); } else selO = new Set([o.id]);
+    if (active !== o) { active = o; clearSel(); }
+    allVis(); renderPanel(); refreshSel(); return;
+  }
+  const s = e.target.closest("[data-s]"); if (s) { ({ all: selectAll, none: selectNone, inv: selectInvert, grow: selectGrow })[s.dataset.s](); return; }
+  const op = e.target.closest("[data-o]"); if (!op) return;
+  ({ delete: opDelete, separate: opSeparate, merge: opMerge, dup: opDuplicate, flip: opFlip, smooth: opSmooth, flipx: opFlipX, clean: opClean, weld: opWeld, ground: opGround, height: opHeight, obj: exportOBJ, rig: exportRig, reset: resetAll })[op.dataset.o]();
+  renderPanel();
+});
+let renaming = null;
+function commitRename(input, ok) { const id = +input.dataset.id; renaming = null; if (ok && get(id) && input.value.trim() && input.value.trim() !== get(id).name) { pushUndo(); get(id).name = input.value.trim(); changed(); } else renderPanel(); }
+$("panel").addEventListener("dblclick", e => { const nm = e.target.closest(".nm"); if (!nm || nm.querySelector("input")) return; renaming = +nm.closest(".orow").dataset.id; renderPanel(); const i = $("rn"); if (i) { i.focus(); i.select(); } });
+$("panel").addEventListener("keydown", e => { if (e.target.id !== "rn") return; e.stopPropagation(); if (e.key === "Enter") commitRename(e.target, true); else if (e.key === "Escape") commitRename(e.target, false); });
+$("panel").addEventListener("focusout", e => { if (e.target.id === "rn" && renaming !== null) commitRename(e.target, true); });
+$("panel").addEventListener("change", e => {
+  if (e.target.id === "fo") frontOnly = e.target.checked; else if (e.target.id === "sy") sym = e.target.checked; else if (e.target.id === "so") { soft.on = e.target.checked; $("sr").disabled = !soft.on; }
+});
+$("panel").addEventListener("input", e => { if (e.target.id === "sr") { soft.r = +e.target.value; $("srv").textContent = soft.r + " cm"; } });
+function rebuildAll() { renderToolbar(); renderPanel(); renderInfo(); }
+
+addEventListener("keydown", e => {
+  if (/INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || "")) return;
+  const k = e.key.toLowerCase(), c = e.ctrlKey || e.metaKey;
+  if (c && k === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); } else if (c && k === "y") { e.preventDefault(); redo(); } else if (c && k === "a") { e.preventDefault(); selectAll(); }
+  else if (k === "1") setMode("o"); else if (k === "2") setMode("v"); else if (k === "3") setMode("f"); else if (k === "4") setMode("i");
+  else if (k === "q") { tool = "sel"; placePivot(); renderToolbar(); } else if (k === "w") { tool = "move"; placePivot(); renderToolbar(); } else if (k === "e") { tool = "rot"; placePivot(); renderToolbar(); } else if (k === "r") { tool = "scl"; placePivot(); renderToolbar(); } else if (k === "t") { tool = "free"; placePivot(); renderToolbar(); }
+  else if (k === "a" && !c) frameAll(); else if (k === "v") { showWire = !showWire; allVis(); renderToolbar(); } else if (k === "delete" || k === "backspace") { e.preventDefault(); opDelete(); renderPanel(); }
+});
+
+// ---------------------------------------------------------------- lưu / nạp / xuất
+let db = null;
+const ser = () => ({ v: 1, at: new Date().toISOString(), meshes: OBJ.map(o => ({ name: o.name, vis: o.vis, lock: o.lock, verts: Array.from(o.pos, v => +v.toFixed(3)), tris: Array.from(o.idx) })) });
+async function save() {
+  if (!dirty) return;
+  try { if (db) await db.doc("mesh/edit").set(ser()); else localStorage.setItem("mesh_edit:" + (DATA && DATA.name), JSON.stringify(ser())); dirty = false; saveMsg = db ? (db.isLocal ? "Đã lưu vào dự án trên máy." : "Đã lưu (AI đọc được).") : "Đã lưu (chỉ trình duyệt này)."; }
+  catch (e) { saveMsg = "Không lưu được: " + (e.message || e.code || e); }
+  const m = $("msg"); if (m) m.textContent = saveMsg; renderInfo();
+}
+function loadMeshes(list, flags) {
+  OBJ.slice().forEach(o => { scene.remove(o.mesh); }); OBJ = []; selO.clear(); clearSel();
+  list.forEach((m, i) => makeObj(m.name, Float32Array.from(m.verts), Uint32Array.from(m.tris), { vis: m.vis !== false, lock: !!m.lock, color: COLORS[i % COLORS.length] }));
+  active = OBJ[OBJ.length - 1] || null; if (active) selO = new Set([active.id]); allVis();
+}
+function resetAll() { if (!DATA) return; pushUndo(); loadMeshes(DATA.meshes); changed(); say("Đã về mesh gốc."); frameAll(); }
+function download(name, text, type) {
+  const blob = new Blob([text], { type: type || "text/plain" });
+  (async () => {
+    try { if (window.claude && window.claude.use) { const dl = await window.claude.use("downloads"); if (dl) { await dl.save({ filename: name, data: blob }); return; } } } catch (e) {}
+    const u = URL.createObjectURL(blob), a = document.createElement("a"); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+  })();
+}
+const baseName = () => (DATA && DATA.name || "mesh").replace(/[^A-Za-z0-9_\-]+/g, "_");
+function exportOBJ() {
+  let s = "# Mesh Lab, cm, +Y up\n", off = 1;
+  OBJ.filter(o => o.vis).forEach(o => { s += "o " + o.name + "\n"; for (let i = 0; i < nV(o); i++) s += "v " + o.pos[3 * i].toFixed(4) + " " + o.pos[3 * i + 1].toFixed(4) + " " + o.pos[3 * i + 2].toFixed(4) + "\n"; for (let t = 0; t < nT(o); t++) s += "f " + (o.idx[3 * t] + off) + " " + (o.idx[3 * t + 1] + off) + " " + (o.idx[3 * t + 2] + off) + "\n"; off += nV(o); });
+  download(baseName() + ".obj", s); say("Đã xuất " + baseName() + ".obj");
+}
+function exportRig() {
+  const out = OBJ.filter(o => o.vis).map(o => ({ name: o.name, verts: Array.from(o.pos, v => +v.toFixed(3)), tris: Array.from(o.idx) }));
+  download(baseName() + "_mesh_cm.json", JSON.stringify(out), "application/json"); say("Đã xuất " + baseName() + "_mesh_cm.json (cho Rig Lab).");
+}
+
+// ---------------------------------------------------------------- chế độ cảm ứng
+(function () {
+  const chk = $("tmChk"), bar = $("tmBar"), key = "tm:" + location.pathname; let saved = null; try { saved = localStorage.getItem(key); } catch {}
+  bar.innerHTML = `<button data-m="orbit" title="Xoay / zoom camera (1 ngón xoay, 2 ngón zoom + kéo)" aria-label="Xoay camera">${ic("orbit")}</button><button data-m="sel" title="Chạm để chọn, kéo gizmo để chỉnh" aria-label="Chọn">${ic("sel")}</button><button data-m="box" title="Kéo khung chọn nhiều điểm" aria-label="Chọn khung">${ic("box")}</button><button data-add="1" title="Thêm vào vùng chọn (như giữ Shift)" aria-label="Thêm vào chọn">${ic("plus")}</button>`;
+  function apply() {
+    TM.on = chk.checked; document.body.classList.toggle("tm", TM.on);
+    bar.querySelectorAll("button[data-m]").forEach(b => b.classList.toggle("on", b.dataset.m === TM.mode)); bar.querySelector("[data-add]").classList.toggle("on", TM.add);
+    orbit.touches = { ONE: TM.on && TM.mode !== "orbit" ? NONE : THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }; tc.setSize(TM.on ? 1.3 : 0.85); tc.enabled = !(TM.on && TM.mode === "orbit");
+    setTimeout(() => window.dispatchEvent(new Event("resize")), 30);
+  }
+  bar.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.m) TM.mode = b.dataset.m; else TM.add = !TM.add; apply(); });
+  chk.addEventListener("change", () => { try { localStorage.setItem(key, chk.checked ? "1" : "0"); } catch {} apply(); });
+  chk.checked = saved === null ? matchMedia("(pointer:coarse)").matches : saved === "1"; apply();
+})();
+
+// ---------------------------------------------------------------- khởi động
+(async function init() {
+  if (!DATA) { $("hsub").textContent = "Chưa có dữ liệu mesh (build bằng work/mesh_lab/build_mesh.py)."; return; }
+  try { if (window.claude && window.claude.use) db = await window.claude.use("db"); } catch (e) { db = null; }
+  if (!db && window.localDB) { try { db = await window.localDB(); } catch (e) { db = null; } }
+  try { window.dbWidget && window.dbWidget({ db, cols: ["mesh"], host: "header" }); } catch (e) { console.error(e); }
+  let src = DATA.meshes, from = "gốc";
+  try {
+    const d = db ? await db.doc("mesh/edit").get() : null, l = !db ? JSON.parse(localStorage.getItem("mesh_edit:" + DATA.name) || "null") : null, saved = d && d.exists ? d.data() : l;
+    if (saved && saved.meshes && saved.meshes.length) { src = saved.meshes; from = "đã sửa (" + String(saved.at || "").slice(0, 16).replace("T", " ") + ")"; }
+  } catch (e) { console.error(e); }
+  loadMeshes(src); resize(); renderToolbar(); renderPanel(); refreshSel(); chRender(); frameAll(); say("Đã nạp bản " + from + ".");
+})();
+
+/*CHBOX*/
+// ---------------------------------------------------------------- Channel Box + Free Transform
+// TS = phép biến đổi cộng dồn của vùng chọn hiện tại (A, quanh tâm c0); đổi vùng chọn thì về 0 / 1. Mọi thao tác (gizmo, ô số, Free Transform)
+// đều là "áp ma trận M lên vị trí hiện tại" nên dùng chung falloff mềm và đối xứng X của gizmo.
+let TS = null;
+const V3x = THREE.Vector3, M4x = THREE.Matrix4;
+const selSig = () => mode === "o" ? "o:" + [...selO].sort().join(",") : mode + ":" + (active ? active.id : 0) + ":" + selV.size + ":" + (() => { let h = 0; selV.forEach(i => h = (h * 31 + i) % 1000003); return h; })();
+function ensureTS() { if (!TS) { const c = selCenter(); if (!c) return null; TS = { c0: c.clone(), A: new M4x(), sig: selSig() }; } return TS; }
+function xformApply(M, aff) {
+  const R = new M4x().makeScale(-1, 1, 1), Mm = R.clone().multiply(M).multiply(R), tmp = new V3x(), os = new Set();
+  for (const a of aff) {
+    tmp.copy(a.p0).applyMatrix4(a.m ? Mm : M); const P = a.o.pos, i = a.i;
+    P[3 * i] = a.p0.x + (tmp.x - a.p0.x) * a.w; P[3 * i + 1] = a.p0.y + (tmp.y - a.p0.y) * a.w; P[3 * i + 2] = a.p0.z + (tmp.z - a.p0.z) * a.w; os.add(a.o);
+  }
+  os.forEach(o => touchGeo(o, false));
+}
+function affSnapshot() { const aff = buildAffected(); aff.forEach(a => { a.p0 = new V3x(a.o.pos[3 * a.i], a.o.pos[3 * a.i + 1], a.o.pos[3 * a.i + 2]); }); return aff; }
+function xformEnd(aff) { const os = new Set(aff.map(a => a.o)); os.forEach(o => { touchGeo(o, true); o.mirror = null; }); changed(); refreshSel(); }
+
+// ---- Channel Box
+const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+function chVals() {
+  const c = selCenter(); if (!c) return null;
+  if (!TS) return { t: [c.x, c.y, c.z], r: [0, 0, 0], s: [1, 1, 1] };
+  const t = TS.c0.clone().applyMatrix4(TS.A), L = TS.A.clone().setPosition(0, 0, 0), q = new THREE.Quaternion(), p = new V3x(), sc = new V3x();
+  L.decompose(p, q, sc); const e = new THREE.Euler().setFromQuaternion(q, "XYZ");
+  return { t: [t.x, t.y, t.z], r: [deg(e.x), deg(e.y), deg(e.z)], s: [sc.x, sc.y, sc.z] };
+}
+const CHROWS = [["Translate X", "t", 0, 0.1], ["Translate Y", "t", 1, 0.1], ["Translate Z", "t", 2, 0.1], ["Rotate X", "r", 0, 0.5], ["Rotate Y", "r", 1, 0.5], ["Rotate Z", "r", 2, 0.5], ["Scale X", "s", 0, 0.01], ["Scale Y", "s", 1, 0.01], ["Scale Z", "s", 2, 0.01]];
+const chBox = $("chbox"); let chFold = false; try { chFold = localStorage.getItem("meshlab:chfold") === "1"; } catch {}
+function chTitle() { return mode === "o" ? (selO.size > 1 ? selO.size + " mesh" : (active && selO.size ? active.name : "")) : (active ? (mode === "v" ? selV.size + " điểm" : selF.size + " mặt") : ""); }
+function chRender() {
+  chBox.classList.toggle("fold", chFold);
+  const v = chVals(), head = `<div class="chh" id="chh"><svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><b>Channel Box</b><span title="${esc(chTitle())}">${esc(chTitle())}</span></div>`;
+  if (!v) { chBox.innerHTML = head + '<div class="chn">Chưa chọn gì.</div>'; return; }
+  let h = head, last = "";
+  for (const [lab, g, i, st] of CHROWS) {
+    if (g !== last) { h += `<div class="chs">${g === "t" ? "Translate" : g === "r" ? "Rotate" : "Scale"}</div>`; last = g; }
+    h += `<div class="chr"><label data-g="${g}" data-i="${i}" data-st="${st}" title="Kéo trái / phải để đổi giá trị">${lab.split(" ")[1]}</label><input type="number" data-g="${g}" data-i="${i}" step="${st}" value="${+v[g][i].toFixed(g === "s" ? 3 : 2)}"></div>`;
+  }
+  h += `<div class="chf"><button data-a="rst" title="Coi trạng thái hiện tại là gốc: Rotate về 0, Scale về 1">Đặt lại 0/1</button></div>`;
+  chBox.innerHTML = h;
+}
+function chRefresh() {   // làm tươi số khi vùng chọn / gizmo đổi (không đụng ô đang gõ)
+  const v = chVals(), ins = chBox.querySelectorAll("input[data-g]");
+  if (!v || !ins.length || chBox.querySelector(".chn")) { chRender(); return; }
+  ins.forEach(el => { if (document.activeElement !== el) el.value = +v[el.dataset.g][+el.dataset.i].toFixed(el.dataset.g === "s" ? 3 : 2); });
+  const sp = chBox.querySelector(".chh span"); if (sp) { sp.textContent = chTitle(); sp.title = chTitle(); }
+}
+function chApply(vals, push) {   // vals = {t,r,s}: dựng ma trận tuyệt đối mới Anew rồi áp phần chênh lệch D = Anew · A⁻¹
+  const T = ensureTS(); if (!T) return;
+  const R = new M4x().makeRotationFromEuler(new THREE.Euler(rad(vals.r[0]), rad(vals.r[1]), rad(vals.r[2]), "XYZ")), S = new M4x().makeScale(...vals.s.map(x => Math.abs(x) < 1e-3 ? (x < 0 ? -1e-3 : 1e-3) : x));
+  const tv = new V3x(...vals.t), Anew = new M4x().makeTranslation(tv.x, tv.y, tv.z).multiply(R).multiply(S).multiply(new M4x().makeTranslation(-T.c0.x, -T.c0.y, -T.c0.z));
+  const D = Anew.clone().multiply(T.A.clone().invert());
+  if (push) pushUndo();
+  const aff = affSnapshot(); xformApply(D, aff); T.A = Anew;
+  const os = new Set(aff.map(a => a.o)); os.forEach(o => { touchGeo(o, true); o.mirror = null; });
+  refreshSelPositions(); placePivot(); chRefresh(); dirty = true; saveMsg = "Đang lưu…"; clearTimeout(saveT); saveT = setTimeout(save, 1500);
+}
+function chRead() { const v = { t: [0, 0, 0], r: [0, 0, 0], s: [1, 1, 1] }; chBox.querySelectorAll("input[data-g]").forEach(el => { const x = parseFloat(String(el.value).replace(",", ".")); v[el.dataset.g][+el.dataset.i] = isFinite(x) ? x : (el.dataset.g === "s" ? 1 : 0); }); return v; }
+chBox.addEventListener("change", e => { if (e.target.matches("input[data-g]")) chApply(chRead(), true); });
+chBox.addEventListener("keydown", e => { if (e.target.matches("input")) { e.stopPropagation(); if (e.key === "Enter") e.target.blur(); } });
+chBox.addEventListener("click", e => {
+  if (e.target.closest("#chh")) { chFold = !chFold; try { localStorage.setItem("meshlab:chfold", chFold ? "1" : "0"); } catch {} chRender(); return; }
+  if (e.target.closest('[data-a="rst"]')) { const T = TS; TS = null; chRender(); }
+});
+let chDrag = null;   // kéo nhãn để đổi giá trị liên tục (như Maya)
+chBox.addEventListener("pointerdown", e => {
+  const l = e.target.closest("label[data-g]"); if (!l) return;
+  const v = chVals(); if (!v) return; e.preventDefault(); l.setPointerCapture(e.pointerId); pushUndo();
+  chDrag = { g: l.dataset.g, i: +l.dataset.i, st: +l.dataset.st, x0: e.clientX, v0: v[l.dataset.g][+l.dataset.i], base: v };
+});
+chBox.addEventListener("pointermove", e => {
+  if (!chDrag) return; const d = chDrag, k = e.shiftKey ? 0.1 : e.ctrlKey ? 10 : 1, nv = JSON.parse(JSON.stringify(chVals()));
+  nv[d.g][d.i] = d.v0 + (e.clientX - d.x0) * d.st * k; chApply(nv, false);
+});
+chBox.addEventListener("pointerup", () => { chDrag = null; });
+chBox.addEventListener("pointercancel", () => { chDrag = null; });
+// làm tươi theo vùng chọn: bọc refreshSel / restore
+const _refreshSel = refreshSel; refreshSel = function () { if (TS && TS.sig !== selSig()) TS = null; const r = _refreshSel.apply(this, arguments); chRefresh(); return r; };
+const _restore = restore; restore = function () { TS = null; return _restore.apply(this, arguments); };
+const _setTopology = setTopology; setTopology = function () { TS = null; return _setTopology.apply(this, arguments); };
+// gizmo: ghi lại phép cộng dồn
+tc.addEventListener("mouseDown", () => { if (drag) { ensureTS(); drag.A0 = TS ? TS.A.clone() : new M4x(); } });
+tc.addEventListener("objectChange", () => { if (drag && TS && drag.A0) { pivot.updateMatrixWorld(true); TS.A = pivot.matrixWorld.clone().multiply(drag.inv).multiply(drag.A0); chRefresh(); } });
+
+// ---- Free Transform: hộp bao (AABB) của vùng chọn + tay nắm. Mặt = kéo giãn một trục (neo mặt đối diện), góc = scale đều (neo góc đối diện),
+//      tâm = dời trong mặt phẳng camera. Shift = giãn đều cả 3 trục, Alt = neo ở tâm hộp.
+const FREE = { group: new THREE.Group(), box: null, hs: [] }; FREE.group.visible = false; scene.add(FREE.group);
+const FCOL = 0xff7a1a;
+function selBox() {
+  const b = new THREE.Box3(), v = new V3x();
+  if (mode === "o") { selO.forEach(id => { const o = get(id); if (!o || !o.vis || o.lock) return; for (let i = 0; i < nV(o); i++) b.expandByPoint(v.set(o.pos[3 * i], o.pos[3 * i + 1], o.pos[3 * i + 2])); }); }
+  else if (active) selV.forEach(i => b.expandByPoint(v.set(active.pos[3 * i], active.pos[3 * i + 1], active.pos[3 * i + 2])));
+  if (b.isEmpty()) return null;
+  ["x", "y", "z"].forEach(a => { if (b.max[a] - b.min[a] < 0.5) { const m = (b.max[a] + b.min[a]) / 2; b.min[a] = m - 0.25; b.max[a] = m + 0.25; } });
+  return b;
+}
+function buildFree() {
+  FREE.group.children.slice().forEach(c => { FREE.group.remove(c); if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); }); FREE.hs = [];
+  const b = tool === "free" ? selBox() : null; FREE.box = b; FREE.group.visible = !!b; if (!b) return;
+  const c = b.getCenter(new V3x()), sz = b.getSize(new V3x());
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(sz.x, sz.y, sz.z)), new THREE.LineBasicMaterial({ color: FCOL, depthTest: false, transparent: true, opacity: 0.9 })); edges.position.copy(c); edges.renderOrder = 28; edges.raycast = () => {}; FREE.group.add(edges);
+  const mk = (geo, pos, data) => { const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: data.t === "center" ? 0x2f9bff : FCOL, depthTest: false, transparent: true })); m.position.copy(pos); m.renderOrder = 30; m.userData = data; FREE.group.add(m); FREE.hs.push(m); };
+  const sph = new THREE.SphereGeometry(1, 10, 8), cube = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+  for (const x of [0, 1]) for (const y of [0, 1]) for (const z of [0, 1]) mk(sph, new V3x(x ? b.max.x : b.min.x, y ? b.max.y : b.min.y, z ? b.max.z : b.min.z), { t: "corner", sg: [x, y, z] });
+  for (let ax = 0; ax < 3; ax++) for (const sg of [0, 1]) { const p = c.clone(); p.setComponent(ax, sg ? b.max.getComponent(ax) : b.min.getComponent(ax)); mk(cube, p, { t: "face", ax, sg }); }
+  mk(sph, c, { t: "center" });
+}
+function freeScaleHandles() { const d = new V3x(); FREE.hs.forEach(h => { const k = cam.position.distanceTo(h.position) * 0.0032; h.scale.setScalar(Math.max(0.2, k)); }); }
+const _frame = renderer.render.bind(renderer); renderer.render = function (sc, ca) { if (FREE.group.visible) freeScaleHandles(); return _frame(sc, ca); };
+const _placePivot = placePivot; placePivot = function () { const r = _placePivot.apply(this, arguments); if (tool === "free") tc.detach(); buildFree(); return r; };
+let fdrag = null;
+function rayAt(e) { ray.setFromCamera(ndc(e.clientX, e.clientY), cam); return ray.ray; }
+function closestOnAxis(r, O, D) {   // điểm trên đường thẳng (O, D) gần tia chuột nhất, trả tham số t
+  const w0 = O.clone().sub(r.origin), a = D.dot(D), b = D.dot(r.direction), c = r.direction.dot(r.direction), d = D.dot(w0), e2 = r.direction.dot(w0), den = a * c - b * b;
+  return Math.abs(den) < 1e-9 ? 0 : (b * e2 - c * d) / den;
+}
+function planeHit(r, P) { const n = cam.getWorldDirection(new V3x()); const pl = new THREE.Plane().setFromNormalAndCoplanarPoint(n, P); return r.intersectPlane(pl, new V3x()); }
+cv.addEventListener("pointerdown", e => {
+  if (tool !== "free" || !FREE.group.visible || e.button !== 0 || e.altKey && false) return;
+  ray.setFromCamera(ndc(e.clientX, e.clientY), cam);
+  const hit = ray.intersectObjects(FREE.hs, false)[0]; if (!hit) return;
+  e.stopImmediatePropagation(); e.preventDefault(); down = null; boxing = false;
+  const h = hit.object.userData, b = FREE.box.clone(), c = b.getCenter(new V3x());
+  pushUndo(); ensureTS(); fdrag = { h, b, c, aff: affSnapshot(), A0: TS.A.clone(), start: e.clientX + "," + e.clientY }; orbit.enabled = false; cv.setPointerCapture(e.pointerId);
+}, true);
+function freeMove(e) {
+  const d = fdrag; if (!d) return; const r = rayAt(e), h = d.h, b = d.b, c = d.c; let M = new M4x();
+  const anchorAt = (ax, sg) => (e.altKey ? c.getComponent(ax) : (sg ? b.min.getComponent(ax) : b.max.getComponent(ax)));
+  if (h.t === "face") {
+    const ax = h.ax, hp = h.sg ? b.max.getComponent(ax) : b.min.getComponent(ax), an = anchorAt(ax, h.sg), O = c.clone(); O.setComponent(ax, hp);
+    const D = new V3x(); D.setComponent(ax, 1); const t = closestOnAxis(r, O, D), np = hp + t, den = hp - an;
+    if (Math.abs(den) < 1e-6) return; let sc = (np - an) / den; sc = Math.max(0.01, sc);
+    const S = new V3x(1, 1, 1); if (e.shiftKey) S.set(sc, sc, sc); else S.setComponent(ax, sc);
+    const pivotP = c.clone(); pivotP.setComponent(ax, an); if (e.shiftKey) pivotP.copy(e.altKey ? c : new V3x(...[0, 1, 2].map(k => k === ax ? an : (e.altKey ? c.getComponent(k) : c.getComponent(k)))));
+    M = new M4x().makeTranslation(pivotP.x, pivotP.y, pivotP.z).multiply(new M4x().makeScale(S.x, S.y, S.z)).multiply(new M4x().makeTranslation(-pivotP.x, -pivotP.y, -pivotP.z));
+  } else if (h.t === "corner") {
+    const cp = new V3x(h.sg[0] ? b.max.x : b.min.x, h.sg[1] ? b.max.y : b.min.y, h.sg[2] ? b.max.z : b.min.z), an = e.altKey ? c.clone() : new V3x(h.sg[0] ? b.min.x : b.max.x, h.sg[1] ? b.min.y : b.max.y, h.sg[2] ? b.min.z : b.max.z);
+    const P = planeHit(r, cp); if (!P) return; const dv = cp.clone().sub(an), den = dv.dot(dv); if (den < 1e-9) return;
+    const sc = Math.max(0.01, P.clone().sub(an).dot(dv) / den);
+    M = new M4x().makeTranslation(an.x, an.y, an.z).multiply(new M4x().makeScale(sc, sc, sc)).multiply(new M4x().makeTranslation(-an.x, -an.y, -an.z));
+  } else {
+    const P = planeHit(r, c); if (!P) return; const dl = P.sub(c); M = new M4x().makeTranslation(dl.x, dl.y, dl.z);
+  }
+  xformApply(M, d.aff); TS.A = M.clone().multiply(d.A0); refreshSelPositions(); buildFree(); chRefresh();
+}
+addEventListener("pointermove", e => { if (fdrag) freeMove(e); });
+addEventListener("pointerup", () => { if (!fdrag) return; const aff = fdrag.aff; fdrag = null; orbit.enabled = true; xformEnd(aff); });
+</script>

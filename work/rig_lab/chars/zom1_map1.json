@@ -1,0 +1,26 @@
+{
+ "id": "zom1_map1",
+ "name": "Zom1 Map1",
+ "ref_dir": "ref_zom1_v2",
+ "scale": 100,
+ "body": "EN_zom1_map1_V2_Body",
+ "clothes": [
+  "EN_zom1_map1_V2_QA"
+ ],
+ "names_from": "ref_zom1",
+ "cfg": {
+  "name": "EN_zom1_map1",
+  "fingers": [
+   "Middle"
+  ],
+  "fseg": 1,
+  "toes": false,
+  "dress": false,
+  "prop": false,
+  "weapon": false,
+  "headEnd": true,
+  "clothSkirt": true,
+  "toesEnd": true,
+  "fingerEnd": true
+ }
+}

@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home</title>
+<script>/* theme chung với Studio (ST.pref "theme", cùng nguồn gốc) */try{const t=JSON.parse(localStorage.getItem("studio:theme")||"null");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>
+/* cùng ngôn ngữ thiết kế với Studio: token, font, cỡ chữ, bo góc, icon lấy từ tools/studio/studio.css và ST.IC (core/app.js) */
+:root{
+  --bg:#e9ebef; --panel:#f7f8fa; --raise:#ffffff; --line:#cfd3da; --fg:#1b2230; --mute:#5d6676;
+  --accent:#2f5fd0; --accent-fg:#ffffff; --view:#d9dde3; --hover:#e1e5ec;
+  --ok:#2c8a5a; --warn:#b9770e; --bad:#c23a30;
+  --s-working:var(--accent); --s-waiting:var(--warn); --s-done:var(--ok); --s-paused:var(--mute);
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c2028; --panel:#232832; --raise:#2b313c; --line:#353c48; --fg:#e4e8ef; --mute:#8d97a8;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#15191f; --hover:#2f3643; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c2028; --panel:#232832; --raise:#2b313c; --line:#353c48; --fg:#e4e8ef; --mute:#8d97a8;
+  --accent:#6f95f0; --accent-fg:#0e1420; --view:#15191f; --hover:#2f3643; --ok:#52c58a; --warn:#e0a53c; --bad:#ef6d60; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:13px/1.4 var(--sans)}
+a{color:inherit}
+button{font:inherit;color:var(--fg)}
+/* thanh trên cùng = #menubar của Studio */
+header{display:flex;align-items:center;gap:2px;height:32px;padding:0 6px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+.logo{color:inherit;text-decoration:none;font-weight:700;padding:0 10px 0 4px;letter-spacing:.02em;white-space:nowrap}
+.crumb{color:var(--mute);font-size:12px;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb a{text-decoration:none;color:var(--mute)} .crumb a:hover{color:var(--fg)}
+header .sp{flex:1}
+main{max-width:1180px;margin:0 auto;padding:18px 20px 48px}
+h1{font-size:15px;font-weight:600;margin:0} h2{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600;margin:20px 0 8px}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}
+.card:hover{border-color:var(--accent)}
+.cover{display:block;width:100%;aspect-ratio:3/1;object-fit:cover;background:var(--view);border-bottom:1px solid var(--line)}   /* ảnh hỏng thì bỏ hẳn, không để ô xám */
+.card .body{padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{margin:0;font-size:13px;font-weight:600}
+.card .desc{color:var(--mute);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-4px}
+.muted{color:var(--mute)} .small{font-size:12px}
+.bar{display:flex;height:4px;border-radius:2px;overflow:hidden;background:var(--bg)}
+.bar i{display:block}
+.st-working{color:var(--s-working)} .st-waiting{color:var(--s-waiting)} .st-done{color:var(--s-done)} .st-paused{color:var(--s-paused)}
+.bg-working{background:var(--s-working)} .bg-waiting{background:var(--s-waiting)} .bg-done{background:var(--s-done)} .bg-paused{background:var(--s-paused)}
+/* danh sách anim */
+.char{margin-top:16px}
+.char-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.char-h h2{margin:0}
+.anim{display:grid;grid-template-columns:96px 1fr auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px 6px 6px;margin-bottom:6px}
+.anim:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.thumb{position:relative;overflow:hidden;width:100%;aspect-ratio:16/9;border-radius:5px;background:var(--view);display:flex;align-items:center;justify-content:center;color:var(--mute)}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.anim h3{margin:0;font-size:13px;font-weight:600}
+.note{font-size:12px;color:var(--mute);max-height:2.9em;overflow:hidden}
+.acts{display:flex;gap:2px;align-items:center}
+.filters{display:flex;gap:2px;flex-wrap:wrap;padding:2px;border-radius:7px;background:var(--panel);border:1px solid var(--line);width:max-content;max-width:100%}
+.cols{display:grid;grid-template-columns:1fr 280px;gap:14px;align-items:start}
+/* cột Tiếp tục = panel dock của Studio */
+.side{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:sticky;top:46px}
+.side h2{margin:0;display:flex;align-items:center;height:28px;padding:0 10px;border-bottom:1px solid var(--line)}
+.side>.small{padding:10px}
+.log{list-style:none;margin:0;padding:2px 0;font-size:13px}
+.log li{padding:5px 10px} .log li:hover{background:var(--hover)}
+.log .d{color:var(--mute);font:11px var(--mono)}
+.todo li{cursor:pointer}
+code{background:var(--raise);border:1px solid var(--line);padding:0 5px;border-radius:4px;font:11.5px var(--mono)}
+/* hộp thoại = .modal .box của Studio */
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);padding:0;width:min(520px,calc(100vw - 32px));box-shadow:0 16px 40px #0007}
+dialog::backdrop{background:#0006}
+dialog form{display:flex;flex-direction:column;gap:10px;padding:0 14px 12px}
+dialog h3{margin:0 -14px;padding:12px 14px;font-size:14px;border-bottom:1px solid var(--line)}
+label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mute)}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:5px;padding:4px 6px}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+textarea{min-height:60px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.err{color:var(--bad);font-size:12px;min-height:1em}
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--panel);color:var(--fg);border:1px solid var(--line);box-shadow:0 8px 24px #0005;padding:7px 14px;border-radius:8px;opacity:0;transition:.2s;pointer-events:none;z-index:50;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1}
+.empty{padding:20px;text-align:center;color:var(--mute);border:1px dashed var(--line);border-radius:8px}
+/* vỏ ứng dụng: thanh điều hướng + Lab trong khung (mỗi Lab một iframe, giữ trạng thái khi chuyển tab) */
+body.app header{display:none} body.app main{max-width:none;padding:0;margin:0}
+.shell{display:flex;flex-direction:column;height:100vh;height:100dvh}
+.snav{display:flex;align-items:center;gap:2px;height:32px;padding:0 6px;border-bottom:1px solid var(--line);background:var(--panel);flex:none}
+.snav .ttl{min-width:0;display:flex;align-items:baseline;gap:8px;margin:0 6px;white-space:nowrap}
+.snav .ttl small{color:var(--mute);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.snav .ttl b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.stabs{display:flex;gap:2px;margin:0 auto;padding:2px;border-radius:7px;background:var(--bg);border:1px solid var(--line)}
+.stab{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:5px;color:var(--fg);cursor:pointer;text-decoration:none}
+.stab:hover{background:var(--hover)} .stab.on{background:var(--accent);color:var(--accent-fg)}
+.stab[aria-disabled=true]{opacity:.4;pointer-events:none}
+.sframes{position:relative;flex:1;min-height:0}
+.sframes iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg);display:none}
+.sframes iframe.on{display:block}
+.sempty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);text-align:center;padding:24px}
+@media (max-width:640px){.stab span{display:none}.stab{padding:3px 8px}.snav .ttl small{display:none}}
+@media (max-width:860px){
+  .cols{grid-template-columns:1fr} .side{position:static}
+  .anim{grid-template-columns:72px 1fr} .acts{grid-column:1 / -1;flex-wrap:wrap}
+  main{padding-left:16px;padding-right:16px}
+}
+
+/* nút icon kiểu shelf của Studio: nền trong, hover nền nhạt, tên ở tooltip (title) */
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;pointer-events:none}
+.ico.fill{fill:currentColor;stroke:none}
+.ib{width:32px;height:30px;border:1px solid transparent;background:transparent;color:var(--fg);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;padding:0;flex:none}
+.ib:hover{background:var(--hover)}
+.ib:focus-visible,.fl:focus-visible,.stab:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.ib.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.ib.primary:hover{filter:brightness(1.08)}
+.ib.line{border-color:var(--line);background:var(--raise)} .ib.line:hover{border-color:var(--accent)}
+.ib[disabled]{opacity:.4;cursor:default}
+header .ib,.snav .ib,.ib.sm{width:28px;height:26px}
+.ib.ghost{color:var(--mute)} .ib.ghost:hover{color:var(--fg)}
+.cnt{display:inline-flex;align-items:center;gap:4px;font:11.5px var(--mono);color:var(--mute)}
+.cnt .ico{width:14px;height:14px}
+.fl{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--mute);border-radius:5px;padding:3px 10px 3px 8px;cursor:pointer;font:inherit;font-variant-numeric:tabular-nums}
+.fl:hover{background:var(--hover);color:var(--fg)}
+.fl.on{background:var(--accent);color:var(--accent-fg)}
+.steps{display:flex;align-items:center;margin:3px 0 2px}
+.steps i{width:7px;height:7px;border-radius:50%;background:var(--line);display:block;flex:none}
+.steps u{width:10px;height:2px;background:var(--line);display:block;flex:none}
+.steps i.done,.steps u.done{background:var(--s-done)}
+.steps i.cur{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.steps b{font-weight:500;font-size:11.5px;color:var(--mute);margin-left:8px}
+.title-row{display:flex;align-items:center;gap:6px}
+.tools{display:flex;gap:2px;align-items:center;margin-left:auto}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#/" title="Danh sách dự án">Home</a>
+  <div class="crumb" id="crumb"></div>
+  <div class="sp"></div>
+  <a class="ib ghost" href="/keypose" title="Key Pose: duyệt ảnh key pose (Codex), chọn / loại / ghi chú, gửi yêu cầu thêm ảnh cho AI" aria-label="Mở Key Pose"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="9" r="2"/><path d="M12 11v4m-3-2h6m-5 5 2-3 2 3"/></svg></a>
+  <a class="ib ghost" href="/spine" title="Spine Live: xem anim Spine 2D, tự nạp lại khi file đổi" aria-label="Mở Spine Live"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c3-1 4-4 5-7s3-6 7-7"/><circle cx="5" cy="19" r="1.6"/><circle cx="10.5" cy="12" r="1.6"/><circle cx="17" cy="5" r="1.6"/></svg></a>
+  <a class="ib ghost" href="/" title="Mở Studio (viewport)" aria-label="Mở Studio"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M8 8v10"/></svg></a>
+  <button class="ib ghost" onclick="toggleTheme()" title="Đổi sáng / tối (chung với Studio)" aria-label="Đổi sáng / tối"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 100 18z" fill="currentColor"/><circle cx="12" cy="12" r="9"/></svg></button>
+  <button class="ib ghost" onclick="refresh(true)" title="Làm mới" aria-label="Làm mới"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 11-2.6-5.9"/><path d="M20 4v5h-5"/></svg></button>
+</header>
+<main id="app"><div class="empty">Đang đọc dữ liệu…</div></main>
+
+<dialog id="dlgProject"><form method="dialog" onsubmit="return submitProject(event)">
+  <input type="hidden" name="pid">
+  <h3 id="projTitle">Dự án mới</h3>
+  <label>Tên dự án (theo game)<input name="name" required placeholder="vd: Shoot Die Repeat"></label>
+  <label>Mô tả<input name="desc" placeholder="thể loại, style, ghi chú"></label>
+  <label id="projChars">Nhân vật (mỗi dòng một nhân vật, có thể thêm sau)<textarea name="chars" placeholder="SDR&#10;SDR06"></textarea></label>
+  <div class="err" id="errProject"></div>
+  <div class="row" style="justify-content:flex-end"><button class="ib line" value="cancel" formnovalidate title="Hủy" aria-label="Hủy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="ib primary" id="projSubmit" title="Tạo dự án" aria-label="Tạo dự án"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></div>
+</form></dialog>
+
+<dialog id="dlgClip"><form method="dialog" onsubmit="return submitClip(event)">
+  <h3>Animation mới</h3>
+  <label>Nhân vật<select name="character" onchange="this.form.newchar.parentElement.style.display=this.value==='__new'?'':'none'"></select></label>
+  <label style="display:none">Tên nhân vật mới<input name="newchar" placeholder="vd: SDR07"></label>
+  <label>Tên anim<input name="clip" required placeholder="vd: Walk, Attack_02"></label>
+  <div class="two">
+    <label>Số frame<input name="frames" type="number" min="1" placeholder="vd: 60"></label>
+    <label>FPS<input name="fps" type="number" min="1" value="30"></label>
+  </div>
+  <label>Thư mục video ref (nếu có)<input name="ref" placeholder="vd: E:\ref\walk"></label>
+  <label>Mô tả chuyển động<textarea name="desc" placeholder="nhân vật làm gì, nhịp, cảm xúc, prop…"></textarea></label>
+  <div class="err" id="errClip"></div>
+  <div class="row" style="justify-content:flex-end"><button class="ib line" value="cancel" formnovalidate title="Hủy" aria-label="Hủy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="ib primary" title="Tạo anim" aria-label="Tạo anim"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></div>
+</form></dialog>
+
+<dialog id="dlgEdit"><form method="dialog" onsubmit="return submitEdit(event)">
+  <h3 id="editTitle">Sửa anim</h3>
+  <input type="hidden" name="id">
+  <label>Tên anim (chỉ đổi tên hiện trên Home; để trống = tên gốc)<input name="title"></label>
+  <div class="two">
+    <label>Giai đoạn<select name="stage"></select></label>
+    <label>Trạng thái<select name="status">
+      <option value="">Tự đoán từ ghi chú</option><option value="working">Đang làm</option>
+      <option value="waiting">Chờ góp ý</option><option value="done">Đã xong</option><option value="paused">Tạm dừng</option></select></label>
+  </div>
+  <label>Ghi chú<textarea name="note"></textarea></label>
+  <div class="err" id="errEdit"></div>
+  <div class="row" style="justify-content:flex-end"><button class="ib line" value="cancel" formnovalidate title="Hủy" aria-label="Hủy"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="ib primary" title="Lưu" aria-label="Lưu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></div>
+</form></dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ICONS = {"home": "<path d=\"M4 11l8-7 8 7v9h-5v-6H9v6H4z\"/>", "refresh": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "edit": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "play": "<path d=\"M8 5l11 7-11 7z\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "rig": "<circle cx=\"12\" cy=\"5\" r=\"2.3\"/><path d=\"M12 8v7M6.5 10.5L12 8l5.5 2.5M9 21l3-6 3 6\"/>", "pose": "<circle cx=\"13\" cy=\"4.5\" r=\"2\"/><path d=\"M13 7l-1 6 3 3v5M12 13l-4 2-1 6M13 8.5l4 2 2-3M13 8.5L8 9l-3-2\"/>", "review": "<path d=\"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "check": "<path d=\"M5 12.5l4.5 4.5L19 7\"/>", "working": "<path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"M14 6l3 3\"/>", "waiting": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3.5 2\"/>", "done": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 12.5l3 3 5-6\"/>", "paused": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M10 9v6M14 9v6\"/>", "list": "<path d=\"M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "mesh": "<path d=\"M12 3l8 4.5v9L12 21l-8-4.5v-9z\"/><path d=\"M4 7.5l8 4.5 8-4.5M12 12v9\"/>", "send": "<path d=\"M21 3L3 10.5l7 2.5 2.5 7z\"/><path d=\"M10 13l11-10\"/>", "film": "<rect x=\"3\" y=\"6\" width=\"13\" height=\"12\" rx=\"2\"/><path d=\"M16 10l5-3v10l-5-3z\"/>", "cloud": "<path d=\"M14 4h6v6M20 4l-9 9M18 14v6H4V6h6\"/>", "studio": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 8h18M8 8v10\"/>", "reload": "<path d=\"M20 12a8 8 0 11-2.6-5.9\"/><path d=\"M20 4v5h-5\"/>"};
+const ico = (n, cls="") => `<svg class="ico${n==="play"?" fill":""}${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+const STAGE_VI = {rig:"Rig", analysis:"Phân tích", p0:"Base pose", blocking:"Blocking", spline:"Spline", polish:"Polish", export:"Export"};
+const STATUS_VI = {working:"Đang làm", waiting:"Chờ góp ý", done:"Đã xong", paused:"Tạm dừng"};
+let S = null, curProject = null, filter = "all";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(t){ const e=$("#toast"); e.textContent=t; e.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove("on"),3200); }
+function go(h){ location.hash=h; }
+function toggleTheme(){ const r=document.documentElement, dark=r.dataset.theme ? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme = dark?"light":"dark"; try{ localStorage.setItem("studio:theme", JSON.stringify(r.dataset.theme)); }catch(e){} }
+function clipsOf(p){ return S.clips.filter(c => p.characters.includes(c.character)); }
+function countBy(list){ const r={working:0,waiting:0,done:0,paused:0}; list.forEach(c=>r[c.status]=(r[c.status]||0)+1); return r; }
+function bar(list){
+  const n=list.length||1, k=countBy(list);
+  return `<div class="bar">${["done","waiting","working","paused"].map(s=>`<i class="bg-${s}" style="width:${k[s]/n*100}%"></i>`).join("")}</div>`;
+}
+const stIcon = s => `<span class="st-${s}" title="${STATUS_VI[s]||s}" style="display:inline-flex">${ico(s)}</span>`;
+const cnt = (s, n) => n ? `<span class="cnt st-${s}" title="${STATUS_VI[s]}: ${n}">${ico(s)}${n}</span>` : "";
+/* the one command to paste in chat for the next step (null = nothing to do) */
+function nextCmd(c){
+  const key = (c.name||"").split(" ")[0].toLowerCase();
+  if (c.stage==="rig") return "/rig";
+  if (!c.pose_url && !c.review_url) return "/new_clip " + c.id;
+  if (c.status==="waiting") return "/check_fb " + key;
+  return null;
+}
+
+async function refresh(say){
+  try{
+    const r = await fetch("/api/state", {cache:"no-store"}); S = await r.json();
+    if (S.error) throw new Error(S.error);
+    render(); if (say) toast("Đã làm mới");
+  }catch(e){ $("#app").innerHTML = `<div class="empty">Không đọc được dữ liệu: ${esc(e.message)}<br>Server Home có đang chạy không? <code>tools\\home\\server.py</code></div>`; }
+}
+async function post(url, body){
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const j = await r.json(); if (!j.ok) throw new Error(j.error||"Lỗi"); return j;
+}
+
+const LABNAME = {studio:"Studio", mesh:"Mesh Lab", rig:"Rig Lab", pose:"Pose Lab", review:"Review Lab"};
+const labKey = n => /^Studio/.test(n) ? "studio" : /^Mesh/.test(n) ? "mesh" : /^Rig/.test(n) ? "rig" : /^Pose/.test(n) ? "pose" : "review";
+const labOK = (c, k) => !!(c.labs && c.labs[k]);
+const labURL = (c, k) => k==="mesh"||k==="studio" ? "" : k==="rig" ? c.rig_url : k==="pose" ? c.pose_url : c.review_url;
+/* link tới Lab: trang trên máy (vỏ ứng dụng) nếu đã build, không thì artifact trên claude.ai */
+function labHref(c, k){ return labOK(c,k) ? "#/app/"+encodeURIComponent(c.id)+"/"+k : (labURL(c,k)||""); }
+function labAttr(c, k){ return labOK(c,k) ? "" : ' target="_blank"'; }
+
+function renderShell(c, lab){
+  document.body.classList.add("app");
+  document.title = c.name + " · " + LABNAME[lab];
+  let sh = $("#app .shell");
+  if (!sh || sh.dataset.clip !== c.id){
+    $("#app").innerHTML = `<div class="shell" data-clip="${esc(c.id)}">
+      <div class="snav">
+        <a class="ib ghost" id="sBack" title="Về danh sách" aria-label="Về danh sách">${ico("back")}</a>
+        <div class="ttl"><small>${esc(c.character)}</small><b>${esc(c.name)}</b></div>
+        <div class="stabs">${["studio","mesh","rig","pose","review"].map(k=>`<a class="stab" data-k="${k}" title="${LABNAME[k]}">${ico(k)}<span>${LABNAME[k].replace(" Lab","")}</span></a>`).join("")}</div>
+        <button class="ib primary" id="sNext" hidden></button>
+        <a class="ib ghost" id="sCloud" target="_blank" title="Mở bản trên claude.ai" aria-label="Mở bản trên claude.ai">${ico("cloud")}</a>
+        <button class="ib ghost" id="sReload" title="Tải lại Lab này" aria-label="Tải lại Lab này">${ico("reload")}</button>
+      </div><div class="sframes"></div></div>`;
+    sh = $("#app .shell");
+    $("#sReload").onclick = () => { const f = sh.querySelector("iframe.on"); if (f) f.src = f.src; };
+    $("#sNext").onclick = () => sendNext(c.id, sh.dataset.lab);
+  }
+  sh.dataset.lab = lab;
+  const nx = $("#sNext"), NEXT = {rig:["send","Gửi rig sang Pose Lab (tạo base pose từ skin hiện tại)"], pose:["film","Quay playblast và gửi sang Review Lab"]};
+  nx.hidden = !NEXT[lab] || !labOK(c, lab);
+  if (NEXT[lab]) { nx.innerHTML = ico(NEXT[lab][0]); nx.title = NEXT[lab][1]; nx.setAttribute("aria-label", NEXT[lab][1]); }
+  const proj = S.projects.find(p=>p.characters.includes(c.character));
+  $("#sBack").href = proj ? "#/p/"+encodeURIComponent(proj.id) : "#/";
+  sh.querySelectorAll(".stab").forEach(a=>{
+    const k=a.dataset.k, ok=labOK(c,k);
+    a.classList.toggle("on", k===lab); a.setAttribute("aria-disabled", ok?"false":"true");
+    a.href = ok ? "#/app/"+encodeURIComponent(c.id)+"/"+k : "#";
+    a.title = LABNAME[k] + (ok ? "" : " (chưa có trang)");
+  });
+  const cl = $("#sCloud"), u = labURL(c, lab); cl.href = u || "#"; cl.style.visibility = u ? "visible" : "hidden";
+  const fr = sh.querySelector(".sframes");
+  fr.querySelectorAll(".sempty").forEach(e=>e.remove());
+  fr.querySelectorAll("iframe").forEach(f=>f.classList.toggle("on", f.dataset.k===lab));
+  if (!labOK(c, lab)) { fr.insertAdjacentHTML("beforeend", `<div class="sempty">Chưa có trang ${LABNAME[lab]} cho anim này.<br>${lab==="studio"?"Nhân vật chưa có mesh cho Studio (work/rig_lab/chars/&lt;id&gt;/mesh_cm.json).":lab==="mesh"?"Chạy work/mesh_lab/build_mesh.py &lt;nhân vật&gt;.":lab==="rig"?"Gõ /rig trong chat.":"Gõ /new_clip "+esc(c.id)+" trong chat."}</div>`); return; }
+  if (!fr.querySelector(`iframe[data-k="${lab}"]`)){
+    const f = document.createElement("iframe"); f.dataset.k = lab; f.className = "on";
+    f.src = lab==="studio" ? "/studio/" + encodeURIComponent(c.labs.studio) + "?clip=" + encodeURIComponent(c.id) : "/lab/" + lab + "/" + encodeURIComponent(lab==="rig"||lab==="mesh" ? c.labs[lab] : c.id);
+    f.allow = "clipboard-write; fullscreen";
+    fr.appendChild(f);
+  }
+}
+
+let sending = false;
+const blobB64 = b => new Promise(r => { const f = new FileReader(); f.onload = () => r(String(f.result).split(",")[1]); f.readAsDataURL(b); });
+async function sendNext(id, lab){
+  if (sending) return toast("Đang làm, chờ xong đã");
+  const sh = $("#app .shell"), fr = sh && sh.querySelector('iframe[data-k="'+lab+'"]'), w = fr && fr.contentWindow;
+  if (!w || !w.DDC) return toast("Lab chưa sẵn sàng, thử lại sau khi trang tải xong");
+  const btn = $("#sNext"); sending = true; btn.disabled = true;
+  try{
+    if (lab === "rig"){
+      toast("Đang dựng glTF từ rig…");
+      const r = await w.DDC.rigGltf();
+      const j = await post("/api/rig/to-pose", {clip:id, gltf:r.gltf});
+      await refresh(); const old = sh.querySelector('iframe[data-k="pose"]'); if (old) old.remove();
+      toast("Đã tạo base pose " + j.id + " trong Pose Lab"); go("#/app/"+encodeURIComponent(id)+"/pose");
+    } else if (lab === "pose"){
+      const o = await w.DDC.askPlayblast(); if (!o) return;
+      toast("Đang quay playblast…");
+      const r = await w.DDC.playblast(o);
+      toast("Đang lưu và nén video…");
+      const j = await post("/api/playblast", {clip:id, n:r.n, fps:r.fps, w:r.w, h:r.h, views:r.views, webm_b64:await blobB64(r.webm), thumb_b64:r.thumb ? await blobB64(r.thumb) : ""});
+      await refresh(); const old = sh.querySelector('iframe[data-k="review"]'); if (old) old.remove();
+      toast("Đã thêm version " + j.id.version + " vào Review Lab"); go("#/app/"+encodeURIComponent(id)+"/review");
+    }
+  }catch(e){ toast("Không gửi được: " + (e.message||e)); }
+  finally{ sending = false; btn.disabled = false; }
+}
+
+function render(){
+  const ma = location.hash.match(/^#\/app\/([^/]+)\/(studio|mesh|rig|pose|review)/);
+  if (ma && S){
+    const c = S.clips.find(x=>x.id===decodeURIComponent(ma[1]));
+    if (c) return renderShell(c, ma[2]);
+  }
+  if (document.body.classList.contains("app")) { document.body.classList.remove("app"); $("#app").innerHTML = ""; }
+  const m = location.hash.match(/^#\/p\/([^/]+)/);
+  curProject = m ? S.projects.find(p=>p.id===decodeURIComponent(m[1])) : null;
+  if (m && !curProject) return go("#/");
+  curProject ? renderProject(curProject) : renderHome();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Home: project cards + what to continue ---------- */
+function renderHome(){
+  $("#crumb").innerHTML = "";
+  document.title = "Home";
+  const todo = S.clips.filter(c => c.status==="waiting" || c.status==="working").sort((a,b)=>(b.status==="waiting")-(a.status==="waiting"));
+  const projOf = c => S.projects.find(p=>p.characters.includes(c.character));
+  $("#app").innerHTML = `
+    <div class="title-row"><h1>Dự án</h1>
+      <div class="tools"><button class="ib primary" onclick="openProject()" title="Dự án mới" aria-label="Dự án mới">${ico("plus")}</button></div></div>
+    <div class="cols" style="margin-top:12px">
+      <div class="grid">
+        ${S.projects.map(p=>{ const cl=clipsOf(p), kk=countBy(cl); return `
+          <div class="card" onclick="go('#/p/${encodeURIComponent(p.id)}')">
+            ${p.cover?`<img class="cover" src="${esc(p.cover)}" alt="" onerror="this.remove()">`:""}
+            <div class="body">
+              <h3>${esc(p.name)}</h3>${p.desc?`<div class="desc">${esc(p.desc)}</div>`:""}
+              <div style="flex:1"></div>
+              ${bar(cl)}
+              <div class="row" style="gap:12px">${cnt("done",kk.done)}${cnt("waiting",kk.waiting)}${cnt("working",kk.working)}${cnt("paused",kk.paused)}</div>
+            </div>
+          </div>`}).join("")}
+      </div>
+      <aside class="side">
+        <h2>Tiếp tục</h2>
+        ${todo.length ? `<ul class="log todo">${todo.map(c=>{const p=projOf(c);return `
+          <li onclick="go('#/p/${encodeURIComponent(p?p.id:"")}')" style="display:flex;gap:10px;align-items:center">
+            ${stIcon(c.status)}<div style="min-width:0"><b>${esc(c.name)}</b><div class="d">${esc(c.character)}${c.review_latest?` · ${esc(c.review_latest.version)}`:""}</div></div></li>`}).join("")}</ul>`
+          : `<div class="small muted">Không có anim nào đang dở.</div>`}
+      </aside>
+    </div>`;
+}
+
+/* ---------- Dự án ---------- */
+function renderProject(p){
+  $("#crumb").innerHTML = "› " + esc(p.name);
+  document.title = p.name;
+  const cl = clipsOf(p), k = countBy(cl);
+  const shown = c => filter==="all" || c.status===filter;
+  const chars = [...new Set([...p.characters, ...cl.map(c=>c.character)])];
+  const flt = [["all","Tất cả",cl.length,"list"],["working","Đang làm",k.working,"working"],["waiting","Chờ góp ý",k.waiting,"waiting"],["done","Đã xong",k.done,"done"],...(k.paused?[["paused","Tạm dừng",k.paused,"paused"]]:[])];
+  $("#app").innerHTML = `
+    <div class="title-row"><a class="ib ghost" href="#/" title="Về danh sách dự án" aria-label="Về danh sách dự án">${ico("back")}</a><h1>${esc(p.name)}</h1>
+      <div class="tools">
+        <button class="ib ghost" onclick="openProject(true)" title="Sửa dự án" aria-label="Sửa dự án">${ico("edit")}</button>
+        <button class="ib primary" onclick="openClip()" title="Animation mới" aria-label="Animation mới">${ico("plus")}</button>
+      </div>
+    </div>
+    <div class="filters" style="margin-top:12px">
+      ${flt.map(([v,t,n,i])=>`<button class="fl ${filter===v?"on":""}" title="${t}" aria-label="${t}" onclick="filter='${v}';render()">${ico(i)}${n}</button>`).join("")}
+    </div>
+    <div style="margin-top:6px">
+      ${chars.map(ch=>{ const list=cl.filter(c=>c.character===ch&&shown(c)); const rig=(S.characters[ch]||{}).rig_url;
+        return `<section class="char">
+          <div class="char-h"><h2>${esc(ch)}</h2><span class="muted small">${esc((p.labels||{})[ch]||"")}</span>
+            ${rig||(cl.find(c=>c.character===ch&&c.labs&&c.labs.rig))?(()=>{ const lc=cl.find(c=>c.character===ch&&labOK(c,"rig")); const h=lc?labHref(lc,"rig"):rig; return `<a class="ib sm ghost" href="${esc(h)}"${lc?"":' target="_blank"'} title="Mở Rig Lab" aria-label="Mở Rig Lab">${ico("rig")}</a>`; })():`<span class="muted" title="Chưa có rig (gõ /rig)" style="display:inline-flex;opacity:.5">${ico("rig")}</span>`}</div>
+          ${list.length? list.map(animRow).join("") : `<div class="empty small">Chưa có anim${filter!=="all"?" ở mục này":""}.</div>`}
+        </section>`}).join("")}
+      ${chars.length?"":`<div class="empty">Dự án chưa có nhân vật. Bấm ${ico("plus")} để thêm nhân vật và anim đầu tiên.</div>`}
+    </div>`;
+}
+function animRow(c){
+  const si = S.stages.indexOf(c.stage);
+  const latest = c.review_latest || c.pose_latest;
+  const cmd = nextCmd(c);
+  const lab = (k, t) => { const h = labHref(c, k); return h ? `<a class="ib sm" href="${esc(h)}"${labAttr(c,k)} title="${t}" aria-label="${t}">${ico(k)}</a>` : ""; };
+  return `<div class="anim">
+    <div class="thumb">${ico("review")}${c.thumb?`<img src="${esc(c.thumb)}" alt="" onerror="this.remove()">`:""}</div>
+    <div style="min-width:0">
+      <div class="title-row" style="gap:8px"><h3 style="margin:0">${esc(c.name)}</h3>${stIcon(c.status)}
+        <span class="small muted">${latest?esc(latest.version):""}</span></div>
+      <div class="steps" title="${S.stages.map(s=>STAGE_VI[s]).join(" › ")}">${S.stages.map((s,i)=>`${i?`<u class="${i<=si?"done":""}"></u>`:""}<i class="${i<si?"done":i===si?"cur":""}" title="${STAGE_VI[s]}"></i>`).join("")}<b>${STAGE_VI[c.stage]||c.stage}</b></div>
+      ${c.note?`<div class="note" title="${esc(c.note)}" style="white-space:nowrap;text-overflow:ellipsis;max-height:none">${esc(c.note)}</div>`:""}
+    </div>
+    <div class="acts">
+      ${c.continue?`<a class="ib primary" href="${esc(labHref(c, labKey(c.continue[0])) || c.continue[1])}"${labAttr(c, labKey(c.continue[0]))} title="Tiếp tục · ${esc(c.continue[0])}" aria-label="Tiếp tục">${ico("play")}</a>`:""}
+      ${cmd?`<button class="ib" onclick="copyCmd('${esc(cmd)}')" title="Chép lệnh ${esc(cmd)}" aria-label="Chép lệnh">${ico("copy")}</button>`:""}
+      ${lab("studio","Studio: General / Rig / Pose chung một viewport")}${lab("mesh","Mesh Lab")}${lab("rig","Rig Lab")}${lab("pose","Pose Lab")}${lab("review","Review Lab")}
+      <button class="ib sm ghost" onclick="openEdit('${esc(c.id)}')" title="Sửa / đổi tên" aria-label="Sửa">${ico("edit")}</button>
+    </div>
+  </div>`;
+}
+function copyCmd(t){ navigator.clipboard?.writeText(t).then(()=>toast(`Đã chép ${t}: dán vào chat`), ()=>toast(t)); }
+
+/* ---------- hộp thoại ---------- */
+function openProject(edit){
+  const d=$("#dlgProject"), f=d.querySelector("form"); f.reset(); $("#errProject").textContent="";
+  const p = edit ? curProject : null;
+  f.pid.value = p ? p.id : ""; f.name.value = p ? p.name : ""; f.desc.value = p ? (p.desc||"") : "";
+  $("#projTitle").textContent = p ? "Sửa dự án" : "Dự án mới";
+  $("#projSubmit").title = p ? "Lưu" : "Tạo dự án";
+  $("#projChars").style.display = p ? "none" : "";
+  d.showModal();
+}
+async function submitProject(e){
+  e.preventDefault(); const f=e.target;
+  if (e.submitter && e.submitter.value==="cancel") return f.closest("dialog").close(), false;
+  if (f.pid.value) {
+    try{ await post("/api/project/update", {id:f.pid.value, name:f.name.value.trim(), desc:f.desc.value});
+      f.closest("dialog").close(); await refresh(); toast("Đã đổi tên / mô tả dự án"); }
+    catch(err){ $("#errProject").textContent = err.message; }
+    return false;
+  }
+  try{
+    const j = await post("/api/project", {name:f.name.value, desc:f.desc.value, characters:f.chars.value.split(/\n|,/)});
+    f.closest("dialog").close(); await refresh(); go("#/p/"+encodeURIComponent(j.id)); toast("Đã tạo dự án");
+  }catch(err){ $("#errProject").textContent = err.message; }
+  return false;
+}
+function openClip(){
+  const d=$("#dlgClip"), f=d.querySelector("form"); f.reset(); $("#errClip").textContent="";
+  const chars=[...new Set([...curProject.characters, ...clipsOf(curProject).map(c=>c.character)])];
+  f.character.innerHTML = chars.map(c=>`<option>${esc(c)}</option>`).join("") + `<option value="__new">+ Nhân vật mới</option>`;
+  f.newchar.parentElement.style.display = chars.length ? "none" : "";
+  if (!chars.length) f.character.value="__new";
+  d.showModal();
+}
+async function submitClip(e){
+  e.preventDefault(); const f=e.target;
+  if (e.submitter && e.submitter.value==="cancel") return f.closest("dialog").close(), false;
+  const ch = f.character.value==="__new" ? f.newchar.value.trim() : f.character.value;
+  try{
+    const j = await post("/api/clip", {project:curProject.id, character:ch, clip:f.clip.value, frames:f.frames.value, fps:f.fps.value, ref:f.ref.value, desc:f.desc.value});
+    f.closest("dialog").close(); filter="all"; await refresh();
+    copyCmd("/new_clip "+j.id);
+  }catch(err){ $("#errClip").textContent = err.message; }
+  return false;
+}
+function openEdit(id){
+  const c=S.clips.find(x=>x.id===id), d=$("#dlgEdit"), f=d.querySelector("form"); $("#errEdit").textContent="";
+  $("#editTitle").textContent = `${c.character} · ${c.name}`;
+  f.id.value=id; f.stage.innerHTML=S.stages.map(s=>`<option value="${s}">${STAGE_VI[s]}</option>`).join("");
+  f.stage.value=c.stage; f.note.value=c.note||""; f.title.value=c.title||""; f.title.placeholder=c.base_name||c.name;
+  f.status.value = c.status_manual||""; d.showModal();
+}
+async function submitEdit(e){
+  e.preventDefault(); const f=e.target;
+  if (e.submitter && e.submitter.value==="cancel") return f.closest("dialog").close(), false;
+  try{ await post("/api/clip/update", {id:f.id.value, title:f.title.value, stage:f.stage.value, note:f.note.value, status:f.status.value});
+    f.closest("dialog").close(); await refresh(); toast("Đã lưu vào work/clips.json"); }
+  catch(err){ $("#errEdit").textContent = err.message; }
+  return false;
+}
+
+addEventListener("hashchange", ()=>{ filter="all"; refresh(); });
+addEventListener("focus", ()=>refresh());   // quay lại tab Home thì đọc lại sổ (Claude có thể vừa cập nhật)
+refresh();
+</script>
+</body>
+</html>

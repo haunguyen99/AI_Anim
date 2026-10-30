@@ -1,0 +1,35 @@
+# Environment
+.venv/
+__pycache__/
+*.pyc
+legacy/mediapipe/models/*.task
+
+# Heavy binaries: versioned by _vN suffix, not by git
+*.blend
+*.blend1
+*.fbx
+*.glb
+*.casc
+*.qrigcasc
+*.mov
+*.mp4
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.tga
+*.npy
+*.npz
+
+# Large generated data (per-frame joint/vertex dumps, Pose Lab models)
+work/boss_gaygor/idle/original/
+work/boss_gaygor/idle/export/*_joints.json
+work/pose_lab/models/
+
+# Logs, locks
+*.log
+.claude/scheduled_tasks.lock
+
+# Spine previews / archives
+*.gif
+*.rar
