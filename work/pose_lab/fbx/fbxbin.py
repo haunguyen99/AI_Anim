@@ -33,39 +33,60 @@ def enc_prop(t, v):
     return t.encode() + struct.pack("<III", len(v), 0, len(data)) + data
 
 
-def enc_elem(el, pos, is_last, out):
+def enc_elem(el, pos, is_last, out, wide=False):
+    # wide (FBX >= 7500): record header = 3 x uint64 and sentinel = 25 zero bytes (7.4: 3 x uint32, 13 bytes).
+    # The version written must match the tree: a 7.7 template written as 7400 is refused by the FBX SDK (Unity, Maya).
     id, props, kids = el
     pb = b"".join(enc_prop(t, v) for t, v in props)
     idb = id.encode()
-    start = pos
-    size = 12 + 1 + len(idb) + len(pb)
-    body = bytearray()
-    p = pos + size
+    hl = 24 if wide else 12
+    sent = b"\0" * (hl + 1)
+    p = pos + hl + 1 + len(idb) + len(pb)
     sub = []
     if kids:
         for k in kids:
-            p = enc_elem(k, p, False, sub)
-        sub.append(SENT)
-        p += 13
+            p = enc_elem(k, p, False, sub, wide)
+        sub.append(sent)
+        p += len(sent)
     elif (not props and not is_last) or id in ALWAYS_SENT:
-        sub.append(SENT)
-        p += 13
-    out.append(struct.pack("<III", p, len(props), len(pb)) + bytes([len(idb)]) + idb + pb)
+        sub.append(sent)
+        p += len(sent)
+    out.append(struct.pack("<QQQ" if wide else "<III", p, len(props), len(pb)) + bytes([len(idb)]) + idb + pb)
     out.extend(sub)
     return p
 
 
-def serialize(top, version=7400):
+def foot_id_of(path):
+    """Footer code of an existing binary FBX (16 bytes right after the root sentinel). It is derived from the file's
+    FileId / CreationTime: when a template's FileId / CreationTime are kept, its footer code must be kept too, or the
+    FBX SDK (Unity 'Couldn't read file', Maya 'File is corrupted') refuses the file (SDR03, 2026-10-29)."""
+    b = open(path, "rb").read(); ver = struct.unpack("<I", b[23:27])[0]; W = ver >= 7500
+    H = 25 if W else 13; F = "<QQQB" if W else "<IIIB"; p = 27
+    while b[p:p + H] != b"\0" * H:
+        p = struct.unpack(F, b[p:p + H])[0]
+    return b[p + H:p + H + 16]
+
+
+def serialize(top, version=7400, foot_id=None):
+    global FOOT_ID
+    if foot_id is not None:
+        saved = FOOT_ID; FOOT_ID = foot_id
+        try:
+            return serialize(top, version)
+        finally:
+            FOOT_ID = saved
+    wide = version >= 7500
     out = [HEAD + struct.pack("<I", version)]
     pos = len(out[0])
     # children of the (virtual) root: laid out in order; the last one has is_last
     for i, el in enumerate(top):
         # enc_elem appends its own header before its children's bytes; keep order by collecting per element
         sub = []
-        pos = enc_elem(el, pos, i == len(top) - 1, sub)
+        pos = enc_elem(el, pos, i == len(top) - 1, sub, wide)
         out.extend(sub)
-    out.append(SENT)  # root sentinel
-    pos += 13
+    sent = b"\0" * (25 if wide else 13)
+    out.append(sent)  # root sentinel
+    pos += len(sent)
     out.append(FOOT_ID + b"\0" * 4)
     pos += 20
     pad = ((pos + 15) & ~15) - pos
