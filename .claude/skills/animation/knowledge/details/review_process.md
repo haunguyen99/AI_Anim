@@ -7,6 +7,15 @@ Sở thích của người duyệt (animator lead):
 - Thích chuyển động có trọng lượng và có "hồn": vật nặng trễ, vải bay, nhịp thở chậm.
 - Muốn AI tự xem lại và đo ("bạn hãy tự view lại và đo...") - luôn kèm số đo trong câu trả lời.
 
+## director
+- **Animation Director (subagent `animation-director`, thêm 2026-10-30, user: tạo agent "định hướng và feedback anim trong quá
+  trình sản xuất")**: gọi trước mỗi cổng duyệt và trong `/check_fb` trước khi render đầy đủ. Ngữ cảnh riêng, chỉ thấy kết quả
+  (ảnh, số đo, brief) nên ít thiên vị bài của animator. Kết luận Duyệt / Cần sửa / Chặn; lỗi mức A phải sửa trước khi gửi;
+  tối đa 2 vòng director rồi gửi người dùng. Lỗi director nhắc lại mà người dùng cũng bắt → ghi vào mục `#feedback` của loại anim.
+- Nhật ký từng clip: `work/<dự án>/<clip>/director_log.md` (director tự thêm mỗi lần chấm).
+- Các điểm gọi director (2026-10-30): mọi cổng duyệt anim, `/check_fb` (note Review Lab và ghi chú vẽ Studio, bước 3b), mỗi bước Rig
+  2–5 trong `/rig` (mốc rig-joints / rig-skin / rig-test, log `work/rig_lab/director/<id>.md`). Ghi chú nhỏ đã đo rõ được bỏ qua, phải ghi lý do.
+
 ## naming-principles
 - Mỗi feedback: gọi tên nguyên lý bị vi phạm (xem `principles.md`) và thêm ví dụ thật vào nguyên lý đó; đổi trạng thái
   [chưa] -> [đã thử] -> [đã kiểm chứng] khi được duyệt.
@@ -243,3 +252,8 @@ hoặc preview `home`, http://127.0.0.1:8780), một người dùng, dữ liệu
   Tên nhân vật chưa đổi được trên Home (dùng ở sổ, Rig Lab, file).
 - "+ Animation mới" trên Home đã đăng ký clip (giống `clip_registry.py new`) và viết `work/<dự án>/<id>/brief.md`; khi user gõ
   `/new_clip <id>` thì đọc brief đó, đừng hỏi lại những gì đã có, rồi làm tiếp từ bước 3 (rig) hoặc 5 (phân tích).
+
+## Playblast Studio ghi chậm khi tab chạy nền (2026-10-29, SDR01 Shoot pb1)
+`anim playblast` trên tab Studio đang ẩn ghi theo thời gian thực (~1 s mỗi frame anim): 30 frame ra video 30,5 s / 915 frame.
+Kiểm sau mỗi playblast: `ffprobe -count_frames` phải = số frame anim. Server Home (`_retime_playblast` trong `tools/home/server.py`)
+tự lấy frame giữa mỗi đoạn khi video có > 1,5× số frame (cần khởi động lại server để có hiệu lực).

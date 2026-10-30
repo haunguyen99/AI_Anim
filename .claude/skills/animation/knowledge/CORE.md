@@ -48,6 +48,7 @@
 ## Review & ghi chú
 - Mắt trước: REF|ANIM có shading mọi view, gọi tên lỗi; IoU mù trước/sau → review_process.md#eye-vs-iou
 - Tự đo trước khi gửi, báo số + tác dụng phụ → review_process.md#self-measure
+- Trước mỗi cổng duyệt gọi subagent `animation-director`; còn lỗi mức A thì sửa trước khi gửi (≤ 2 vòng) → review_process.md#director
 - Note khoanh: vẽ nét lên frame; khoanh ở hold = thêm key; note 1 frame trong hold = sửa cả đoạn → review_process.md#circled-notes
 - Mỗi feedback: câu gốc + tên nguyên lý bị vi phạm → review_process.md#naming-principles
 - Một hướng sửa hỏng 2 lần → 2–3 ảnh tĩnh cho user chọn hoặc mời chỉnh trong Pose Lab; giữ bản đã duyệt → review_process.md#still-options
