@@ -1,0 +1,8 @@
+{
+  "id": "fit_controls",
+  "version": "0.1.0",
+  "entry": "fit_controls.py",
+  "api_version": 1,
+  "name": "Fit Controls",
+  "description": "Grow or slide rig controls until they sit outside the mesh. Plugins > Fit Controls to Mesh, or Build Rig + Fit Controls."
+}
