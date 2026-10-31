@@ -2,6 +2,11 @@
 
 Người dùng yêu cầu ngày 2026-10-28 ("phát triển tính năng ở giai đoạn đầu, lúc đọc GDD và viết tài liệu phân tích"; vướng nhất:
 "phân tích chưa sát"). Chạy trước quy trình C (`text_brief.md`). Ảnh key pose thay cho "không có ref".
+Vị trí cố định (người dùng 2026-10-30): ảnh key pose (G4/G4b) luôn đi **sau** khi duyệt phân tích/thiết kế và **trước** pose 3D đầu tiên; trong nhánh C là bước C2b. Đầu vào gồm cả concept thật của nhân vật (ảnh concept trong GDD hoặc người dùng gửi), không chỉ render model. Nhánh A (có video) không cần; nhánh B tuỳ chọn.
+**Pha = key pose (người dùng 2026-10-30):** bảng pha của mỗi anim trong bản phân tích có thêm cột **Key pose**: mặc định một pha một key ở frame đỉnh của pha (`k<n>_<tên>`); pha trùng pose pha khác ghi lại đúng key đó (vd Lắng = `k1_ready`); pha chỉ nhích nhỏ, không đổi dáng (vài cm / vài độ) ghi `—` (chuyển tiếp, AI dựng ở blocking). Duyệt phân tích xong, chép bảng vào `keys/keypose.json` "clips": {"<id anim>": {"frames", "fps", "phases": [{"f", "name", "desc", "key"|null}]}}. Studio panel Key Pose đọc bảng này: pha thiếu ảnh có nút Tạo ảnh (theo mô tả pha), đủ ảnh thì **▶ Chạy ảnh** phát ảnh các pha đúng frame của anim = bản demo blocking đầu tiên (không xuất video).
+Workspace **Image Key** (Studio, trước Pose, 2026-10-30): ảnh phủ viewport theo timeline của anim, góp ý bằng ✎ vẽ khoanh trên ảnh → AI sửa ảnh (`keypose_gen.py --markup`, xem `/check_fb`).
+**Nhiều góc (2026-10-30):** ảnh `<key>__<góc>_rN` (right/left/front/back/top/q34, không hậu tố = góc chính); góc dùng cho nhân vật ở keypose.json "views" {main, use} do người dùng chọn (⚙ Góc). Góc phụ dựng từ ảnh góc chính đã ★ (`keypose_gen.py`, yêu cầu có `view`), kèm render model ở góc đó làm khung (model_ref/char_<side_r|side_l|front|back|top|q34>.png; thiếu thì render bằng `tools/render_fbx_tex.py --views …`). Mọi góc là camera **trực giao** như cam Maya (người dùng 2026-10-30), kể cả 3/4; không dùng ảnh phối cảnh làm khung.
+Duyệt trong Studio (2026-10-30): panel **Key Pose** của anim (workspace Pose) hiện đúng key của anim đó, cùng dữ liệu với Home `/keypose`. Khi tạo ảnh cho một anim, ghi `keys/keypose.json` "clips": {"<id anim>": ["k1_…", …]} (hoặc đặt tên key chứa tên anim, vd `k2_shoot_f05`) để panel gắn đúng; yêu cầu từ Studio có thêm trường `clip`.
 Clip đầu tiên: SDR map3 nỏ (`work/shoot_die_repeat/sdr03/`).
 
 ## Các bước
@@ -78,3 +83,17 @@ Pose:
 - **Codex làm quá biên độ** (k2: thân ngả ~12° khi thiết kế 3–4°, người dùng: "giật về sau hơi nhiều"). Viết "copy image 3 almost
   exactly, SAME upright torso angle; the ONLY changes: …" với ref là pose gốc (k1). Đọc ảnh so với số trong analysis trước khi gửi.
 - Ảnh chỉ dùng để chốt ý đồ và dáng nhìn, **không đo góc** (`review_process.md`, bài học Attack: ước góc bằng mắt lệch 20–40°).
+- **Chỉnh nhỏ bằng số sau khi đã chọn key thì áp trên rig, không sinh lại ảnh** (SDR01 Idle, 2026-10-29): user chọn v3 + "thân
+  xoay −30 %, đầu +50 %"; sinh lại 3 ảnh (`sdr01/keys/k1_idle_e1_*`) mất ~10 phút, Codex làm quá (mặt gần nhìn thẳng, thân không
+  giảm), user giữ v3 gốc ("dùng bản này đi"). Key = ý đồ; % chỉnh là tham số P0 (`p0_build.py` CFG), đưa thẳng vào Studio để duyệt.
+- **Thêm góc front / top cho một key đã chọn** (SDR01, 2026-10-29, user: "bạn phải sinh từ ảnh mẫu này ra chứ"): ảnh key là ảnh 1 và là
+  nguồn pose DUY NHẤT ("chỉ xoay camera quanh tượng"), không gửi render P0 làm mẫu camera (P0 đã chỉnh khác key → Codex lấy dáng P0).
+  Tự suy hình học từ key rồi tả trong prompt cái phải thấy ở góc mới (ngực quay về cam side 60° → front thấy ngực gần nghiêng, hướng trái;
+  dao chĩa về sau → front thấy dao gần đầu mút). Ghi "TRUE ORTHOGRAPHIC". Mẫu: `sdr01/keys/prompts/k1_idle_v3_turn.py`.
+
+## Anim mới từ Studio (Image Key "+ Anim mới", 2026-10-30)
+Người dùng: "Khi người dùng muốn thêm một anim mới. Khi click vào tạo anim hãy gửi cho AI yêu cầu". Yêu cầu lưu ở `work/store/keypose/animreqs/<id>.json` {char (id Studio), charName, job, name, desc, loop, frames (null = AI đề xuất), fps, doc (link / ghi chú GDD), by}. Bộ canh `notes_watch.py` in mục `kind: anim_req` và đánh dấu picked. Trạng thái hiện ngay trong cột Anim của Image Key: cập nhật bằng `tools/notes_watch.py --anim-status <id> <picked|analysis|review|images|done|error> "lời nhắn"`.
+1. `--anim-status <id> analysis`. Đăng ký anim: `/new_clip` (tools/clip_registry.py) cho nhân vật của registry khớp `char`; anim phải có trong `/api/poses?char=` thì mới hiện trong cột Anim (cần dòng POSES / phiên bản P0 như `studio_new_clip` trong server.py).
+2. Bản phân tích theo G3 (mẫu `sdr06/analysis.md`; không ref = nhánh C: C1 intake chỉ hỏi chỗ thiếu, C2 thiết kế + bảng timing), đọc `doc` nếu có. Bảng pha có cột **Key pose** (một pha một key, pha trùng pose dùng lại key, pha nhích nhỏ = chuyển tiếp).
+3. Chép bảng pha vào `keys/keypose.json` "clips"[<id anim>] {frames, fps, phases}. `--anim-status <id> review "Bản phân tích: <đường dẫn>, N pha / M key, chờ duyệt"` và báo người dùng; **không tạo ảnh trước khi duyệt** (cổng duyệt như mọi quy trình).
+4. Duyệt xong: `--anim-status <id> images`, tạo ảnh từng key theo G4 (góc chính trước, góc phụ khi người dùng bật), xong `--anim-status <id> done "N ảnh"`. Ảnh tự hiện trong Image Key.

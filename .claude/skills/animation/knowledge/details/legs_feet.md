@@ -67,3 +67,12 @@
 - Đặt bàn chân phẳng bằng cách lăn bàn chân (roll) làm mũi chân xuyên sàn 8–9 cm (Attack v10 f49/52/53). Dùng `plant_p0(side)`
   (`work/boss_gaygor/attack/v10/fixes.py`): lấy hướng bàn chân P0, chỉ xoay yaw theo hướng thân hiện tại, cổ chân ở độ cao P0 (0,16) → gót + mũi chạm đất.
 - Dời bàn chân IK đi xa mà không nghiêng nó = ống chân giãn (0,364 > 0,344) và gối lệch 83° so mũi chân (f28): bước ngắn hơn, không pitch.
+
+## ik-twist-180 (SDR01 Idle P0, 2026-10-29)
+- IK 2 đoạn dò góc xoắn đùi/cánh tay: hai cách xoắn cách nhau 180° cho **cùng vị trí gối và cổ chân**, nên chỉ so sai số thì có khi chọn trúng cách xoắn nửa vòng → váy/đùi bị xé ở góc trước/3/4 (cam game nhìn ngang không thấy). Luôn chọn xoắn nhỏ nhất trong các lời giải đúng (`work/shoot_die_repeat/sdr01/p0_build.py` `ik2`), và xem góc trước trước khi gửi.
+- Gót dép rig map2 có ~44 % weight theo `Knee_R`: chân sau ngả ra sau làm gót lún 1,1 cm dù cổ chân đúng độ cao rest. Nhấc gót chân sau 5° + nâng cổ chân tới khi đáy dép = mức sàn rest (−0,81 cm), đo trên mesh skin chứ không trên khớp.
+
+## Khóa bàn chân khi hông xoay/dời: đừng chặt hơn Idle (SDR01 Shoot b7, 2026-10-29)
+Hạ hông để chân sau với tới bàn chân khóa: ngưỡng độ duỗi phải ≥ độ duỗi chân của chính Idle, cực gối = hướng gối của Idle (không cộng
+thêm hướng xuống). Ngưỡng cố định 96 % làm hông các key giữa thấp hơn Idle 2,2 cm và gối sau đổi 11° gập / 13° hướng ở key đầu/cuối →
+user thấy "chân bị rung". Đo gập + hướng gối mọi key (`knee_dir`) trước khi gửi.

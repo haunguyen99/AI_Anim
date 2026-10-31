@@ -91,3 +91,11 @@
 - Bia demo: lưỡi gladius dài ~0,45 m tính từ tâm cán; đặt mặt bia cách tâm cán ~0,41 m để chỉ mũi cắm vào (bia cũ ở 0,22 m:
   dao xuyên nửa lưỡi). Rung khi cắm: xoay quanh điểm mũi ở mặt bia +6/−4/+2/0° (F13–F16).
 - Xuất cả 2 bản (dao bay demo / dao theo tay) khi có prop ném: `export.md#variants`.
+
+## Dao bay xem trước bằng vật thể phụ Studio (SDR01 Shoot, 2026-10-29)
+- `obj add <tên> --mesh <mesh dao> --bone <xương dao> --f 1` (phải đứng ở F1) → bản sao bám tay, dao gốc tự ẩn; `obj parent <tên> world <F thả>`
+  rồi `obj key <tên> <F trúng> --at x,y,z --interp linear` (trục Blender, Z lên). Dao mới hiện lại: bản sao thứ hai, `--hide` F1, `--show` F cuối, interp step.
+- Bia: `obj add target --box RỘNG,CAO,DÀY --at x,y,z_đáy` (hộp đặt theo đáy). Khung playblast cam game chỉ ôm nhân vật: bia ≤ 2 m, `--dist 2`.
+- Đo mũi dao trước gốc xương (SDR01: dao 56 cm, mũi trước gốc 31 cm) để đặt độ cắm vào bia.
+- **Dao dài chĩa ngược lúc ném dễ xuyên mũ** (SDR01 Shoot b7→b8): đặt tay ra NGOÀI đầu phía camera và nghiêng lưỡi ra ngoài; đo bằng
+  `sdr01/head_clear.py` (đỉnh dao/găng trong hộp đầu và < 2 cm = chìm), yêu cầu hở ≥ 8 cm ở frame tay gần mặt.

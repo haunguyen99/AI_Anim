@@ -93,3 +93,7 @@ Idle 1 pose (SDR - lính La Mã ném dao, camera ingame = góc right, không ref
 - **SDR chốt (v19 / Attack blocking_v7, thay v18):** chỉ chỉnh hông từ v4 — chậu hông xoay đổ trước 7,5°, đẩy trước 3 cm, hạ 1,2 cm
   (giữ chân sau không duỗi quá khớp), thân trên đổ theo. User chọn "50% của A" sau khi xem ảnh tĩnh v4 | A (15°, 6 cm) | B (thân
   giữ nguyên).
+- **Idle tĩnh 1 pose (SDR03, 2026-10-29):** "Idle 10F chỉ là 1 pose" = giữ nguyên pose sẵn sàng của clip anh em (Shoot p3 F1 =
+  Reload p2 F30) cho cả 10 F, lặp, không thở/không overlap — để Idle ↔ Shoot ↔ Reload nối liền không giật. Làm đủ cả hai đầu:
+  FBX (`export_fbx.py --clip idle`) **và** clip Studio (`idle_build.py` → model + `clip_registry.py new` / `pose-version --loop`,
+  keys 1,10); lần đầu chỉ xuất FBX nên user không thấy anim trong Studio và phải nhờ lại.

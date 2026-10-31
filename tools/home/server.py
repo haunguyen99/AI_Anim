@@ -505,6 +505,30 @@ def studio_delete_clip(b):
     return {"trash": os.path.relpath(T, ROOT).replace("\\", "/"), "moved": moved, "lines": {k: len(v) for k, v in lines.items()}}
 
 
+def _retime_playblast(ff, path, n, fps):
+    """Tab Studio chạy nền ghi playblast theo thời gian thực (~1 s mỗi frame anim: SDR01 Shoot pb1 2026-10-29 ra 915 frame cho 30).
+    Video có quá nhiều frame thì lấy frame giữa của mỗi đoạn, ghép lại đúng n frame @ fps."""
+    fp = shutil.which("ffprobe")
+    if not fp or n < 1:
+        return
+    try:
+        q = subprocess.run([fp, "-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries", "stream=nb_read_frames",
+                            "-of", "csv=p=0", path], capture_output=True, text=True, timeout=120)
+        m = int(q.stdout.strip().split(",")[0])
+    except Exception:
+        return
+    if m <= n * 1.5:
+        return
+    step = m / n
+    sel = "+".join("eq(n\\,%d)" % int(step * i + step / 2) for i in range(n))
+    tmp = path + ".retime.webm"
+    q = subprocess.run([ff, "-y", "-v", "error", "-i", path, "-vf", "select='%s',setpts=N/%d/TB" % (sel, fps), "-r", str(fps), "-an",
+                        "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "30", "-deadline", "good", "-cpu-used", "4", "-pix_fmt", "yuv420p", tmp],
+                       capture_output=True, timeout=300)
+    if q.returncode == 0 and os.path.getsize(tmp) > 0:
+        os.replace(tmp, path)
+
+
 def playblast_to_review(b):
     """Pose Lab → Review Lab: lưu video playblast, nén lại bằng ffmpeg (có thể tua), đăng ký version Review và build lại trang."""
     d = load(); c = clip_of(d, b.get("clip")); r = c.get("review") or {}
@@ -534,6 +558,8 @@ def playblast_to_review(b):
     if not ok:
         with open(out, "wb") as f:
             f.write(raw)
+    if ok:
+        _retime_playblast(ff, out, int(b["n"]), int(b.get("fps") or 30))
     if b.get("thumb_b64"):
         with open(os.path.join(cdir, stem + ".jpg"), "wb") as f:
             f.write(base64.b64decode(b["thumb_b64"]))
@@ -581,7 +607,7 @@ def scene_open(b):
     return scene_file.open_scene(base64.b64decode(b.get("zip_b64") or ""), dry=bool(b.get("dry")))
 
 
-ROUTES = {"/api/scene/open": scene_open, "/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip, "/api/clip/studio-new": studio_new_clip, "/api/clip/studio-delete": studio_delete_clip,
+ROUTES = {"/api/scene/open": scene_open, "/api/char/texture": char_texture, "/api/rig/to-pose": rig_to_pose, "/api/fbx/parse": fbx_parse, "/api/rig/build": rig_build, "/api/fbx/new-char": fbx_new_char, "/api/playblast": playblast_to_review, "/api/project": new_project, "/api/character": add_character, "/api/clip": new_clip, "/api/clip/studio-new": studio_new_clip, "/api/clip/studio-delete": studio_delete_clip, "/api/keypose/assign": keypose.assign, "/api/keypose/phase": keypose.phase_set, "/api/keypose/views": keypose.views_set,
           "/api/clip/update": update_clip, "/api/project/update": update_project}
 
 

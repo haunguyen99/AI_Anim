@@ -1,0 +1,18 @@
+{
+ "id": "sdr01",
+ "name": "SDR01",
+ "ref_dir": "ref_sdr01",
+ "scale": 1,
+ "body": "MC_char_map2_Body1",
+ "clothes": [],
+ "extra": [
+  "MC_char_map2_knife1"
+ ],
+ "names_from": "ref_sdr01",
+ "cfg": {
+  "name": "MC_char_map2_Body1"
+ },
+ "source": "Studio Nhập FBX 2026-10-29: MC_char_map1_Rig.fbx",
+ "note": "Rig chưa dựng: đặt clothes / cfg trước khi chạy build_char.py",
+ "texture": "texture.png"
+}

@@ -19,3 +19,9 @@
 - Thêm vào anatomy pass: cột sống không zigzag, nghiêng tăng dần (`torso_head.md#spine-chain`); da vai ≥ 0,30.
 - SDR (sdr_lib.anatomy): da váy giữa hai đùi giãn x4-6 ở lunge là bình thường với low-poly, xem close-up thay vì tin ngưỡng.
 - Cascadeur: `cascadeur.md#quick-anatomy`.
+
+## Skin khuỷu lệch trên rig team (SDR01, 2026-10-29)
+- Mesh thấp đa giác, khuỷu gập ~110°: mặt trong thắt, mặt ngoài nhô góc. Đo trước khi đổ cho pose: `sdr01/elbow_check.py` (góc gập,
+  xoắn cẳng tay, hồ sơ trọng số dọc tay). Lỗi gặp: đoạn cẳng tay 0–10 cm sau khuỷu còn 18–54 % Shoulder (vùng chuyển lệch về cẳng tay).
+- Sửa: chia lại Shoulder+Elbow theo smoothstep ±6 cm quanh tâm khớp (`elbow_reskin.py`), ghi chỉ 4 cluster vào bản FBX trong job
+  (`apply_skin_s3.py`, giữ byte phần còn lại). Chọn dải bằng mắt (ảnh cận 3 góc): đếm tam giác lật không phân biệt được các dải.

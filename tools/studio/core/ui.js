@@ -149,7 +149,7 @@
   }
   // bấm nút Rig / Anim = sang workspace hợp với nó (Rig / Pose), không chỉ đổi focus (user 2026-10-29: "khi bấm vào đây sẽ tự động
   // nhảy sang chế độ phù hợp"); workspace nào có focus là module đó thì dùng workspace đó
-  const goMode = mid => { const ws = Object.keys(ST.WS).find(k => ST.WS[k].focus === mid); if (ws && ws !== ST.ws) ST.setWS(ws); ST.setFocus(mid); };
+  const goMode = mid => { const ws = ST.WS[mid] && ST.WS[mid].focus === mid ? mid : Object.keys(ST.WS).find(k => ST.WS[k].focus === mid); if (ws && ws !== ST.ws) ST.setWS(ws); ST.setFocus(mid); };   // Anim → Pose (không phải Image Key đứng trước)
   const olB = $("olBody");
   const rowOf = el => olRows.find(x => String(x.id) === el.dataset.id && (x.m || "") === el.dataset.m);
   olB.addEventListener("click", e => {
