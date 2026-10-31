@@ -265,7 +265,7 @@ def keep_hand(rig, P, s, Wt, pole_dir):
 
 def apply(rig, P, R, ref=None, keep="hand", sides="LR", iters=3):
     """Sửa P tại chỗ theo các luật fix=true. keep='hand': bàn tay giữ vị trí + hướng world (IK lại tay, khuỷu giữ hướng cũ);
-    keep='fk': tay đi theo bả vai. Trả {rule: độ đã thêm, 'hand_err_cm': ...}."""
+    keep='dir': giữ hướng world của cánh tay (xoay vai FK), cả tay dời theo điểm vai; keep='fk': tay quay theo bả vai. Trả {rule: độ đã thêm, 'hand_err_cm': ...}."""
     hands = _hands(rig, P) if keep == "hand" else {}
     log = {}
     for it in range(iters):
@@ -294,7 +294,9 @@ def apply(rig, P, R, ref=None, keep="hand", sides="LR", iters=3):
                 else: p += need
                 e, p = np.radians(e), np.radians(p)
                 vt = lat * np.cos(e) * np.cos(p) + fwd * np.cos(e) * np.sin(p) + up * np.sin(e)
+                Rs = C.rw("Shoulder_" + s)
                 rig.set_world_rot(P, sc, RP.rot_between(v, vt) @ C.rw(sc))
+                if keep == "dir": rig.set_world_rot(P, "Shoulder_" + s, Rs)
                 log["%s_%s" % (cp["id"], s)] = round(log.get("%s_%s" % (cp["id"], s), 0) + need, 1)
         _clamp(rig, P, R, ref)
         for s, (Wt, d) in hands.items():

@@ -35,6 +35,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#pole-spec` | dựng rig IK, đặt pole khuỷu/gối; trước khi render mọi version (pole_audit) |
 | `#spline-ik-arms` | spline tay đã giải IK từng key; "tay xoay loạn xạ" |
 | `#prop-hand-side-fk` | tay thao tác prop ở phía xa camera; chọn FK/IK; đọc tay vs prop ở góc top |
+| **qa_anatomy.md** `#joint-coupling` | dựng / sửa bất kỳ key nào; khớp dùng lẻ loi (vai đứng yên khi giơ tay, chỉ xoay đầu không xoay cổ); thêm / chỉnh luật liên động |
 | **props_weapons.md** | |
 | `#heavy-prop-lever` | prop nặng cầm một đầu (chùy, búa) |
 | `#long-prop-flick` | đầu prop dài bị giật/vẩy |

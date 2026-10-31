@@ -20,6 +20,7 @@
 - Game side view: mở ngực ~55°, đầu ~25° ra cam; prop vẫn ngắm mục tiêu → torso_head.md#open-to-camera
 - Bàn chân không đứt khỏi ống chân; xem bộ phận thấp nhất trước khi nâng hông; bước chân đo bằng dải tiếp đất → legs_feet.md#foot-detach
 - Pole gối theo hướng gối mong muốn; knee_dir sai khi kiễng; hông đo bằng đai lưng → legs_feet.md#knee-dir
+- Khớp không đứng một mình: mỗi key chạy `tools/joint_rules.py` (audit → apply) — tay giơ/với thì bả vai theo, thân/cổ chia góc các đốt, cúi người hông góp phần, giới hạn khớp không tệ hơn P0 → qa_anatomy.md#joint-coupling
 - Pole KHÔNG tự do: gốc theo ngực/bàn chân, hướng khuỷu/gối ghi trong spec key, `pole_audit.py` mọi key trước khi render → arms_hands.md#pole-spec
 
 ## Tay, bàn tay, prop

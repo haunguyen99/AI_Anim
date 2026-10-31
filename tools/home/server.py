@@ -720,6 +720,11 @@ class H(SimpleHTTPRequestHandler):
                 return self.send_json({"error": str(e)}, 500)
         if path == "/api/chars":
             return self.send_json(studio_chars())
+        if path == "/api/joint-rules":   # luật giới hạn + liên động khớp cho Studio (?char=<id>): mặc định + chars/<id>/joint_rules.json
+            from urllib.parse import parse_qs
+            sys.path.insert(0, os.path.join(ROOT, "tools")); import joint_rules
+            cid = re.sub(r"[^\w.-]", "", (parse_qs(urlparse(self.path).query).get("char") or [""])[0])
+            return self.send_json(joint_rules.load(os.path.join(ROOT, "work", "rig_lab", "chars", cid, "joint_rules.json") if cid else None))
         if path == "/api/poses":   # anim có Pose của một nhân vật Studio (?char=<id>)
             from urllib.parse import parse_qs
             cid = (parse_qs(urlparse(self.path).query).get("char") or [""])[0]

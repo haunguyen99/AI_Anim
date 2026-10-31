@@ -808,7 +808,7 @@ gizmo.addEventListener("dragging-changed", e => {
   if (e.value) {
     stopPlay(); pushUndo(); if (sel === GUN) gunGrab();
     multiQ0 = mode === "rotate" && selSet.size > 1 ? { p: wq(B[sel]), o: Object.fromEntries([...selSet].filter(n => n !== sel).map(n => [n, wq(B[n])])) } : null;
-  } else { multiQ0 = null; commitEdit(); }
+  } else { multiQ0 = null; jrRun(); commitEdit(); }
 });
 const depth = n => { let d = 0; for (let o = B[n]; o; o = o.parent) d++; return d; };
 function rotateOthers() {        // same world rotation as the gizmo joint, applied parent -> child
@@ -908,6 +908,15 @@ function followEdit() {     // after an edit: the prop rides its bone; editing t
   else if (arm.includes(sel)) FREL.h = B[c.prop].matrixWorld.clone().invert().multiply(B[arm[2]].matrixWorld);
   else propHandTo(B[c.to].matrixWorld.clone().multiply(FREL.w), FREL.h);
   edited.add(c.prop); arm.forEach(n => edited.add(n));
+}
+function jrCtx() {          // cho modules/joint_rules.js: pose đang sửa + pose trước lần sửa (base) + IK tay của lõi
+  return { sel, selSet: [...selSet], B, base, model, mode, frame, keys: keysMode(), wp, wq, setWorldQuat,
+    solveArm: (s, p, q) => { if (q) handQ[s] = q.clone(); solveArm(s, p); }, sample: (f, names) => sampleBones(f, names || Object.keys(B)),
+    mark: names => { names.forEach(n => edited.add(n)); model.updateMatrixWorld(true); followEdit(); } };
+}
+function jrRun() {
+  const J = window.__jointRules; if (!J || !J.on() || !model || !sel) return;
+  try { const r = J.after(jrCtx()); if (r && r.msg) $("p_status").textContent = r.msg; } catch (e) { console.warn("Liên động khớp:", e); }
 }
 function afterEdit() {      // a joint was rotated / the hip moved (gizmo or Channel Box)
   {
@@ -4715,7 +4724,7 @@ const AI = (() => {
   const joint = n => { need(model, "Anim chưa nạp xong"); need(B[n] && markers[n], "Không có khớp " + n + " (khớp có chấm chọn: " + Object.keys(markers).length + ")"); return n; };
   const edit = (n, fn) => {
     joint(n); stopPlay(); if (sel !== n || selSet.size !== 1) select(n); pushUndo();
-    fn(); afterEdit(); attachGizmo(); commitEdit(); refresh();
+    fn(); afterEdit(); jrRun(); attachGizmo(); commitEdit(); refresh();
     return { joint: n, frame: cyc(frame), keyed: keysMode() && KEYS.has(cyc(frame)), unkeyed: editedList() };
   };
   const loc = n => { const e = new THREE.Euler().setFromQuaternion(B[n].quaternion, "XYZ"); return [e.x, e.y, e.z].map(v => r2(THREE.MathUtils.radToDeg(v))); };
@@ -4746,5 +4755,5 @@ return { get: () => ({ P, frame, sel, selSet, B, markers, model, playing, mode }
   // đổi sang anim khác không tải lại trang: lưu key đang dở, đổi kho, thay danh sách phiên bản, mở phiên bản đầu
   swapClip: async (list, ns) => { if (keysMode() && (dirtyKeys.size || animDirty)) { clearTimeout(flushT); await flush(); } stopPlay();
     if (ns && db && db.setNS) await db.setNS(ns); POSES.splice(0, POSES.length, ...list); await openPose(POSES[0]); renderPoses(); }, isLive: () => !!LIVE, stopPlay, frameAll: typeof frameAll === "function" ? frameAll : null, setCam, NAMES, JOINTS: () => JOINTS,
-  sampleBones, ai: AI, renderStrip: () => { if (model) renderStrip(); } };
+  sampleBones, jrCtx, ai: AI, renderStrip: () => { if (model) renderStrip(); } };
 };
