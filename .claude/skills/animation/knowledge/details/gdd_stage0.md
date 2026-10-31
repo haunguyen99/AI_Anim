@@ -26,6 +26,23 @@ Clip đầu tiên: SDR map3 nỏ (`work/shoot_die_repeat/sdr03/`).
 - **Tìm mâu thuẫn trong chính GDD:** phần mô tả có "đặt tên mới lên rãnh" nhưng các bước Reload không có; Fire Rate lv6 chậm hơn lv5. Đưa thành câu hỏi kèm phương án đề xuất, không tự chọn.
 - **Rig không có ngón trỏ** (găng) thì động tác "bóp cò" phải đổi thành siết găng. Ghi rõ là [suy luận].
 
+## Concept gốc bắt buộc trong mọi lần tạo ảnh (người dùng 2026-10-31)
+Người dùng: "khi tạo ảnh mới nhất định phải gửi theo concept gốc theo prompt để AI tham khảo, để đảm bảo không tạo ra đối tượng khác
+với mong muốn". Áp cho **mọi** lần gọi Codex: key mới, sửa, góc phụ, sửa theo nét khoanh, Tạo ảnh trong Studio.
+- **Ảnh concept gốc** (ảnh trong GDD hoặc người dùng gửi) luôn nằm trong danh sách `--ref`, và prompt luôn có đoạn
+  `ORIGINAL CHARACTER CONCEPT` ghi đúng **số thứ tự ảnh** concept ("attached image 4"). Đoạn này nói: vẽ đúng nhân vật này, không bịa
+  người khác, áo, phụ kiện, giáp hay đồ vật không có trong concept.
+- **Concept và render model chia vai:** concept quyết định nhân vật **là ai** (mặt, tóc, tỉ lệ, các món trang phục, loại đạo cụ).
+  Render model quyết định **hình khối và màu 3D** đúng game (luật "Ref tốt nhất là render model thật" vẫn giữ, vũ khí lấy theo model).
+  Chỗ hai bên khác chi tiết thì theo model, nhưng **không thêm thứ mà cả hai đều không có**.
+- Concept đặt **sau** các ref model, để giữ số "image 1/2/3" của prompt cũ. Ảnh gốc và ảnh khoanh vẫn là ảnh cuối.
+- Nơi đặt: file `concept*.png|jpg|webp` trong thư mục job (hoặc `model_ref/`, `keys/`), hoặc `keys/keypose.json` "concept": [...].
+  File webp được đổi sang png.
+- `tools/keypose_gen.py` tự làm việc này (`keypose.concept_for` + `concept_text`). Job **không có concept thì dừng**, báo lỗi
+  "Thiếu concept gốc" lên trang. Khi đó hỏi người dùng xin concept, không tạo ảnh chỉ từ render.
+- Gọi tay `tools/codex_img.py` (G4 bước 4) thì tự thêm `--ref <concept>` và đoạn prompt trên (lấy chữ từ `keypose.concept_text`).
+- Kiểm mỗi ảnh ra: so với concept xem có món nào lạ (mũ, khăn, giáp, túi, vũ khí phụ) hay khác người không. Có thì ảnh hỏng, sinh lại.
+
 ## Trình tự G4 (đã chạy đạt trên SDR03, 2026-10-28)
 1. **Ref model đúng màu** (`tools/render_fbx_tex.py`, texture bảng màu của game):
    `render_fbx_tex.py <rig.fbx> <tex> <job>/model_ref --skip <mesh vũ khí> --views q34,side_r --name char_` và
@@ -34,10 +51,12 @@ Clip đầu tiên: SDR map3 nỏ (`work/shoot_die_repeat/sdr03/`).
    `sdr03` bằng `render_fbx_tex.load` + `render`). Đo mốc: `tools/keypose_scale.py scale_side.png`.
 3. **Prompt** theo mẫu dưới, mỗi key một file `.txt` (ví dụ sinh bằng script: `sdr03/keys/make_prompts_model.py`).
 4. **Tạo ảnh lần lượt** (không song song):
-   `tools/codex_img.py prompts/kN.txt --out keys/kN_m1.png --ref model_ref/char_q34.png --ref model_ref/scale_side.png --ref model_ref/prop_q34.png --timeout 600`
-   Ảnh sau dùng ảnh đã đạt làm ref thứ 3/4 (cùng tỉ lệ, cùng tay, cùng tấn).
+   `tools/codex_img.py prompts/kN.txt --out keys/kN_m1.png --ref model_ref/char_q34.png --ref model_ref/scale_side.png --ref model_ref/prop_q34.png --ref concept.png --timeout 600`
+   (concept gốc bắt buộc, prompt ghi số thứ tự ảnh concept, xem mục "Concept gốc bắt buộc").
+   Ảnh sau dùng ảnh đã đạt làm ref thứ 3/4 (cùng tỉ lệ, cùng tay, cùng tấn). Sinh theo chuỗi: key chủ + key liền trước (mục "Đồng nhất chuỗi ảnh").
 5. **Kiểm**: `tools/keypose_scale.py keys/*.png --ref model_ref/scale_side.png` (tỉ lệ vũ khí), rồi xem từng ảnh theo checklist:
    đúng tay, đủ 2 tay, cơ chế prop đúng trạng thái, biên độ đúng số trong analysis, chân/tấn giữ nguyên. Ghi lệch vào chú thích trang.
+6. **Kiểm cả chuỗi** như flipbook 2D (mục "Đồng nhất chuỗi ảnh", phần 5) rồi mới gửi.
 
 ### Mẫu prompt (giữ thứ tự khối; điền phần <…>)
 ```
@@ -90,6 +109,81 @@ Pose:
   nguồn pose DUY NHẤT ("chỉ xoay camera quanh tượng"), không gửi render P0 làm mẫu camera (P0 đã chỉnh khác key → Codex lấy dáng P0).
   Tự suy hình học từ key rồi tả trong prompt cái phải thấy ở góc mới (ngực quay về cam side 60° → front thấy ngực gần nghiêng, hướng trái;
   dao chĩa về sau → front thấy dao gần đầu mút). Ghi "TRUE ORTHOGRAPHIC". Mẫu: `sdr01/keys/prompts/k1_idle_v3_turn.py`.
+
+## Đồng nhất chuỗi ảnh = một anim 2D (người dùng 2026-10-31)
+Người dùng: "việc tạo ảnh cho giai đoạn này là sự đồng nhất… giống diễn hoạt 2D vẽ các hình xong cho chạy liên tiếp để thành một anim".
+Bộ ảnh key của một anim là **một chuỗi flipbook**, không phải các ảnh minh hoạ rời. Ảnh đẹp mà phát lên bị giật, nhảy hay đổi nhân vật thì
+coi là **hỏng**. Đây là luật cứng cho mọi lần tạo ảnh (G4, G4b, Tạo ảnh trong panel Key Pose, sửa bằng `--markup`, góc phụ).
+
+**1. Khoá "trường quay" (giống nhau ở mọi key của anim)**
+- Cùng camera trực giao, cùng góc, cùng hướng nhân vật (vd quay phải). Cùng khổ ảnh và cùng cỡ nhân vật trong khung (chiều cao người
+  lệch ≤ 3 %). Cùng nền xám, cùng ánh sáng và cách tô (flat-shaded).
+- **Đường đất** (đáy bàn chân đứng) nằm cùng một hàng điểm ảnh. Gốc nhân vật (hông) cùng một cột điểm ảnh, trừ khi bảng pha thiết kế
+  có di chuyển. Khi đó quãng dời phải đúng số cm trong analysis, quy ra điểm ảnh theo chiều cao model.
+- Bàn chân đang **trụ** ở hai key liền nhau thì đứng yên đúng chỗ (lệch ≤ 1 % chiều cao). Chân trượt khi lật ảnh là lỗi, giống lỗi
+  foot slide trong 3D.
+- Một bộ ref model cố định cho cả anim (`model_ref/char_*`, `scale_side.png`, ảnh concept gốc, bắt buộc). Không đổi bộ ref giữa chừng.
+
+**2. Khoá tạo hình (model sheet)**
+- Cả chuỗi giữ y hệt tỉ lệ người, trang phục, màu, tóc, mặt, đạo cụ và cỡ đạo cụ. Đo cỡ đạo cụ bằng `keypose_scale.py` ở **mọi** key.
+- Tay nào cầm gì giữ nguyên suốt chuỗi, trừ khi bảng pha ghi đổi tay. Trạng thái đạo cụ (dây, đạn, mũi tên…) phải nối logic:
+  trạng thái ở key n là hệ quả của key n−1.
+
+**3. Sinh theo chuỗi, không sinh rời**
+- **Key chủ** (thường là k1, pose gốc/ready) phải được ★ duyệt trước. Ảnh này là "model sheet" của chuỗi.
+- Các key sau sinh **theo thứ tự pha**. Mỗi key sinh với ref gồm render model + key chủ + **key liền trước** đã đạt. Prompt viết
+  "Copy the previous key exactly: same camera, same framing, same size, same ground line, same planted foot position. The ONLY changes: …".
+- Prompt chỉ liệt kê bộ phận **thay đổi** so với key trước, kèm biên độ bằng số. Mọi bộ phận khác ghi "identical to the previous key".
+- Ảnh vừa có dáng đẹp vừa có độ liền mạch là hai mục tiêu khác nhau. Khi xung đột thì **độ liền mạch thắng**. Muốn đổi dáng lớn thì sửa
+  key đó, rồi sinh lại các key sau nó theo chuỗi.
+- Key "dùng lại" (pha trùng pose) phải là **cùng một file ảnh**, không sinh ảnh mới gần giống.
+- **Tự động trong `tools/keypose_gen.py`** (người dùng 2026-10-31: "dựa vào ảnh đã tạo trước đó để viết prompt và tham khảo cho ảnh tiếp theo"):
+  - Yêu cầu key mới (`base` rỗng, có `clip`) tự tìm key liền trước theo bảng pha (ảnh ★, không có thì ảnh mới nhất không ✕).
+  - Prompt = prompt của ảnh key trước, bỏ khối `Pose:` và các ghi chú ref cũ, thêm khối `NEXT KEY` chỉ ghi phần thay đổi.
+  - Ref = model + concept + key chủ + **key trước ở cuối**. Không gửi render camref vì khung lấy theo key trước.
+  - Khi sửa một key, key trước cũng được gửi kèm làm mốc khung.
+  - Soát trước khi chạy bằng `--dry`. Code ở `tools/keypose_chain.py`.
+- Phần thay đổi (`--extra`) viết tiếng Anh, có số đo, chỉ ghi bộ phận đổi. Sinh **theo thứ tự pha**, mỗi lần một key: key sau chỉ chạy
+  khi key trước đã đạt chuỗi.
+
+**4. Chuyển động đọc được khi lật ảnh**
+- Các bộ phận chính (hông, đầu, tay cầm vũ khí, mũi vũ khí) đi theo **đường cong (arc)** và hướng đúng thiết kế. Không đảo chiều hay nhảy
+  vị trí mà bảng pha không có.
+- Bộ phận không có trong danh sách thay đổi thì phải **đứng yên** (không "sôi" nét, không nhích, không đổi nếp áo). Đây là lỗi hay gặp
+  nhất khi Codex sinh từng ảnh.
+- Biên độ giữa hai key liền nhau phải khớp với số frame giữa chúng. Khoảng ngắn mà đổi dáng lớn thì báo lại thiết kế, không tự vẽ quá.
+
+**5. Kiểm cả chuỗi trước khi gửi** (bước bắt buộc, sau checklist từng ảnh ở "Trình tự G4" mục 5)
+- Phát chuỗi đúng timing (Studio panel Key Pose **▶ Chạy ảnh**, hoặc tự dựng flipbook nội bộ) rồi xem như xem một anim 2D: có giật,
+  nhảy khung, đổi cỡ, đổi màu, trượt chân hay bộ phận đứng yên mà rung không.
+- So từng cặp key liền nhau, chồng mờ để soi. Ảnh chồng chỉ dùng để tự kiểm, không gửi người dùng (luật REF|ANIM để riêng). Đo bằng
+  số: đường đất, cột hông, chiều cao người, vị trí chân trụ. Không ước bằng mắt.
+  **Đo ngay sau mỗi ảnh, không đợi đủ chuỗi** (người dùng 2026-10-31: chạy khi tạo hết ảnh thì tốn tài nguyên). Đo chỉ mất vài ms,
+  thứ tốn là sinh lại cả đoạn sau một key lệch. `keypose_gen.py` gọi `keypose_chain.check_one` ngay khi Codex trả ảnh:
+  - đo đường đất, chiều cao người, 2 bàn chân ở đường đất (ghép chân sau / chân trước theo thứ tự), bề rộng vùng chân, màu;
+  - **căn khung như ghim giấy 2D**: đổi về khổ của key chủ, khớp đường đất, khớp chân với key trước. Ảnh gốc giữ ở `keys/_raw/`;
+  - ghi `keys/chain.json`. Ảnh lệch được ghi "Lệch chuỗi: …" vào lời nhắn trên trang. Nhiều bản thì bản đạt lên trước. Key trước đang
+    lệch thì key sau **không được tạo** (lỗi trên trang, `--force` bỏ qua).
+  Ngưỡng: đường đất ≤ 1 %, chân trụ ≤ 1 %, cỡ người ≤ 3 % (chú ý), > 8 % (lỗi), bề rộng 2 chân ≤ 2 % (chú ý), > 10 % (lỗi, trừ pha có bước),
+  màu ≤ 6 %. Kiểm lại cả chuỗi chỉ đọc số đã có: `tools/keypose_chain.py check <job> <anim>`.
+  Chưa đo: phần đứng yên bị "sôi" (cần biết bộ phận nào được phép đổi). Phần này soát bằng mắt trên ảnh chồng mờ.
+  Thử đầu trên SDR03 Hit (ảnh sinh rời trước luật): kh1 khép chân (bề rộng −33 %), kh2 dời ngang 17 %; căn khung đưa đất/chân về 0.
+  **Chạy thật theo chuỗi** (SDR03 Hit kh1_r3 → kh2_r2 → kh3_r3, 2026-10-31, ~80 s/ảnh): cả 3 đạt ngay lần đầu, giữ cùng nhân vật, cùng nỏ,
+  cùng tấn, chân trụ lệch ≤ 0,2 %, cỡ ≤ 2,7 %. Ảnh sinh rời trước đó không ảnh nào đạt. Hai bài học:
+  - **Nền trôi màu cộng dồn** khi mỗi key chép key trước (xám (85,89,96) → xanh (75,86,103) sau 2 key). Sau khi căn khung, `fix_bg` tô
+    lại nền về màu nền key chủ (dời đều màu nền + viền, nhân vật giữ nguyên).
+  - **Câu "keep changes small, do not exaggerate" làm Codex vẽ thiếu** (kh2 ngả thân ~5–8° thay vì 18°). Khối NEXT KEY nay ghi "đúng số,
+    không nhỏ hơn, không lớn hơn". Biên độ đúng hay chưa vẫn phải xem bằng mắt, vì tool không đo góc.
+    Tạo lại kh2 (r3, 170 s) đạt: ngoài số độ, tả **cái thấy được trên silhouette** ("the WHOLE CHEST leans clearly BACK ~18°, shoulders end
+    up well behind the hips, clear backward arc from feet to head"). Cỡ người lệch 6,2 % là đúng (thân ngả nên đầu thấp xuống), chỉ là chú ý.
+- Ghi vào chú thích trang hoặc lời nhắn: "chuỗi N key, lệch tối đa đường đất x %, chiều cao y %, chân trụ z %".
+
+**6. Sửa mà vẫn giữ chuỗi**
+- Chỉ tạo lại key bị lệch. Ref gồm **key trước và key sau** nó (và key chủ), để nó khớp hai bên. Lưu bản mới `_rN`, giữ bản cũ.
+- Lệch chỉ do khung (dời, phóng) mà dáng đúng thì **căn lại ảnh** (dời/phóng theo đường đất + chiều cao), không sinh lại.
+- Sửa key chủ thì xem lại cả chuỗi. Key nào không còn khớp thì sinh lại theo thứ tự.
+- Góc phụ: mỗi góc là một chuỗi riêng và cũng phải theo luật 1–5. Mỗi key ở góc phụ dựng từ key cùng tên ở góc chính đã ★, dùng key
+  liền trước **cùng góc** làm ref khung.
 
 ## Anim mới từ Studio (Image Key "+ Anim mới", 2026-10-30)
 Người dùng: "Khi người dùng muốn thêm một anim mới. Khi click vào tạo anim hãy gửi cho AI yêu cầu". Yêu cầu lưu ở `work/store/keypose/animreqs/<id>.json` {char (id Studio), charName, job, name, desc, loop, frames (null = AI đề xuất), fps, doc (link / ghi chú GDD), by}. Bộ canh `notes_watch.py` in mục `kind: anim_req` và đánh dấu picked. Trạng thái hiện ngay trong cột Anim của Image Key: cập nhật bằng `tools/notes_watch.py --anim-status <id> <picked|analysis|review|images|done|error> "lời nhắn"`.
