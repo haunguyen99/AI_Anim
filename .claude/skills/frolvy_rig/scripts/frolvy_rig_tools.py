@@ -7,7 +7,11 @@ execute_code tool (the `api` object is Frolvy's). Pure Python: Frolvy's Python h
     R.zero_controls(api)                    # before ANY Build / Rebuild Rig
     R.after_rebuild(api, one_side=("Weapon","Arrow"), prop_side="_R")   # after every Rebuild
     R.skin_report(api, "Body")              # audit, then fix with the skin_* helpers
+    R.skin_pass(api, "Body", R.BASTION_SKIN, head_neck_keep=ids, profile=True)   # after bind
+    R.skin_pass(api, "Body", R.BASTION_SKIN, head_neck_keep=ids, profile=False)  # after a smooth
+    R.thumb_into_palm(api)                  # thumb curls into the palm (after_rebuild calls it)
     R.deform_test(api, "Body", [("CTL_Hip_L",(-70,0,0))])
+    R.pose_stretch(api, m, region, rest_fn, pose_fn)   # stretch in the user's real pose
 
 Every execute_code call is one undo step. Frolvy's undo stack also holds the user's own UI
 actions, so prefer fixing forward over undo. Frolvy refuses a graph with a loop and then the
@@ -237,10 +241,15 @@ def check_rig_moves(api, ctl="CTL_Shoulder_L", joint="DEF_Wrist_L", sw="CTL_ArmS
 def delete_one_side_props(api, names=("Weapon", "Arrow"), side="_L"):
     """Build Rig mirrors every right-side joint; delete the mirrored copies of one-sided props
     and the wire_ nodes they leave (never touch wire_DEF_Root_M_*: Rig Builder's own)."""
+    api.set_component_mode("object")   # delete_selection in face/vertex mode deletes scene-wide faces
     for nm in names:
         for n in ("CTL_%s%s_grp" % (nm, side), "DEF_%s%s" % (nm, side), "CTL_%s%s" % (nm, side)):
             if n in api.ls():
-                api.select([n]); api.delete_selection()
+                api.select([n])
+                if api.selection() == [n] and api.component_mode() == "object":
+                    api.delete_selection()
+                if n in api.ls():
+                    print("WARNING could not delete", n)
     api.select([])
     for _ in range(2):
         for p in api.check_rig():
@@ -360,10 +369,49 @@ def sync_control_pivots(api):
     return fixed
 
 
+def thumb_into_palm(api, gain=0.55, ry_ratio=-0.3, base=(35.0, 50.0, 60.0)):
+    """Make curl/handPose turn the thumb INTO the palm (across, toward the pinky) like a human thumb.
+    Rig Builder drives only the thumb's local Y (tip goes to the back of the hand or hangs down).
+    Into-palm = local Z (with thumb axes X down the bone, Z = X x dir-to-MiddleFinger1).
+    rz = fng_c (gain * base), ry = -ry_ratio * fng_c via a multiply node fng_cy_*.
+    Bastion 2026-10-31: gain 0.55, ry_ratio -0.3 puts the fist thumb tip on the index/middle middle phalanges.
+    Re-run after every Rebuild (it recreates the fng nodes). The rz input must be (re)connected
+    explicitly: node_connections may list fng_c on rz_fng while it does not evaluate."""
+    for s, sg in (("_L", 1.0), ("_R", -1.0)):
+        for k in (1, 2, 3):
+            fc = "fng_c_DEF_ThumbFinger%d%s" % (k, s)
+            if fc not in api.graph_nodes():
+                continue
+            api.set_node_param(fc, 1, sg * base[k - 1] * gain)
+            cy = "fng_cy_DEF_ThumbFinger%d%s" % (k, s)
+            if cy not in api.graph_nodes():
+                cy = api.create_node("multiply", cy)
+            api.connect(cy, 0, fc); api.set_node_param(cy, 1, -ry_ratio)
+            api.connect("wire_DEF_ThumbFinger%d%s_ry_fng" % (k, s), 1, cy)
+            api.connect("wire_DEF_ThumbFinger%d%s_rz_fng" % (k, s), 1, fc)
+
+
 def fix_thumb_curl(api):
     """With custom thumb axes Rig Builder's thumb curl can open the thumb instead of closing it.
     Flip fng_c_DEF_ThumbFinger{1,2,3}_{L,R} when curl=1 moves the tip AWAY from MiddleFinger1."""
     flipped = []
+    hand = ("handPose", "curl", "spread", "thumbCurl")
+    saved = {}
+    for s in ("_L", "_R"):   # measure from an open hand: a fist left on the switch fakes the test
+        sw = "CTL_ArmSwitch" + s
+        if sw in api.ls():
+            for a in hand:
+                if api.attr_info(sw, a):
+                    saved[(sw, a)] = api.get_attr(sw + "." + a); api.set_attr(sw + "." + a, 0.0)
+    try:
+        _fix_thumb_curl(api, flipped)
+    finally:
+        for (sw, a), v in saved.items():
+            api.set_attr(sw + "." + a, v)
+    return flipped
+
+
+def _fix_thumb_curl(api, flipped):
     for s in ("_L", "_R"):
         sw = "CTL_ArmSwitch" + s
         if sw not in api.ls() or not api.attr_info(sw, "thumbCurl"):
@@ -372,10 +420,24 @@ def fix_thumb_curl(api):
         d0 = math.dist(P(api, tip), mid)
         api.set_attr(sw + ".thumbCurl", 1.0); d1 = math.dist(P(api, tip), mid); api.set_attr(sw + ".thumbCurl", 0.0)
         if d1 > d0:
-            for k in (1, 2, 3):
-                nd = "fng_c_DEF_ThumbFinger%d%s" % (k, s)
-                api.set_node_param(nd, 1, -api.node_params(nd)[1])
-            flipped.append(s)
+            flip = lambda: [api.set_node_param(nd, 1, -api.node_params(nd)[1])
+                            for nd in ("fng_c_DEF_ThumbFinger%d%s" % (k, s) for k in (1, 2, 3))]
+            flip()
+            api.set_attr(sw + ".thumbCurl", 1.0); d2 = math.dist(P(api, tip), mid); api.set_attr(sw + ".thumbCurl", 0.0)
+            if d2 >= d0:      # flipping did not close the thumb either: undo, report
+                flip(); flipped.append(s + "?")
+            else:
+                flipped.append(s)
+    # final check the user sees: curl / handPose must bring the tip closer to MiddleFinger1
+    for s in ("_L", "_R"):
+        sw = "CTL_ArmSwitch" + s
+        if sw not in api.ls():
+            continue
+        tip = "DEF_ThumbFinger4" + s; mid = P(api, "DEF_MiddleFinger1" + s); d0 = math.dist(P(api, tip), mid)
+        old = api.get_attr(sw + ".handPose"); api.set_attr(sw + ".handPose", 1.0)
+        d1 = math.dist(P(api, tip), mid); api.set_attr(sw + ".handPose", old)
+        if d1 >= d0:
+            print("WARNING thumb%s opens on handPose=1 (%.3f -> %.3f): flip fng_c_DEF_ThumbFinger*%s" % (s, d0, d1, s))
     return flipped
 
 
@@ -401,6 +463,7 @@ def after_rebuild(api, one_side=("Weapon", "Arrow"), prop_side="_R", labels=None
     w = add_translate_wires(api)
     rest = sync_rest(api)
     piv = sync_control_pivots(api)
+    thumb_into_palm(api)
     th = fix_thumb_curl(api)
     reparent_switches(api, switches)
     for j, lab in (labels or {"DEF_Root_M": "root"}).items():
@@ -543,3 +606,210 @@ def edge_stretch(api, obj, ctl, rot, region):
             if l0 > 1e-4: rs.append((math.dist(Q[a], Q[b]) / l0, a, b))
     rs.sort()
     return rs[:5], rs[-5:]
+
+
+# ----------------------------------------------------------------- skin pass by region
+# Rules the user settled on (Boss Bastion, 2026-10-31). Heights are metres in the bind pose;
+# measure them on a new character (joint heights, belt edges, knee, boot top) and pass a cfg.
+# Order matters: each step only redistributes ONE family of joints and keeps the others,
+# and rigid shells are re-applied LAST because every height split or smooth bends them.
+
+BASTION_SKIN = {
+    "torso_x": 0.34,            # |x| inside which a vertex is torso (outside = arms)
+    "lower_belt_top": 1.115,    # lower belt / hip armour: Root, with a little Spine1 at its top
+    "lower_belt_spine1": 0.15,  # Spine1 share at that top edge, fading to 0 at lower_belt_fade
+    "lower_belt_fade": 1.0,
+    "root_spine1": (1.115, 1.20),   # Root -> Spine1 blend, inside the upper belt
+    "spine1_chest": (1.26, 1.40),   # Spine1 -> Chest blend
+    "hip_knee": (0.57, 0.65),       # knee joint at 0.60
+    "knee_ankle": (0.24, 0.30),     # ankle joint at 0.21, boot top just above
+    "toes_z": (0.10, 0.18), "toes_y": (0.10, 0.16),   # toe cap: in front of the toe joint, low
+    "armpit_shoulder": (0.29, 0.36),  # Shoulder fades out inside the shoulder joint (|x|)
+    "armpit_scapula": (0.20, 0.33),   # front-chest Scapula at most half, less toward the middle
+    # shell index -> joint (or {"top_y": y, "top": joint, "rest": joint} for a hinged pad)
+    "rigid": {1: "DEF_Head_M", 17: "DEF_Head_M", 18: "DEF_Head_M",
+              4: "DEF_ShoulderPad_L", 10: "DEF_ShoulderPad_L", 5: "DEF_ShoulderPad_R",
+              6: "DEF_HipPad2_L", 8: "DEF_HipPad2_R",
+              7: {"top_y": 1.09, "top": "DEF_Root_M", "rest": "DEF_HipPad1_L"},
+              9: {"top_y": 1.09, "top": "DEF_Root_M", "rest": "DEF_HipPad1_R"},
+              11: "DEF_Knee_L", 13: "DEF_Knee_L", 14: "DEF_Knee_L",
+              12: "DEF_Knee_R", 15: "DEF_Knee_R", 16: "DEF_Knee_R", 19: "DEF_Wrist_L"},
+}
+SPINE = ("DEF_Root_M", "DEF_Spine1_M", "DEF_Chest_M")
+
+
+def _leg(s):
+    return ("DEF_Hip" + s, "DEF_Knee" + s, "DEF_Ankle" + s, "DEF_Toes" + s)
+
+
+def skin_torso(api, m, cfg=BASTION_SKIN, ids=None):
+    """Re-split each torso vertex's Root+Spine1+Chest share by height; arm/leg/pad weights stay.
+    Default bind smeared Root 40% into the belly and put Root 89% next to Chest on the ribs
+    (x25 tear on a spine twist); after this the worst was x1.9."""
+    a0, a1 = cfg["root_spine1"]; b0, b1 = cfg["spine1_chest"]
+    top, f_top, fade = cfg["lower_belt_top"], cfg["lower_belt_spine1"], cfg["lower_belt_fade"]
+
+    def fn(i, d):
+        x, y, z = m.p(i)
+        if abs(x) > cfg["torso_x"]:
+            return None
+        sp = sum(d.get(j, 0) for j in SPINE)
+        if sp <= 0:
+            return None
+        if y < top:
+            a = f_top * ramp(y, fade, top); b = 0.0
+        else:
+            a = ramp(y, a0, a1); b = ramp(y, b0, b1)
+        out = {j: w for j, w in d.items() if j not in SPINE}
+        for j, f in (("DEF_Root_M", 1 - a), ("DEF_Spine1_M", a * (1 - b)), ("DEF_Chest_M", a * b)):
+            if f > 1e-3:
+                out[j] = out.get(j, 0) + sp * f
+        return out
+    return rewrite(api, m, ids if ids is not None else range(m.n), fn)
+
+
+def skin_legs(api, m, cfg=BASTION_SKIN, ids=None):
+    """Re-split each leg vertex's Hip+Knee+Ankle+Toes share by height (Root share kept).
+    Default bind let Hip reach the shin, Knee the foot, Ankle/Toes the calf: lifting the leg
+    crushed the knee and turning the foot dented the calf."""
+    h0, h1 = cfg["hip_knee"]; k0, k1 = cfg["knee_ankle"]
+    allj = _leg("_L") + _leg("_R")
+
+    def fn(i, d):
+        x, y, z = m.p(i)
+        s = "_L" if x > 0 else "_R"
+        share = sum(w for j, w in d.items() if j in allj)
+        if share <= 0:
+            return None
+        hk = ramp(y, h0, h1); ka = ramp(y, k0, k1)
+        toe = ramp(z, *cfg["toes_z"]) * (1 - ramp(y, *cfg["toes_y"]))
+        prof = {"Hip": hk, "Knee": (1 - hk) * ka, "Ankle": (1 - hk) * (1 - ka) * (1 - toe),
+                "Toes": (1 - hk) * (1 - ka) * toe}
+        out = {j: w for j, w in d.items() if j not in allj}
+        for k, f in prof.items():
+            if f > 1e-3:
+                out["DEF_" + k + s] = out.get("DEF_" + k + s, 0) + share * f
+        return out
+    return rewrite(api, m, ids if ids is not None else range(m.n), fn)
+
+
+def skin_armpit(api, m, cfg=BASTION_SKIN, ids=None):
+    """Chest plate beside the armpit must not follow the arm: Shoulder fades to 0 inside the
+    shoulder joint, front-chest Scapula at most half. Removed weight goes to Chest."""
+    s0, s1 = cfg["armpit_shoulder"]; c0, c1 = cfg["armpit_scapula"]
+
+    def fn(i, d):
+        x, y, z = m.p(i); ax = abs(x); out = {}; moved = 0.0
+        if not (cfg.get("armpit_y", (1.15, 1.56))[0] < y < cfg.get("armpit_y", (1.15, 1.56))[1]):
+            return None          # only the chest plate beside the armpit, not the shoulder top
+        for j, w in d.items():
+            cap = 1.0            # caps, not factors: running the rule twice changes nothing
+            if j.startswith("DEF_Shoulder_") and ax < s1:
+                cap = 0.5 * ramp(ax, s0, s1)
+            elif j.startswith("DEF_Scapula_") and z > 0.03 and ax < c1 and y < 1.5:
+                cap = 0.35 * ramp(ax, c0, c1)    # none toward the sternum
+            k = min(w, cap)
+            out[j] = out.get(j, 0) + k; moved += w - k
+        if moved < 1e-4:
+            return None
+        out["DEF_Chest_M"] = out.get("DEF_Chest_M", 0) + moved
+        return out
+    return rewrite(api, m, ids if ids is not None else range(m.n), fn)
+
+
+def skin_no_head_neck(api, m, keep):
+    """Only `keep` (helmet, mask, real neck: vertex indices) may carry Head/Neck, so the collar
+    and chest stay still when the head or neck turns (user: no Head/Neck on the collar, ever)."""
+    keep = set(keep)
+
+    def fn(i, d):
+        if i in keep:
+            return None
+        n = d.pop("DEF_Neck_M", 0) + d.pop("DEF_Head_M", 0)
+        if not n:
+            return None
+        d["DEF_Chest_M"] = d.get("DEF_Chest_M", 0) + n
+        return d
+    return rewrite(api, m, range(m.n), fn)
+
+
+def skin_rigid(api, m, cfg=BASTION_SKIN):
+    """Rigid armour/prop shells back to one joint each (hinged pads: top row on `top`)."""
+    n = 0
+    for k, tgt in cfg["rigid"].items():
+        if k >= len(m.shells):
+            continue
+        s = m.shells[k]
+        if isinstance(tgt, dict):
+            top = [i for i in s if m.p(i)[1] > tgt["top_y"]]
+            set_rigid(api, m, top, tgt["top"])
+            set_rigid(api, m, [i for i in s if i not in set(top)], tgt["rest"])
+        else:
+            set_rigid(api, m, s, tgt)
+        n += len(s)
+    return n
+
+
+def skin_lower_belt(api, m, cfg=BASTION_SKIN):
+    """Lower belt / hip armour below lower_belt_top: spine share back to Root with only a little
+    Spine1 at its top edge (user: Spine1 made it cave in; then 'a little, so it is not stiff')."""
+    top, f_top, fade = cfg["lower_belt_top"], cfg["lower_belt_spine1"], cfg["lower_belt_fade"]
+
+    def fn(i, d):
+        x, y, z = m.p(i)
+        if abs(x) > cfg["torso_x"] or y >= top:
+            return None
+        sp = sum(d.get(j, 0) for j in SPINE)
+        if sp <= 0:
+            return None
+        a = f_top * ramp(y, fade, top)
+        out = {j: w for j, w in d.items() if j not in SPINE}
+        out["DEF_Root_M"] = out.get("DEF_Root_M", 0) + sp * (1 - a)
+        if a > 1e-3:
+            out["DEF_Spine1_M"] = out.get("DEF_Spine1_M", 0) + sp * a
+        return out
+    return rewrite(api, m, range(m.n), fn)
+
+
+def skin_pass(api, obj="Body", cfg=BASTION_SKIN, head_neck_keep=None, profile=True):
+    """The whole agreed clean-up, in order. profile=True right after a bind (re-split torso and
+    legs by height); profile=False after a smooth/hammer (keep the smoothing, only re-apply the
+    hard rules: lower belt, armpit, no Head/Neck on the collar, no cross-side, rigid shells).
+    head_neck_keep: vertex indices allowed to keep Head/Neck (helmet, mask, real neck)."""
+    m = Mesh(api, obj)
+    out = {}
+    if profile:
+        out["torso"] = skin_torso(api, m, cfg); out["legs"] = skin_legs(api, m, cfg)
+    out["lower_belt"] = skin_lower_belt(api, m, cfg)
+    out["armpit"] = skin_armpit(api, m, cfg)
+    if head_neck_keep is not None:
+        out["no_head_neck"] = skin_no_head_neck(api, m, head_neck_keep)
+    out["cross_side"] = fix_cross_side(api, m)
+    out["rigid"] = skin_rigid(api, m, cfg)
+    print("skin_pass:", out)
+    return out
+
+
+def pose_stretch(api, m, region, rest, pose):
+    """Edge length ratios of `region` between the bind pose and a pose, both set by callables
+    (rest() puts the posed controls at 0, pose() sets the user's pose). Use this, not
+    edge_stretch, when the scene is already posed: edge_stretch takes the CURRENT pose as rest.
+    Returns (sorted [(ratio, a, b)], {vertex: posed position})."""
+    reg = set(region); W = {i: api.vertex_weights(m.G[i]) for i in reg}
+    INF = sorted({j for wt in W.values() for j, w in wt})
+    rest(); REST = {j: inv_rigid(M34(api, j)) for j in INF}
+    pose(); X = {j: mul34(M34(api, j), REST[j]) for j in INF}
+
+    def q(i):
+        p = m.p(i); o = [0, 0, 0]
+        for j, w in W[i]:
+            A = X[j]
+            for r in range(3): o[r] += w * (A[r][0] * p[0] + A[r][1] * p[1] + A[r][2] * p[2] + A[r][3])
+        return o
+    Q = {i: q(i) for i in reg}; rs = []
+    for a, b in m.edges:
+        if a in reg and b in reg:
+            l0 = math.dist(m.p(a), m.p(b))
+            if l0 > 2e-3: rs.append((math.dist(Q[a], Q[b]) / l0, a, b))
+    rs.sort()
+    return rs, Q

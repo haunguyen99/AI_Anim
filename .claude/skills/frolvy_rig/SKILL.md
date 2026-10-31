@@ -23,7 +23,7 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 - **Chỉ joint base.** Không bật helper set (PRT/HLP/MUS), không twist, không bendy: `api.set_helper_set(False)`, `api.set_bendy_limbs(False)`, `twistJoints = 0`. Người dùng không cần các joint đó cho game.
 - **Root_M là joint hông** (kiểu AdvancedSkeleton): Root nằm ở hông, nhãn `root`, không có joint Pelvis; Spine1, Hip, giáp hông nằm thẳng dưới Root. Mặc định 0.9.22+ của Frolvy (Root ở 0,0,0 + Pelvis) KHÔNG dùng cho rig game. Joint `DEF_Root_M` mang nhãn `root`.
 - **Skin chỉ bằng joint DEF**, bỏ joint cuối/pivot (End, Heel, FootSide, Finger4), không cho thân ăn joint đạo cụ. Tối đa 4 joint mỗi đỉnh, bỏ weight < 1%.
-- **Mảnh cứng** (giáp, mặt nạ, mắt, vòng tay, đệm gối, đạo cụ) gán 100% vào joint của nó. Giáp hông "đi theo chân 50%" = skin 50% joint giáp + 50% Hip cùng bên (constraint lên control giáp sinh vòng lặp).
+- **Mảnh cứng** (giáp, mặt nạ, mắt, vòng tay, đệm gối, đạo cụ) gán 100% vào joint của nó. Giáp hông: chốt cuối của Bastion là **đi theo pelvis** (100% joint HipPad, con của Root, mép trên mảnh trên theo Root), không ăn Hip; trước đó đã thử "theo chân 50%" (50% HipPad + 50% Hip) rồi bỏ. Không constraint control giáp vào joint (sinh vòng lặp).
 - **Không để joint xa ảnh hưởng.** Mỗi vùng chỉ ăn joint của nó và joint kề; tay chân không kéo thân; đầu và mặt nạ chỉ theo Head (cổ theo Neck); cổ áo/giáp thân theo thân.
 - **Control vừa ôm mesh, dễ bấm**, không phải vòng khổng lồ: vòng rộng hơn mesh vài cm, IK chân là hộp ôm giày, control giáp nằm trên mặt tấm giáp. Đặt `fitScale = 6` cho control đã chỉnh tay để Fit Controls không phóng to lại.
 - Chỉnh tay xong thì **lưu** (`api.save_scene(path)`); chỉ hỏi trước khi mở file khác nếu scene đang có thay đổi chưa lưu.
@@ -48,21 +48,38 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 2. `api.set_helper_set(False); api.set_bendy_limbs(False); api.build_rig()` hoặc `api.rebuild_rig()` (Rebuild giữ skin + hình control).
 3. `R.after_rebuild(api, one_side=("Weapon","Arrow"), prop_side="_R")` - làm lại mọi thứ Rebuild bỏ/để sai: xóa đạo cụ bị mirror sang bên kia (và node `wire_` chết, **không bao giờ xóa `wire_DEF_Root_M_*`**), nối translate cho control FK, đặt joint DEF đúng fit, dời pivot control về joint, sửa dấu gập ngón cái, gắn lại switch, đặt lại nhãn. Kiểm in ra: `DEF vs fit: []`, `check_rig: []`, `rig moves: True`.
 4. Chạy Fit Controls (plugin) cho control mới, rồi thu gọn tay những control quá to.
-5. Toggle Fit (`api.toggle_fit()`) để người dùng chỉnh joint; chỉ hiển thị, không đổi rig.
+5. Kiểm lại sau Rebuild (Bastion từng sót cả ba): switch còn đúng cha (`R.parent(api, "CTL_ArmSwitch_L_grp")` = `CTL_Wrist_L`…, sai thì `R.reparent_switches(api)`), đạo cụ bị lật sang bên kia đã thật sự bị xóa (`DEF_Weapon_L` không còn), vòng control ngón cái nằm trên ngón cái.
+6. Toggle Fit (`api.toggle_fit()`) để người dùng chỉnh joint; chỉ hiển thị, không đổi rig.
 
 ### 4. Skin
+**Quy trình chuẩn** (Bastion 2026-10-31, người dùng đã duyệt từng vùng):
 1. Bind: `api.select([mesh]); api.bind_skin(R.influences(api))`; đạo cụ bind riêng vào joint của nó rồi `R.set_rigid`.
-2. Làm cứng các mảnh rời theo `Mesh.shells` (giáp, mặt nạ…); gỡ weight joint giáp khỏi thân mềm.
-3. `R.fix_cross_side(api, R.Mesh(api,"Body"))` - giày và mặt trong đùi rất hay ăn chân bên kia.
-4. Luật vùng (chỉ gỡ, không thêm): mỗi đỉnh thuộc đoạn xương gần nhất cùng bên, chỉ ăn xương đó + cha + con kề (cho thêm joint mà đoạn xương gần không quá 6 cm); cột sống bỏ khi đỉnh cao/thấp hơn đoạn xương > 15 cm; Neck bỏ dưới 1,52 m và ngoài vai; Head chỉ ở đầu.
-5. Vùng đầu–cổ: mũ + mặt nạ (kể cả tấm chắn mặt nhô ra trước, góc dưới, mép sau) 100% Head; cổ thật Neck; cổ áo 100% thân (Chest), KHÔNG một vertex cổ áo nào ăn Head hay Neck, kể cả khi mũ/mặt nạ hàn liền cổ áo (chấp nhận dải nối giãn). Kiểm: chọn các vertex có Head rồi chụp viewport; góc trong cổ áo hay lọt vào Head, lọc bằng khoảng cách ngang tới trục đầu (lớn hơn bán kính mũ thì là cổ áo), nhưng thành trong cổ áo nằm sát mũ (Bastion: |x| 0.09–0.12, cao tới đỉnh cổ áo phía sau) lọt qua bộ lọc này, nên đưa ảnh vùng Head cho người dùng chọn tiếp; sau đó `deform_test` xoay Neck/Head: không vertex nào ngoài vùng Head được dời.
-6. Ngực cạnh nách: Shoulder không ăn phía trong khớp vai (về 0 ở ~30 cm từ tâm), Scapula giảm một nửa ở mặt trước ngực.
-7. Kiểm: `R.skin_report(api,"Body")`, `R.deform_test(...)` (mesh_data chỉ trả vị trí gốc nên phải tự tính skin), `R.edge_stretch(...)` cho chỗ móp/rách. Chụp viewport để chắc mesh không lệch ở tư thế gốc sau khi joint dời.
-8. SkinTokens (plugin AI skin) đã thử trên Bastion: model dồn 100% vào một xương phụ → không dùng được; bind bằng Frolvy rồi dọn theo luật trên.
+2. Đo các mốc chiều cao của model mới (joint, mép đai trên/dưới, gối, cổ giày, mũi giày), chép `R.BASTION_SKIN` thành cfg mới, sửa số và bảng `rigid` (chỉ số shell → joint; xem `Mesh.shells`).
+3. `R.skin_pass(api, "Body", cfg, head_neck_keep=<chỉ số đỉnh mũ+mặt nạ+cổ thật>, profile=True)`. Hàm này làm theo thứ tự:
+   - chia lại thân (Root/Spine1/Chest) và chân (Hip/Knee/Ankle/Toes) theo chiều cao;
+   - áp luật đai dưới, nách, không Head/Neck ngoài đầu–cổ, không ăn bên kia;
+   - làm cứng shell **cuối cùng**.
+4. Sửa đầu–cổ, bàn tay, vai theo các mục dưới.
+5. Mỗi lần **smooth/hammer** xong: `R.skin_pass(..., profile=False)` để giữ phần smooth nhưng áp lại luật cứng (đai dưới, nách, cổ áo, bên kia, shell). Hàm chạy lại nhiều lần không đổi gì thêm.
+6. Thử bằng **tư thế thật của người dùng**: `R.pose_stretch(api, m, vùng, rest, pose)` (so với tư thế gốc); `edge_stretch` chỉ dùng khi scene chưa có pose. Cạnh rất ngắn (< 1 cm) cho tỉ lệ giãn ảo, nhìn khoảng cách thật.
+7. Lưu weight ra JSON trong scratchpad trước mỗi lần sửa lớn để trả lại khi người dùng không ưng.
+
+**Luật từng vùng** (lý do, để áp cho model khác):
+- Luật chung (chỉ gỡ, không thêm): mỗi đỉnh thuộc đoạn xương gần nhất cùng bên, chỉ ăn xương đó + cha + con kề; tay chân không kéo thân, thân không kéo tay chân.
+- Bàn tay: đỉnh ăn joint xa hơn joint gần nhất > 1,5 cm (không phải cha/con) là sai → hammer vài lần, phần còn lại gỡ hẳn về joint gần nhất.
+- Vùng đầu–cổ: mũ + mặt nạ (kể cả tấm chắn mặt nhô ra trước, góc dưới, mép sau) 100% Head; cổ thật Neck; cổ áo 100% thân (Chest), KHÔNG một vertex cổ áo nào ăn Head hay Neck, kể cả khi mũ/mặt nạ hàn liền cổ áo (chấp nhận dải nối giãn). Kiểm: chọn các vertex có Head rồi chụp viewport; góc trong cổ áo hay lọt vào Head, lọc bằng khoảng cách ngang tới trục đầu (lớn hơn bán kính mũ thì là cổ áo), nhưng thành trong cổ áo nằm sát mũ (Bastion: |x| 0.09–0.12, cao tới đỉnh cổ áo phía sau) lọt qua bộ lọc này, nên đưa ảnh vùng Head cho người dùng chọn tiếp; sau đó `deform_test` xoay Neck/Head: không vertex nào ngoài vùng Head được dời. Đừng hammer/smooth cổ áo với Neck để bớt giãn dải nối: Bastion thử rồi, ngửa cổ mạnh là mảng ngực quanh cổ bị kéo theo, người dùng bắt bỏ. Lưới cổ thật nằm sau mặt nạ (Bastion 34 + 12 đỉnh mặt sau ống cổ) theo Neck, không phải Head.
+- Thân (Root/Spine1/Chest, `skin_torso` + `skin_lower_belt`): giữ phần weight tay/chân/giáp, chia lại phần cột sống theo chiều cao, chuyển mượt giữa các joint (Bastion: Đai dưới gần như Root (< 1,115 m; chốt: Spine1 15% ở mép trên giảm về 0 ở 1,0 m cho đỡ cứng khi cúi; người dùng hai lần: Spine1 làm đai dưới "ăn vào trong"), Root→Spine1 dồn trong đai trên 1,115–1,20; smooth thân xong phải áp lại luật này; Spine1 1,14–1,26; Spine1→Chest 1,26–1,40; Chest trên đó). Bind mặc định để Root 40% ở bụng và Root 89% sát Chest ở sườn → xé ×25 khi xoay thân; sau khi chia lại còn ×1,9.
+- Chân (`skin_legs`): chia lại phần Hip/Knee/Ankle/Toes theo chiều cao (giữ Root ở háng, giáp hông): Hip trên gối +5 cm, Hip→Knee trong ±4 cm quanh gối, Knee cả ống chân, Knee→Ankle 3–9 cm trên cổ chân, Ankle dưới đó, Toes chỉ ở mũi giày trước khớp ngón. **Bỏ qua các mảnh rời (shell) khi chia theo chiều cao**: giáp gối (Bastion shell 11–16) phải cứng 100% Knee, giáp hông theo HipPad/Root; chia theo chiều cao làm giáp gối bị bẻ móp khi gập gối. Mọi lần chia lại/smooth xong: chạy lại bước làm cứng shell. Bind để Hip xuống tới ống chân, Knee xuống bàn chân, Ankle/Toes lên bắp chân → nhấc chân móp gối, xoay bàn chân móp bắp chân. Thử bằng tư thế thật của người dùng (đo so với rest, không dùng `edge_stretch` khi đang có pose vì nó lấy pose hiện tại làm gốc).
+- Ngực cạnh nách (`skin_armpit`): Shoulder không ăn tấm ngực phía trong khớp vai (trần 0→50% từ 29→36 cm tính từ tâm), Scapula mặt trước ngực trần 35%, về 0 về phía xương ức. Smooth vai không có luật này đã làm giáp ngực móp khi hạ tay (Bastion: ×3,1 → ×1,1 sau khi áp).
+- Vai: smooth nhẹ (hammer 0.5 × 3) vùng Scapula/Shoulder/Chest, bỏ giáp vai, chép weight bên trái sang bên phải theo cặp đỉnh đối xứng để hai vai giống nhau, rồi áp luật nách.
+- Giáp hông: theo pelvis (HipPad, con của Root), hàng mép trên mảnh trên theo Root như bản lề; mảnh dưới theo joint của nó. Giáp gối cứng theo Knee.
+- Kiểm: `R.skin_report(api,"Body")` (ở tư thế gốc: khi rig đang có pose nó báo "far" giả), `R.deform_test(...)`, `R.pose_stretch(...)`. Chụp viewport ở tư thế người dùng để chắc.
+- SkinTokens (plugin AI skin) đã thử trên Bastion: model dồn 100% vào một xương phụ → không dùng được; bind bằng Frolvy rồi dọn theo luật trên.
 
 ### 5. Control, switch, picker
 - Switch FK/IK **không thể đi theo joint DEF** (DEF đọc `fkIk` của chính switch → vòng lặp, cả rig đứng). Gắn: switch tay và cột sống dưới control FK cuối, switch chân dưới IK foot (chân ưu tiên IK). Phóng switch lên ~14 cm, không để lọt trong đạo cụ.
 - Constraint control vào joint trong cùng cây control cũng có thể bị coi là vòng lặp → sau mỗi constraint/wire mới gọi `R.check_rig_moves(api)`; nếu rig đứng thì gỡ ngay.
+- Ngón cái khi curl/handPose phải **xoay vào lòng bàn tay** (ngang qua lòng, về phía ngón út), không gập xuống hay lật lên mu: Rig Builder chỉ quay trục Y của ngón cái → dùng `R.thumb_into_palm(api)` (quay trục Z, thêm chút Y ngược; `after_rebuild` đã gọi). Kiểm: nắm tay (handPose 2) thì đầu ngón cái nằm dưới đốt giữa ngón trỏ/giữa. Sau Rebuild còn kiểm **vòng control ngón cái**: Rebuild giữ hình control theo trục cũ, Bastion bị lệch 9–10 cm về phía cổ tay và to gấp đôi → đặt lại vòng vuông góc xương, tâm ở ~45% đốt, bán kính ôm đốt (Bastion 5/4/3,3 cm), rồi `fitScale` = 6 để Fit Controls không đổi.
 - Rig Builder đã có `curl`, `spread`, `handPose` trên switch tay - không thêm control ngón tay riêng trừ khi được yêu cầu.
 - Picker: `api.create_picker` + `add_picker_button` theo hình chiếu chính diện (phải đỏ, trái xanh, giữa vàng, giáp/đạo cụ xanh lá, switch tím; FK chữ nhật, IK tròn); chân ưu tiên IK (IK Foot/Knee to, FK nhỏ màu nhạt ở cột ngoài); hai bảng bàn tay + nút All. Xóa nút cũng phải sửa nút All (chứa mọi control). `api.export_picker(pk, <thư mục Rig>/<nv>.fvpicker)`.
 
