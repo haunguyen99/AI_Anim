@@ -121,6 +121,48 @@ def jobs():
     return {"jobs": out, "watching": watching(), "user": user(), "root": ROOT}
 
 
+CONCEPT_TAG = "ORIGINAL CHARACTER CONCEPT"
+
+
+def concept_text(nums):
+    """Đoạn prompt đi kèm ảnh concept (nums = số thứ tự ảnh concept trong các ảnh gửi kèm, đếm từ 1):
+    concept quyết định nhân vật là ai, render model quyết định hình khối và màu 3D."""
+    which = "attached image " + str(nums[0]) if len(nums) == 1 else "attached images " + ", ".join(map(str, nums))
+    return ("\n\n" + CONCEPT_TAG + " (source of truth for WHO the character is): " + which + " "
+            + ("is" if len(nums) == 1 else "are") + " the original concept art. Draw exactly this same character: same face, hair, body proportions, costume pieces, "
+            "accessories and prop type. Never invent a different person, extra clothing, extra accessories, armour, weapons or objects "
+            "that are not in the concept. The 3D model renders give the exact game shapes and colours; where concept and model differ in "
+            "detail, follow the model render, but never add anything that neither of them shows.")
+
+
+def concept_for(jd):
+    """Concept gốc của nhân vật (bắt buộc gửi kèm mọi lần tạo ảnh, người dùng 2026-10-31).
+    keys/keypose.json {"concept": ["concept.png", ...]} (đường dẫn tương đối job), không có thì tìm file concept* trong job/, model_ref/, keys/.
+    Ảnh .webp đổi sang .png cạnh nó (Codex nhận chắc chắn png/jpg)."""
+    found = []
+    cfg = os.path.join(jd, "keys", "keypose.json")
+    if os.path.isfile(cfg):
+        try:
+            found = [p for p in (os.path.join(jd, x) for x in json.load(open(cfg, encoding="utf8")).get("concept") or []) if os.path.isfile(p)]
+        except ValueError:
+            pass
+    if not found:
+        for d in (jd, os.path.join(jd, "model_ref"), os.path.join(jd, "keys")):
+            if os.path.isdir(d):
+                found += [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.lower().startswith("concept") and f.lower().endswith(IMG)]
+    out = []
+    for p in found:
+        if p.lower().endswith(".webp"):
+            png = p[:-5] + ".png"
+            if not os.path.isfile(png):
+                from PIL import Image
+                Image.open(p).convert("RGB").save(png)
+            p = png
+        if p not in out:
+            out.append(p)
+    return out
+
+
 def refs_for(jd):
     cfg = os.path.join(jd, "keys", "keypose.json")
     if os.path.isfile(cfg):
