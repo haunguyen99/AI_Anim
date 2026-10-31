@@ -60,7 +60,7 @@ Có thể nói chuyện tự nhiên bằng tiếng Việt, ví dụ "làm anim G
 ### Ba quy trình
 
 - **A. Có video ref nhiều góc:** phân tích ref → P0 → blocking → spline → polish → FBX. Xem `docs/pipeline_v2.md`.
-- **B. Có file blocking FBX của team:** nạp vào Pose Lab → phân tích → pose chuyển tiếp → polish → FBX. Xem `.claude/skills/animation/knowledge/details/user_blocking.md`.
+- **B. Người dùng tự key blocking:** AI auto-rig trên Frolvy → người dùng key blocking trên Frolvy → AI xuất FBX sang Studio → phân tích → pose chuyển tiếp → polish → FBX. Team đưa sẵn file blocking FBX thì nạp thẳng vào Studio. Xem `.claude/skills/animation/knowledge/details/user_blocking.md`.
 - **C. Chỉ có yêu cầu bằng lời:** thiết kế và bảng timing (chờ duyệt) → pose kể chuyện → blocking → tiếp như B. Xem `.claude/skills/animation/knowledge/details/text_brief.md`.
 
 Mọi quy trình đều có **cổng duyệt**: Claude không sang bước sau khi bạn chưa duyệt bước trước.

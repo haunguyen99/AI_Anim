@@ -20,7 +20,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 |---|---|
 | **text_brief.md** | chỉ có yêu cầu bằng lời (không ref, không blocking): quy trình C, intake, bản thiết kế + bảng timing, pose 10%, phần còn thiếu (pose_build, đọc key Pose Lab, FBX nguồn) |
 | **gdd_stage0.md** | có GDD (xlsx / Google Sheet) hoặc cần ảnh key pose khi không có ref: giai đoạn 0 (đọc GDD → danh sách anim → câu hỏi → phân tích có nguồn → ảnh key pose bằng Codex trên render model thật → trang duyệt), mẫu prompt, đo tỉ lệ vũ khí, lỗi Codex hay gặp |
-| **user_blocking.md** | user/team đưa FBX blocking (không ref): quy trình B, cổng duyệt, script mẫu, luật (RotationOrder, mũi chân, cung nhấc chân, QA fold_backs) |
+| **user_blocking.md** | quy trình B: AI rig trên Frolvy (MCP) → user key → FBX sang Studio; hoặc team đưa FBX blocking (không ref): cổng duyệt, script mẫu, luật (RotationOrder, mũi chân, cung nhấc chân, QA fold_backs) |
 | **review_process.md** `#home-app` | Home (quản lý dự án/anim), clip tạo từ Home, trạng thái hiện trên Home |
 | **arms_hands.md** | |
 | `#no-overbend` | tay/chân bị chê xoắn, bẻ quá; đặt tay lên prop; sau khi rig (joint_limits) |
@@ -35,6 +35,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#pole-spec` | dựng rig IK, đặt pole khuỷu/gối; trước khi render mọi version (pole_audit) |
 | `#spline-ik-arms` | spline tay đã giải IK từng key; "tay xoay loạn xạ" |
 | `#prop-hand-side-fk` | tay thao tác prop ở phía xa camera; chọn FK/IK; đọc tay vs prop ở góc top |
+| **qa_anatomy.md** `#joint-coupling` | dựng / sửa bất kỳ key nào; khớp dùng lẻ loi (vai đứng yên khi giơ tay, chỉ xoay đầu không xoay cổ); thêm / chỉnh luật liên động |
 | **props_weapons.md** | |
 | `#heavy-prop-lever` | prop nặng cầm một đầu (chùy, búa) |
 | `#long-prop-flick` | đầu prop dài bị giật/vẩy |
@@ -77,6 +78,8 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#end-on-idle` | đuôi clip non-loop cho game |
 | **review_process.md** | |
 | `#reviewer-prefs` | trước khi trả lời/gửi bản cho user |
+| `#director` | trước mỗi cổng duyệt: gọi subagent animation-director, đọc director_log |
+| **director_standards.md** | trước khi director chấm; sau MỖI lần user duyệt/trả (so với director, ghi calibration) |
 | `#naming-principles` | ghi feedback vào knowledge |
 | `#self-measure` | trước khi gửi review; sau mỗi lần sửa |
 | `#eye-vs-iou` | so ref vs anim; IoU cao mà vẫn bị chê |

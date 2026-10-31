@@ -15,6 +15,7 @@ ST.PANELS = {
   "pose:joint": { label: "Pose · Khớp", short: "Khớp", mod: "pose" }, "pose:phys": { label: "Pose · Vật lý", short: "Vật lý", mod: "pose" },
   "pose:notes": { label: "Pose · Ghi chú", short: "Ghi chú", mod: "pose" },
   "pose:feedback": { label: "Góp ý cho AI", short: "Góp ý cho AI", mod: "pose" },   // ghi chú vẽ + điều chỉnh key, một nút gửi (user 2026-10-28 "gộp lại làm 1")
+  "keypose:list": { label: "Image Key", short: "Image Key", mod: "keypose", nofocus: true }, "keypose:anims": { label: "Anim", short: "Anim", mod: "keypose", nofocus: true },   // ảnh key pose của anim đang mở (user 2026-10-30)
   "props:list": { label: "Vật thể phụ", short: "Vật thể", mod: "props", nofocus: true },   // mũi tên, mục tiêu… có key riêng, không vào FBX (2026-10-29)
   "notes:list": { label: "Ghi chú vẽ", short: "Ghi chú vẽ", mod: "notes", nofocus: true }, "pose:versions": { label: "Pose · Phiên bản", short: "Phiên bản", mod: "pose" },
 };
@@ -40,10 +41,22 @@ ST.WS = {
     size: { dockW: 360 },
     ui: { outliner: true, dock: true, shelf: true, timeline: false },
   },
+  imagekey: {   // chỉ tạo / duyệt ảnh key pose của các anim theo tài liệu (bản phân tích), không model 3D (user 2026-10-30)
+    // đứng trước Pose ("đưa image key lên trước pose"); timeline ảnh riêng trong viewport, anim chọn ở cột trái, góp ý vẽ trên ảnh
+    id: "imagekey", label: "Image Key", icon: "img", focus: "mesh",
+    tools: [], modes: [],
+    shelf: ["notes.draw", "|", "edit.search"],
+    tabs: ["keypose:list"],   // ảnh của pha + ghi chú vẽ gộp một panel (user 2026-10-30 "Gộp hai panel này thành 1")
+    drop: ["notes:list"],
+    left: ["keypose:anims"],
+    size: { dockW: 380 },
+    ui: { outliner: true, dock: true, shelf: true, timeline: false },
+  },
   pose: {
     id: "pose", label: "Pose", icon: "pose", focus: "pose",
     tools: [], modes: [], shelf: "@pose",   // shelf = thanh công cụ Pose Lab (khối của modules/pose.js)
-    tabs: ["pose:joint", "pose:phys", "props:list", "pose:feedback"],   // pose:feedback = ghi chú vẽ ✎ + điều chỉnh gửi AI gộp một tab (2026-10-28)
+    tabs: ["pose:joint", "pose:phys", "props:list", "pose:feedback"],
+    drop: ["keypose:list"],   // ảnh key pose chỉ ở workspace Image Key (user 2026-10-30 "bỏ image key bên này đi")   // pose:feedback = ghi chú vẽ ✎ + điều chỉnh gửi AI gộp một tab (2026-10-28)
     merge: { "pose:notes": "pose:feedback", "notes:list": "pose:feedback" },   // bố cục cũ đã lưu tự đổi sang tab gộp
     left: ["pose:versions"],   // Phiên bản dưới Outliner (user 2026-10-28: "Pose phiên bản đặt sang phía cùng với outliner")
     size: { dockW: 340 },

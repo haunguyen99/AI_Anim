@@ -3,6 +3,7 @@
 Thêm (2026-10-29, user: "cho vào bộ canh luôn đi"): góp ý tab "Góp ý cho AI" của Pose (kind pose_adjust) ở
 work/store/*_pose_lab/adjusts: nhận ngay khi bấm "Gửi tất cả cho AI" (rounds/<clip-ver> status sent), còn góp ý mới lưu mà
 chưa gửi thì nhận khi người dùng ngừng thêm góp ý 3 s. Sửa xong: python tools/notes_watch.py --pose-done <ns> <clip> <ver> "ghi chú"
+work/store/keypose/animreqs: "+ Anim mới" trong Image Key (kind anim_req). Cập nhật: python tools/notes_watch.py --anim-status <id> <trạng thái> "lời nhắn"
 (đánh dấu các góp ý đó "AI đã áp", vòng = fixed).
 Claude chạy file này nền (run_in_background) trong phiên chat: thoát = Claude được gọi dậy để sửa, xong thì chạy lại để canh tiếp.
 Không tốn lượt AI khi chờ (chỉ đọc thư mục work/store/*_studio/notes mỗi 2 giây).
@@ -65,6 +66,35 @@ def keypose_pending():
         if d.get("sent") and not d.get("picked"):
             out.append((f, d))
     return out
+
+
+def animreq_pending():
+    """Image Key "+ Anim mới" (Studio, 2026-10-30): work/store/keypose/animreqs/<id>.json gửi mà chưa nhận.
+    Claude làm: đăng ký anim, bản phân tích + bảng pha (cột Key pose) chờ duyệt, rồi ảnh key pose (gdd_stage0.md, mục Anim mới từ Studio)."""
+    out = []
+    for f in glob.glob(os.path.join(STORE, "keypose", "animreqs", "*.json")):
+        try:
+            d = json.load(open(f, encoding="utf8"))
+        except (OSError, ValueError):
+            continue
+        if d.get("sent") and not d.get("picked"):
+            out.append((f, d))
+    return out
+
+
+def anim_status(rid, status, reply=""):
+    """--anim-status <id> <trạng thái> ["lời nhắn"]: cập nhật yêu cầu anim mới (trang Studio hiện ngay).
+    Trạng thái: picked / analysis (đang phân tích) / review (chờ duyệt phân tích) / images (đang tạo ảnh) / done / error."""
+    f = os.path.join(STORE, "keypose", "animreqs", rid + ".json")
+    d = json.load(open(f, encoding="utf8"))
+    d["status"] = status
+    if reply:
+        d["reply"] = reply
+    if status == "done":
+        d["done_at"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+    json.dump(d, open(f, "w", encoding="utf8"), ensure_ascii=False)
+    print(json.dumps({"ok": True, "id": rid, "status": status}, ensure_ascii=False))
+    return 0
 
 
 POSE_QUIET = 3   # s: góp ý chưa gửi được nhận khi không có góp ý mới trong chừng này giây (user: "nhận luôn sau 3 giây")
@@ -140,6 +170,9 @@ def gates_pending():
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
+    if "--anim-status" in sys.argv:
+        i = sys.argv.index("--anim-status"); a = sys.argv[i + 1:i + 4] + [""] * 3
+        return anim_status(a[0], a[1], a[2])
     if "--pose-done" in sys.argv:
         i = sys.argv.index("--pose-done"); a = sys.argv[i + 1:i + 5] + [""] * 4
         pose_done(a[0], a[1], a[2], a[3]); return 0
@@ -157,10 +190,10 @@ def main():
 def loop(once):
     end = time.time() + 8 * 3600
     while True:
-        P, G, K, A = pending(), gates_pending(), keypose_pending(), pose_pending()
-        if P or G or K or A:
+        P, G, K, A, M = pending(), gates_pending(), keypose_pending(), pose_pending(), animreq_pending()
+        if P or G or K or A or M:
             time.sleep(1.5)                      # người dùng có thể đang gửi nhiều ghi chú liền: gom một lượt
-            P, G, K, A = pending(), gates_pending(), keypose_pending(), pose_pending()
+            P, G, K, A, M = pending(), gates_pending(), keypose_pending(), pose_pending(), animreq_pending()
             now = time.strftime("%Y-%m-%dT%H:%M:%S")
             for f, raw, d in P:
                 d["picked"] = now                # trang hiện "AI đã nhận, đang sửa"
@@ -170,7 +203,7 @@ def loop(once):
             for f in {x[0] for x in G}:
                 raw = next(x[1] for x in G if x[0] == f)
                 json.dump(raw, open(f, "w", encoding="utf8"), ensure_ascii=False)
-            for f, d in K:
+            for f, d in K + M:
                 d["picked"] = now; d["status"] = "picked"
                 json.dump(d, open(f, "w", encoding="utf8"), ensure_ascii=False)
             for ns, clip, ver, items, rf, rraw, rd in A:
@@ -184,6 +217,9 @@ def loop(once):
                      "step_name": GATE_NAMES.get(int(n)), "status": g.get("status"), "note": g.get("note")} for f, _, _, n, g in G]
             res += [{"kind": "keypose_req", "id": os.path.basename(f)[:-5], "job": d.get("job"), "key": d.get("key"), "base": d.get("base"),
                      "n": d.get("n"), "by": d.get("by"), "text": d.get("text")} for f, d in K]
+            res += [{"kind": "anim_req", "id": os.path.basename(f)[:-5], "char": d.get("char"), "charName": d.get("charName"), "job": d.get("job"),
+                     "name": d.get("name"), "desc": d.get("desc"), "loop": d.get("loop"), "frames": d.get("frames"), "fps": d.get("fps"),
+                     "doc": d.get("doc"), "by": d.get("by")} for f, d in M]
             res += [{"kind": "pose_adjust", "ns": ns, "clip": clip, "version": ver, "sent": rd is not None,
                      "items": [{"id": os.path.basename(f)[:-5], "frame": d.get("frame"), "text": d.get("text"), "kind": d.get("kind"),
                                 "bones": sorted((d.get("bones") or {}).keys()), "img": bool(d.get("img"))} for f, _, d in items]}

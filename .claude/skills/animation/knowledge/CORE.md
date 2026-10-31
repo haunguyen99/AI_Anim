@@ -2,7 +2,7 @@
 Đọc mỗi task cùng `INDEX.md`. `→ file#mục` = chi tiết trong `details/`, chỉ mở khi task đụng tới.
 
 ## Phân tích
-- Nguồn vào là FBX blocking của user (không ref) → quy trình B: khớp file, phân tích, breakdown, polish, FBX → user_blocking.md
+- Quy trình B: AI auto-rig trên Frolvy (MCP `frolvy`, mở app trước) → user key blocking → AI xuất FBX sang Studio, khớp file, phân tích, breakdown, polish, FBX; team đưa sẵn FBX blocking thì vào thẳng bước khớp file → user_blocking.md
 - Chỉ có yêu cầu bằng lời → quy trình C: thiết kế + timing, pose 10%, blocking 50%, rồi như B → text_brief.md
 - Có GDD → giai đoạn 0: danh sách anim, câu hỏi, phân tích có nguồn, ảnh key pose Codex trên render model thật → gdd_stage0.md
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
@@ -20,6 +20,7 @@
 - Game side view: mở ngực ~55°, đầu ~25° ra cam; prop vẫn ngắm mục tiêu → torso_head.md#open-to-camera
 - Bàn chân không đứt khỏi ống chân; xem bộ phận thấp nhất trước khi nâng hông; bước chân đo bằng dải tiếp đất → legs_feet.md#foot-detach
 - Pole gối theo hướng gối mong muốn; knee_dir sai khi kiễng; hông đo bằng đai lưng → legs_feet.md#knee-dir
+- Khớp không đứng một mình: mỗi key chạy `tools/joint_rules.py` (audit → apply) — tay giơ/với thì bả vai theo, thân/cổ chia góc các đốt, cúi người hông góp phần, giới hạn khớp không tệ hơn P0 → qa_anatomy.md#joint-coupling
 - Pole KHÔNG tự do: gốc theo ngực/bàn chân, hướng khuỷu/gối ghi trong spec key, `pole_audit.py` mọi key trước khi render → arms_hands.md#pole-spec
 
 ## Tay, bàn tay, prop
@@ -48,6 +49,7 @@
 ## Review & ghi chú
 - Mắt trước: REF|ANIM có shading mọi view, gọi tên lỗi; IoU mù trước/sau → review_process.md#eye-vs-iou
 - Tự đo trước khi gửi, báo số + tác dụng phụ → review_process.md#self-measure
+- Trước mỗi cổng duyệt gọi subagent `animation-director`; còn lỗi mức A thì sửa trước khi gửi (≤ 2 vòng) → review_process.md#director
 - Note khoanh: vẽ nét lên frame; khoanh ở hold = thêm key; note 1 frame trong hold = sửa cả đoạn → review_process.md#circled-notes
 - Mỗi feedback: câu gốc + tên nguyên lý bị vi phạm → review_process.md#naming-principles
 - Một hướng sửa hỏng 2 lần → 2–3 ảnh tĩnh cho user chọn hoặc mời chỉnh trong Pose Lab; giữ bản đã duyệt → review_process.md#still-options

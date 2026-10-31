@@ -283,3 +283,34 @@ const pbLabel = k => k === "view" ? "Đang xem" : CAMS[k].label;
   sampleBones, ai: AI, renderStrip: () => { if (model) renderStrip(); } };
 '''),
 ]
+
+# ---- Liên động khớp (2026-10-31, user: "giơ tay lên đầu thì cầu vai cũng phải đi theo"): kéo / xoay xong một khớp bằng
+# gizmo hoặc lệnh AI rot/pos (Channel Box không tính) → modules/joint_rules.js chỉnh các khớp liên quan (bả vai, đốt sống,
+# cổ) trong cùng một bước Hoàn tác, trước Auto key. Luật: tools/joint_rules/biped.json (chung với tools/joint_rules.py).
+PATCHES += [
+    (r'''function afterEdit() {      // a joint was rotated / the hip moved (gizmo or Channel Box)
+''',
+     r'''function jrCtx() {          // cho modules/joint_rules.js: pose đang sửa + pose trước lần sửa (base) + IK tay của lõi
+  return { sel, selSet: [...selSet], B, base, model, mode, frame, keys: keysMode(), wp, wq, setWorldQuat,
+    solveArm: (s, p, q) => { if (q) handQ[s] = q.clone(); solveArm(s, p); }, sample: (f, names) => sampleBones(f, names || Object.keys(B)),
+    mark: names => { names.forEach(n => edited.add(n)); model.updateMatrixWorld(true); followEdit(); } };
+}
+function jrRun() {
+  const J = window.__jointRules; if (!J || !J.on() || !model || !sel) return;
+  try { const r = J.after(jrCtx()); if (r && r.msg) $("p_status").textContent = r.msg; } catch (e) { console.warn("Liên động khớp:", e); }
+}
+function afterEdit() {      // a joint was rotated / the hip moved (gizmo or Channel Box)
+'''),
+    (r'''  } else { multiQ0 = null; commitEdit(); }
+''',
+     r'''  } else { multiQ0 = null; jrRun(); commitEdit(); }
+'''),
+    (r'''    fn(); afterEdit(); attachGizmo(); commitEdit(); refresh();
+''',
+     r'''    fn(); afterEdit(); jrRun(); attachGizmo(); commitEdit(); refresh();
+'''),
+    (r'''  sampleBones, ai: AI, renderStrip: () => { if (model) renderStrip(); } };
+''',
+     r'''  sampleBones, jrCtx, ai: AI, renderStrip: () => { if (model) renderStrip(); } };
+'''),
+]

@@ -25,7 +25,7 @@ os.chdir(ROOT)
 # Cho phép (glob, so khớp đường dẫn kiểu /). Mọi thứ khác không bao giờ được đẩy.
 ALLOW = [
     "README.md", "MAP.md", "CLAUDE.md", "requirements.txt", ".gitignore",
-    ".claude/skills/**", "docs/**", "tools/**",
+    ".claude/skills/**", ".claude/agents/**", "docs/**", "tools/**",
     "work/clips.json", "work/patch_localdb.py",
     "work/pose_lab/index.html", "work/pose_lab/*.py", "work/pose_lab/fbx/*.py", "work/pose_lab/fbx/*.js", "work/pose_lab/fbx/test.html",
     "work/review_page/index.html", "work/review_page/*.py",
@@ -40,8 +40,8 @@ KEEP_REMOTE = {".claude/launch.json", ".mcp.json"}
 # --spine-live (người dùng 2026-10-29: mọi chỉnh sửa Spine Live đẩy vào nhánh spine-live): các file của Spine Live,
 # còn MAP.md chỉ thay các dòng Spine Live (giữ dòng của phiên khác trên nhánh)
 SPINE_LIVE = ["tools/spine_live", "tools/home/spine_live.py", "tools/home/spine_edit.py", "tools/spine_live_cmd.py",
-              "tools/spine_live_replay.py", ".claude/skills/spine2d"]
-SPINE_LIVE_MAP = ["| `tools/spine_live/` + `tools/home/spine_live.py` |", "| `tools/spine_live_cmd.py` |", "| `tools/spine_live_replay.py` |"]
+              "tools/spine_live_replay.py", "tools/spine/new_spine_anim.py", ".claude/skills/spine2d"]
+SPINE_LIVE_MAP = ["| `tools/spine_live/` + `tools/home/spine_live.py` |", "| `tools/spine_live_cmd.py` |", "| `tools/spine_live_replay.py` |", "| `tools/spine/new_spine_anim.py` |"]
 
 
 def merged_map(remote_blob):

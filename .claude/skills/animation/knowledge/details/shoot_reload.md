@@ -70,6 +70,8 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
   Shoot"):** P0 cúi đầu 7° + cổ 3° để ngắm dọc nỏ đọc ra là cúi gằm ở cam game ngang. Mặt đo bằng trục local nhìn +Z ở rest:
   P0 cúi 7,3°, quay về cam 42°. Bỏ phần cúi gốc ở MỌI frame của cả hai clip (`reload_spline.lift_head`, `shoot_head_lift.py`),
   giữ quay về cam và các cử động tương đối; sửa cả hai clip nối nhau để F cuối Shoot = F1 Reload (lệch 0).
+- **Dây ở chốt cũng nâng ở Shoot p3 (2026-10-29, "sửa cả dây cung cho anim shoot" → "sửa vậy được rồi"):** mũi tên cùng xương
+  `slingshot_1` với giữa dây nên trong FBX tên cao theo 2,55 cm ở F1–2 Shoot / F20–30 Reload; user chấp nhận. Studio dùng vật thể phụ.
 - Bản mới đăng bằng `clip_registry.py pose-version` chưa có `work/store/<ns>/anims/<clip>-<ver>.json` nên Studio mở ở spline:
   chép file của bản trước (đổi `version`) để giữ `interp: step`, rồi `studio_cmd.py anim clip <id>` cho trang tải lại.
 - Model Pose Lab cho rig team: `sdr03/poselab_model.py` (đủ xương + texture); khớp thêm của clip qua `clip_registry.py
