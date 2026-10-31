@@ -2,7 +2,7 @@
 Đọc mỗi task cùng `INDEX.md`. `→ file#mục` = chi tiết trong `details/`, chỉ mở khi task đụng tới.
 
 ## Phân tích
-- Nguồn vào là FBX blocking của user (không ref) → quy trình B: khớp file, phân tích, breakdown, polish, FBX → user_blocking.md
+- Quy trình B: AI auto-rig trên Frolvy (MCP `frolvy`, mở app trước) → user key blocking → AI xuất FBX sang Studio, khớp file, phân tích, breakdown, polish, FBX; team đưa sẵn FBX blocking thì vào thẳng bước khớp file → user_blocking.md
 - Chỉ có yêu cầu bằng lời → quy trình C: thiết kế + timing, pose 10%, blocking 50%, rồi như B → text_brief.md
 - Có GDD → giai đoạn 0: danh sách anim, câu hỏi, phân tích có nguồn, ảnh key pose Codex trên render model thật → gdd_stage0.md
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
