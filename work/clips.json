@@ -366,15 +366,15 @@
   {
    "id": "ninja_idle",
    "character": "Ninja",
-   "stage": "p0",
-   "note": "Pose F1 k10_v2 dựng theo ảnh concept k1r2_v1, chờ duyệt",
+   "stage": "polish",
+   "note": "Polish v4 (tay nhẹ, overlap thân khi thở), playblast pb4 quay F1–F40 hết khựng chỗ lặp, chờ góp ý",
    "dir": "work/infinite_defense/ninja_idle",
    "frames": 41,
    "fps": 30,
    "ref": "Không có video ref của rig. Ref dáng: https://www.reddit.com/r/PixelArt/comments/1tnpj6v/ninja_idle/ ; hạ trọng tâm: https://www.reddit.com/r/blender/comments/woha4h/ninja_idle_animation/",
    "desc": "[GDD] Ninja đứng thủ thế hơi khom người, tay phải cầm ngược kunai trước ngực, tay trái thả lỏng. Khăn quàng bay nhẹ theo nhịp thở. Khoảng mỗi 4–6 giây xoay kunai một vòng trong tay (optional). Animation loop liền mạch.\n\n[GDD] Ref: tay duỗi kiếm trong ref là tay không của ninja, tay kia là tay cầm kunai, tư thế hơi khom người một chút.\n\nNguồn: FDD Hero Ninja v1.1 (work/infinite_defense/gdd/ninja_fdd_v1.1.txt, https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k).\nModel: C:/Users/Admin/Documents/Ngoc/EndlessKicker/Hero_Ninja/Rig/MC_Ninja.fbx (mesh body_ninja, weapon, weapon_explode; chưa có xương). Texture T_Colorpalette.tga.",
    "created": "2026-10-28",
-   "updated": "2026-10-28",
+   "updated": "2026-10-29",
    "review": {
     "key": "ninja_idle",
     "clip": "Idle",
@@ -389,7 +389,7 @@
      "Khăn quàng",
      "Chân"
     ],
-    "url": ""
+    "url": "https://claude.ai/artifact/7U5nUphRrksoxqbxTFLXHC"
    },
    "pose": {
     "key": "ninja_idle",
@@ -556,6 +556,34 @@
     "key": "sdr03_hit",
     "clip": "SDR03_Hit",
     "title": "SDR03 Hit Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "ninja_ninja_attack",
+   "character": "Ninja",
+   "stage": "blocking",
+   "note": "Tạo từ Studio (Animate → Anim mới): P0 từ rig hiện tại, chờ phân tích / blocking",
+   "dir": "work/infinite_defense/ninja_ninja_attack",
+   "frames": 30,
+   "fps": 30,
+   "ref": "",
+   "desc": "",
+   "created": "2026-10-29",
+   "updated": "2026-10-29",
+   "review": {
+    "key": "ninja_ninja_attack",
+    "clip": "Ninja_Attack",
+    "title": "Ninja Ninja Attack Review Lab",
+    "crumb": "Ninja · anim",
+    "name": "Ninja Attack",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "ninja_ninja_attack",
+    "clip": "Ninja_Ninja_Attack",
+    "title": "Ninja Ninja Attack Pose Lab",
     "url": ""
    }
   }

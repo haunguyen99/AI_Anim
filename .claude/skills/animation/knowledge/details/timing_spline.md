@@ -80,6 +80,9 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
 ## loop
 - Frame cuối = frame 1; playblast phát f1..f(N-1); bắt đầu loop ở điểm đứng yên (đáy) cho chỗ nối mượt.
 - Sau khi đổi giá trị key luôn chạy lại `match_seam` (SKILL.md).
+- **Studio / playblast (2026-10-29, Ninja Idle, user: "loop bị giật"):** anim đúng (F41 = F1, tốc độ liền) nhưng nút Phát và `anim playblast`
+  chạy F1..F41 → F41 rồi F1 cùng một pose = 1 frame khựng mỗi vòng. Đã sửa ở master Pose Lab (`% PER()`, playblast `n = PER()`) +
+  `port_pose.py`. Khi user nói loop giật: đo nối trước, rồi kiểm số frame của video (`n` phải = frames − 1 với clip loop).
 
 ## end-on-idle
 - Đuôi clip non-loop cho game (SDR Attack): user muốn **các frame cuối là pose Idle đứng yên** (F20–F26 = Idle, không nhích quá đà) —
