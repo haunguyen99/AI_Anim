@@ -2,9 +2,11 @@
 Đọc mỗi task cùng `INDEX.md`. `→ file#mục` = chi tiết trong `details/`, chỉ mở khi task đụng tới.
 
 ## Phân tích
-- Nguồn vào là FBX blocking của user (không ref) → quy trình B: khớp file, phân tích, breakdown, polish, FBX → user_blocking.md
+- Quy trình B: AI auto-rig trên Frolvy (MCP `frolvy`, mở app trước) → user key blocking → AI xuất FBX sang Studio, khớp file, phân tích, breakdown, polish, FBX; team đưa sẵn FBX blocking thì vào thẳng bước khớp file → user_blocking.md
 - Chỉ có yêu cầu bằng lời → quy trình C: thiết kế + timing, pose 10%, blocking 50%, rồi như B → text_brief.md
 - Có GDD → giai đoạn 0: danh sách anim, câu hỏi, phân tích có nguồn, ảnh key pose Codex trên render model thật → gdd_stage0.md
+- Bộ ảnh key của một anim là một flipbook 2D: cùng camera, khung, cỡ, đường đất, chân trụ, tạo hình; sinh theo chuỗi (key chủ + key trước, chỉ đổi phần ghi), phát thử cả chuỗi trước khi gửi → gdd_stage0.md#đồng-nhất-chuỗi-ảnh
+- Mọi lần tạo ảnh đều gửi concept gốc làm ref + đoạn prompt ORIGINAL CHARACTER CONCEPT; không có concept thì dừng, hỏi người dùng → gdd_stage0.md#concept-gốc-bắt-buộc
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
 - Intake: hỏi prop treo vào joint nào khi xuất → export.md#reparent-prop
 - Clip không ref / ref điện ảnh: thiết kế theo silhouette camera game, đề xuất bản tối giản → review_process.md#no-ref-clips
@@ -20,6 +22,7 @@
 - Game side view: mở ngực ~55°, đầu ~25° ra cam; prop vẫn ngắm mục tiêu → torso_head.md#open-to-camera
 - Bàn chân không đứt khỏi ống chân; xem bộ phận thấp nhất trước khi nâng hông; bước chân đo bằng dải tiếp đất → legs_feet.md#foot-detach
 - Pole gối theo hướng gối mong muốn; knee_dir sai khi kiễng; hông đo bằng đai lưng → legs_feet.md#knee-dir
+- Khớp không đứng một mình: mỗi key chạy `tools/joint_rules.py` (audit → apply) — tay giơ/với thì bả vai theo, thân/cổ chia góc các đốt, cúi người hông góp phần, giới hạn khớp không tệ hơn P0 → qa_anatomy.md#joint-coupling
 - Pole KHÔNG tự do: gốc theo ngực/bàn chân, hướng khuỷu/gối ghi trong spec key, `pole_audit.py` mọi key trước khi render → arms_hands.md#pole-spec
 
 ## Tay, bàn tay, prop

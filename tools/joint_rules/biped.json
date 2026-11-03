@@ -1,0 +1,41 @@
+{
+  "name": "biped (tên xương Advanced Skeleton: Root_M, Spine1_M, Chest_M, Neck_M, Head_M, Scapula_*, Shoulder_*, Elbow_*, Wrist_*, Hip_*, Knee_*, Ankle_*)",
+  "note": "Luật mặc định cho mọi nhân vật người. Nhân vật / job ghi đè bằng joint_rules.json cạnh script (chỉ ghi khoá muốn đổi). Góc = độ. Liên động đo so với pose tham chiếu (P0 đã duyệt), không so T-pose.",
+  "frame": { "up": [0, 1, 0], "fwd": [0, 0, 1], "left": [1, 0, 0], "note": "trục world của nhân vật ở rest (FBX team: Y lên, nhìn +Z, trái = +X)" },
+
+  "limits": {
+    "note": "Hộp quanh rest: [gập lo, hi] quanh Z local, [dạng lo, hi] quanh Y local, [xoắn lo, hi] quanh X local (dọc xương). Cùng quy ước Rig bước 6 Vật lý. clamp = apply() tự kẹp khớp này; khớp khác (tay/chân có IK) chỉ báo.",
+    "defaults": {
+      "Spine1_M": [-35, 35, -25, 25, -33, 30], "Chest_M": [-35, 35, -25, 25, -30, 30],
+      "Neck_M": [-40, 40, -30, 30, -40, 40], "Head_M": [-40, 40, -30, 30, -50, 50],
+      "Scapula": [-25, 25, -25, 25, -15, 15], "Elbow": [-36, 150, -10, 10, -20, 20], "Wrist": [-75, 75, -45, 45, -60, 60],
+      "Knee": [-150, 150, -8, 8, -15, 15]
+    },
+    "clamp": ["Spine1_M", "Chest_M", "Neck_M", "Head_M", "Scapula_L", "Scapula_R"]
+  },
+
+  "couplings": [
+    { "id": "scap_elev", "label": "Bả vai nhún lên theo tay giơ (nhịp vai-cánh tay)", "side": "LR",
+      "driver": "arm_elev", "driven": "clav_elev",
+      "curve": [[0, -3], [30, 0], [90, 6], [130, 12], [160, 17], [180, 20]],
+      "tol": 5, "fix": true,
+      "why": "Tay giơ trên ~60° thì xương đòn + bả vai xoay lên; tay qua đầu mà vai đứng yên trông như búp bê, khuỷu khép vào trong (Gaygor Attack f31)." },
+    { "id": "scap_prot", "label": "Bả vai đưa ra trước / kéo ra sau theo hướng tay", "side": "LR",
+      "driver": "arm_hflex", "driven": "clav_prot", "weight_by_elev": true,
+      "curve": [[-80, -14], [-30, -6], [0, 0], [60, 8], [120, 14]],
+      "tol": 5, "fix": true,
+      "why": "Với ra trước thì bả vai trượt ra trước (thêm tầm với), vung tay ra sau / lấy đà thì bả vai kéo về cột sống." },
+    { "id": "spine_share", "label": "Thân cong / xoắn chia đều các đốt sống", "type": "share",
+      "parent": "Root_M", "chain": ["Spine1_M", "Chest_M"], "weights": [0.5, 0.5], "band": [0.25, 0.75], "min_total": 10, "fix": true,
+      "why": "Dồn hết vào một đốt = gãy lưng / zigzag (torso_head.md#spine-chain)." },
+    { "id": "neck_share", "label": "Cổ và đầu chia nhau góc quay đầu", "type": "share",
+      "parent": "Chest_M", "chain": ["Neck_M", "Head_M"], "weights": [0.4, 0.6], "band": [0.2, 0.8], "min_total": 12, "fix": true,
+      "why": "Chỉ xoay Head = cổ cứng, đầu như gắn bản lề." },
+    { "id": "hip_lead", "label": "Cúi / ngả người thì hông góp phần", "type": "check",
+      "measure": "pelvis_share", "when_total": 35, "min": 0.3, "fix": false,
+      "why": "Cúi chỉ bằng lưng = gù; đổ người bắt đầu từ hông (torso_head.md#lean-from-hip). Sửa cần chân IK nên chỉ báo." },
+    { "id": "elbow_twist", "label": "Xoắn cẳng tay chia cho vai / cổ tay, khuỷu là bản lề", "type": "check",
+      "measure": "elbow_twist", "max": 20, "fix": false,
+      "why": "arms_hands.md#no-overbend: khuỷu xoắn 169° (Gaygor Idle)." }
+  ]
+}

@@ -233,7 +233,14 @@ Mỗi bộ phận ghi theo cùng một mẫu:
 - Bake NLA thành một action cho mỗi clip, chỉ giữ xương deform, rồi xuất FBX (mỗi clip một take, hoặc chung một file kèm danh sách clip).
 - Kiểm tra lại: import lại FBX và so từng frame với bản trong Blender (lệch < 0.1 cm).
 
-## 2B. Quy trình B — từ blocking của người dùng (duyệt 2026-10-23)
+## 2B. Quy trình B — từ blocking của người dùng (duyệt 2026-10-23, cập nhật 2026-10-31)
+
+Từ 2026-10-31 blocking được key trên **Frolvy**: AI auto-rig nhân vật trên Frolvy (Rig Builder `Human05`, qua MCP `frolvy`),
+người dùng duyệt rig rồi tự key, AI xuất FBX blocking sang **Studio**, và các bước dưới làm trong Studio thay cho Pose Lab:
+
+```
+ F1 AI rig trên Frolvy ─►[DUYỆT RIG]─► F2 Người dùng key ─►["KEY XONG"]─► F3 Xuất FBX → Studio ─►[KHỚP FILE]─► 2 …
+```
 
 Khi người dùng hoặc team đưa FBX đã có blocking của chính rig đó (không có video ref), file blocking là chuẩn về pose và
 timing. AI không dựng lại pose mà làm tiếp từ đó:

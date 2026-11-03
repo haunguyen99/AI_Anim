@@ -126,6 +126,7 @@
         case "play": return A.play(a.on !== false);
         case "key": if (a.f) A.frame(a.f); return A.key();
         case "unkey": if (a.f) A.frame(a.f); return A.unkey();
+        case "rules": need(window.__jointRules, "Không có module liên động khớp"); return window.__jointRules.cmd(Object.assign({}, a, { do: a.sub || "status" }));   // liên động khớp (modules/joint_rules.js)
         case "versions": return A.versions();
         case "version": return A.version(a.v);
         case "playblast": {   // quay playblast bản đang mở và gửi sang Review Lab (không hộp thoại)
@@ -139,7 +140,7 @@
           return ST.mods.pose.sendPlayblast({ cams, dist: +a.dist || 1, cw, ch }, a.label, a.note);
         }
       }
-      throw new Error("anim: clips | clip | info | joints | read | select | rot | pos | frame | play | key | unkey | versions | version | playblast");
+      throw new Error("anim: clips | clip | info | joints | read | select | rot | pos | frame | play | key | unkey | rules | versions | version | playblast");
     },
     async obj(a) {   // vật thể phụ của lớp Anim: mũi tên, hình nộm… (key riêng, không vào FBX)
       await want("pose"); const P = ST.mods.props; need(P, "Không có module vật thể phụ"); await P.ensure();

@@ -40,8 +40,8 @@ KEEP_REMOTE = {".claude/launch.json", ".mcp.json"}
 # --spine-live (người dùng 2026-10-29: mọi chỉnh sửa Spine Live đẩy vào nhánh spine-live): các file của Spine Live,
 # còn MAP.md chỉ thay các dòng Spine Live (giữ dòng của phiên khác trên nhánh)
 SPINE_LIVE = ["tools/spine_live", "tools/home/spine_live.py", "tools/home/spine_edit.py", "tools/spine_live_cmd.py",
-              "tools/spine_live_replay.py", ".claude/skills/spine2d"]
-SPINE_LIVE_MAP = ["| `tools/spine_live/` + `tools/home/spine_live.py` |", "| `tools/spine_live_cmd.py` |", "| `tools/spine_live_replay.py` |"]
+              "tools/spine_live_replay.py", "tools/spine/new_spine_anim.py", ".claude/skills/spine2d"]
+SPINE_LIVE_MAP = ["| `tools/spine_live/` + `tools/home/spine_live.py` |", "| `tools/spine_live_cmd.py` |", "| `tools/spine_live_replay.py` |", "| `tools/spine/new_spine_anim.py` |"]
 
 
 def merged_map(remote_blob):

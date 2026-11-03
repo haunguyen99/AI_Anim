@@ -108,3 +108,7 @@ Những gì user sửa so với bản AI (đo bằng mesh đã pose, cm):
 Quy trình: user đã tự sửa pose thì **không chạy lại script dựng pose đè lên version đó**; đọc khớp (`anim read`), lưu json, rút bài học.
 Tự kiểm pose trên mesh đã skin: `pose_check.py` (xuyên kunai/tay/khăn, giãn da, sàn); khăn rời quay quanh gốc dễ lún vào lưng —
 gốc khăn gập trong mặt phẳng dải khăn, dời gốc ra sau khi thân đổ / tay kéo sau.
+- **Idle tĩnh 1 pose (SDR03, 2026-10-29):** "Idle 10F chỉ là 1 pose" = giữ nguyên pose sẵn sàng của clip anh em (Shoot p3 F1 =
+  Reload p2 F30) cho cả 10 F, lặp, không thở/không overlap — để Idle ↔ Shoot ↔ Reload nối liền không giật. Làm đủ cả hai đầu:
+  FBX (`export_fbx.py --clip idle`) **và** clip Studio (`idle_build.py` → model + `clip_registry.py new` / `pose-version --loop`,
+  keys 1,10); lần đầu chỉ xuất FBX nên user không thấy anim trong Studio và phải nhờ lại.

@@ -27,6 +27,10 @@
   },
   "Ball": {
    "rig_url": ""
+  },
+  "SDR01": {
+   "rig_url": "",
+   "rig_page": "sdr01"
   }
  },
  "clips": [
@@ -122,6 +126,12 @@
     "name": "Attack (ném dao)",
     "parts": "sdr_attack",
     "url": "https://claude.ai/artifact/GifbYzqPZfPRFG3X9JFXbx"
+   },
+   "pose": {
+    "key": "sdr_attack",
+    "clip": "SDR_Attack",
+    "title": "SDR Attack Pose Lab",
+    "url": ""
    }
   },
   {
@@ -301,7 +311,7 @@
    "id": "sdr03_shoot",
    "character": "SDR03",
    "stage": "export",
-   "note": "p3 (= p1 + mặt nhìn thẳng + dây chốt ngang đầu cánh) xuất lại FBX 2026-10-29, nối khớp Reload (chưa đẩy repo Unity)",
+   "note": "p4 (Humanoid: bả vai không dời) xuất FBX, user duyệt chạy đúng trong Unity, đã đẩy TungNV_Dev cf8d50bc (2026-10-29)",
    "review": {
     "key": "sdr03_shoot",
     "clip": "SDR03_Shoot",
@@ -328,8 +338,8 @@
   {
    "id": "sdr03_reload",
    "character": "SDR03",
-   "stage": "polish",
-   "note": "s1 duyệt; polish p1 chờ duyệt 2026-10-29",
+   "stage": "export",
+   "note": "p2 xuất FBX + .meta sửa, user duyệt chạy đúng trong Unity, đã đẩy TungNV_Dev cf8d50bc (2026-10-29)",
    "review": {
     "key": "sdr03_reload",
     "clip": "Reload",
@@ -433,6 +443,121 @@
    },
    "dir": "work/test/spine/BallBounceRoll",
    "updated": "2026-10-28"
+  },
+  {
+   "id": "sdr01_idle",
+   "character": "SDR01",
+   "stage": "export",
+   "note": "FBX SDR01_MC_Idle.fbx (10 F lặp) + rig skin khuỷu s3 MC_char_map1_Rig.fbx ĐÃ chép vào Unity Map02 2026-10-29 ĐÃ đẩy Unity TungNV_Dev f9a13447",
+   "review": {
+    "key": "sdr01_idle",
+    "clip": "Idle",
+    "title": "SDR01 Idle Review Lab",
+    "crumb": "SDR01 · anim",
+    "name": "Idle",
+    "parts": [
+     "Đầu",
+     "Thân",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Dao"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr01_idle",
+    "clip": "SDR01_Idle",
+    "title": "SDR01 Idle Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr01",
+   "updated": "2026-10-29"
+  },
+  {
+   "id": "sdr01_shoot",
+   "character": "SDR01",
+   "stage": "export",
+   "note": "FBX SDR01_MC_Shoot.fbx (30 F, event OnWeaponRelease F8 / OnShootAnimationComplete F29 trong .meta) ĐÃ chép vào Unity Map02 2026-10-29 ĐÃ đẩy Unity TungNV_Dev f9a13447",
+   "dir": "work/shoot_die_repeat/sdr01",
+   "updated": "2026-10-29",
+   "review": {
+    "key": "sdr01_shoot",
+    "clip": "Shoot",
+    "title": "SDR01 Shoot Review Lab",
+    "crumb": "SDR01 · anim",
+    "name": "Shoot",
+    "parts": [
+     "Đầu",
+     "Thân",
+     "Tay phải",
+     "Tay trái",
+     "Dao"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr01_shoot",
+    "clip": "SDR01_Shoot",
+    "title": "SDR01 Shoot Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "sdr03_idle",
+   "character": "SDR03",
+   "stage": "export",
+   "note": "10 F một pose tĩnh = Shoot p3 F1, lặp; FBX export/SDR03_MC_Idle.fbx, đã đẩy repo Unity TungNV_Dev 5424657b (2026-10-29)",
+   "review": {
+    "key": "sdr03_idle",
+    "clip": "Idle",
+    "title": "SDR03 Idle Review Lab",
+    "crumb": "SDR03 · anim",
+    "name": "Idle",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Nỏ",
+     "Tóc"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr03_idle",
+    "clip": "SDR03_Idle",
+    "title": "SDR03 Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "sdr03_hit",
+   "character": "SDR03",
+   "stage": "analysis",
+   "note": "Bản phân tích work/shoot_die_repeat/sdr03_hit/analysis.md (8 pha, 3 ảnh key mới) chờ duyệt (2026-10-30)",
+   "dir": "work/shoot_die_repeat/sdr03_hit",
+   "frames": 30,
+   "fps": 30,
+   "ref": "",
+   "desc": "Nhân vật bị đánh vào đầu. khiên thân trên bị đẩy ngửa ra sau",
+   "created": "2026-10-30",
+   "updated": "2026-10-30",
+   "review": {
+    "key": "sdr03_hit",
+    "clip": "Hit",
+    "title": "SDR03 Hit Review Lab",
+    "crumb": "SDR03 · anim",
+    "name": "Hit",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr03_hit",
+    "clip": "SDR03_Hit",
+    "title": "SDR03 Hit Pose Lab",
+    "url": ""
+   }
   }
  ],
  "projects": [
@@ -455,13 +580,15 @@
     "SDR",
     "SDR06",
     "Zom2 Map3",
-    "SDR03"
+    "SDR03",
+    "SDR01"
    ],
    "labels": {
     "SDR": "map2 · lính La Mã",
     "SDR06": "map06 · gangster + Thompson",
     "Zom2 Map3": "Zombie 2 map03 (EN_zom2_map3_NEW)",
-    "SDR03": "map3 · người bộ tộc + nỏ (MC_char_map3)"
+    "SDR03": "map3 · người bộ tộc + nỏ (MC_char_map3)",
+    "SDR01": "map1 · lính La Mã ném dao (MC_char_map1_Rig = model map2)"
    },
    "char_notes": {}
   },

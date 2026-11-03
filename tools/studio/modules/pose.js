@@ -210,6 +210,7 @@
     return state === "ready";
   };
   M.loadMsg = () => ({ loading: "Đang nạp anim…", noclip: "Chưa có anim: tạo ở Home hoặc /new_clip", error: "Lỗi nạp anim: " + err }[state] || "Chưa nạp: bấm mắt để nạp");
+  M.clipId = () => clipInfo ? clipInfo.id : null;   // id anim (work/clips.json) đang mở, panel Key Pose dùng
   M.nodeLabel = () => "Anim" + (clipInfo ? " · " + clipInfo.name : "");
   M.shelfMsg = () => "Pose: " + M.loadMsg();
   // click trúng khớp (chấm) hoặc model của anim → viewport chuyển focus sang Pose
@@ -375,7 +376,11 @@
           const j = await (await fetch("/api/clip/studio-new", { method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ char: ST.char.id, name: ST.char.name, clip: name, frames: $b("#naFrames").value, fps: $b("#naFps").value, desc: $b("#naDesc").value, gltf: ST.rigEng().buildGltf() }) }).then(r => r.status === 404 ? { error: "server Home cũ chưa có lệnh này: tắt và bật lại tools/home/start.bat" } : r.json()));
           if (!j.ok) throw new Error(j.error);
-          ST.closeDialog(); ST.toast("Đã tạo anim " + j.id); if (ST.ws !== "pose") ST.setWS("pose"); clipsP = null; clips = null; await loadClips(); goClip(j.id);
+          // tạo anim = gửi yêu cầu cho AI (user 2026-10-30 "tôi đã tạo 2 anim mà chưa thấy AI nhận"): bộ canh bắt kind anim_req, AI lập phân tích + bảng pha
+          try { await fetch("/api/store/keypose/animreqs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ char: ST.char.id, charName: ST.char.name, clip: j.id, job: "",
+            name, desc: $b("#naDesc").value.trim(), loop: false, frames: +$b("#naFrames").value || null, fps: +$b("#naFps").value || 30, doc: "", by: (() => { try { return localStorage.getItem("kp_who") || ""; } catch (e) { return ""; } })(),
+            at: new Date().toISOString(), sent: true, status: "sent", from: "pose.new" }) }); } catch (e) {}
+          ST.closeDialog(); ST.toast("Đã tạo anim " + j.id + " và gửi yêu cầu cho AI"); if (ST.ws !== "pose") ST.setWS("pose"); clipsP = null; clips = null; await loadClips(); goClip(j.id);
         } catch (e) { err.textContent = "Không tạo được: " + (e.message || e); ok.disabled = false; ok.textContent = "Tạo anim"; }
       };
     });

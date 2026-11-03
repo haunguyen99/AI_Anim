@@ -280,3 +280,141 @@ body.noting #noteCv{pointer-events:auto;cursor:crosshair}
 .pz .cell.key.kprop{background:#4dd0e114}
 .pz .cell.key.kprop::before{background:#4dd0e1}
 .pz .kftag{font-size:11px;color:var(--mute);margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+
+/* panel Key Pose (modules/keypose.js): ảnh key pose của anim đang mở */
+.kpwrap{display:flex;flex-direction:column;gap:8px;padding:8px 10px}
+.kphead{gap:8px;flex-wrap:wrap;align-items:center}
+.kphead a{margin-left:auto;text-decoration:none}
+.kpkey{border:1px solid var(--line);border-radius:8px;background:var(--raise);padding:6px;display:grid;gap:5px}
+.kpkh{gap:6px;align-items:center}
+.kpkh b{font-family:var(--mono);font-size:12px}
+.kpkh .kpx{margin-left:auto;padding:0 6px;line-height:18px}
+.kpimg{border:2px solid transparent;border-radius:6px;overflow:hidden;background:#8882}
+.kpimg.star{border-color:var(--ref)} .kpimg.reject{opacity:.45}
+.kpimg img{display:block;width:100%;max-height:300px;object-fit:contain;cursor:zoom-in}
+.kpstrip{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+.kpstrip img{width:44px;height:44px;flex:none;object-fit:contain;background:#8882;border:2px solid transparent;border-radius:4px;cursor:pointer}
+.kpstrip img.on{border-color:var(--accent)} .kpstrip img.star{box-shadow:inset 0 -3px 0 var(--ref)} .kpstrip img.reject{opacity:.4}
+.kpacts{gap:4px;align-items:center}
+.kpacts .kpname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);font-size:11px;color:var(--mute)}
+.kpacts button{padding:2px 7px}
+.kpacts button.star{background:var(--ref);border-color:var(--ref);color:#000}
+.kpacts button.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.kpnote{width:100%;resize:vertical;font-size:12px;min-height:26px}
+.kpreqs{display:grid;gap:4px}
+.kpreq{font-size:12px;border-left:3px solid var(--line);padding:2px 0 2px 6px}
+.kpreq .st{font-size:11px;padding:0 6px;border-radius:8px;background:var(--line)}
+.kpreq .st.done{background:var(--ok);color:#fff} .kpreq .st.error{background:var(--bad);color:#fff} .kpreq .st.working,.kpreq .st.picked{background:var(--accent);color:var(--accent-fg)}
+.kplink{background:none;border:0;padding:2px 0;color:var(--mute);cursor:pointer}
+.kpogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;margin-top:4px}
+.kpo{display:grid;gap:2px;font-size:11px;font-family:var(--mono)}
+.kpo img{width:100%;aspect-ratio:1;object-fit:contain;background:#8882;border-radius:4px;cursor:zoom-in}
+.kpo span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kpo button{padding:1px 4px;font-size:11px}
+#kpLb{position:fixed;inset:0;z-index:60;background:#000d;display:none;place-items:center;cursor:zoom-out}
+#kpLb.on{display:grid} #kpLb figure{margin:0;text-align:center} #kpLb img{max-width:94vw;max-height:88vh;object-fit:contain}
+#kpLb figcaption{color:#fff;font-family:var(--mono);margin-top:6px}
+#kpPin{position:absolute;right:10px;top:10px;z-index:7;width:min(240px,35%);background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--line);border-radius:8px;padding:4px;display:grid;gap:2px}
+#kpPin img{width:100%;max-height:320px;object-fit:contain;cursor:zoom-in;display:block}
+#kpPin .row{align-items:center;gap:4px} #kpPin .sub{flex:1;font-family:var(--mono);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#kpPin button{padding:0 6px}
+
+/* Key Pose theo pha + trình chạy ảnh */
+.kpph{border:1px solid var(--line);border-radius:8px;background:var(--raise);padding:6px;display:grid;gap:5px}
+.kpph.tween,.kpph.same{background:transparent;border-style:dashed;padding:4px 6px}
+.kpph .kpf{width:46px;padding:1px 4px;font-family:var(--mono)}
+.kpph code{font-size:11px}
+.kpdesc{font-size:12px;line-height:1.35}
+.kpmiss{display:flex;align-items:center;gap:8px;justify-content:space-between;border:1px dashed var(--bad);border-radius:6px;padding:10px 8px}
+.kpsame{gap:6px;align-items:center} .kpsame img{width:36px;height:36px;object-fit:contain;background:#8882;border-radius:4px;cursor:zoom-in}
+#kpPlay{position:absolute;inset:0;z-index:5;display:none;background:var(--view);pointer-events:none}
+#kpPlay.on{display:block} #kpPlay.see{background:transparent}
+#kpPlay .kpstage{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;pointer-events:auto;cursor:grab;touch-action:none}
+#kpPlay.see .kpstage{pointer-events:none}
+#kpPlay .kpstage img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center;user-select:none;-webkit-user-drag:none}
+#kpPlay .kpbadge{position:absolute;left:10px;top:44px;padding:4px 8px;border-radius:6px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);font-size:13px}
+#kpPlay .kptools{position:absolute;right:10px;top:44px;display:flex;gap:6px;align-items:center;padding:4px 6px;border-radius:6px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);pointer-events:auto}
+#kpPlay .kptools input{width:90px;vertical-align:middle}
+
+/* workspace Image Key: chỉ ảnh, không model 3D */
+body.ws-imagekey #cv{visibility:hidden}
+body.ws-imagekey #kpPlay{z-index:8}
+body.ws-imagekey #noteCv{z-index:9} body.ws-imagekey #noteBar{z-index:10}
+#kpPlay.own{background:var(--view)}
+#kpPlay .kpbar{display:none}
+#kpPlay.own .kpbar{display:flex;position:absolute;left:0;right:0;bottom:0;align-items:center;gap:6px;padding:6px 10px;background:var(--panel);border-top:1px solid var(--line);pointer-events:auto;flex-wrap:wrap}
+#kpPlay.own .kpstage{bottom:46px}
+#kpPlay.own .kpop,#kpPlay.own [data-p=close]{display:none}   /* Image Key: ảnh là nội dung chính, không đóng */
+#kpPlay .kpscrub{flex:1;min-width:140px;position:relative;padding-bottom:6px}
+#kpPlay .kpscrub input{width:100%;margin:0}
+#kpPlay .kpticks{position:absolute;left:8px;right:8px;bottom:0;height:6px}
+#kpPlay .kpticks i{position:absolute;top:0;width:3px;height:6px;margin-left:-1px;border-radius:1px}
+#kpPlay .kpticks i.k{background:var(--accent)} #kpPlay .kpticks i.miss{background:var(--bad)} #kpPlay .kpticks i.tw{background:var(--mute);opacity:.5}
+#kpPlay .kpfr{font-family:var(--mono);font-size:11px;color:var(--mute);white-space:nowrap}
+#kpPlay .kpempty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;pointer-events:none}
+body.ws-imagekey #noteBar{bottom:56px}
+.kpanims{display:grid;gap:4px;padding:8px}
+.kpanim{display:grid;gap:2px;text-align:left;padding:6px 8px;border-radius:6px}
+.kpanim.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--raise))}
+.kpanim .sub{font-size:11px}
+
+.kpchips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.kpchips button{padding:2px 7px;font-size:11px;border-radius:10px}
+.kpchips button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.kpchips button.tw{opacity:.6;border-style:dashed} .kpchips button.miss{border-color:var(--bad)}
+
+.kpwrap.kpik{min-height:100%}
+.kpfb{border-top:1px solid var(--line);margin-top:6px;padding-top:6px;display:flex;flex-direction:column;flex:1}
+.kpfb h3{font-size:12px;margin:0 0 2px;color:var(--mute);font-weight:600}
+.kpfb #kpNotes{display:flex;flex-direction:column;flex:1}
+.kpfb .nwrap{margin:0 -10px -8px;display:flex;flex-direction:column;flex:1}
+/* Image Key: góp ý đi bằng ghi chú vẽ bên dưới, ảnh đã hiện ở viewport: bỏ Ghim, ↻ Sửa, ô ghi chú chữ; giữ ★ / ✕ để chọn ảnh dùng cho pha (user 2026-10-30) */
+.kpik .kpacts,.kpik .kpnote{display:none}   /* cả hàng tên ảnh + ★ / ✕: chọn bản bằng cách bấm ảnh nhỏ (user "Bỏ đi") */
+.kpik .kpother{display:none}   /* Image Key: key của anim lấy từ bảng pha của bản phân tích, không gắn tay (user 2026-10-30) */
+
+.kpimg{position:relative}
+.kpstar{position:absolute;right:8px;top:8px;width:34px;height:34px;padding:0;border-radius:50%;font-size:18px;line-height:1;background:color-mix(in srgb,var(--panel) 85%,transparent);color:var(--mute);border:1px solid var(--line)}
+.kpstar.on{background:var(--ref);border-color:var(--ref);color:#000}
+.kpimg.chosen{border-color:var(--ref)}
+.kpstrip img.chosen{box-shadow:inset 0 -3px 0 var(--ref)}
+
+/* Image Key nhiều góc */
+#kpPlay .kpviews{position:absolute;left:50%;top:44px;transform:translateX(-50%);display:none;gap:4px;padding:4px;border-radius:8px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);pointer-events:auto;z-index:2}
+#kpPlay.own .kpviews{display:flex}
+#kpPlay .kpviews button{padding:2px 9px}
+#kpPlay .kpviews button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+#kpPlay .kpgrid{display:none;position:absolute;inset:84px 8px 8px;gap:6px}
+#kpPlay.grid .kpgrid{display:grid;grid-auto-rows:1fr}
+#kpPlay.grid .kpstage > img{display:none}
+#kpPlay .kpgrid figure{margin:0;position:relative;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:6px;min-height:0;cursor:pointer}
+#kpPlay .kpgrid figure.on{border-color:var(--accent)}
+#kpPlay .kpgrid figure img{max-width:100%;max-height:100%;object-fit:contain}
+#kpPlay .kpgrid figcaption{position:absolute;left:6px;top:4px;font-size:11px;color:var(--mute);z-index:1}
+.kpvtag{margin-left:auto;font-size:11px;padding:1px 7px;border-radius:9px;background:var(--accent);color:var(--accent-fg)}
+.kpvt{border-collapse:collapse;width:100%} .kpvt th,.kpvt td{padding:3px 8px;text-align:left;border-bottom:1px solid var(--line)} .kpvt th{font-weight:600;color:var(--mute);font-size:12px}
+
+/* cột Anim của Image Key: anim → các góc con (giống lớp Anim trong Outliner) */
+.kpatree{display:grid;gap:2px}
+.kparow{display:flex;align-items:stretch;gap:2px}
+.kparow .kpanim{flex:1;min-width:0}
+.kpcaret{width:20px;padding:0;border:0;background:none;color:var(--mute);cursor:pointer}
+.kpcaret:disabled{opacity:.25;cursor:default}
+.kpadd{width:26px;padding:0;border:0;background:none;color:var(--mute);font-size:16px;cursor:pointer;opacity:0}
+.kparow:hover .kpadd,.kpatree.open .kpadd{opacity:1}
+.kpvlist{display:grid;gap:1px;padding-left:24px}
+.kpview{display:flex;align-items:center;gap:6px;text-align:left;padding:3px 8px;border:0;border-radius:5px;background:none}
+.kpview .i{width:14px;height:14px;flex:none}
+.kpview .sub{margin-left:auto;font-size:11px}
+.kpview:hover{background:var(--hover)}
+.kpview.on{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--fg)}
+.kpanim > .sub{display:none}   /* bỏ dòng số pha / key dưới tên anim (user 2026-10-30), tình trạng ảnh xem ở từng góc */
+.kpanim{padding:5px 8px}
+
+.kpahead{display:flex;margin-bottom:4px}
+.kpahead button{flex:1}
+.kpareqs{display:grid;gap:3px;padding:4px 0 6px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.kpareq{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:4px 8px;border:1px dashed var(--line);border-radius:6px}
+.kpareq .st{margin-left:auto;font-size:11px;padding:0 7px;border-radius:9px;background:var(--line)}
+.kpareq .st.picked,.kpareq .st.analysis,.kpareq .st.images{background:var(--accent);color:var(--accent-fg)}
+.kpareq .st.review{background:var(--warn);color:#000} .kpareq .st.done{background:var(--ok);color:#fff} .kpareq .st.error{background:var(--bad);color:#fff}
+.kpareq .sub{flex-basis:100%;font-size:11px}

@@ -66,10 +66,13 @@
         target: p.target.toArray().map(v => +v.toFixed(4)), zoom: +(cam.zoom || 1).toFixed(4), fov: cam.fov || null, aspect: +(p.rect.w / Math.max(1, p.rect.h)).toFixed(4) } };
     try { const m = ST.mod(); ctx.joint = m.curJoint ? m.curJoint() : null; } catch (e) {}
     try { if (ST.focus === "rig" && ST.rigEng && ST.rigEng()) { const g = ST.rigEng().get(); ctx.rig = { step: g.step, sel: [...g.S] }; } } catch (e) {}
+    try { const k = ST.mods.keypose && ST.mods.keypose.ctx ? ST.mods.keypose.ctx() : null; if (k) ctx.imagekey = k; } catch (e) {}   // góp ý trên ảnh key pose: anim, frame, pha, key, ảnh
     try { if (ST.layerOn.anim && ST.poseEng && ST.poseEng() && ST.poseEng().ai) { const a = ST.poseEng().ai.info(); ctx.anim = { clip: a.clip, version: a.version, frame: a.frame, sel: a.sel }; } } catch (e) {}
     return ctx;
   }
   function snapshot() {   // ảnh khung nhìn (như đang thấy) + nét vẽ, JPEG
+    const ks = ST.mods.keypose && ST.mods.keypose.shot ? ST.mods.keypose.shot() : null;   // đang phủ ảnh key pose (Image Key): chụp ảnh đó như đang thấy
+    if (ks) { const c = ks.getContext("2d"); paint(c, ks.width, ks.height); return ks.toDataURL("image/jpeg", 0.88); }
     const src = $("cv"); if (src.width < 2 || src.height < 2) return null;
     V.renderNow();
     const out = document.createElement("canvas"), sc = Math.min(1, 1600 / Math.max(src.width, src.height));
@@ -85,7 +88,7 @@
     try {
       const put = (col, data) => fetch(api(col, id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => { if (!r.ok) throw new Error(r.status); });
       if (img) await put("noteimg", { img }); await put("notes", Object.assign(doc, { img: !!img }));
-      ST.toast("Đã lưu ghi chú. Nhắn Claude để sửa (Claude đọc được ảnh + nét vẽ)."); list = null; stop(); ST.showTab && ST.showTab(ST.tabs && ST.tabs().includes("pose:feedback") ? "pose:feedback" : "notes:list"); ST.refresh();
+      ST.toast("Đã lưu ghi chú. Nhắn Claude để sửa (Claude đọc được ảnh + nét vẽ)."); list = null; stop(); ST.showTab && ST.showTab(ST.tabs && ST.tabs().includes("pose:feedback") ? "pose:feedback" : ST.ws === "imagekey" ? "keypose:list" : "notes:list"); ST.refresh();
     } catch (e) { ST.toast("Không lưu được ghi chú (Home server?): " + (e.message || e)); }
   }
 
@@ -102,7 +105,13 @@
   let showAll = false;
   const curAnim = () => { try { if (ST.curTab && ST.curTab() === "pose:feedback" && ST.poseEng && ST.poseEng() && ST.poseEng().ai) { const a = ST.poseEng().ai.info(); return a && a.version ? a : null; } } catch (e) {} return null; };
   const sameVer = (n, a) => !!(n.ctx && n.ctx.anim && n.ctx.anim.version === a.version && (!n.ctx.anim.clip || !a.clip || n.ctx.anim.clip === a.clip));
-  const vis = () => { const a = curAnim(); return !list ? [] : !a || showAll ? list : list.filter(n => sameVer(n, a)); };
+  // workspace Image Key: chỉ góp ý vẽ trên ảnh key pose (ctx.imagekey) của anim đang mở; nơi khác: bỏ các góp ý ảnh đó ra
+  const isIK = n => !!(n.ctx && n.ctx.imagekey);
+  const vis = () => {
+    if (!list) return [];
+    if (ST.ws === "imagekey") { const c = ST.mods.pose && ST.mods.pose.clipId ? ST.mods.pose.clipId() : null; return list.filter(n => isIK(n) && (!c || n.ctx.imagekey.clip === c)); }
+    const L0 = list.filter(n => !isIK(n)), a = curAnim(); return !a || showAll ? L0 : L0.filter(n => sameVer(n, a));
+  };
   N.panel = () => {
     if (list === null) { load(); return '<div class="sub" style="padding:10px">Đang tải ghi chú…</div>'; }
     const a = curAnim(), L = vis(), hid = list.length - (a ? list.filter(n => sameVer(n, a)).length : list.length);
@@ -121,7 +130,7 @@
       <div class="nb">${n.id === editing ? `<textarea class="nedit" rows="3" style="width:100%" onkeydown="event.stopPropagation()">${esc(n.text || "")}</textarea><div class="row"><button class="on" data-n="esave">Lưu</button><button data-n="ecancel">Huỷ</button></div>` : `<b>${esc(n.text || "(không chữ)")}</b>`}<small>${esc(String(n.at).slice(0, 16).replace("T", " "))} · ${esc(where(n.ctx))}${n.status === "done" ? " · AI đã sửa" : n.picked ? " · AI đã nhận, đang sửa" : n.sent ? " · đã gửi AI" : ""}</small>
       <button data-n="menu" class="nkebab" title="Sửa / Đã sửa / Xoá" aria-label="Thao tác ghi chú">⋯</button><div class="row nmenu" style="display:none"><button data-n="edit" title="Sửa chữ của ghi chú">Sửa</button><button data-n="done" title="${n.status === "done" ? "Mở lại" : "Đánh dấu đã sửa"}">${n.status === "done" ? "Mở lại" : "Đã sửa"}</button><button data-n="del" class="bad" title="Xoá ghi chú">${ic("trash")}</button></div></div></div>`).join("")}</div>${foot}</div>`;
   };
-  N.panelKey = () => (curAnim() || {}).version + (showAll ? "A" : "") + (list ? list.map(n => n.id + n.status + (n.sent ? "s" : "") + (n.picked ? "p" : "") + (n.text || "").length).join(",") : "-") + "e" + editing + sentMsg.length + (watching ? "w" : "");
+  N.panelKey = () => ST.ws + (curAnim() || {}).version + (showAll ? "A" : "") + (list ? list.map(n => n.id + n.status + (n.sent ? "s" : "") + (n.picked ? "p" : "") + (n.text || "").length).join(",") : "-") + "e" + editing + sentMsg.length + (watching ? "w" : "");
   N.panelStatic = true;
   N.panelMounted = () => {   // ảnh nhỏ: đọc doc noteimg
     if (!list) return;
@@ -156,6 +165,7 @@
   };
   function view(n) {   // về đúng chế độ, góc nhìn, bước / frame rồi hiện nét vẽ (đóng bằng ✕ trên thanh)
     const c = n.ctx || {};
+    if (c.imagekey && ST.ws === "imagekey" && ST.mods.keypose && ST.mods.keypose.goto) { ST.mods.keypose.goto(c.imagekey); stop(); viewing = n; paint(); drawBar(); return; }
     try {
       if (c.focus && c.focus !== ST.focus) ST.setFocus(c.focus);
       if (c.rig && c.rig.step && ST.cmds.get("rig.step" + c.rig.step)) ST.run("rig.step" + c.rig.step);
@@ -179,7 +189,7 @@
   N.reload = () => { list = null; ST.refresh(); };
   N.sendAll = send;   // tab "Góp ý cho AI" của Pose: một nút gửi cả ghi chú vẽ lẫn điều chỉnh key
   N.unsentCount = () => vis().filter(n => n.status !== "done" && !n.sent).length;
-  const myTab = () => ST.curTab && ["notes:list", "pose:feedback"].includes(ST.curTab());
+  const myTab = () => ST.curTab && (["notes:list", "pose:feedback"].includes(ST.curTab()) || (ST.ws === "imagekey" && ST.curTab() === "keypose:list"));
   let lastVer;   // đổi phiên bản Pose thì vẽ lại danh sách ghi chú theo bản mới
   setInterval(() => { if (!myTab()) return; const v = (curAnim() || {}).version; if (v !== lastVer) { lastVer = v; ST.refresh(); } }, 400);
   // ghi chú đã gửi, chưa xong: đọc lại mỗi 4 s khi panel đang mở, để thấy "AI đã nhận" / "AI đã sửa" ngay
