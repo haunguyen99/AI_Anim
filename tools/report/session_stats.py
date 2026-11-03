@@ -32,6 +32,13 @@ def ts(s):
     return dt.datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(TZ)
 
 
+def rel(p):
+    try:
+        return os.path.relpath(p, ROOT).replace("\\", "/")
+    except ValueError:  # other drive (e.g. memory on C:, Unity project elsewhere)
+        return p.replace("\\", "/")
+
+
 def local(s):
     return dt.datetime.strptime(s, "%Y-%m-%d %H:%M").replace(tzinfo=TZ) if s else None
 
@@ -118,7 +125,7 @@ def turns_of(ev, t0, t1):
                     tr["tools"][name] = tr["tools"].get(name, 0) + 1
                     inp = b.get("input") or {}
                     if name in ("Write", "Edit") and inp.get("file_path"):
-                        tr["files"].add(os.path.relpath(inp["file_path"], ROOT).replace("\\", "/"))
+                        tr["files"].add(rel(inp["file_path"]))
                     if name == "AskUserQuestion":
                         asks[b.get("id")] = t
     return turns

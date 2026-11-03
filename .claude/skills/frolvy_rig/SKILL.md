@@ -81,6 +81,7 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 - Constraint control vào joint trong cùng cây control cũng có thể bị coi là vòng lặp → sau mỗi constraint/wire mới gọi `R.check_rig_moves(api)`; nếu rig đứng thì gỡ ngay.
 - Ngón cái khi curl/handPose phải **xoay vào lòng bàn tay** (ngang qua lòng, về phía ngón út), không gập xuống hay lật lên mu: Rig Builder chỉ quay trục Y của ngón cái → dùng `R.thumb_into_palm(api)` (quay trục Z, thêm chút Y ngược; `after_rebuild` đã gọi). Kiểm: nắm tay (handPose 2) thì đầu ngón cái nằm dưới đốt giữa ngón trỏ/giữa. Sau Rebuild còn kiểm **vòng control ngón cái**: Rebuild giữ hình control theo trục cũ, Bastion bị lệch 9–10 cm về phía cổ tay và to gấp đôi → đặt lại vòng vuông góc xương, tâm ở ~45% đốt, bán kính ôm đốt (Bastion 5/4/3,3 cm), rồi `fitScale` = 6 để Fit Controls không đổi.
 - Rig Builder đã có `curl`, `spread`, `handPose` trên switch tay - không thêm control ngón tay riêng trừ khi được yêu cầu.
+- Picker: `add_picker_button(pk, label, x, y, w, h, nodes)` lấy **x, y là TÂM nút** (file `.fvpicker` lưu `"centre"`), không phải góc; truyền góc thì nút lệch nửa cỡ, nút to lệch nhiều (G-LumberCity 2026-11-02). Mẫu đầy đủ: `work/g_lumbercity/rig/make_picker.py`.
 - Picker: `api.create_picker` + `add_picker_button` theo hình chiếu chính diện (phải đỏ, trái xanh, giữa vàng, giáp/đạo cụ xanh lá, switch tím; FK chữ nhật, IK tròn); chân ưu tiên IK (IK Foot/Knee to, FK nhỏ màu nhạt ở cột ngoài); hai bảng bàn tay + nút All. Xóa nút cũng phải sửa nút All (chứa mọi control). `api.export_picker(pk, <thư mục Rig>/<nv>.fvpicker)`.
 
 ## Bẫy của Frolvy (đã gặp)
@@ -95,6 +96,19 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 - Skin vẫn trỏ tới joint đã xóa sau Rebuild (ví dụ `DEF_Pelvis_M`) → lưu weight trước, map sang joint mới.
 - App Claude chạy trong MSIX: file mình tạo trong `AppData\Local` có thể bị chuyển vào `Packages\Claude_…\LocalCache`, Frolvy không thấy → ghi/chép file đó bằng Python bên trong Frolvy.
 - Unity Humanoid bỏ translate của xương tay/chân/cột sống (chỉ giữ hông); translate trên đạo cụ (mũi tên trượt) thì vẫn xuất được.
+- **Ràng buộc đọc một node đã bị ràng buộc / joint DEF làm node đó đứng cứng** (2026-11-02): group rìu constrain vào `DEF_Wrist_R` → cổ tay DEF phải thôi chạy; constrain vào joint team `Wrist_R` (đã constrain vào DEF) → `Wrist_R` thôi theo. `check_rig()` vẫn `[]`, `check_rig_moves` mặc định chỉ thử tay TRÁI → luôn thử cả 4 tay chân. Cách làm: đặt group control làm con trực tiếp của joint DEF.
+- **Xuất FBX luôn ghi cả scene** (rig, DEF, fit, group); xoá node trước khi xuất không có tác dụng (node con thành "ma", vẫn bị ghi). `delete_node` trả False, node constraint không chọn được. Lọc sau khi xuất bằng `tools/fbx_ascii_keep.py` (FBX Frolvy là ASCII).
+- Model đo bằng **cm** (FBX của team): Rig Builder vẽ control cỡ mét → chìm trong mesh; nhân bán kính fit ×100.
+- **Fit Controls hỏng trên mesh low-poly hở** (đế giày, cổ áo hở → phép đếm chẵn/lẻ sai): nó phóng vòng tới ×6, chạy lần hai còn nhân dồn. Người dùng 2026-11-02 chê "chưa gọn". Cách làm gọn: đo mặt cắt mesh (cắt cạnh, chỉ lấy đỉnh có skin trội thuộc khớp đó — `vertex_weights` dùng id đỉnh TOÀN CỤC `R.Mesh(...).G`, mesh khác đứng trước thì chỉ số lệch) rồi đặt bán kính = mặt cắt + 2–3 cm (ngón +0,8); vòng chìm trong quần/giày/thân thì dời hình vòng dọc xương tới chỗ chi lộ ra (đùi dưới mép quần, trên giày, mũi giày, bắp tay, trán); IK chân = hộp ôm giày; scapula = đĩa nhỏ trên vai, ngoài vùng đầu; vòng FK phải vuông góc với xương. Chỉ đổi điểm curve, không đổi pivot. Lưu hình bằng `curve_points` ra JSON để dựng lại (mẫu `work/g_lumbercity/rig/ctl_shapes.json`).
+
+## Unity Generic: rig Frolvy lái skeleton của team
+
+Khi Unity nhập FBX dạng **Generic** (`animationType: 2` trong `.meta`), clip chỉ chạy trên đúng skeleton cũ (tên, cây joint kể cả joint phụ `*Part1_*`, `root`, đạo cụ, hướng trục). Đừng xuất joint DEF đổi tên. Làm như G-LumberCity (`work/g_lumbercity/rig/build_worker_rig.py`):
+1. Nhập FBX model có mesh + skin của team; skeleton team giữ nguyên làm skeleton xuất, mesh giữ skin team.
+2. Fit đặt đúng vị trí joint team (chỉ thêm joint cuối / pivot chân), Build Rig, `after_rebuild`.
+3. Mỗi joint team `constrain('parent', True)` vào DEF tương ứng; joint phụ theo DEF cha; `root` theo `CTL_Main`; đạo cụ theo control riêng (group là con joint DEF cổ tay).
+4. Kiểm: mọi joint team giữ offset với DEF khi kéo IK/FK cả hai bên (`follow_test`).
+5. Xuất: lưu scene anim → bake joint team → `export_scene` → mở lại scene → `fbx_ascii_keep.py` chỉ giữ cây `root` + mesh. Nhập lại để so tư thế (phải lệch 0).
 
 ## Báo kết quả
 Mở đầu bằng việc đã làm được gì. Ghi số đo cụ thể (vị trí, %, số đỉnh), những gì giữ nguyên, những gì chưa kiểm (ví dụ chưa thử pose thật), file đã lưu chưa. Ghi bài học mới vào skill này.

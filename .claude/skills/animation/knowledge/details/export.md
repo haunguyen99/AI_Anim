@@ -93,3 +93,24 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 - `.meta` Unity tạo ra lúc FBX còn hỏng giữ thiết lập kiểu cũ: `useFileScale: 0`, `fileIdsGeneration: 1`, materialImportMode 1…
   → anim chạy sai dù FBX đã sửa. Sau khi sửa FBX: so `.meta` với clip chạy đúng (Idle / file team), dựng lại từ `.meta` đúng, giữ guid +
   internalID + tên clip, chỉ đổi lastFrame. Kiểm Unity bằng `%LOCALAPPDATA%\Unity\Editor\Editor.log` (dòng SDR…, cảnh báo import).
+
+## Rig zombie từ model tĩnh mới, chỉ FBX skin bằng script (2026-11-02, zom_v2 map4/map5, `work/shoot_die_repeat/zom_v2/rig_v2.py`)
+- Lấy rig team cùng loại (Animations/Map0X/En_Zom1_map*.fbx, 27 xương AdvancedSkeleton, Humanoid) làm mẫu: giữ tên + PreRotation/Lcl Rotation,
+  chỉ đổi Lcl Translation (+ AnimationCurveNode d|X/Y/Z tĩnh), bind pose, cluster Transform/TransformLink; đổi tên Model/Geometry theo mesh mới;
+  thêm cluster bằng nhân bản (đếm Definitions Deformer). Model mới UnitScale 100 → ×100 sang cm.
+- Thân bộ xương low-poly = mảnh rời → đặt khớp ở chỗ nối mảnh (đùi/ống chân/cánh tay/cẳng tay), skin Body cứng theo mảnh; hàm dưới → Head_M.
+  Bàn chân có thể nằm trong ủng QA (lấy mọi điểm thấp bên đó).
+- Quần áo: 1/d^6 tới đoạn xương + mượt + đối xứng gương; áo giữa thân không theo cẳng tay/chân, vai là dốc mượt theo |x| (bậc → giãn ×16);
+  mảnh nhỏ (<40 đỉnh, <20 cm) cứng theo xương trội, mảnh vắt qua đường giữa không lấy xương bên nào (khóa thắt lưng); đũng bớt Hip về Root trong ±8 cm.
+- Kiểm: `zom2_map3/skin_check.py` (pose cực) + `zom_v2/anim_test.py` (ảnh anim Share) + `zom_v2/stretch_scan.py` (MINL=2, 18 anim).
+- Thân liền một khối (zom2 đầu to): không có mảnh rời → khớp chân/khuỷu = cụm "núm" đỉnh dọc trục (thân xương low-poly không có đỉnh giữa,
+  cắt cụm ở khe > 4 cm); Neck/Head đặt theo ĐÁY HÀM như rig cũ (Neck = hàm − 5,3, Head = hàm + 6,7), không theo đỉnh sọ (sọ to đẩy Head lên quá cao);
+  skin thân theo khoảng cách 1/d^10 mượt 2 lượt, sọ + hàm cứng Head_M. Mẫu rig cũ có mesh thừa (súng VK) → bỏ, và bỏ khỏi skeleton của .meta.
+- Mũ vắt qua hai bên KHÔNG phải "áo giữa thân" (lỗi 2026-11-02: luật vai thêm 0,28–0,36 vai vào vành mũ zom1, đã đẩy rồi mới phát hiện).
+- `.meta`: `make_meta.py` từ meta rig cũ cùng map; Unity đang mở sẽ nhập và tự ghi lại meta (LF, thêm Scapula→Shoulder vào Humanoid) — bản đó dùng được.
+- Thân liền khối (Director zom2 2026-11-02, Duyệt vòng 2): gán CỨNG khối giải phẫu trước — chậu → Root_M (núm đầu đùi |x|≥9 → Hip), cột cổ |x|≤6 →
+  chuỗi Chest→Neck (4 cm sát đáy sọ dốc sang Head 0,8), Scapula chỉ |x|≥8, mảnh QA trên đáy hàm → Head; skin theo khoảng cách chỉ để hòa khớp,
+  làm mượt riêng vùng khớp hông. Quét giãn cả Body lẫn QA (`MESH=_Body`). Cổ ×3,6 ở cú giật đầu chấp nhận (sọ to che).
+- **FBX xuất từ Frolvy vào Unity (G-LumberCity 2026-11-03):** take tên `take1` (FBX Maya team là `Take 001`) → khi chép `.meta` mẫu của team phải đổi `takeName: take1`, `firstFrame` theo LocalStart của FBX (Frolvy xuất từ F1), guid + internalID mới; team bật loop ở `.anim` tách trong editor, FBX mới chưa có `.anim`.
+- **FBX anim G-LumberCity chỉ joint + anim, không mesh** (user 2026-11-03 "fbx chỉ giữ joint với anim thôi ko cần mesh"): `export_clip(..., meshes=False)` mặc định; `tools/fbx_ascii_keep.py --no-meshes` bỏ cả Geometry + Skin/Cluster, không chỉ Model mesh. Kiểm số object sau khi lọc: chỉ còn Model/NodeAttribute LimbNode + AnimationCurve(Node) + Stack/Layer.
+- **FBX chỉ joint (không mesh) vào Unity Generic + avatar copy:** khi `root` là node gốc DUY NHẤT trong file, Unity gộp nó vào prefab root → lỗi "Copied Avatar Rig Configuration mis-match … Cannot find root motion transform 'root'" (G-LumberCity 2026-11-03; bản còn mesh thì không lỗi vì có 3 node gốc). Sửa: `.meta` đặt `preserveHierarchy: 1`. Kiểm bằng Editor.log (`%LOCALAPPDATA%\Unity\Editor\Editor.log`, grep "mis-match").

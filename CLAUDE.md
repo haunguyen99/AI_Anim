@@ -13,5 +13,9 @@
 - Việc nhỏ (xóa, ẩn, đổi tên): đọc đủ tên object trước, làm trong một lượt, không chờ từng bước.
 - Không thuộc quy tắc này: các bản render / playblast trong quy trình anim (quick render, so REF|ANIM, kiểm giải phẫu). Đó là bước tự kiểm tra pose, không phải chụp màn hình để báo cáo.
 
+## Bộ nhớ Claude (giữ qua đổi tài khoản / máy)
+- Bản sao bộ nhớ ở `.claude/memory_store/` (trong git). Nếu `MEMORY.md` trong bộ nhớ phiên đang trống hoặc thiếu, chạy `.venv/Scripts/python.exe -I tools/claude_memory.py restore` rồi đọc `.claude/memory_store/MEMORY.md`.
+- Sau khi ghi / sửa memory: chạy `tools/claude_memory.py backup` để bản sao luôn mới.
+
 ## Trả lời
 - Mọi câu trả lời bằng tiếng Việt.

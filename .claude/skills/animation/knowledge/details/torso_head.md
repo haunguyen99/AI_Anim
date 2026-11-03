@@ -56,3 +56,14 @@
 - Blender Attack f13 v2 đầu ngửa 32° và bị cánh tay phải che: neck/head `fwd` âm = ngửa. Đo hướng đầu (az/el so với P0) và mép
   đầu (min x/y điểm mesh đầu ở front + left so với ref) bằng số; sweep nhỏ chọn sai số px nhỏ nhất.
 - Đầu/cổ chúi trước (SDR v3) → cổ ngả sau 8°.
+
+
+## turn-chain
+- Quay người nhìn/quay về phía tay (G-LumberCity Idle Wipe, user 2026-11-02: "chỉ xoay mỗi ngực nên cảm giác cơ thể bị robot"): góc quay bắt đầu từ HÔNG, chia dọc chuỗi (35° = hông 8 / eo 6 / ngực 8 / cổ 5 / đầu 8; quay 20° về tay = hông 4 / ngực 4 / cổ 4 / đầu 8). Chân IK giữ chỗ (đo trượt cổ chân ≤ 0,02 cm). Kể cả idle "giữ thân yên" của user vẫn cần hông góp vào cú quay.
+
+## Cú nhìn phụ trong anim lặp (Ropeway Crank p4, 2026-11-03)
+- Nhìn lên một vật ở cao (cáp, đỉnh máy) mà chỉ ngẩng (pitch) thì từ cam trên cao gần như không thấy: thêm quay đầu (yaw) về phía vật đó, ~25°.
+- Điều khiển pitch + yaw bằng MỘT đường cong (smoothstep lên → giữ → smoothstep về), đừng lấy từ các key look_up qua Hermite: dễ ra hai nhịp (đầu khựng giữa pha).
+- Thân (Spine1 + Chest, 3–5°) quay cùng chiều, dẫn trước đầu ~2 F (người dùng thích xoay bắt đầu từ thân).
+- Thân chồm/ngửa trong lúc nhìn kéo pitch thế giới của đầu theo: đo pitch thế giới mỗi frame rồi bù ở cổ/đầu để giữ ổn định.
+- Lúc giữ nhìn, cho trôi nhẹ (~0,4°/F) thay vì đứng chết.

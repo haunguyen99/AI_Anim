@@ -26,6 +26,8 @@ Nguyên tắc:
   chọn khung giờ `--from` / `--to` cho đúng đoạn của dự án (đọc lướt prompt đầu / cuối).
 - Người dùng đã xoá phiên trong app thì log `.jsonl` thường **vẫn còn** ở `~/.claude/projects/<dự án>/` (Hộp quà 30/10 tìm lại được như vậy).
   Mất hẳn thì dựng lại từ sổ phiên bản Spine Live + mục Bài học trong skill + MAP + git log, và ghi rõ "không có log phiên".
+- **Phiên fork** (nhiều phiên tách từ một phiên gốc, chạy song song): mỗi log fork chép lại các lượt trước điểm fork; chạy `stats` từng phiên với `--from` = giờ fork để không đếm trùng. "Người" của các phiên song song chồng nhau: báo cáo AI gen cộng được, "người" thì không; nêu thêm "AI gen trong khoảng thời gian trôi" (vd G-LumberCity 3 g 18′ trong 2 g 24′).
+- Log `.jsonl` đã bị xoá hẳn (chỉ còn `<id>.desktop-released.json` "reason: delete"): dựng lại mốc từ `git log` (giờ commit, tag duyệt, lời người dùng trích trong commit) + `director_log.md`, chỉ báo **thời gian trôi**, ghi rõ "không có log".
 - Ảnh người dùng dán (nét vẽ góp ý) nằm ở `%TEMP%/claude/<dự án>/<id phiên>/images/N.png`: dùng làm minh hoạ.
 
 ## 2. Số liệu (2 phút)
@@ -62,7 +64,8 @@ Cần Home chạy và một trang Spine Live mở: `preview_start` với url `ht
 - Xem 1 poster để chắc hình đúng (ảnh có thanh tiêu đề + số frame).
 - Dự án không có sổ Spine Live (vd rig dở như Hộp quà): đổi GIF / ảnh có sẵn ở `preview/` sang mp4:
   `ffmpeg -i x.gif -movflags +faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" x.mp4`.
-- Dự án 3D (Studio / Pose Lab): dùng playblast / quick render đã có của quy trình anim cho từng version.
+- Dự án 3D (Studio / Pose Lab / Frolvy): dùng video review đã render ở từng mốc (`<clip>/review/*.mp4`, GIF → mp4), poster bằng `ffmpeg -ss 0.6 -frames:v 1`. Video 3D là khung ngang nhiều góc: slide video xếp lưới 2×2, ảnh 808×230 (mẫu `work/g_lumbercity/_review/slides/project/slides/idle1.html`).
+- Upload lên artifact hay lỗi ECONNRESET khi gửi nhiều file một lần: trang báo cáo đăng trang trước rồi thêm `files` từng cặp mp4 + jpg; asset của slide ≤ 6 file / lần, file lỗi 2 lần thì bỏ, thay bằng ảnh tĩnh.
 
 ## 4. Viết BAO_CAO.md (`<dự án>/_review/BAO_CAO.md`)
 Cấu trúc (mẫu đầy đủ: `work/test/spine/MascotBackToSchool/_review/BAO_CAO.md`):

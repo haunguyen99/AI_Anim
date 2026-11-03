@@ -31,6 +31,16 @@
   "SDR01": {
    "rig_url": "",
    "rig_page": "sdr01"
+  },
+  "Lumber": {
+   "rig_url": ""
+  },
+  "Worker": {
+   "rig_url": ""
+  },
+  "SDR05": {
+   "rig_url": "",
+   "rig_page": "sdr05"
   }
  },
  "clips": [
@@ -560,6 +570,90 @@
    }
   },
   {
+   "id": "lumber_clean_output",
+   "character": "Lumber",
+   "stage": "exported",
+   "note": "ĐÃ XUẤT (polish v2, user duyệt 2026-11-03): E:\\tvc_source\\3D ANIM\\G-LumberCity\\Exp\\MC_Lumber_CleanOutput.fbx, 48F loop (F48=F1), nhập lại lệch ≤0,0001 cm. Đã copy vào Unity Assets/_Game/Animations/MC_Lumber/ (FBX + meta, takeName take1, loop) 2026-11-03, chưa commit repo Unity.",
+   "dir": "work/g_lumbercity/lumber_clean_output",
+   "frames": 48,
+   "fps": 30,
+   "ref": "",
+   "desc": "Quạt bụi bằng sổ ở cửa ra máy nghiền (GDD dòng 87, map 5)",
+   "created": "2026-11-02",
+   "updated": "2026-11-03",
+   "review": {
+    "key": "lumber_clean_output",
+    "clip": "Clean Output",
+    "title": "Lumber Clean Output Review Lab",
+    "crumb": "Lumber · anim",
+    "name": "Clean Output",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "lumber_clean_output",
+    "clip": "Lumber_CleanOutput",
+    "title": "Lumber Clean Output Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "lumber_ropeway_crank",
+   "character": "Lumber",
+   "stage": "exported",
+   "note": "ĐÃ XUẤT (user \"Duyệt, xuất FBX\" trên p6; xuất p7 = p6 đứng lùi 8 cm thay 10 để trọng tâm sau mũi chân, director p6 B1): E:\tvc_source\u0003D ANIM\\G-LumberCity\\Exp\\MC_Lumber_RopewayCrank.fbx, F1–61 (F61=F1, 2 vòng), 53 joint không mesh, nhập lại lệch ≤0,0001 cm. Đã copy vào Unity MC_Lumber (+.meta Generic, loop, preserveHierarchy 1), chưa commit repo Unity.",
+   "dir": "work/g_lumbercity/lumber_ropeway_crank",
+   "frames": 60,
+   "fps": 30,
+   "ref": "",
+   "desc": "Đứng quay cần cho ròng rọc cáp treo chạy (GDD dòng 88)",
+   "created": "2026-11-02",
+   "updated": "2026-11-03",
+   "review": {
+    "key": "lumber_ropeway_crank",
+    "clip": "Ropeway Crank",
+    "title": "Lumber Ropeway Crank Review Lab",
+    "crumb": "Lumber · anim",
+    "name": "Ropeway Crank",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "lumber_ropeway_crank",
+    "clip": "Lumber_RopewayCrank",
+    "title": "Lumber Ropeway Crank Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "lumber_idle_wipe",
+   "character": "Lumber",
+   "stage": "exported",
+   "note": "ĐÃ XUẤT (polish v2, user \"done\" 2026-11-02): E:\\tvc_source\\3D ANIM\\G-LumberCity\\Exp\\MC_Lumber_IdleWipe.fbx, 150F loop, nhập lại lệch ≤0,0001 cm. Đã copy vào Unity Assets/_Game/Animations/MC_Lumber/ (FBX + meta, takeName take1, F1–150, loop) 2026-11-03, chưa commit repo Unity.",
+   "dir": "work/g_lumbercity/lumber_idle_wipe",
+   "frames": 150,
+   "fps": 30,
+   "ref": "",
+   "desc": "Đứng chờ cạnh máy, thỉnh thoảng lau mồ hôi (GDD dòng 89)",
+   "created": "2026-11-02",
+   "updated": "2026-11-03",
+   "review": {
+    "key": "lumber_idle_wipe",
+    "clip": "Idle Wipe",
+    "title": "Lumber Idle Wipe Review Lab",
+    "crumb": "Lumber · anim",
+    "name": "Idle Wipe",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "lumber_idle_wipe",
+    "clip": "Lumber_IdleWipe",
+    "title": "Lumber Idle Wipe Pose Lab",
+    "url": ""
+   }
+  },
+  {
    "id": "ninja_ninja_attack",
    "character": "Ninja",
    "stage": "blocking",
@@ -586,6 +680,103 @@
     "title": "Ninja Ninja Attack Pose Lab",
     "url": ""
    }
+  },
+  {
+   "id": "sdr05_idle",
+   "character": "SDR05",
+   "stage": "blocking",
+   "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
+   "review": {
+    "key": "sdr05_idle",
+    "clip": "Idle",
+    "title": "SDR05 Idle Review Lab",
+    "crumb": "SDR05 · anim",
+    "name": "Idle",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Súng"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr05_idle",
+    "clip": "SDR05_Idle",
+    "title": "SDR05 Idle Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr05_colt",
+   "updated": "2026-11-03",
+   "created": "2026-11-03",
+   "fps": 30,
+   "frames": 10
+  },
+  {
+   "id": "sdr05_shoot",
+   "character": "SDR05",
+   "stage": "blocking",
+   "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
+   "review": {
+    "key": "sdr05_shoot",
+    "clip": "Shoot",
+    "title": "SDR05 Shoot Review Lab",
+    "crumb": "SDR05 · anim",
+    "name": "Shoot",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Súng"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr05_shoot",
+    "clip": "SDR05_Shoot",
+    "title": "SDR05 Shoot Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr05_colt",
+   "updated": "2026-11-03",
+   "created": "2026-11-03",
+   "fps": 30
+  },
+  {
+   "id": "sdr05_reload",
+   "character": "SDR05",
+   "stage": "analysis",
+   "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
+   "review": {
+    "key": "sdr05_reload",
+    "clip": "Reload",
+    "title": "SDR05 Reload Review Lab",
+    "crumb": "SDR05 · anim",
+    "name": "Reload",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Súng"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr05_reload",
+    "clip": "SDR05_Reload",
+    "title": "SDR05 Reload Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr05_colt",
+   "updated": "2026-11-03",
+   "created": "2026-11-03",
+   "fps": 30
   }
  ],
  "projects": [
@@ -609,14 +800,16 @@
     "SDR06",
     "Zom2 Map3",
     "SDR03",
-    "SDR01"
+    "SDR01",
+    "SDR05"
    ],
    "labels": {
     "SDR": "map2 · lính La Mã",
     "SDR06": "map06 · gangster + Thompson",
     "Zom2 Map3": "Zombie 2 map03 (EN_zom2_map3_NEW)",
     "SDR03": "map3 · người bộ tộc + nỏ (MC_char_map3)",
-    "SDR01": "map1 · lính La Mã ném dao (MC_char_map1_Rig = model map2)"
+    "SDR01": "map1 · lính La Mã ném dao (MC_char_map1_Rig = model map2)",
+    "SDR05": "map5 Western · cao bồi + Colt Python (MC_char_map5)"
    },
    "char_notes": {}
   },
@@ -651,6 +844,21 @@
     "Ninja": "hero · shuriken + kunai"
    },
    "created": "2026-10-28"
+  },
+  {
+   "id": "g_lumbercity",
+   "name": "G-LumberCity",
+   "desc": "Thành phố gỗ: thợ đốn gỗ + công nhân (rig Maya). Unity E:\\Horus\\G-LumberCity · file làm việc E:\tvc_source\u0003D ANIM\\G-LumberCity",
+   "characters": [
+    "Lumber",
+    "Worker"
+   ],
+   "labels": {
+    "Lumber": "MC_Lumber (MC_Lumber_rig.ma)",
+    "Worker": "MC_Worker"
+   },
+   "char_notes": {},
+   "created": "2026-11-02"
   }
  ]
 }
