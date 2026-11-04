@@ -23,9 +23,11 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 os.chdir(ROOT)
 
 # Cho phép (glob, so khớp đường dẫn kiểu /). Mọi thứ khác không bao giờ được đẩy.
+# .claude/memory_store = bản sao bộ nhớ Claude (tools/claude_memory.py), user 2026-11-04: đẩy lên để tài khoản khác dùng được;
+# .claude/mcp_store KHÔNG đẩy (có khoá MCP).
 ALLOW = [
     "README.md", "MAP.md", "CLAUDE.md", "requirements.txt", ".gitignore",
-    ".claude/skills/**", ".claude/agents/**", "docs/**", "tools/**",
+    ".claude/skills/**", ".claude/agents/**", ".claude/memory_store/**", "docs/**", "tools/**",
     "work/clips.json", "work/patch_localdb.py",
     "work/pose_lab/index.html", "work/pose_lab/*.py", "work/pose_lab/fbx/*.py", "work/pose_lab/fbx/*.js", "work/pose_lab/fbx/test.html",
     "work/review_page/index.html", "work/review_page/*.py",

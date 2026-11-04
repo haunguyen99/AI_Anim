@@ -110,7 +110,8 @@
     async anim(a) {
       if (a.do === "clips") return ST.mods.pose.clipList();
       if (a.do === "clip") {   // đổi anim = tải lại trang (một anim mỗi trang); lệnh sau đợi trang mới kết nối lại
-        const L = await ST.mods.pose.clipList(), c = L.find(x => x.id === a.id) || L.find(x => (x.name || "").toLowerCase() === String(a.id || "").toLowerCase());
+        let L = await ST.mods.pose.clipList(); if (!L.find(x => x.id === a.id)) L = await ST.mods.pose.clipList(true);   // anim mới đăng sau khi mở trang
+        const c = L.find(x => x.id === a.id) || L.find(x => (x.name || "").toLowerCase() === String(a.id || "").toLowerCase());
         need(c, "Không có anim " + a.id + " (anim clips để xem danh sách)"); B.after = () => ST.mods.pose.goClip(c.id); return { opening: c.id };
       }
       await want("pose"); const A = poseEng().ai;

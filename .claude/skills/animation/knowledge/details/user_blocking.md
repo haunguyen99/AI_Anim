@@ -44,6 +44,31 @@ Chưa kiểm trên clip thật (2026-10-31), cần làm ở clip đầu tiên:
   `anim key` hoặc port qua `tools/studio/port_pose.py`) trước khi làm F3.
 - Nếu team đã đưa sẵn FBX blocking thì bỏ F1–F2, vào thẳng F3 (hoặc bước 1 cũ).
 
+## Sửa anim trên Frolvy: luôn sửa trên layer, không sửa Base (từ 2026-11-04)
+
+Người dùng 2026-11-04: "sử dụng layer khi được yêu cầu chỉnh sửa. không sửa trực tiếp trên layer gốc như ban đầu".
+Layer **Base** (index 0) giữ bản đã duyệt (blocking, spline hoặc polish). Mọi yêu cầu sửa sau đó (góp ý review, sửa clip
+đã xuất) đi vào layer riêng. Nhờ vậy tắt layer là thấy lại bản cũ, và đổi Base không làm mất phần đã sửa.
+
+Bộ hàm: `.claude/skills/frolvy_rig/scripts/frolvy_layers.py` (đọc docstring đầu file). Không key layer bằng `set_key` trần,
+không dùng `flatten_layers`, `merge_layer_down` hay `bake_keys` lúc còn layer: Frolvy 0.9.36 cộng đôi layer cộng thêm
+(đo 2026-11-04: Base 40 + layer 15 → màn hình 55, nhưng flatten/xuất FBX ra 70; `bake_keys` ra 30, mất cả Base).
+
+1. **Mỗi vòng sửa = một layer mới**, chế độ additive, weight 1: `L = FL.start_fix(api, "fix_r<N>_<nội dung>")`
+   (vd `fix_r1_tay_phai`). Một vòng có nhiều chỗ sửa thì chung một layer; vòng sau tạo layer mới.
+2. **Key bằng `FL.key` (giá trị tổng muốn thấy) hoặc `FL.offset` (cộng thêm)**, luôn kèm `hold=(a, b)` là frame bắt đầu và
+   kết thúc vùng sửa. Thiếu `hold` thì một key trên layer cộng thêm làm lệch **cả clip**. Hàm trả sai số trên màn hình (~0).
+3. Lưu scene thành bản mới `<clip>_r<N>.fv` (còn layer). Báo người dùng tên layer để họ mute/solo so trước và sau.
+4. Kiểm như mọi bản: giải phẫu, chân cắm, tay bám prop. Layer cộng góc xoay có thể kéo tay tuột prop (SDR06: lệch 34 cm),
+   nên sửa tay cầm prop thì giải lại IK tay trong layer đó và đo độ trượt.
+5. **Xuất FBX:** mở bản sao của scene, `FL.bake_for_export(api, đầu, cuối)` (đọc tổng từng frame, xoá layer, ghi lên Base,
+   sai số ~0), rồi mới chạy đường xuất cũ (bake joint team → `export_scene` → `fbx_ascii_keep.py`). Scene có layer giữ lại
+   làm bản gốc. Đọc lại FBX so với màn hình trước khi giao.
+
+Chưa thử (làm lần đầu thì kiểm trước): layer **override** (chỉ dùng khi người dùng xin dựng lại cả một đoạn), `retime_keys`
+khi đổi timing có dời key trên mọi layer không, thuộc tính tuỳ biến (switch, curl) trên layer (`list_keys` của chúng trả []).
+Studio chưa có anim layer: luật này áp dụng cho Frolvy trước.
+
 ## Các bước sau khi có blocking (từ 2026-10-23)
 
 Từ 2026-10-31 các bước này làm trong Studio. Tên lệnh Pose Lab dưới đây là của clip mẫu.

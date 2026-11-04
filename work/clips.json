@@ -31,6 +31,19 @@
   "SDR01": {
    "rig_url": "",
    "rig_page": "sdr01"
+  },
+  "Lumber": {
+   "rig_url": ""
+  },
+  "Worker": {
+   "rig_url": ""
+  },
+  "SDR05": {
+   "rig_url": "",
+   "rig_page": "sdr05"
+  },
+  "Windy": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -366,15 +379,15 @@
   {
    "id": "ninja_idle",
    "character": "Ninja",
-   "stage": "p0",
-   "note": "Pose F1 k10_v2 dựng theo ảnh concept k1r2_v1, chờ duyệt",
+   "stage": "polish",
+   "note": "Polish v4 (tay nhẹ, overlap thân khi thở), playblast pb4 quay F1–F40 hết khựng chỗ lặp, chờ góp ý",
    "dir": "work/infinite_defense/ninja_idle",
    "frames": 41,
    "fps": 30,
    "ref": "Không có video ref của rig. Ref dáng: https://www.reddit.com/r/PixelArt/comments/1tnpj6v/ninja_idle/ ; hạ trọng tâm: https://www.reddit.com/r/blender/comments/woha4h/ninja_idle_animation/",
    "desc": "[GDD] Ninja đứng thủ thế hơi khom người, tay phải cầm ngược kunai trước ngực, tay trái thả lỏng. Khăn quàng bay nhẹ theo nhịp thở. Khoảng mỗi 4–6 giây xoay kunai một vòng trong tay (optional). Animation loop liền mạch.\n\n[GDD] Ref: tay duỗi kiếm trong ref là tay không của ninja, tay kia là tay cầm kunai, tư thế hơi khom người một chút.\n\nNguồn: FDD Hero Ninja v1.1 (work/infinite_defense/gdd/ninja_fdd_v1.1.txt, https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k).\nModel: C:/Users/Admin/Documents/Ngoc/EndlessKicker/Hero_Ninja/Rig/MC_Ninja.fbx (mesh body_ninja, weapon, weapon_explode; chưa có xương). Texture T_Colorpalette.tga.",
    "created": "2026-10-28",
-   "updated": "2026-10-28",
+   "updated": "2026-10-29",
    "review": {
     "key": "ninja_idle",
     "clip": "Idle",
@@ -389,7 +402,7 @@
      "Khăn quàng",
      "Chân"
     ],
-    "url": ""
+    "url": "https://claude.ai/artifact/7U5nUphRrksoxqbxTFLXHC"
    },
    "pose": {
     "key": "ninja_idle",
@@ -558,6 +571,355 @@
     "title": "SDR03 Hit Pose Lab",
     "url": ""
    }
+  },
+  {
+   "id": "lumber_clean_output",
+   "character": "Lumber",
+   "stage": "exported",
+   "note": "ĐÃ XUẤT (polish v2, user duyệt 2026-11-03): E:\\tvc_source\\3D ANIM\\G-LumberCity\\Exp\\MC_Lumber_CleanOutput.fbx, 48F loop (F48=F1), nhập lại lệch ≤0,0001 cm. Đã copy vào Unity Assets/_Game/Animations/MC_Lumber/ (FBX + meta, takeName take1, loop) 2026-11-03, chưa commit repo Unity.",
+   "dir": "work/g_lumbercity/lumber_clean_output",
+   "frames": 48,
+   "fps": 30,
+   "ref": "",
+   "desc": "Quạt bụi bằng sổ ở cửa ra máy nghiền (GDD dòng 87, map 5)",
+   "created": "2026-11-02",
+   "updated": "2026-11-03",
+   "review": {
+    "key": "lumber_clean_output",
+    "clip": "Clean Output",
+    "title": "Lumber Clean Output Review Lab",
+    "crumb": "Lumber · anim",
+    "name": "Clean Output",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "lumber_clean_output",
+    "clip": "Lumber_CleanOutput",
+    "title": "Lumber Clean Output Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "lumber_ropeway_crank",
+   "character": "Lumber",
+   "stage": "exported",
+   "note": "ĐÃ XUẤT (user \"Duyệt, xuất FBX\" trên p6; xuất p7 = p6 đứng lùi 8 cm thay 10 để trọng tâm sau mũi chân, director p6 B1): E:\tvc_source\u0003D ANIM\\G-LumberCity\\Exp\\MC_Lumber_RopewayCrank.fbx, F1–61 (F61=F1, 2 vòng), 53 joint không mesh, nhập lại lệch ≤0,0001 cm. Đã copy vào Unity MC_Lumber (+.meta Generic, loop, preserveHierarchy 1), chưa commit repo Unity.",
+   "dir": "work/g_lumbercity/lumber_ropeway_crank",
+   "frames": 60,
+   "fps": 30,
+   "ref": "",
+   "desc": "Đứng quay cần cho ròng rọc cáp treo chạy (GDD dòng 88)",
+   "created": "2026-11-02",
+   "updated": "2026-11-03",
+   "review": {
+    "key": "lumber_ropeway_crank",
+    "clip": "Ropeway Crank",
+    "title": "Lumber Ropeway Crank Review Lab",
+    "crumb": "Lumber · anim",
+    "name": "Ropeway Crank",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "lumber_ropeway_crank",
+    "clip": "Lumber_RopewayCrank",
+    "title": "Lumber Ropeway Crank Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "lumber_idle_wipe",
+   "character": "Lumber",
+   "stage": "exported",
+   "note": "ĐÃ XUẤT (polish v2, user \"done\" 2026-11-02): E:\\tvc_source\\3D ANIM\\G-LumberCity\\Exp\\MC_Lumber_IdleWipe.fbx, 150F loop, nhập lại lệch ≤0,0001 cm. Đã copy vào Unity Assets/_Game/Animations/MC_Lumber/ (FBX + meta, takeName take1, F1–150, loop) 2026-11-03, chưa commit repo Unity.",
+   "dir": "work/g_lumbercity/lumber_idle_wipe",
+   "frames": 150,
+   "fps": 30,
+   "ref": "",
+   "desc": "Đứng chờ cạnh máy, thỉnh thoảng lau mồ hôi (GDD dòng 89)",
+   "created": "2026-11-02",
+   "updated": "2026-11-03",
+   "review": {
+    "key": "lumber_idle_wipe",
+    "clip": "Idle Wipe",
+    "title": "Lumber Idle Wipe Review Lab",
+    "crumb": "Lumber · anim",
+    "name": "Idle Wipe",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "lumber_idle_wipe",
+    "clip": "Lumber_IdleWipe",
+    "title": "Lumber Idle Wipe Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "ninja_ninja_attack",
+   "character": "Ninja",
+   "stage": "blocking",
+   "note": "Tạo từ Studio (Animate → Anim mới): P0 từ rig hiện tại, chờ phân tích / blocking",
+   "dir": "work/infinite_defense/ninja_ninja_attack",
+   "frames": 30,
+   "fps": 30,
+   "ref": "",
+   "desc": "",
+   "created": "2026-10-29",
+   "updated": "2026-10-29",
+   "review": {
+    "key": "ninja_ninja_attack",
+    "clip": "Ninja_Attack",
+    "title": "Ninja Ninja Attack Review Lab",
+    "crumb": "Ninja · anim",
+    "name": "Ninja Attack",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "ninja_ninja_attack",
+    "clip": "Ninja_Ninja_Attack",
+    "title": "Ninja Ninja Attack Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "sdr05_idle",
+   "character": "SDR05",
+   "stage": "export",
+   "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
+   "review": {
+    "key": "sdr05_idle",
+    "clip": "Idle",
+    "title": "SDR05 Idle Review Lab",
+    "crumb": "SDR05 · anim",
+    "name": "Idle",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Súng"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr05_idle",
+    "clip": "SDR05_Idle",
+    "title": "SDR05 Idle Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr05_colt",
+   "updated": "2026-11-03",
+   "created": "2026-11-03",
+   "fps": 30,
+   "frames": 10
+  },
+  {
+   "id": "sdr05_shoot",
+   "character": "SDR05",
+   "stage": "export",
+   "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
+   "review": {
+    "key": "sdr05_shoot",
+    "clip": "Shoot",
+    "title": "SDR05 Shoot Review Lab",
+    "crumb": "SDR05 · anim",
+    "name": "Shoot",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Súng"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr05_shoot",
+    "clip": "SDR05_Shoot",
+    "title": "SDR05 Shoot Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr05_colt",
+   "updated": "2026-11-03",
+   "created": "2026-11-03",
+   "fps": 30
+  },
+  {
+   "id": "sdr05_reload",
+   "character": "SDR05",
+   "stage": "export",
+   "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
+   "review": {
+    "key": "sdr05_reload",
+    "clip": "Reload",
+    "title": "SDR05 Reload Review Lab",
+    "crumb": "SDR05 · anim",
+    "name": "Reload",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Chân",
+     "Súng"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "sdr05_reload",
+    "clip": "SDR05_Reload",
+    "title": "SDR05 Reload Pose Lab",
+    "url": ""
+   },
+   "dir": "work/shoot_die_repeat/sdr05_colt",
+   "updated": "2026-11-03",
+   "created": "2026-11-03",
+   "fps": 30
+  },
+  {
+   "id": "windy_idle",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_idle",
+   "frames": 60,
+   "fps": 30,
+   "ref": "",
+   "desc": "Idle loop: đứng gác, trượng dựng đuôi chạm đất bên phải, áo choàng bay theo gió",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_idle",
+    "clip": "Idle",
+    "title": "Windy Idle Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_idle",
+    "clip": "Windy_Idle",
+    "title": "Windy Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_attack",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_attack",
+   "frames": 24,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_attack_ref.mp4",
+   "desc": "Đòn thường: lấy đà giơ trượng → chĩa đầu trượng ngang về mục tiêu, bắn F9",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_attack",
+    "clip": "Attack",
+    "title": "Windy Attack Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Attack",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_attack",
+    "clip": "Windy_Attack",
+    "title": "Windy Attack Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_skill1",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_skill1",
+   "frames": 36,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_skill1_ref.mp4",
+   "desc": "Dâng trượng trước người, xoay 2 vòng, phóng lốc F24",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_skill1",
+    "clip": "Skill1 Wind Cyclone",
+    "title": "Windy Skill1 Wind Cyclone Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Skill1 Wind Cyclone",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_skill1",
+    "clip": "Windy_Skill1",
+    "title": "Windy Skill1 Wind Cyclone Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_skill2",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_skill2",
+   "frames": 45,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_skill2_ref.mp4",
+   "desc": "Bay nhẹ 35 cm, cả người xoay 360° cùng trượng, đáp, cắm trượng gọi lốc F31",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_skill2",
+    "clip": "Skill2 Hunting Tornado",
+    "title": "Windy Skill2 Hunting Tornado Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Skill2 Hunting Tornado",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_skill2",
+    "clip": "Windy_Skill2",
+    "title": "Windy Skill2 Hunting Tornado Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_skill3",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_skill3",
+   "frames": 72,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_skill3_charge_ref.mp4",
+   "desc": "Charge: bay 40 cm dang tay, trượng lơ lửng trước mặt · Burst: nắm trượng, cắm xuống đất, nổ F46 (=1,5 s)",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_skill3",
+    "clip": "Skill3 Wind Collapse",
+    "title": "Windy Skill3 Wind Collapse Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Skill3 Wind Collapse",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_skill3",
+    "clip": "Windy_Skill3",
+    "title": "Windy Skill3 Wind Collapse Pose Lab",
+    "url": ""
+   }
   }
  ],
  "projects": [
@@ -581,14 +943,16 @@
     "SDR06",
     "Zom2 Map3",
     "SDR03",
-    "SDR01"
+    "SDR01",
+    "SDR05"
    ],
    "labels": {
     "SDR": "map2 · lính La Mã",
     "SDR06": "map06 · gangster + Thompson",
     "Zom2 Map3": "Zombie 2 map03 (EN_zom2_map3_NEW)",
     "SDR03": "map3 · người bộ tộc + nỏ (MC_char_map3)",
-    "SDR01": "map1 · lính La Mã ném dao (MC_char_map1_Rig = model map2)"
+    "SDR01": "map1 · lính La Mã ném dao (MC_char_map1_Rig = model map2)",
+    "SDR05": "map5 Western · cao bồi + Colt Python (MC_char_map5)"
    },
    "char_notes": {}
   },
@@ -623,6 +987,34 @@
     "Ninja": "hero · shuriken + kunai"
    },
    "created": "2026-10-28"
+  },
+  {
+   "id": "g_lumbercity",
+   "name": "G-LumberCity",
+   "desc": "Thành phố gỗ: thợ đốn gỗ + công nhân (rig Maya). Unity E:\\Horus\\G-LumberCity · file làm việc E:\tvc_source\u0003D ANIM\\G-LumberCity",
+   "characters": [
+    "Lumber",
+    "Worker"
+   ],
+   "labels": {
+    "Lumber": "MC_Lumber (MC_Lumber_rig.ma)",
+    "Worker": "MC_Worker"
+   },
+   "char_notes": {},
+   "created": "2026-11-02"
+  },
+  {
+   "id": "endless_kicker",
+   "name": "Endless-kicker",
+   "desc": "Thủ thành: 1 hero đứng giữa tự đánh enemy. Unity E:\\endless-kicker · file team E:\tvc_source\u0003D ANIM\\EndlessKicker",
+   "characters": [
+    "Windy"
+   ],
+   "labels": {
+    "Windy": "hero mage gió + trượng (FDD Hero Windy)"
+   },
+   "char_notes": {},
+   "created": "2026-11-04"
   }
  ]
 }

@@ -18,6 +18,7 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
   đếm lại Definitions (giống mẫu work/shoot_die_repeat/sdr/export/anim_only) → export/anim_only/; kiểm: 59 xương, 0 liên kết hỏng, lệch 0,00001 cm.
 
 ## anim-only
+- **SDR (G-DieLoop): file anim gửi Unity luôn không mesh** (user 2026-11-04, SDR05 bị trả vì còn mesh). SDR01/03/06 trên Unity đều chỉ xương + anim. Khi rig/mesh prop đổi (vd Gatling → Colt), mesh đi riêng trong `SDR<NN>_MC_Base.fbx` đứng **T-pose = bind** (user 2026-11-04, không phải P0; xương lá không skin thì giữ local trong file vì rigpose đặt bind = tư thế gốc) (avatarSetup 1, clipAnimations []), còn .meta anim đặt avatarSetup 2, lastHumanDescriptionAvatarSource = guid Base, externalObjects {}. Kiểm sau khi xuất: 0 Geometry/Deformer/Material, 0 liên kết hỏng (`sdr05_colt/export_fbx.py`).
 - Xuất "chỉ joint + anim" (dev đã có model): `legacy/blender/export_skeleton_only.py` chạy trên file *_baked.blend
   (object_types={"ARMATURE"}, take = tên scene). SDR: work/shoot_die_repeat/sdr/export/anim_only/*.fbx, 23 xương, khớp bản có mesh 0,0006 cm.
   Mặc định hỏi/đoán: team Unity thường chỉ cần anim-only khi model đã import từ trước.
@@ -93,3 +94,34 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 - `.meta` Unity tạo ra lúc FBX còn hỏng giữ thiết lập kiểu cũ: `useFileScale: 0`, `fileIdsGeneration: 1`, materialImportMode 1…
   → anim chạy sai dù FBX đã sửa. Sau khi sửa FBX: so `.meta` với clip chạy đúng (Idle / file team), dựng lại từ `.meta` đúng, giữ guid +
   internalID + tên clip, chỉ đổi lastFrame. Kiểm Unity bằng `%LOCALAPPDATA%\Unity\Editor\Editor.log` (dòng SDR…, cảnh báo import).
+
+## Rig zombie từ model tĩnh mới, chỉ FBX skin bằng script (2026-11-02, zom_v2 map4/map5, `work/shoot_die_repeat/zom_v2/rig_v2.py`)
+- Lấy rig team cùng loại (Animations/Map0X/En_Zom1_map*.fbx, 27 xương AdvancedSkeleton, Humanoid) làm mẫu: giữ tên + PreRotation/Lcl Rotation,
+  chỉ đổi Lcl Translation (+ AnimationCurveNode d|X/Y/Z tĩnh), bind pose, cluster Transform/TransformLink; đổi tên Model/Geometry theo mesh mới;
+  thêm cluster bằng nhân bản (đếm Definitions Deformer). Model mới UnitScale 100 → ×100 sang cm.
+- Thân bộ xương low-poly = mảnh rời → đặt khớp ở chỗ nối mảnh (đùi/ống chân/cánh tay/cẳng tay), skin Body cứng theo mảnh; hàm dưới → Head_M.
+  Bàn chân có thể nằm trong ủng QA (lấy mọi điểm thấp bên đó).
+- Quần áo: 1/d^6 tới đoạn xương + mượt + đối xứng gương; áo giữa thân không theo cẳng tay/chân, vai là dốc mượt theo |x| (bậc → giãn ×16);
+  mảnh nhỏ (<40 đỉnh, <20 cm) cứng theo xương trội, mảnh vắt qua đường giữa không lấy xương bên nào (khóa thắt lưng); đũng bớt Hip về Root trong ±8 cm.
+- Kiểm: `zom2_map3/skin_check.py` (pose cực) + `zom_v2/anim_test.py` (ảnh anim Share) + `zom_v2/stretch_scan.py` (MINL=2, 18 anim).
+- Thân liền một khối (zom2 đầu to): không có mảnh rời → khớp chân/khuỷu = cụm "núm" đỉnh dọc trục (thân xương low-poly không có đỉnh giữa,
+  cắt cụm ở khe > 4 cm); Neck/Head đặt theo ĐÁY HÀM như rig cũ (Neck = hàm − 5,3, Head = hàm + 6,7), không theo đỉnh sọ (sọ to đẩy Head lên quá cao);
+  skin thân theo khoảng cách 1/d^10 mượt 2 lượt, sọ + hàm cứng Head_M. Mẫu rig cũ có mesh thừa (súng VK) → bỏ, và bỏ khỏi skeleton của .meta.
+- Mũ vắt qua hai bên KHÔNG phải "áo giữa thân" (lỗi 2026-11-02: luật vai thêm 0,28–0,36 vai vào vành mũ zom1, đã đẩy rồi mới phát hiện).
+- `.meta`: `make_meta.py` từ meta rig cũ cùng map; Unity đang mở sẽ nhập và tự ghi lại meta (LF, thêm Scapula→Shoulder vào Humanoid) — bản đó dùng được.
+- Thân liền khối (Director zom2 2026-11-02, Duyệt vòng 2): gán CỨNG khối giải phẫu trước — chậu → Root_M (núm đầu đùi |x|≥9 → Hip), cột cổ |x|≤6 →
+  chuỗi Chest→Neck (4 cm sát đáy sọ dốc sang Head 0,8), Scapula chỉ |x|≥8, mảnh QA trên đáy hàm → Head; skin theo khoảng cách chỉ để hòa khớp,
+  làm mượt riêng vùng khớp hông. Quét giãn cả Body lẫn QA (`MESH=_Body`). Cổ ×3,6 ở cú giật đầu chấp nhận (sọ to che).
+- **FBX xuất từ Frolvy vào Unity (G-LumberCity 2026-11-03):** take tên `take1` (FBX Maya team là `Take 001`) → khi chép `.meta` mẫu của team phải đổi `takeName: take1`, `firstFrame` theo LocalStart của FBX (Frolvy xuất từ F1), guid + internalID mới; team bật loop ở `.anim` tách trong editor, FBX mới chưa có `.anim`.
+- **FBX anim G-LumberCity chỉ joint + anim, không mesh** (user 2026-11-03 "fbx chỉ giữ joint với anim thôi ko cần mesh"): `export_clip(..., meshes=False)` mặc định; `tools/fbx_ascii_keep.py --no-meshes` bỏ cả Geometry + Skin/Cluster, không chỉ Model mesh. Kiểm số object sau khi lọc: chỉ còn Model/NodeAttribute LimbNode + AnimationCurve(Node) + Stack/Layer.
+- **FBX chỉ joint (không mesh) vào Unity Generic + avatar copy:** khi `root` là node gốc DUY NHẤT trong file, Unity gộp nó vào prefab root → lỗi "Copied Avatar Rig Configuration mis-match … Cannot find root motion transform 'root'" (G-LumberCity 2026-11-03; bản còn mesh thì không lỗi vì có 3 node gốc). Sửa: `.meta` đặt `preserveHierarchy: 1`. Kiểm bằng Editor.log (`%LOCALAPPDATA%\Unity\Editor\Editor.log`, grep "mis-match").
+
+## Thay mesh mới vào rig team có sẵn (rebind, zom2_map6 2026-11-03, zom1_map4 2026-11-04, `work/shoot_die_repeat/zom1_map4_rebind/rebind.py`)
+- **Dùng `tools/fbx_rebind.py <rig> <model> <thư mục ra> [--map CŨ=MỚI]`** (2026-11-04, ~40 s + ảnh): làm hết các luật dưới, tự thử hard/blend từng mesh trên 18 anim Share và chọn bản ít giãn/lật, kiểm theo kiểu Humanoid (góc xoay từ anim, độ dài xương của rig), ra `report.md` (bảng CŨ→MỚI, ⚠ khi tệ hơn) + `look/` (rest, anim, cận frame tệ nhất) + prefab dùng rig và số m_Bones. Nhận `git:REV:path`; file Unity trên máy khác origin thì tự lấy bản origin. Đã khớp lại zom1_map4 (trùng bản duyệt) và London (điểm tốt hơn bản duyệt). Xong thì gọi Director với report + ảnh.
+- Giữ file rig, chỉ thay hình + UV + Indexes/Weights (`tools/fbx_replace_mesh.py`): xương, bind pose, anim, material trùng từng byte; kiểm lại bằng so pickle mọi object ngoài Geometry/Deformer.
+- Đặt: ICP đồng dạng mới→cũ để ĐO; nếu s≈1, xoay≈0 thì dùng dời thuần (model Khải map4 lệch rig z −6,15 cm, bản model trước cũng thế), y = 0 giữ chân chạm đất.
+- Skin theo tính chất mesh cũ: thân xương của rig team có ranh giới CỨNG (đỉnh 100% Chest cạnh đỉnh 100% Shoulder) → chép đúng 1 đỉnh cũ gần nhất; trộn 1/d² ở đỉnh nằm giữa sinh 73/27 → giãn vai 1,72 (Director trả). Vải (Items) thì trộn 1/d² khi xa > 0,3 cm (bỏ trộn: giãn 2,35, lật 4). Luôn cùng bên trái/phải.
+- Theo khối rời: khối có bản cũ chỉ lấy từ chính mesh cũ đó (áo gile cũ 100% Chest_M; lấy từ thân thì mép vai ăn Shoulder, giãn 3–5×); khối mới hẳn mới lấy từ cả hai mesh.
+- **Không thêm cluster** vào mesh trong rig mà prefab Unity đã unpack: SkinnedMeshRenderer lưu `m_Bones` = đúng số cluster (kể cả cluster rỗng) → thêm cluster lệch bindpose. Khối mới cần xương mesh đó không có (vòng cổ tay trái cần Wrist_L) → chuyển khối sang mesh có cluster đó. Điền cluster rỗng sẵn thì được.
+- Kiểm: `zom_v2/stretch_scan.py` cả 2 mesh + `zom1_map4_rebind/flip_scan.py` (lật mặt) trên 18 anim Share, so CŨ|MỚI; ảnh `anim_test.py` CHẠY TUẦN TỰ (hai lần song song ghi đè ảnh tạm `_at_*.png` → ảnh "cũ" ra mesh mới).
+- Tra prefab nào dùng rig: grep guid của .fbx.meta trong prefab (map4: prefab `En_Zom1_map4_Gameplay` dùng rig Zom2 và ngược lại).

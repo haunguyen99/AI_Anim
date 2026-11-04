@@ -13,8 +13,11 @@ Sở thích của người duyệt (animator lead):
   (ảnh, số đo, brief) nên ít thiên vị bài của animator. Kết luận Duyệt / Cần sửa / Chặn; lỗi mức A phải sửa trước khi gửi;
   tối đa 2 vòng director rồi gửi người dùng. Lỗi director nhắc lại mà người dùng cũng bắt → ghi vào mục `#feedback` của loại anim.
 - Nhật ký từng clip: `work/<dự án>/<clip>/director_log.md` (director tự thêm mỗi lần chấm).
+- **Image Key / ảnh key pose (thêm 2026-10-31, user: "thêm bước agent check vào trong Image key")**: gọi mốc `key-pose` sau mỗi lần sinh ảnh cho một anim,
+  trước khi báo người dùng; cách gọi + bài học SDR01 Shoot ở `gdd_stage0.md` mục "Đồng nhất chuỗi ảnh" phần 7.
 - Các điểm gọi director (2026-10-30): mọi cổng duyệt anim, `/check_fb` (note Review Lab và ghi chú vẽ Studio, bước 3b), mỗi bước Rig
   2–5 trong `/rig` (mốc rig-joints / rig-skin / rig-test, log `work/rig_lab/director/<id>.md`). Ghi chú nhỏ đã đo rõ được bỏ qua, phải ghi lý do.
+- Gọi tay bất cứ lúc nào: skill `/director [clip|nhân vật] [mốc]` (2026-11-03, user: "tạo 1 skill để gọi agent check khi cần").
 
 ## naming-principles
 - Mỗi feedback: gọi tên nguyên lý bị vi phạm (xem `principles.md`) và thêm ví dụ thật vào nguyên lý đó; đổi trạng thái

@@ -84,7 +84,7 @@ const TW_SEG = { Shoulder: ["Elbow", "Cánh tay trên"], Elbow: ["Wrist", "Cẳn
 let TW = { Shoulder: 0, Elbow: 0, Hip: 0, Knee: 0 };
 const vis = { body: true, cloth: true, props: DATA.props.map(() => true) };
 let step = 1, sel = null, mirror = true, showRef = false, showWire = false, showSkel = true, showFing = true;
-let gates = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };   // 6 = panel Vật lý (modules/rig_setup.js)
+let gates = { 1: null, 2: null, 3: null, 4: null, 5: null };
 let db = null, saveMsg = "";
 
 // ---------------------------------------------------------------- three.js
@@ -271,8 +271,7 @@ async function saveLM() {
   renderPanelLight();
 }
 async function setGate(n, status) {
-  const t = Date.now();
-  gates[n] = { status, note: ($("note") || {}).value || "", at: t, sent: t, picked: null, done: null, char: CFG.name || null };
+  gates[n] = { status, note: ($("note") || {}).value || "", at: Date.now() };
   try { if (db) await db.doc("rig/gates").set({ g: gates }); else localStorage.setItem("rig_gates", JSON.stringify(gates)); saveMsg = "Đã ghi kết quả bước " + n + "."; }
   catch (e) { saveMsg = "Không ghi được: " + (e.message || e.code || e); }
   renderAll();
@@ -363,30 +362,10 @@ function dims() { const d = i => bb.mx[i] - bb.mn[i]; return [d(0), d(1), d(2)];
 const esc = t => String(t).replace(/</g, "&lt;");
 const OPEN = {};
 const more = (id, title, html) => `<details class="more" data-more="${id}" ${OPEN[id] ? "open" : ""}><summary>${title}</summary>${html}</details>`;
-// Duyệt / Cần sửa = gửi cho AI: tools/notes_watch.py canh rig/gates.json (sent, chưa picked), đánh dấu picked rồi gọi Claude dậy làm tiếp;
-// Claude làm xong ghi done (studio_cmd.py gate-done). Trang hỏi lại gates mỗi 3 s để hiện trạng thái AI.
-function gateAi(g) {
-  const w = ST.mods.notes && ST.mods.notes.watching && ST.mods.notes.watching();
-  if (!g || !g.sent) return w ? "● Claude đang canh: bấm Duyệt hoặc Cần sửa là AI làm tiếp" : "○ Claude không canh: bấm xong nhắn Claude bất kỳ câu nào";
-  if (g.done) return "✓ AI đã xong" + (g.doneMsg ? ": " + esc(g.doneMsg) : "");
-  if (g.picked) return "… AI đã nhận, đang " + (g.status === "ok" ? "làm bước tiếp" : "sửa bước này");
-  return w ? "→ Đã gửi AI, chờ nhận" : "→ Đã gửi, Claude không canh: nhắn Claude bất kỳ câu nào";
-}
-async function pollGates() {
-  if (!db) return;
-  try {
-    const d = await db.doc("rig/gates").get(); if (!d.exists) return;
-    const g2 = d.data().g || {}; let ch = false;
-    for (const k in g2) { const a = gates[k], b = g2[k]; if (a && b && a.at === b.at && (a.picked !== b.picked || a.done !== b.done)) { a.picked = b.picked; a.done = b.done; a.doneMsg = b.doneMsg; ch = true; } }
-    const e = $("gai"); if (e) e.innerHTML = gateAi(gates[ST.curTab && ST.curTab() === "rig:s6" ? 6 : step]);
-  } catch (e) {}
-}
-setInterval(pollGates, 3000);
 function gateHtml(n) {
   const g = gates[n];
   const st = g ? (g.status === "ok" ? '<span class="chip ok">Đã duyệt</span>' : '<span class="chip fix">Cần sửa</span>') : '<span class="chip">Chưa duyệt</span>';
   return `<div class="gate"><div class="ghead"><b>Bước ${n}</b>${st}<span class="msg" id="smsg">${saveMsg}</span></div>
-    <p class="note" id="gai">${gateAi(g)}</p>
     <textarea id="note" rows="2" placeholder="Ghi chú cho AI nếu cần sửa">${g ? esc(g.note) : ""}</textarea>
     <div class="row"><button class="pri" id="gOk">Duyệt</button><button class="bad" id="gFix">Cần sửa</button></div></div>`;
 }
@@ -655,6 +634,15 @@ function skinStats() {
 const RAMP = [[0, [0.10, 0.17, 0.42]], [0.25, [0.16, 0.5, 0.72]], [0.5, [0.24, 0.7, 0.44]], [0.75, [0.91, 0.79, 0.23]], [1, [0.84, 0.2, 0.17]]];
 function ramp(t) { t = Math.max(0, Math.min(1, t)); for (let k = 1; k < RAMP.length; k++) if (t <= RAMP[k][0]) { const [t0, c0] = RAMP[k - 1], [t1, c1] = RAMP[k], f = (t - t0) / (t1 - t0); return c0.map((v, i) => v + (c1[i] - v) * f); } return RAMP[4][1]; }
 const hueCol = (n, nb) => { const c = new THREE.Color(); c.setHSL(((n * 137.5) % 360) / 360, 0.62, 0.55); return [c.r, c.g, c.b]; };
+// màu "xương chiếm ưu thế" cố định theo bộ phận: xương kề nhau luôn khác màu rõ (Ninja 2026-10-29: Root_M đỏ 0° và Hip_R đỏ 8° trông như một xương phủ cả chậu lẫn đùi). Trái/phải khác tông; xương lạ dùng màu theo thứ tự như cũ.
+const BONE_HUE = { Root_M: 0, Spine1_M: 32, Chest_M: 58, Neck_M: 95, Head_M: 190, HeadEnd_M: 190, Scapula_L: 285, Scapula_R: 85,
+  Shoulder_L: 225, Shoulder_R: 150, Elbow_L: 265, Elbow_R: 115, Wrist_L: 320, Wrist_R: 45, Hip_L: 205, Hip_R: 130,
+  Knee_L: 300, Knee_R: 70, Ankle_L: 175, Ankle_R: 15, Toes_L: 250, Toes_R: 100, Weapon: 30 };
+const boneCol = name => { const b = name.replace(/Twist\d*/, ""); let h = BONE_HUE[b];
+  if (h === undefined && /Finger/.test(b)) h = (b.endsWith("_L") ? 335 : 60) + (parseInt(b.match(/(\d)_/) ? b.match(/(\d)_/)[1] : 1) - 1) * 12;
+  if (h === undefined && /^Scarf/.test(b)) h = (b.endsWith("_L") ? 200 : 20) + (parseInt(b.match(/Scarf(\d)/) ? b.match(/Scarf(\d)/)[1] : 5) - 1) * 18;
+  if (h === undefined) return hueCol(SK && SK.idx[name] !== undefined ? SK.idx[name] : 0);
+  const c = new THREE.Color(); c.setHSL((h % 360) / 360, 0.68, 0.55); return [c.r, c.g, c.b]; };
 let strainOn = false, STR = null;
 function paintSkin() {
   if (!SK) return; const col = skinGeo.attributes.color.array;
@@ -663,7 +651,7 @@ function paintSkin() {
     let c;
     if (strainOn && STR) c = ramp(STR[i] / 0.4);
     else if (step === 5) c = [0.62, 0.66, 0.74];
-    else if (skinView === "dom") { const r = vw(i); let bn = "", bw = -1; for (const k in r) if (r[k] > bw) { bw = r[k]; bn = k; } c = hueCol(SK.idx[bn] || 0); }
+    else if (skinView === "dom") { const r = vw(i); let bn = "", bw = -1; for (const k in r) if (r[k] > bw) { bw = r[k]; bn = k; } c = boneCol(bn || ""); }
     else {
       const a = vwMerged(i), r = REFW[i], key = mergeName(bone), tw = bone !== key ? 0 : 1;
       const wt = skinView === "ref" ? (r[key] || 0) : skinView === "diff" ? Math.abs((a[key] || 0) - (r[key] || 0)) : (vw(i)[bone] || 0);
@@ -1403,7 +1391,6 @@ return {
     syncScene(); renderPanel();
   },
   setLM(k, xyz) { LM[k] = xyz.slice(); if (mirror && mirrorKey(k)) LM[mirrorKey(k)] = [-xyz[0], xyz[1], xyz[2]]; syncScene(); dirty(); commit(); renderPanel(); },
-  gateHtml: n => gateHtml(n), setGate: (n, st) => setGate(n, st),   // panel 6 Vật lý dùng chung cổng duyệt
   wantsSkinPointer: e => step === 4 && !!SK && (skTool === "brush" || skTool === "island") && e.button === 0 && !e.altKey,
 };
 };

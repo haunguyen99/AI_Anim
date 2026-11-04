@@ -93,7 +93,32 @@ Idle 1 pose (SDR - lính La Mã ném dao, camera ingame = góc right, không ref
 - **SDR chốt (v19 / Attack blocking_v7, thay v18):** chỉ chỉnh hông từ v4 — chậu hông xoay đổ trước 7,5°, đẩy trước 3 cm, hạ 1,2 cm
   (giữ chân sau không duỗi quá khớp), thân trên đổ theo. User chọn "50% của A" sau khi xem ảnh tĩnh v4 | A (15°, 6 cm) | B (thân
   giữ nguyên).
+
+## ninja-guard-pose
+Ninja Idle F1 (chibi, kunai cầm ngược tay trái), user tự chỉnh pose AI dựng rồi bảo "bạn học theo nhé" (2026-10-29).
+Pose chuẩn: `work/infinite_defense/ninja_idle/keys/F1_user_k10_v5.json` (giá trị khớp), script `pose_k10v3.py` (P = pose user).
+Những gì user sửa so với bản AI (đo bằng mesh đã pose, cm):
+- **Tấn so le trước–sau, không trung bình tấn:** chân sau lùi thêm 12 cm (so le ~30, rộng ~40), chậu hạ 2. Trước đó user đã chê
+  tấn rộng sâu: "nâng trọng tâm lên, khép chân lại". Chibi chân ngắn: tấn rộng trông như ngồi xổm.
+- **Hông xoay ~12° về phía tay cầm vũ khí** (vai trái dẫn). AI từng bỏ xoay hông vì gối chụm; user vẫn xoay, gối theo IK vẫn ổn.
+- **Đổ người dồn ở lưng dưới** (Spine1 13°), ngực ít; **đầu bù ngược ~15°** để vẫn nhìn thẳng → đầu chúi ra trước 5 cm, dáng rình.
+- **Tay vũ khí:** nắm tay ở giữa bụng (đường giữa thân), khuỷu khép sát; lưỡi kunai chĩa **xuống** và hơi ra ngoài, không chĩa ra trước.
+- **Tay tự do:** kéo hẳn ra sau hông (lùi 28 cm so với bản AI). Concept/ghi chú trước đó đã nói "tay chưa đánh ra sau".
+- **Khăn:** rủ ra sau ~45° ở gốc, không bay ngang sang một bên.
+Quy trình: user đã tự sửa pose thì **không chạy lại script dựng pose đè lên version đó**; đọc khớp (`anim read`), lưu json, rút bài học.
+Tự kiểm pose trên mesh đã skin: `pose_check.py` (xuyên kunai/tay/khăn, giãn da, sàn); khăn rời quay quanh gốc dễ lún vào lưng —
+gốc khăn gập trong mặt phẳng dải khăn, dời gốc ra sau khi thân đổ / tay kéo sau.
 - **Idle tĩnh 1 pose (SDR03, 2026-10-29):** "Idle 10F chỉ là 1 pose" = giữ nguyên pose sẵn sàng của clip anh em (Shoot p3 F1 =
   Reload p2 F30) cho cả 10 F, lặp, không thở/không overlap — để Idle ↔ Shoot ↔ Reload nối liền không giật. Làm đủ cả hai đầu:
   FBX (`export_fbx.py --clip idle`) **và** clip Studio (`idle_build.py` → model + `clip_registry.py new` / `pose-version --loop`,
   keys 1,10); lần đầu chỉ xuất FBX nên user không thấy anim trong Studio và phải nhờ lại.
+**Polish (2026-10-29, `polish_v2.py`, từ b50_v2):** key mọi frame bằng chính công thức blocking (không nội suy giữa 9 key) → nối loop 0°,
+gia tốc ≤ 0,4°/F². Khăn: user "tắt gió, cho khăn lắc đều nhau và lắc sang trái phải thôi" → gốc ±15°/40F, hai dây cùng pha; overlap
+xuống 4 đốt kiểu đuôi theo đường gốc (đốt j = hướng gốc lúc t − 3j F, local = hiệu hai đốt, đuôi ×1,3). Blocking thưa phải có key ở
+cực trị lắc (F13/F33), nếu không khăn khựng. Kiểm bằng `anim read` so quaternion (Euler lệch 27° có thể vẫn cùng một góc xoay).
+**Polish v3→v4 (2026-10-29, `polish_v3.py`, `NINJA_VER`):** user "phần cánh tay chưa thấy có anim" (v2: bàn tay ~3 cm/vòng) → thêm lớp tay
+(vai/khuỷu/cổ tay/ngón trễ dần). Tăng tới bàn tay 5,5 cm thì user: "giảm biên độ lên xuống của 2 tay, thêm overlap nhẹ vào body…
+body đang thở hơi cứng" → tay về ~3–4 cm, cột sống trễ 2/4/5/6/8F (hông F17 → lưng F19 → ngực F21 → cổ F23 → đầu F25), tay trễ
+sau bả vai (vai 6, khuỷu 8, cổ tay 10, ngón 11–12F). Chibi nhẹ: tay động vừa phải, thân phải có sóng trễ dọc cột sống mới hết "cứng".
+Trục rig Ninja: khuỷu L +Y = duỗi, khuỷu R +Y = gập.
+

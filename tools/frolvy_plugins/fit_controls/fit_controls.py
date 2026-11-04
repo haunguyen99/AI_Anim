@@ -28,12 +28,14 @@ The whole fit is one undo step when run from the menu.
 import math
 import re
 
-GOAL = 0.08                 # at most this share of a ring may stay inside
+GOAL = 0.02                 # at most this share of a ring may stay inside
 SCALES = (1.0, 1.15, 1.3, 1.5, 1.75, 2.0, 2.4, 2.8, 3.2, 3.8, 4.5, 5.2, 6.0)
-FINGER_MAX = 1.75
-PENALTY = 0.04              # cost of each x1 of growth, in "share of the ring hidden"
+FINGER_MAX = 3.0            # user 2026-10-30: FK controls must show, even if finger rings overlap
+PENALTY = 0.005             # cost of each x1 of growth, in "share of the ring hidden"
 SHIFT_PENALTY = 0.3         # cost of sliding a shape by the character's whole height
-SHIFTABLE = re.compile(r"Switch|Pad|Head|Flask|Weapon|Arrow|Prop", re.I)
+MAX_TOTAL = 6.0             # a control is never grown past this over all runs together
+FIT_ATTR = "fitScale"       # non-keyable dial on each control: growth applied so far (runs used to compound: x6 then x6 = x36)
+SHIFTABLE = re.compile(r"Switch|Pad|Head|Flask|Weapon|Arrow|Prop|Bend", re.I)
 
 
 # ── maths ─────────────────────────────────────────────────────────────────
@@ -171,6 +173,9 @@ def _samples(pts, per=4):
 
 
 def _outward(name, centre):
+    # bendy-limb controls sit mid-bone: slide them across the bone, never along it
+    if "Bend" in name:
+        return (0.0, 1.0, 0.0) if re.search("Shoulder|Elbow", name) else (0.0, 0.0, 1.0)
     if "Head" in name:
         return (0.0, 1.0, 0.0)
     if "Switch" in name and name.endswith("_M"):
@@ -222,7 +227,9 @@ def fit(api, controls=None, log=print):
         finger = "Finger" in c or "Cup" in c
         if finger and f0 <= 0.25:
             continue
-        scales = [s for s in SCALES if not finger or s <= FINGER_MAX]
+        done = api.get_attr(c + "." + FIT_ATTR) or 1.0
+        cap = (FINGER_MAX if finger else MAX_TOTAL) / max(done, 1e-6)
+        scales = [s for s in SCALES if s <= cap + 1e-6] or [1.0]
         # every option has a cost: what stays hidden, plus a little for each step of growth or shift,
         # so a ring only gets big when that really brings it out of the mesh
         opts = []
@@ -263,6 +270,10 @@ def fit(api, controls=None, log=print):
             ks = sorted(set(s for s in SCALES if s <= max(a["k"], b["k"])) | {a["k"], b["k"]})
             k = min(ks, key=lambda s: (round(max(frac(c, s), GOAL) + max(frac(o, s), GOAL)
                                              + 2 * PENALTY * (s - 1), 3), s))
+            # the two sides may not be in the same pose (one arm in FK): never let the shared size
+            # hide more of a side than its own answer did
+            if frac(c, k) > max(GOAL, frac(c, a["k"])) + 0.03 or frac(o, k) > max(GOAL, frac(o, b["k"])) + 0.03:
+                continue
         src, flip = (a, False) if sum(v * v for v in a["off"]) >= sum(v * v for v in b["off"]) else (b, True)
         off = (-src["off"][0], src["off"][1], src["off"][2]) if flip else src["off"]
         plan[c] = dict(a, k=k, off=off)
@@ -277,6 +288,11 @@ def fit(api, controls=None, log=print):
         for q in d["pts"]:
             new += [cen[i] + k * (q[i] - cen[i]) + lo[i] for i in range(3)]
         api.set_curve_points(c, list(range(len(d["pts"]))), new)
+        total = (api.get_attr(c + "." + FIT_ATTR) or 1.0) * k
+        if api.get_attr(c + "." + FIT_ATTR) is None:
+            api.add_attr(c, FIT_ATTR, total, 0.0, 0.0, "float", "", False)
+        else:
+            api.set_attr(c + "." + FIT_ATTR, total)
         d["pts"] = [tuple(new[3 * j:3 * j + 3]) for j in range(len(d["pts"]))]
         d["smp"] = _samples(d["pts"])
         report[c] = {"scale": k, "shift": [round(v, 4) for v in off],

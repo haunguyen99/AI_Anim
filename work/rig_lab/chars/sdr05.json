@@ -1,0 +1,21 @@
+{
+ "id": "sdr05",
+ "name": "SDR05",
+ "ref_dir": "ref_sdr05",
+ "scale": 1,
+ "body": "MC_char_map5_Items",
+ "clothes": [],
+ "extra": [
+  "MC_char_map5_VK01",
+  "MC_char_map5_VK",
+  "MC_char_map6",
+  "MC_char_map5_Rau"
+ ],
+ "names_from": "ref_sdr05",
+ "cfg": {
+  "name": "MC_char_map5_Items"
+ },
+ "source": "Studio Nhập FBX 2026-11-03: E:\\Horus\\shot-die-repeat\\Assets\\_Game\\Animations\\Western\\MC_char_map5_shoot.fbx",
+ "note": "Rig chưa dựng: đặt clothes / cfg trước khi chạy build_char.py",
+ "texture": "T_Color_ShotDieRepeat.tga"
+}
