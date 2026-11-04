@@ -684,7 +684,7 @@
   {
    "id": "sdr05_idle",
    "character": "SDR05",
-   "stage": "blocking",
+   "stage": "export",
    "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
    "review": {
     "key": "sdr05_idle",
@@ -717,7 +717,7 @@
   {
    "id": "sdr05_shoot",
    "character": "SDR05",
-   "stage": "blocking",
+   "stage": "export",
    "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
    "review": {
     "key": "sdr05_shoot",
@@ -749,7 +749,7 @@
   {
    "id": "sdr05_reload",
    "character": "SDR05",
-   "stage": "analysis",
+   "stage": "spline",
    "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
    "review": {
     "key": "sdr05_reload",

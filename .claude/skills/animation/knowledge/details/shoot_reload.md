@@ -70,6 +70,23 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
   Shoot"):** P0 cúi đầu 7° + cổ 3° để ngắm dọc nỏ đọc ra là cúi gằm ở cam game ngang. Mặt đo bằng trục local nhìn +Z ở rest:
   P0 cúi 7,3°, quay về cam 42°. Bỏ phần cúi gốc ở MỌI frame của cả hai clip (`reload_spline.lift_head`, `shoot_head_lift.py`),
   giữ quay về cam và các cử động tương đối; sửa cả hai clip nối nhau để F cuối Shoot = F1 Reload (lệch 0).
+- **Đầu không ngửa khi giật (SDR05 Shoot b6, 2026-11-03, note "GD muốn đầu luôn hướng về phía trước không bật ngửa ra sau"):**
+  GD không muốn đầu khựng ngửa (b4: đầu 3° + ngực 5° + lưng 1,5° dồn lên đầu → ngửa 8° ở đỉnh). Mặc định cho súng ngắn 2 tay:
+  hướng đầu world khoá đúng P0 mọi frame, ngực/vai/tay vẫn giật; phần bù chia đôi cổ/đầu (≤3,2° mỗi khớp).
+  `sdr05_colt/shoot_block.py --base b4 --head-lock`; đo `head_dev_deg` = 0 mọi key.
+- **Spline súng cầm 2 tay (SDR05 Shoot s2, 2026-11-03, Director duyệt; s1 bị trả):** dựng như SDR03 (bảng thông số → monotone
+  cubic, `sdr05_colt/shoot_spline.py`) nhưng: (1) **không trễ ngực trong pha giật** (F1 → đỉnh): ngực trễ 0,5F làm vai lùi thiếu,
+  phần lùi dồn vào khuỷu R (+4–7° so blocking, lỗi A); trễ chỉ ở pha hồi. (2) Sàn khuỷu R = đường cong khuỷu của các key blocking,
+  không kẹp ở P0 (kẹp → khuỷu về hết trong 1F); nếu thấp hơn sàn thì cho súng lùi theo thân. (3) Hếch nòng quanh hướng nòng
+  P0, không quanh +Z tuyệt đối (P0 lệch ngang chút → súng lệch 0,2 cm cả pha hồi rồi giật về ở F cuối). (4) Bộ giải tay đỡ
+  cho khuỷu khác P0 vài độ ở frame gần P0 → cho tay đỡ lắng dần về P0 (smoothstep 3 frame cuối) rồi chỉnh khuỷu theo bản lề
+  + xoay vai để nắm tay bám súng 0 cm. Kiểm: bước súng cuối ≤ bước trước, mọi khớp ở F cuối−1 → F cuối đổi ≤ bước trước.
+- **Polish súng 2 tay (SDR05 Shoot p1, 2026-11-03, Director duyệt lượt đầu):** thêm lớp trọng lượng dưới, không chạm chuỗi giật:
+  hông hạ ~1,2 cm đỉnh trễ 1F sau vai (gối hấp thụ), hai chân giải lại (gối xoay quanh pháp tuyến hông–gối–cổ chân cho đúng độ
+  dài, xoay hông tới cổ chân P0, khoá hướng cổ chân P0) → trượt 0; đích súng hạ theo hông. Pha vượt (tay không giải lại):
+  KHÔNG giải lại cả tay để ghim súng (tay gần thẳng → vai xê vài mm làm khuỷu tụt 8°); thay vào đó xoay Shoulder_R (khuỷu
+  giữ nguyên) cho độ cao súng = P0 − hông hạ, rồi chỉnh nòng bằng cổ tay. Găng liền map5: siết MiddleFinger1 quanh local y
+  6° (R) / 5° trễ 1F (L): không xuyên nhưng gần như không đọc ở cam game. `shoot_spline.py --ver p1`, `shoot_block.fix_leg`.
 - **Dây ở chốt cũng nâng ở Shoot p3 (2026-10-29, "sửa cả dây cung cho anim shoot" → "sửa vậy được rồi"):** mũi tên cùng xương
   `slingshot_1` với giữa dây nên trong FBX tên cao theo 2,55 cm ở F1–2 Shoot / F20–30 Reload; user chấp nhận. Studio dùng vật thể phụ.
 - Bản mới đăng bằng `clip_registry.py pose-version` chưa có `work/store/<ns>/anims/<clip>-<ver>.json` nên Studio mở ở spline:
@@ -90,6 +107,26 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
 ## gun-bone-scale
 - Xương súng `slingshot_*` có scale 0,01 (FBX cm): đo "tay lệch khỏi súng" trong không gian local của súng ra số to gấp 100.
   Luôn đo ở world: `G(f) @ rel(key) - wrist(f)`. Shoot spline v1: tay lệch ≤ 1 mm cả ở subframe (con số 4 cm ban đầu là sai đơn vị).
+
+## new-gun-fbx (SDR05 Colt, 2026-11-04)
+- Đổi súng (Gatling → Colt) mà team chưa có rig mới: xuất FBX = **file rig team** (mesh + rig + anim, Unity Humanoid), không dựng FBX từ đầu.
+  Dùng lại xương + cluster của súng cũ (joint1/3/5_M → `slingshot_0/1/2`: đổi tên, cha, Lcl, PoseNode, Transform/TransformLink),
+  thay hình mesh súng cũ nhưng **giữ tên mesh** (prefab không mất tham chiếu), bỏ mesh thừa bằng `tools/fbx_remove_mesh.py`.
+  Script mẫu: `work/shoot_die_repeat/sdr05_colt/export_fbx.py` (bước rig + bước anim như sdr03, kiểm local từng xương + đỉnh súng skin so với rig Studio = 0).
+- Ma trận trong FBX (PoseNode Matrix, Cluster Transform/TransformLink) lưu **theo cột**: `M.T.reshape(-1)`. Lcl của xương trong file anim team = frame đầu, không phải bind.
+- Vật thể phụ chỉ dùng ở clip khác (băng đạn tay trái của Reload) phải **ẩn ở các clip còn lại** (scale xương 0,001): render FBX góc trước thấy nó lòi khỏi găng,
+  sheet side_r không thấy. Kiểm FBX bằng `rigpose.Rig(fbx)` + `fbxanim.local` render cả góc trước, không chỉ cam game.
+- Đổi tên/cha xương làm đổi đường dẫn trong `transformMask` của `.meta` Unity: báo dev cập nhật mask (Upper Layer) khi thay clip.
+
+## reload-revolver-side-cam (SDR05 Colt Reload b1→b3, 2026-11-04)
+- Tay chibi ngắn: ĐO tầm với trước khi giữ chữ "tay phải duỗi suốt clip" (vai trái → ổ 65 cm > tay 54 cm). Phần thiếu lấy từ thân xoay đưa vai trái lên 15–18° + súng thu ≤ 8 cm (khuỷu R ≤ 25–35°), không kéo súng về ngực (khuỷu 80° bị Director A).
+- Cuộn súng 70° = 3/4 xoắn cánh tay + 1/4 xoắn cẳng tay (≤ 20°), cổ tay giữ như P0; cuộn bằng cổ tay ra gập 110°.
+- Cam nhìn ngang: mọi việc của tay trái phải nằm DƯỚI hoặc PHÍA CAM của súng. Ổ Colt mở sang trái (xa cam) → ở pha nạp cuộn súng +50° cho ổ thòng xuống dưới súng, tay trái lên từ dưới cẳng tay phải. Băng cầm ló 7 cm trước nắm tay (ở tâm nắm tay thì bị găng che).
+- Ổ mở trên cần đỡ: trục quay song song nòng nhưng DƯỚI ổ (cần đẩy vỏ đồng trục ổ, quay quanh nó ổ chỉ tự xoay tại chỗ).
+- Lấy đồ "sau lưng" ở cam ngang: chọn điểm túi theo hướng màn hình (−Z của cam, không phải hướng lưng của hông đang xoay 48°), tay ló ra 10 cm, thân xoay ngược 10°; thử nhiều điểm bằng ảnh side_r + back (reload_probe_back.py). Hướng lưng thật của hông = phía xa cam → tay khuất 5 F (Director A hai lượt).
+- Hướng "vặn trái/phải" súng: luôn nói theo NHÂN VẬT (đỉnh súng nghiêng sang tay trái/phải của nhân vật) và ĐO dấu bằng số (đỉnh súng · trái-nhân-vật) trước khi báo; b4 ghi "vặn trái" mà thực tế đỉnh súng sang phải (đảo dấu ở hàm đo), user phát hiện. Khi user nói hướng, gửi ảnh A/B (cam game + sau lưng + trên) cho chọn.
+- Spline tay đi xa (lấy đồ sau lưng → đưa lên súng, 1 s clip): dựng lại đoạn theo ĐỘ DÀI CUNG (Catmull-Rom qua điểm key) với bước/F cho trước (vd 25/25/24/18/10), không nội suy từng trục qua key (s1: vọt 38 cm/F rồi đập 5 cm/F). Đo lh_step mỗi F (≤ 30, giảm ≤ ×2,5/F), găng ↔ quần/thắt lưng ≥ 3 cm (mesh Items, không phải body), khớp tay ≤ ~45°/F; tay có lịch riêng, không dừng theo nhịp dừng của súng (sdr05_colt/reload_spline.py, reload_check.py).
+- joint_rules đo gập khuỷu so rest pose của FILE TEAM (rig map5: khuỷu gập sẵn ~94°) → cờ "Elbow gập âm ngoài giới hạn" là báo nhầm khi khuỷu hình học vẫn gập dương; kiểm bằng góc hình học.
 
 ## Shoot and Reload share one P0 (2026-10-22)
 - User: "Lấy F đầu tiên của Anim reload sang, vì trước đó chúng ta đã sửa lại Keypose" — when a key pose is hand-fixed in one clip (Reload F1 via Pose Lab), every clip that starts from that pose must take it over, or the in-game blend between clips pops (old Shoot P0 was 5 cm off at the gun, 9–12 cm at the left hand).

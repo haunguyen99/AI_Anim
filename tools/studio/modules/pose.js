@@ -197,7 +197,7 @@
     if (tcSaved) { tc.setSpace(tcSaved.space || "world"); tc.setSize(tcSaved.size || 0.85); tcSaved = null; }
   };
   M.loaded = () => !!eng && !!eng.get().model;
-  M.clipList = async () => (await loadClips()).map(c => ({ id: c.id, name: c.name, character: c.character, stage: c.stage, versions: c.versions, open: !!(clipInfo && c.id === clipInfo.id) }));
+  M.clipList = async fresh => { if (fresh) { clipsP = null; clips = null; } return (await loadClips()).map(c => ({ id: c.id, name: c.name, character: c.character, stage: c.stage, versions: c.versions, open: !!(clipInfo && c.id === clipInfo.id) })); };
   M.goClip = id => goClip(id);   // đổi anim tại chỗ (lõi chưa nạp thì tải lại trang với ?clip=…)
   // W3c: khớp dùng chung (khớp có chấm chọn của model anim)
   M.curJoint = () => eng ? eng.get().sel : null;

@@ -33,3 +33,4 @@ work/pose_lab/models/
 # Spine previews / archives
 *.gif
 *.rar
+tools/workai/.env

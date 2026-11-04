@@ -73,7 +73,15 @@ def main():
     args = sys.argv[1:]
     once = "--once" in args
     hc = HorusChat()
-    me = hc.me()
+    for i in range(60):  # server hiccup at start (HTTP 5xx, DNS): retry up to ~30 min
+        try:
+            me = hc.me()
+            break
+        except HCError as e:
+            print(f"lỗi: {e}", file=sys.stderr)
+            time.sleep(30)
+    else:
+        raise SystemExit("HorusChat không phản hồi sau 30 phút.")
     st = {} if "--reset" in args else load()
     cache = {}
     if not st.get("cursor"):
