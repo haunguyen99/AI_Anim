@@ -62,6 +62,11 @@ Weekly-report subtasks are issues created after approval (not workflow tasks):
   After approval an issue's assignee is locked ("đã phân bổ vào lịch"); change it with
   PATCH api/mission-workflow-tasks/{tid} {final_assignee_user_id} (updates the issue). Subtasks do NOT follow
   that change: delete and recreate them. List of created reports: work/workai/weekly_reports.json.
+Issue result ("Kết quả") + status:
+  PUT  api/issues/{id} {result: "<p>…</p>"}  (or {no_result: true, no_result_reason})
+  POST api/issues/{id}/result-links {url, label}   PUT/DELETE api/issue-result-links/{lid}
+  GET  api/issues/{id}/transitions -> ids like wf_to_do_done; POST api/issues/{id}/transition {transition_id}
+  Issues with requires_result=true need a result before Done. Find an issue: GET api/issues?search=GSDR-1407.
 """
 import json
 import sys

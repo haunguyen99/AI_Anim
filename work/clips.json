@@ -41,6 +41,9 @@
   "SDR05": {
    "rig_url": "",
    "rig_page": "sdr05"
+  },
+  "Windy": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -749,7 +752,7 @@
   {
    "id": "sdr05_reload",
    "character": "SDR05",
-   "stage": "spline",
+   "stage": "export",
    "note": "Colt Python map Western (GSDR-1407), analysis đã duyệt 2026-11-03: work/shoot_die_repeat/sdr05_colt/analysis.md",
    "review": {
     "key": "sdr05_reload",
@@ -777,6 +780,146 @@
    "updated": "2026-11-03",
    "created": "2026-11-03",
    "fps": 30
+  },
+  {
+   "id": "windy_idle",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_idle",
+   "frames": 60,
+   "fps": 30,
+   "ref": "",
+   "desc": "Idle loop: đứng gác, trượng dựng đuôi chạm đất bên phải, áo choàng bay theo gió",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_idle",
+    "clip": "Idle",
+    "title": "Windy Idle Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_idle",
+    "clip": "Windy_Idle",
+    "title": "Windy Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_attack",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_attack",
+   "frames": 24,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_attack_ref.mp4",
+   "desc": "Đòn thường: lấy đà giơ trượng → chĩa đầu trượng ngang về mục tiêu, bắn F9",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_attack",
+    "clip": "Attack",
+    "title": "Windy Attack Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Attack",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_attack",
+    "clip": "Windy_Attack",
+    "title": "Windy Attack Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_skill1",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_skill1",
+   "frames": 36,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_skill1_ref.mp4",
+   "desc": "Dâng trượng trước người, xoay 2 vòng, phóng lốc F24",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_skill1",
+    "clip": "Skill1 Wind Cyclone",
+    "title": "Windy Skill1 Wind Cyclone Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Skill1 Wind Cyclone",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_skill1",
+    "clip": "Windy_Skill1",
+    "title": "Windy Skill1 Wind Cyclone Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_skill2",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_skill2",
+   "frames": 45,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_skill2_ref.mp4",
+   "desc": "Bay nhẹ 35 cm, cả người xoay 360° cùng trượng, đáp, cắm trượng gọi lốc F31",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_skill2",
+    "clip": "Skill2 Hunting Tornado",
+    "title": "Windy Skill2 Hunting Tornado Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Skill2 Hunting Tornado",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_skill2",
+    "clip": "Windy_Skill2",
+    "title": "Windy Skill2 Hunting Tornado Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "windy_skill3",
+   "character": "Windy",
+   "stage": "analysis",
+   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "dir": "work/endless_kicker/windy_skill3",
+   "frames": 72,
+   "fps": 30,
+   "ref": "work/endless_kicker/ref/windy_skill3_charge_ref.mp4",
+   "desc": "Charge: bay 40 cm dang tay, trượng lơ lửng trước mặt · Burst: nắm trượng, cắm xuống đất, nổ F46 (=1,5 s)",
+   "created": "2026-11-04",
+   "updated": "2026-11-04",
+   "review": {
+    "key": "windy_skill3",
+    "clip": "Skill3 Wind Collapse",
+    "title": "Windy Skill3 Wind Collapse Review Lab",
+    "crumb": "Windy · anim",
+    "name": "Skill3 Wind Collapse",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "windy_skill3",
+    "clip": "Windy_Skill3",
+    "title": "Windy Skill3 Wind Collapse Pose Lab",
+    "url": ""
+   }
   }
  ],
  "projects": [
@@ -859,6 +1002,19 @@
    },
    "char_notes": {},
    "created": "2026-11-02"
+  },
+  {
+   "id": "endless_kicker",
+   "name": "Endless-kicker",
+   "desc": "Thủ thành: 1 hero đứng giữa tự đánh enemy. Unity E:\\endless-kicker · file team E:\tvc_source\u0003D ANIM\\EndlessKicker",
+   "characters": [
+    "Windy"
+   ],
+   "labels": {
+    "Windy": "hero mage gió + trượng (FDD Hero Windy)"
+   },
+   "char_notes": {},
+   "created": "2026-11-04"
   }
  ]
 }

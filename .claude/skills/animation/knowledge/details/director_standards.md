@@ -44,3 +44,5 @@ Lỗi người dùng **đã bỏ qua khi duyệt** (hạ mức khi chấm loại
 | Ngày | Clip / ver / mốc | Director | User | Bài học |
 |---|---|---|---|---|
 | 2026-10-30 | sdr01_shoot s1 pre-export | Cần sửa (A: đầu vặt 31° F6–F7; 5 lỗi B) | Đã duyệt + xuất 2026-10-29 (chấm sau) | Ngưỡng của user với clip nhỏ side-view thấp hơn Director → chưa đổi mức, chờ thêm 1 ca |
+| 2026-11-04 | windy (5 clip) analysis v1→v2.1 | v1 Cần sửa cả 5 (A: hình học trượng 215 cm cầm giữa cán: đuôi xuyên thân/ngập đất, tầm với); v2: Idle/Attack/Skill2 Duyệt, Skill1/Skill3 Cần sửa (tầm với) → v2.1 | Duyệt cả 5, chỉ chọn phương án | Lỗi A hình học prop dài ở mốc analysis đúng mức; luôn tính tầm với vai → điểm cầm cho mọi key ngay từ analysis |
+| 2026-11-04 | windy_idle k1_idle key-pose r1 | Cần sửa (A: tay phải giang ngang ra bên, khuỷu gần thẳng, sai thiết kế khuỷu 90° cẳng tay ra trước) | Chọn r1 ("tôi thấy phương án này oki rồi mà"), bỏ r2 đã sửa đúng thiết kế | Ảnh key là chỗ user chốt dáng: lệch thiết kế mà ảnh đẹp, đọc rõ thì hạ xuống B + hỏi user chọn (đưa cả 2 bản), không tự sinh lại; user chọn thì sửa analysis theo ảnh |

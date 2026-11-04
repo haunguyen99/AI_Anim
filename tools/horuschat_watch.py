@@ -1,4 +1,5 @@
-"""Canh HorusChat: báo khi có người tag (mention) chủ key, trả lời tin của chủ key, nhắn riêng (DM) hoặc mời vào phòng.
+"""Canh HorusChat: báo khi có người tag (mention) chủ key, trả lời tin của chủ key, nhắn riêng (DM), mời vào phòng,
+hoặc nhắn trong thread chủ key đã tham gia (đã nhắn / được tag trong thread đó; danh sách ở mốc, khoá "threads").
 Claude chạy file này nền (run_in_background): có tin thì in ra rồi thoát = Claude được gọi dậy để báo người dùng,
 xong thì chạy lại để canh tiếp. Không tốn lượt AI khi chờ (long-poll /v1/developer/events, mỗi lần chờ 30 giây).
 
@@ -68,6 +69,12 @@ def reason(hc, me, ev, cache):
     return None
 
 
+def thread_of(ev):
+    """Thread root id of a message (or the message itself when it starts a thread)."""
+    m = ev.get("message") or {}
+    return m.get("thread_root_event_id") or None
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     args = sys.argv[1:]
@@ -96,7 +103,7 @@ def main():
         try:
             r = hc.call("GET", "/v1/developer/events", params={
                 "after": st["cursor"], "wait": 0 if once else WAIT, "limit": 200,
-                "addressed_only": True}, timeout=WAIT + 20)
+                "addressed_only": False, "include_own": True}, timeout=WAIT + 20)
         except HCError as e:
             if e.code == "cursor_expired" or e.status == 410:
                 print("Mốc hết hạn (máy tắt lâu?), đặt lại từ bây giờ; tin trong khoảng trống chưa được kiểm.")
@@ -114,12 +121,21 @@ def main():
             time.sleep(15)
             continue
         found = []
+        threads = set(st.get("threads") or [])
         for ev in r.get("events") or []:
+            troot = thread_of(ev)
             if (ev.get("sender") or {}).get("user_id") == me["user_id"]:
+                if troot:
+                    threads.add(troot)   # thread bạn đã nhắn -> theo dõi tiếp
                 continue
             why = reason(hc, me, ev, cache)
+            if not why and troot and troot in threads:
+                why = "tin trong thread bạn tham gia"
             if why:
+                if troot:
+                    threads.add(troot)
                 found.append((why, ev))
+        st["threads"] = sorted(threads)[-500:]
         if r.get("next_cursor"):
             st["cursor"] = r["next_cursor"]
         save(st)

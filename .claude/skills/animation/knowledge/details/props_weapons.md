@@ -106,3 +106,12 @@
 - **Phóng to prop đã có anim mà không sửa anim** (nỏ map3 ×1,25, 2026-11-03, duyệt lượt 2): anim bake FK, prop con của một cổ tay, tay kia cầm chỗ khác → scale đều quanh một điểm làm tay kia lệch 8–11 cm. Cách đã duyệt: đo hai điểm cầm trong khung xương prop, giữ nguyên đoạn giữa hai tay (cả mặt cắt), chỉ giãn phần ngoài (z ngoài hai tay, x/y tăng dần trong 6 cm), phần to rõ (cánh, mũi) scale đều quanh gốc nối thân; dây/chi tiết nối hai phần: đỉnh bám xương động giữ, đỉnh đầu kia theo phần to. `work/shoot_die_repeat/xbow_scale/scale_props.py`.
 - Mesh prop có thể được prefab khác dùng lại (mũi tên bay `Projectile Arrow` dùng mesh mũi tên trong rig, đặt lệch theo vị trí đỉnh): làm dày quanh trục để tâm không dời; nếu kéo dài thì báo dev đầu mũi tên bay đi trước thêm (Δ × scale prefab).
 - "Mũi tên dày 30 %" chưa đủ: user muốn mũi tên **dài hẳn ra**, đầu nhọn nằm trọn trước mũi nỏ (+12 cm). Khi nỏ to lên, kiểm phần mũi tên nhô ra phía trước còn đọc được không.
+
+## long-staff-mid-grip
+Trượng dài cầm giữa cán (Windy, Endless-kicker, phân tích 2026-11-04, director 2 vòng). Trượng 215 cm, đầu 110 cm trước tay, đuôi 105 cm sau tay.
+- **Đuôi dài như đầu**: mọi thế "chĩa trượng về trước" thì đuôi chạy ngược qua nách/sườn → đặt tay lệch ra ngoài thân (~35 cm) và chúc đuôi xuống-sau; trượng thẳng nên đuôi chúc 20° thì đầu ngóc 20° (ghi rõ độ cao điểm sinh projectile).
+- **Dựng đứng chạm đất**: điểm cầm cao đúng bằng chiều dài đuôi (105 cm) ±1 cm; tay sát hông thì khuỷu gập > 110° → đưa điểm cầm ra trước-ngoài (cách vai ~40 cm).
+- **Xoay quanh tay** (bán kính ~110 cm): tâm ≥ 130 cm mới không chạm đất; mặt phẳng xoay nên chứa hướng mục tiêu để dừng là chĩa luôn; tâm xoay chỉ 30–35 cm trước vai (xa hơn tay duỗi thẳng). Vạt áo không bay vào đĩa xoay.
+- **Quay người cầm trượng ngang**: đặt trượng tiếp tuyến (vuông góc tay), không hướng tâm (đuôi xuyên người).
+- **Prop rời tay (joint con của root)**: key theo người khi bay; trước frame nắm lại phải "hút về" trong tầm tay (vai → điểm cầm ≤ tầm với − 5 cm).
+- Luôn tính tầm với vai → điểm cầm cho mọi key trong bản phân tích, trước khi gửi.

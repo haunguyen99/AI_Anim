@@ -411,17 +411,26 @@ def fix_thumb_curl(api):
     return flipped
 
 
+def _thumb_tip(api, s):
+    """Last thumb joint: Human05 has ThumbFinger4; mitten rigs (Windy) end at ThumbFinger3."""
+    names = set(api.ls())
+    for k in (4, 3, 2):
+        if "DEF_ThumbFinger%d%s" % (k, s) in names:
+            return "DEF_ThumbFinger%d%s" % (k, s)
+
+
 def _fix_thumb_curl(api, flipped):
     for s in ("_L", "_R"):
         sw = "CTL_ArmSwitch" + s
         if sw not in api.ls() or not api.attr_info(sw, "thumbCurl"):
             continue
-        tip = "DEF_ThumbFinger4" + s; mid = P(api, "DEF_MiddleFinger1" + s)
+        tip = _thumb_tip(api, s); mid = P(api, "DEF_MiddleFinger1" + s)
         d0 = math.dist(P(api, tip), mid)
         api.set_attr(sw + ".thumbCurl", 1.0); d1 = math.dist(P(api, tip), mid); api.set_attr(sw + ".thumbCurl", 0.0)
         if d1 > d0:
             flip = lambda: [api.set_node_param(nd, 1, -api.node_params(nd)[1])
-                            for nd in ("fng_c_DEF_ThumbFinger%d%s" % (k, s) for k in (1, 2, 3))]
+                            for nd in ("fng_c_DEF_ThumbFinger%d%s" % (k, s) for k in (1, 2, 3))
+                            if nd in api.ls()]
             flip()
             api.set_attr(sw + ".thumbCurl", 1.0); d2 = math.dist(P(api, tip), mid); api.set_attr(sw + ".thumbCurl", 0.0)
             if d2 >= d0:      # flipping did not close the thumb either: undo, report
@@ -433,7 +442,7 @@ def _fix_thumb_curl(api, flipped):
         sw = "CTL_ArmSwitch" + s
         if sw not in api.ls():
             continue
-        tip = "DEF_ThumbFinger4" + s; mid = P(api, "DEF_MiddleFinger1" + s); d0 = math.dist(P(api, tip), mid)
+        tip = _thumb_tip(api, s); mid = P(api, "DEF_MiddleFinger1" + s); d0 = math.dist(P(api, tip), mid)
         old = api.get_attr(sw + ".handPose"); api.set_attr(sw + ".handPose", 1.0)
         d1 = math.dist(P(api, tip), mid); api.set_attr(sw + ".handPose", old)
         if d1 >= d0:

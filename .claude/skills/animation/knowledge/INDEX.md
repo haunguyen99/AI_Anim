@@ -49,6 +49,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#flat-prop-orient` | prop dẹt (trống, khiên, dao) cắm vào áo hoặc quay cạnh về camera |
 | `#gun-aim` | súng/tay ngắm; hướng aim ở góc top |
 | `#thrown-prop` | prop bay/ném: constraint, curve, bia, điểm thả |
+| `#long-staff-mid-grip` | trượng/giáo dài cầm giữa cán: đuôi xuyên thân, chạm đất, xoay quanh tay, prop rời tay rồi nắm lại |
 | **torso_head.md** | |
 | `#spine-chain` | cột sống gãy khúc, lưng ưỡn ngược, dời Chest |
 | `#partial-fix-hip` | sửa hông/một phần mà giữ nguyên thân trên |
