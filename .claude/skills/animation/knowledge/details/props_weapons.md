@@ -99,3 +99,19 @@
 - Đo mũi dao trước gốc xương (SDR01: dao 56 cm, mũi trước gốc 31 cm) để đặt độ cắm vào bia.
 - **Dao dài chĩa ngược lúc ném dễ xuyên mũ** (SDR01 Shoot b7→b8): đặt tay ra NGOÀI đầu phía camera và nghiêng lưỡi ra ngoài; đo bằng
   `sdr01/head_clear.py` (đỉnh dao/găng trong hộp đầu và < 2 cm = chìm), yêu cầu hở ≥ 8 cm ở frame tay gần mặt.
+- **Đạo cụ xuyên lòng bàn tay (bút team `accessory`, G-LumberCity Clean Output 2026-11-03):** nắm tay áp mũi/miệng thì bút (−10..+21 cm qua lòng tay) luôn chéo trước mặt ở góc front; vặn cổ tay 60–75° không cứu được mà làm cẳng tay lệch Idle1 50–76°. Cam game nhìn lưng → đưa user chọn ảnh tĩnh (A giữ / C hạ nắm tay xuống miệng / B mu cổ tay) thay vì sửa mò vòng 4. User chọn A (vặn ~38°). Tìm góc bút: lọc theo cổ tay ≤ 25° và vặn ≤ ngưỡng user rồi mới chọn khe hở (`pen_aim` trong `lumber_clean_output/build_keys.py`).
+- **Sổ quạt (team `pCube1` 33×37 cm, mép trên kẹp giữa tay):** dựng tay theo hướng sổ: sổ chĩa dọc cẳng tay, mặt sổ đứng, pháp tuyến ngang ⊥ cẳng tay → quét ngang là đẩy gió (`book_arm`). Từ cam game sau lưng, cung quạt phải nằm lệch trái thân + ngang ngực, và tay phải VƯƠN XA thân (user: "tay cầm quạt cho với về trước nhiều hơn": cổ tay cách ngực 26 → 34 cm, khuỷu 96 → 65°).
+
+## prop-rescale-keep-grip
+- **Phóng to prop đã có anim mà không sửa anim** (nỏ map3 ×1,25, 2026-11-03, duyệt lượt 2): anim bake FK, prop con của một cổ tay, tay kia cầm chỗ khác → scale đều quanh một điểm làm tay kia lệch 8–11 cm. Cách đã duyệt: đo hai điểm cầm trong khung xương prop, giữ nguyên đoạn giữa hai tay (cả mặt cắt), chỉ giãn phần ngoài (z ngoài hai tay, x/y tăng dần trong 6 cm), phần to rõ (cánh, mũi) scale đều quanh gốc nối thân; dây/chi tiết nối hai phần: đỉnh bám xương động giữ, đỉnh đầu kia theo phần to. `work/shoot_die_repeat/xbow_scale/scale_props.py`.
+- Mesh prop có thể được prefab khác dùng lại (mũi tên bay `Projectile Arrow` dùng mesh mũi tên trong rig, đặt lệch theo vị trí đỉnh): làm dày quanh trục để tâm không dời; nếu kéo dài thì báo dev đầu mũi tên bay đi trước thêm (Δ × scale prefab).
+- "Mũi tên dày 30 %" chưa đủ: user muốn mũi tên **dài hẳn ra**, đầu nhọn nằm trọn trước mũi nỏ (+12 cm). Khi nỏ to lên, kiểm phần mũi tên nhô ra phía trước còn đọc được không.
+
+## long-staff-mid-grip
+Trượng dài cầm giữa cán (Windy, Endless-kicker, phân tích 2026-11-04, director 2 vòng). Trượng 215 cm, đầu 110 cm trước tay, đuôi 105 cm sau tay.
+- **Đuôi dài như đầu**: mọi thế "chĩa trượng về trước" thì đuôi chạy ngược qua nách/sườn → đặt tay lệch ra ngoài thân (~35 cm) và chúc đuôi xuống-sau; trượng thẳng nên đuôi chúc 20° thì đầu ngóc 20° (ghi rõ độ cao điểm sinh projectile).
+- **Dựng đứng chạm đất**: điểm cầm cao đúng bằng chiều dài đuôi (105 cm) ±1 cm; tay sát hông thì khuỷu gập > 110° → đưa điểm cầm ra trước-ngoài (cách vai ~40 cm).
+- **Xoay quanh tay** (bán kính ~110 cm): tâm ≥ 130 cm mới không chạm đất; mặt phẳng xoay nên chứa hướng mục tiêu để dừng là chĩa luôn; tâm xoay chỉ 30–35 cm trước vai (xa hơn tay duỗi thẳng). Vạt áo không bay vào đĩa xoay.
+- **Quay người cầm trượng ngang**: đặt trượng tiếp tuyến (vuông góc tay), không hướng tâm (đuôi xuyên người).
+- **Prop rời tay (joint con của root)**: key theo người khi bay; trước frame nắm lại phải "hút về" trong tầm tay (vai → điểm cầm ≤ tầm với − 5 cm).
+- Luôn tính tầm với vai → điểm cầm cho mọi key trong bản phân tích, trước khi gửi.

@@ -80,6 +80,9 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
 ## loop
 - Frame cuối = frame 1; playblast phát f1..f(N-1); bắt đầu loop ở điểm đứng yên (đáy) cho chỗ nối mượt.
 - Sau khi đổi giá trị key luôn chạy lại `match_seam` (SKILL.md).
+- **Studio / playblast (2026-10-29, Ninja Idle, user: "loop bị giật"):** anim đúng (F41 = F1, tốc độ liền) nhưng nút Phát và `anim playblast`
+  chạy F1..F41 → F41 rồi F1 cùng một pose = 1 frame khựng mỗi vòng. Đã sửa ở master Pose Lab (`% PER()`, playblast `n = PER()`) +
+  `port_pose.py`. Khi user nói loop giật: đo nối trước, rồi kiểm số frame của video (`n` phải = frames − 1 với clip loop).
 
 ## end-on-idle
 - Đuôi clip non-loop cho game (SDR Attack): user muốn **các frame cuối là pose Idle đứng yên** (F20–F26 = Idle, không nhích quá đà) —
@@ -295,3 +298,15 @@ Mặc định **chỉ dáng**: chỉ khớp dáng, hông nằm chỗ cú đánh 
 - **Chỗ nằm:** cú đẩy ban đầu dò theo phần lệch đo được. Đừng chỉ dò từng bước nhỏ: cú ngã rất nhạy, dễ kẹt ở cú ngã sấp.
 - **Dáng tay chân:** cơ kéo về pose cuối sau khi chạm sàn. Mục tiêu phải đi dần (≤ 4°/F), đổi ngay thì bàn chân bị quất.
 - **Phần còn dư:** trộn ở 10 frame cuối, lifted khỏi sàn. Prop là xương riêng, phải nâng riêng.
+
+## spacing-frolvy-idle-wipe (2026-11-02, G-LumberCity Idle Wipe spline)
+- Đo tốc độ cổ tay mọi frame sau khi đổi sang spline. Breakdown đặt ở 57% quãng đường sau 4/12 frame → tay vọt khỏi hold (1,8 → 9,3 → 16,3 cm/F). Sửa đúng = dời FRAME breakdown theo đường ease in/out (72→74, 76→77), không chèn key phụ (key F70 thêm vào làm F70→71 vọt 20,6).
+- Cú vẩy dừng phắt (15,7 → 4 cm/F): thêm key vung tiếp 1 frame sau; nếu đi thẳng tiếp thì tay duỗi thẳng (vượt tầm với) → cho đà vòng ra SAU hông (3 cm dọc + 7 cm sau): 14,6 → 8 → 3,4, khuỷu 33°.
+- Breakdown nội suy dễ đẩy tay ra xa thân nhất (F92 x −44): kiểm khoảng cách cổ tay–thân + góc khuỷu ở mọi inbetween của động tác nhanh.
+- **Về lại idle gốc không khựng (Idle Wipe polish v2, user 2026-11-02: "đoạn chuyển đổi giữa hành động lau mồ hôi và idle gốc ở cuối chưa được mượt. đang có một đoạn khựng"):** đừng key dáng idle TĨNH chờ tới chỗ idle gốc chạy lại (F99–F108 cùng 1 dáng → đứng chết 8 frame rồi vọt ở F112). Idle gốc lặp N frame thì các frame trước chỗ nối chính là idle gốc lùi N → key thẳng idle đang thở, và hoà động tác vào đó: tay đang có đà dùng ease-out (1−(1−t)²) để nối tốc độ, thân/tay kia smoothstep dài (~14 F). Đo "tổng chuyển động thân mỗi frame" so với mức thở idle.
+
+## overlap-prop-flap (2026-11-03, G-LumberCity Clean Output)
+- Sổ trễ (flap ngược chiều quét) phải NHỎ hơn quãng cẳng tay đi trong breakdown: flap −15…−18° ăn hết quãng → sổ đứng 5 F rồi bật (director b50 A). Dùng −4…−8°, BD ở 30–65% cung, phẩy qua đỉnh +8…+11° (20° làm cổ tay lệch 30°). Đo yaw đạo cụ nhìn từ top mọi frame: đổi ≥ ~6° mỗi BD, ≤ ~17°/F.
+- Dời key cho nhịp vào sớm có thể tạo cú "đập" ở đáy nhịp trước (sổ 5 → 8 → 2 cm/F): đặt lại 2 frame trước đáy theo 45% / 80% quãng + tiếp tuyến phẳng ở đáy (`set_key_tangent(path, f, 0, 0, False)`).
+- Đầu dừng gắt có thể do thân (lưng/ngực có key BD sát nhau 41/42), không phải key đầu: đo vận tốc từng control trước khi sửa.
+- Loop Frolvy: key ngoài khoảng xuất F0 = F(N−1), F(N+1) = F2, F(N+2) = F3 (mở range bằng `range_fbx.py`) để tiếp tuyến hai đầu khớp.

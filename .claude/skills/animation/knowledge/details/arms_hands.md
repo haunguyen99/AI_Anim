@@ -132,3 +132,19 @@ rút kinh nghiệm từ đó"). Nguyên lý: Solid Drawing (khối tay/chân đ�
   4. Solver chỉ dò pole quanh hướng trong spec (±30°), không quét ±180°.
 - Gaygor Attack v9 (audit 2026-10-22): gối phải f13–f21 41–46°, f25/f26/f28 99/107/176°, f31 36°; gối trái f32 50°; roll tay trái
   nhảy 82–152° ở f8, f13, f21, f25, f31, f64 → sửa trong v10 cùng các lỗi pose (`work/boss_gaygor/attack/v10rev/defects_v9.md`).
+
+## thick-bar-grip
+Người dùng 2026-11-03 (G-LumberCity Ropeway Crank s2, tay quay dày 9,3 cm): "kiểm tra lại bàn tay, đang bị nắm và nhiều quá".
+- Lỗi: s2 nắm kín (curl 0,85), cổ tay đặt 7 cm sau tâm thanh dọc cẳng tay → thanh xuyên qua khớp ngón (Middle1 cách trục 3,4 cm < bán kính 4,65), bàn tay chĩa dọc thanh. Ảnh toàn thân không thấy; chỉ cận cảnh (render_pose `--focus Wrist_R:14`) mới thấy.
+- Đo trước khi nắm: bán kính prop chỗ cầm, chiều dài bàn tay (MC_Worker: cổ tay → khớp ngón 12,4 cm, đốt ngón 5,8 cm, ngón đã cong 59° ở curl 0). Prop dày hơn tầm ôm của ngón → không nắm kín: lòng bàn tay áp thanh, ngón gần mở vắt qua (curl ~0,1).
+- Bộ giải `work/g_lumbercity/lumber_ropeway_crank/grip_wrap.py`: hàng khớp ngón song song trục thanh; tâm thanh ở điểm HOOK trong hệ cổ tay (MC_Worker R: (10, −1, −7,2), L: lật cả 3 trục); xoay bàn tay quanh trục thanh (psi) để cổ tay gập ít nhất (14–27°), psi frame trước làm hạt giống frame sau (liền mạch); xoắn chia nửa khuỷu nửa cổ tay; pole khuỷu bớt bè (x × 0,3).
+- Rig mirror: hệ trục khớp tay trái có thể là âm của tay phải (MC_Worker: hướng bàn tay −x, trỏ −y, lòng +z) — đo từng bên, đừng chép HOOK.
+
+- **Tay gần thẳng: ik_arm chọn nhầm chiều gập** (SDR05 Colt P0, 2026-11-03). Với reach ≥ 0,98, `rigpose.ik_arm` có thể chọn nghiệm khuỷu duỗi quá (−12° so bind),
+  mũi khuỷu chĩa lên, rồi cổ tay/cẳng tay xoắn 110–150° để giữ prop đúng hướng. Luôn đo khuỷu bằng `joint_rules.decompose` so BIND
+  (gập > 0, xoắn ≈ 0) và cổ tay so bind. Cách đúng (`sdr05_colt/p0_build.py`): khuỷu = bản lề gập N° so bind (`set_elbow`), cổ tay thẳng,
+  xoay CẢ cánh tay quanh trục vai→cổ tay cho prop ngửa đúng (`twist_arm`), rồi xoay quanh vai để nhắm. Đo "bàn tay so cẳng tay" bằng xương
+  ngón là sai khi rest ngón đang nắm.
+- **Ngắm súng 2 tay (Weaver)**: user tự chỉnh P0 (2026-11-03 "chỉnh lại khuỷu tay với bả vai"): tay súng duỗi thì **mũi khuỷu chĩa xuống**
+  (xoay trong ở vai), cẳng tay sấp ~40° bù. Tay đỡ: khuỷu chĩa xuống–ra ngoài ~35°, cổ tay gập 25° ôm dưới, 2 nắm tay ≤ 6 cm, phải ló
+  ra dưới tay súng ở cam game (Director v5: khuỷu đỡ ngang vai thì cam game đọc thành cầm 1 tay).

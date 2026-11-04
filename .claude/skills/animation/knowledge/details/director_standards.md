@@ -25,6 +25,16 @@ Rig / skin:
 - Khớp đặt "nằm giữa" thay vì theo giải phẫu mesh, dùng nguyên bộ khớp rig cũ cho thân khác (Zom2 Map3, user: "Các khớp chưa đúng vị trí") [suy ra]
 - Skin khuỷu xấu ở góc gập thật của P0 (SDR01 2026-10-29, user khoanh khuỷu phải: "check lại skin") → kiểm ở góc hay dùng, ảnh cận 3 góc [suy ra]
 - Skin chỉ đẹp một bên (Hammer chỉ sửa bên phải, quên `mirror_skin.py`) [suy ra]
+- Mảnh rời gán theo đoạn xương gần nhất sai ở mảnh giải phẫu đặc biệt: hàm dưới gán Neck_M → há miệng khi ngửa đầu (zom_v2 map4/5, 2026-11-02, Director bắt) → kiểm từng mảnh gần khớp bằng anim có gập/ngửa đầu [suy ra]
+- Thử skin bằng ANIM GAME THẬT (quét giãn cạnh ≥2 cm trên mọi `Animations/Share/Zombie_*`, `work/shoot_die_repeat/zom_v2/stretch_scan.py`), không chỉ pose thử cực; ngưỡng ≤2× ở anim đi (đũng quần low-poly ~2,2–3× chấp nhận, camera bên đùi che) [suy ra]
+
+- Bàn tay/cổ tay xoắn quá đà khi tay giơ cao (Lumber Idle Wipe v5 F89 k4, user 2026-11-02: "pose này tay vặn quá đà"; Director v3 bỏ sót): đo xoắn lòng bàn tay quanh cẳng tay so với dáng gốc (≤ ~30°) và cổ tay lệch cẳng (≤ 25°), rồi xác nhận bằng ẢNH cam game cạnh dáng gốc — số đạt mà silhouette bàn tay không đổi (ngón xoè dựng đứng) vẫn là lỗi.
+
+- Idle đứng chờ: KHÔNG hạ hông / chùng gối để tăng độ đọc (Lumber Idle Wipe blocking v2 k6 hạ 3 cm theo đề xuất director, user 2026-11-02 hỏi "sao lại có hành động nhún xuống" → "Bỏ hạ hông"): user lần lượt bỏ hạ hông, gập ngực ("Bỏ cả hành động cúi xuống của thân trên"), vai ("bỏ cả vai đi") rồi đầu ("con phần đầu") = bỏ hẳn nhịp thở phào: idle của game này giữ thân + đầu như dáng gốc, chỉ diễn phần GDD ghi (lau mồ hôi); đừng thêm nhịp phụ; đo độ cao Root và góc gập Chest mọi frame, idle giữ như dáng gốc.
+
+- Quay người/quay đầu dồn vào ngực + cổ (hông gần như đứng) đọc thành robot (Lumber Idle Wipe spline v2, user 2026-11-02: "nên xoay thêm phần hông. hiện tại chỉ xoay mỗi ngực nên cảm giác cơ thể bị robot"): chia góc dọc chuỗi hông → eo → ngực → cổ → đầu (vd 35° = 8/6/8/5/8), chân IK đứng yên; đo yaw từng đốt.
+
+- Đoạn đứng chết / khựng khi nối về idle gốc (Lumber Idle Wipe polish v1 F99–F111, user 2026-11-02: "đoạn chuyển đổi ... cuối chưa được mượt. đang có một đoạn khựng"): đo tổng chuyển động thân mỗi frame; frame nào < ~20% mức thở idle trong > 4 F, hoặc bậc nhảy ở chỗ nối, là lỗi A.
 
 ## severity
 Lỗi người dùng **đã bỏ qua khi duyệt** (hạ mức khi chấm loại tương tự):
@@ -34,3 +44,5 @@ Lỗi người dùng **đã bỏ qua khi duyệt** (hạ mức khi chấm loại
 | Ngày | Clip / ver / mốc | Director | User | Bài học |
 |---|---|---|---|---|
 | 2026-10-30 | sdr01_shoot s1 pre-export | Cần sửa (A: đầu vặt 31° F6–F7; 5 lỗi B) | Đã duyệt + xuất 2026-10-29 (chấm sau) | Ngưỡng của user với clip nhỏ side-view thấp hơn Director → chưa đổi mức, chờ thêm 1 ca |
+| 2026-11-04 | windy (5 clip) analysis v1→v2.1 | v1 Cần sửa cả 5 (A: hình học trượng 215 cm cầm giữa cán: đuôi xuyên thân/ngập đất, tầm với); v2: Idle/Attack/Skill2 Duyệt, Skill1/Skill3 Cần sửa (tầm với) → v2.1 | Duyệt cả 5, chỉ chọn phương án | Lỗi A hình học prop dài ở mốc analysis đúng mức; luôn tính tầm với vai → điểm cầm cho mọi key ngay từ analysis |
+| 2026-11-04 | windy_idle k1_idle key-pose r1 | Cần sửa (A: tay phải giang ngang ra bên, khuỷu gần thẳng, sai thiết kế khuỷu 90° cẳng tay ra trước) | Chọn r1 ("tôi thấy phương án này oki rồi mà"), bỏ r2 đã sửa đúng thiết kế | Ảnh key là chỗ user chốt dáng: lệch thiết kế mà ảnh đẹp, đọc rõ thì hạ xuống B + hỏi user chọn (đưa cả 2 bản), không tự sinh lại; user chọn thì sửa analysis theo ảnh |

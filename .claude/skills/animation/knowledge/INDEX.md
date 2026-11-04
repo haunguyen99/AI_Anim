@@ -13,7 +13,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | Idle | `idle.md` | Gaygor Idle 133F (duyệt), Idle_Front 60F (duyệt v14), SDR Idle 1 pose (v19), Ninja Idle F1 (user chỉnh, `#ninja-guard-pose`) |
 | Attack | `attack.md` | Gaygor Attack 68F (làm cũ) tạm dừng; **Gaygor Attack 50 Blocking (quy trình B) polish v3 duyệt, xuất FBX 2026-10-23**; SDR Attack chốt polish v5 (xuất) |
 | Shoot / Reload | `shoot_reload.md` | SDR map06 đang làm (Reload spline v3) |
-| Walk/Run, Hit, Death, Skill, Jump/khác | `other_types.md` | chưa làm - khung trống + mẫu file |
+| Walk/Run, Hit, Death, Skill, Jump/khác | `other_types.md` | chưa làm - khung trống + mẫu file; **thao tác máy / idle công nhân** (G-LumberCity, phân tích 2026-11-02) ở `#other` |
 
 ## Mục lục
 | Mục | Đọc khi … |
@@ -35,6 +35,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#pole-spec` | dựng rig IK, đặt pole khuỷu/gối; trước khi render mọi version (pole_audit) |
 | `#spline-ik-arms` | spline tay đã giải IK từng key; "tay xoay loạn xạ" |
 | `#prop-hand-side-fk` | tay thao tác prop ở phía xa camera; chọn FK/IK; đọc tay vs prop ở góc top |
+| `#thick-bar-grip` | nắm thanh/tay quay dày; "bị nắm nhiều quá", ngón xuyên prop; rig tay trái lật trục |
 | **qa_anatomy.md** `#joint-coupling` | dựng / sửa bất kỳ key nào; khớp dùng lẻ loi (vai đứng yên khi giơ tay, chỉ xoay đầu không xoay cổ); thêm / chỉnh luật liên động |
 | **props_weapons.md** | |
 | `#heavy-prop-lever` | prop nặng cầm một đầu (chùy, búa) |
@@ -48,6 +49,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#flat-prop-orient` | prop dẹt (trống, khiên, dao) cắm vào áo hoặc quay cạnh về camera |
 | `#gun-aim` | súng/tay ngắm; hướng aim ở góc top |
 | `#thrown-prop` | prop bay/ném: constraint, curve, bia, điểm thả |
+| `#long-staff-mid-grip` | trượng/giáo dài cầm giữa cán: đuôi xuyên thân, chạm đất, xoay quanh tay, prop rời tay rồi nắm lại |
 | **torso_head.md** | |
 | `#spine-chain` | cột sống gãy khúc, lưng ưỡn ngược, dời Chest |
 | `#partial-fix-hip` | sửa hông/một phần mà giữ nguyên thân trên |
@@ -58,6 +60,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#open-to-camera` | game side-scroll; ngực quay về camera; lấy đà đọc từ camera |
 | `#lean-from-hip` | "đổ người về trước" |
 | `#head` | khoá hướng nhìn, đầu mở ra cam, đầu ngửa/chúi |
+| `#turn-chain` | quay người / quay đầu; bị chê "robot", chỉ ngực xoay |
 | **legs_feet.md** | |
 | `#steps-contacts` | có bước chân / tấn đứng |
 | `#weight-shift` | một chân nhấc, dồn trọng lượng |

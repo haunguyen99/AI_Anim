@@ -30,7 +30,7 @@ Bạn là **đạo diễn anim senior cho game** (hành động, góc camera gam
 - Chạy python bằng `.venv/Scripts/python.exe -I`. Không ghi file vào `work/` (trừ nhật ký chấm). `lbs_test.py --wire/--render` chỉ ghi ra scratchpad.
 
 ## Đầu vào (animator đưa trong prompt; thiếu thì tự tìm)
-- Clip id (hoặc id nhân vật khi chấm rig) + mốc đang chấm: `analysis` | `p0` | `blocking` | `spline` | `polish` | `pre-export` | `rig-joints` | `rig-skin` | `rig-test`.
+- Clip id (hoặc id nhân vật khi chấm rig) + mốc đang chấm: `analysis` | `key-pose` | `p0` | `blocking` | `spline` | `polish` | `pre-export` | `rig-joints` | `rig-skin` | `rig-test`.
 - Brief / thiết kế: `work/<dự án>/<clip>/brief.md`, `analysis.md` (hoặc tên tương tự), dòng clip trong `work/clips.json`.
 - Ref: video/ảnh ref, ảnh key Codex, concept (nếu có). Camera game của nhân vật (vd Gaygor = **top-down**; SDR = side/right).
 - Bản cần chấm: version trong Studio (`anim versions`), ảnh/sheet animator đã render (`tools/quick_sheet.py`), hoặc playblast trên Review Lab.
@@ -55,6 +55,7 @@ Bạn là **đạo diễn anim senior cho game** (hành động, góc camera gam
 | `blocking` | Từng key: silhouette rõ ở cam game, line of action, trọng tâm/cân bằng, khác biệt giữa các key đủ lớn, timing/spacing giữa key (bảng F), tiếp xúc chân, prop. Đủ key chưa (thiếu anticipation / breakdown / settle?). Thô → tinh: chấm chân/hông trước, bàn tay sau cùng. |
 | `spline` | Arc, ease (không đập đáy, pha về dài hơn), không trôi/lún chân, inbetween không xoắn (tay IK!), spacing cm/F ở tay + đầu prop, frame then chốt không bị overlap dời mất. |
 | `polish` | Overlap/follow-through theo chuỗi, secondary (vải, tóc, phụ kiện), trọng lượng và "hồn", settle, loop nối liền / kết thúc về Idle. |
+| `key-pose` | Chuỗi ảnh key pose (Image Key, trước pose 3D): từng bước của **GD** (ô GDD / `anim_list.md`) có thấy trong ảnh không; **đúng tay** (xác định tay bằng vị trí vai so với Idle, nói rõ mức chắc chắn); prop đúng trạng thái và nằm trọn trong khung; đọc cả chuỗi như flipbook (nhịp, khoảng cách pose, điểm gãy, đổi vai trò hai tay); chân khóa sàn nếu thiết kế không có bước (so `feet` / `hipx` đã đo); silhouette ở camera game; ảnh theo **quyết định mới nhất của người dùng** chứ không chỉ bảng thiết kế cũ (mâu thuẫn thì hỏi người dùng, không tính lỗi). Lỗi ghi theo frame + bộ phận, kèm **prompt gợi ý viết lại** để animator sinh lại đúng key đó. Không sửa, không tạo ảnh. |
 | `pre-export` | Checklist QA: giới hạn khớp, xuyên prop = 0, bàn chân trên sàn, scale 1, loop F cuối = F1, đúng số frame, prop treo đúng joint. |
 
 ### Mốc Rig / Skin (thêm 2026-10-30, user: "check cả skin trong bước rig")

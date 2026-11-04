@@ -1,0 +1,69 @@
+- [Project goal](project-goal.md) — AI Animation skill/tool: text or reference video → motion on 3D model; user speaks Vietnamese
+- [Iterate in-house](feedback-iterate-in-house.md) — try/measure/improve, propose algorithms; (Blender no longer used)
+- [Eye first](feedback-eye-first.md) — compare REF|ANIM by eye in all views (incl. top) and name the defect before optimising
+- [Stepped blocking](feedback-stepped-blocking.md) — block on live CTRL rig, CONSTANT curves, playblast stepped before spline
+- [Gaygor Idle approved](project-gaygor-idle-approved.md) — Idle 133F polish v5 accepted 2026-10-20; quality bar for next clips
+- [Pose accuracy](feedback-pose-accuracy.md) — attack blocking rejected: eye-aims from small crops gave 20–40° errors; one pose at a time, never claim a match from overlays
+- [Gaygor Idle_Front](project-gaygor-idle-front.md) — 60F look-forward idle approved v14 (2026-10-20), built by idle_front_build.py, exported
+- [Review pages](reference-review-page.md) — one artifact per anim (Gaygor Attack, Gaygor Idle, Gaygor Idle_Front, SDR Attack, SDR06 Shoot, SDR06 Reload, SDR03 Shoot), built by split_pages.py; per-frame notes in db `notes`
+- [Update knowledge](feedback-update-knowledge.md) — after every task update knowledge/details/*.md (CORE.md only for every-clip rules), unasked
+- [Review listening](feedback-review-listening.md) — no token polling; Studio notes: keep tools/notes_watch.py in background so 'Gửi cho AI' wakes Claude; /check_fb fallback
+- [Quick render](feedback-quick-render.md) — self-check with quick=F views=… + tools/quick_sheet.py (one image); full playblast only to post
+- [Arm anatomy](feedback-arm-anatomy.md) — f13 arms rejected as twisted/over-bent: solve grips anatomically (solve_grip, close-ups, skin strain), never force hand orientation
+- [Shoot Die Repeat](project-shoot-die-repeat.md) — Roman legionary + gladius; Idle + Attack done (Attack polish_v5 approved 2026-10-21, FBX in work/shoot_die_repeat/sdr/export)
+- [Pose Lab 3D](reference-pose-lab.md) — 3D pose-edit pages, one artifact per anim (SDR06 Reload, SDR Idle) with version list; split_pages.py, pose_lab_apply.py → manual.json
+- [Analysis first](feedback-analysis-first.md) — write the detailed per-phase/per-part animation description for approval before blocking, even without ref
+- [Coarse to fine](feedback-coarse-to-fine.md) — pose by levels: pelvis/legs → torso/head → prop → arms → hands; verify each level vs ref
+- [Anatomy pass](feedback-anatomy-pass.md) — anatomy_check on every key AND every frame (twist/jump scan of IK/layer inbetweens) before sending
+- [Circled notes](feedback-circled-notes.md) — circle-only review notes: overlay strokes on the frame; circle on a hold = add key; measure prop, don't trust IoU
+- [Project map](project-map.md) — MAP.md at root: read before creating files, update after adding/moving files or clip status changes
+- [Git review log](feedback-git-review-log.md) — local git: commit each approve/reject with reason, tag approved, derive lessons from diffs
+- [SDR map06](project-sdr-map06.md) — gangster + Thompson; DONE 2026-10-22: Base/Idle/Shoot/Reload FBX in work/shoot_die_repeat/sdr06/export, gun on Wrist_R
+- [Vietnamese replies](feedback-vietnamese.md) — every chat reply in Vietnamese, incl. long reports (user corrected 2026-10-21)
+- [Pole not free](feedback-pole-not-free.md) — IK poles parented (knee→foot, elbow→chest/hand), direction in key spec, pole_audit.py before render
+- [Report slow steps](feedback-report-slow-steps.md) — tell user up front when a step takes long (time + why)
+- [Report slow steps](feedback-report-slow-steps.md) — tell the user which steps take time (with rough minutes) + how to cut them
+- [One view at a time](feedback-one-view-at-a-time.md) — match/review one camera view per round, then the next
+- [Ref|Anim side by side](feedback-ref-anim-side-by-side.md) — send REF and ANIM separate, no blended overlay
+- [Intro + report decks](reference-intro-deck.md) — intro deck 'Quy trình diễn hoạt với AI' (32 slides) + report deck 'Báo cáo áp dụng AI cho diễn hoạt' (10 slides)
+- [Pose Lab FBX](project-poselab-fbx.md) — Pose Lab is a full anim tool (keys, spline, foot lock, ref, FBX) since 2026-10-23, physics layer since 2026-10-24; Walk keys still to block
+- [Walk right-view check](project-walk-right-view-check.md) — 2026-10-23 silhouette check OK, no key change; db keys newer than block_b3
+- [Playblast render size](feedback-playblast-render-size.md) — reset renderer size per cell + check one frame before ffmpeg (b10 was cropped)
+- [No Blender for Pose Lab](feedback-no-blender-pose-lab.md) — user 2026-10-23 "bỏ hẳn blender": Pose Lab clips fit/pose/export in the page only, not even headless Blender
+- [Home app](project-home-app.md) — user's entry point: local Home (tools/home, :8780) → project by game → anim; keep clips.json stage/note right
+- [Workflow B: user blocking](project-workflow-b-user-blocking.md) — since 2026-10-31: AI auto-rigs in Frolvy → user keys → FBX into Studio → analysis → breakdowns → polish → FBX
+- [Frolvy MCP](reference-frolvy-mcp.md) — Frolvy 0.9.36 via MCP `frolvy` (9877); parallel sessions: own app on DCC_MCP_PORT 9879+ driven by tools/frolvy_port.py
+- [Frolvy feedback](feedback-frolvy-report.md) — app in development: log problems in work/frolvy_feedback.md, ask user, send via Help → Send Feedback… in Frolvy
+- [Workflow C: text brief](project-workflow-c-text-brief.md) — no ref, no blocking: design + timing → 10% poses → blocking → then workflow B (added 2026-10-24; first run Gaygor Hit, exported)
+- [Gaygor camera top-down](project-gaygor-camera-topdown.md) — game cam is TOP-DOWN (user 2026-10-25), not right side; judge readability from above
+- [Loose ragdoll](feedback-loose-ragdoll.md) — physics falls limp, not a falling statue; end key = direction (Khớp pose cuối 50%), approved 2026-10-26
+- [SDR git branch](feedback-sdr-git-branch.md) — Unity repo shot-die-repeat: push my files to TungNV_Dev only (not Dev/TungNV), via temp index, no branch switch
+- [GitHub source push](reference-github-source.md) — haunguyen99/AI_Anim private, main = source only via local branch `source`, never push master
+- [Spine MCP](reference-spine-mcp.md) — Spine 2D server `spine` in tools/spine_mcp (from E:\SpineAI), projects in work/<game>/spine/<anim>
+- [Spine Live](reference-spine-live.md) — Home /spine live view; push every Spine work step with tools/spine_live_cmd.py (Theo Claude mode), tests in <anim>/_live/
+- [No Blender/Cascadeur](project-no-blender-cascadeur.md) — team stopped using both (2026-10-27); Home Labs + Spine (+ Maya MCP)
+- [AI Anim Studio](project-studio.md) — one Maya-like app (tools/studio); S1–S4 done 2026-10-27; W1 layout-only, W2 AI bridge, W3a live model in Pose (2026-10-28); ports by port_rig.py / port_pose.py
+- [Maya MCP](reference-maya-mcp.md) — server `maya` (tools/maya_mcp) ↔ listener in Maya 2024 on 127.0.0.1:7022; start listener first
+- [Studio quick edits](feedback-studio-quick-edits.md) — small Studio edits: user watches live, no screenshots; read full names, one batch, check via JS
+- [Screenshot on request](feedback-screenshot-on-request.md) — browser screenshots only when the user asks; check via JS/read_page, report in text
+- [Studio bridge](reference-studio-bridge.md) — tools/studio_cmd.py drives the open Studio (any browser) via Home server; use before browser tools
+- [Team FBX rig tools](reference-team-fbx-rig-tools.md) — tools/rigpose.py + poselab_model.py: animate on full team skeleton (Studio rig drops prop/hair bones)
+- [Codex image gen](reference-codex-img.md) — tools/codex_img.py: key pose images via bundled Codex CLI (ChatGPT plan), for GDD stage 0
+- [Key pose flipbook](feedback-keypose-flipbook.md) — key images of one anim = 2D flipbook: locked camera/frame/ground/feet, chain generation, playback check; original concept always sent as ref
+- [work/ per project](project-work-per-project.md) — since 2026-10-28 data lives in work/<project>/<job>/ (boss_gaygor, shoot_die_repeat, pirate_goldrush); labs + clips.json stay at work/ top
+- [AI does, user approves](feedback-ai-does-user-approves.md) — Studio Rig gates: Duyệt → AI does next step, Cần sửa → AI fixes; watcher picks kind rig_gate, gate-done when finished
+- [Rocket.Chat MCP](reference-rocketchat-mcp.md) — OLD chat; team moved to HorusChat 2026-11-02; old server `rocketchat` (chat.horusvn.com); Claude staffs #AI_StudioSupport: answer/build, reply in thread "🤖 AI:", keep rocketchat_watch.py running
+- [SDR01 map1](project-sdr01.md) — dagger legionary: Idle p0_v5 + Shoot s1 exported and pushed to Unity TungNV_Dev f9a13447 (2026-10-29)
+- [Animation Director](reference-animation-director.md) — subagent .claude/agents/animation-director.md chấm mỗi mốc trước khi gửi user; tự học ngưỡng duyệt vào director_standards.md sau mỗi duyệt/trả
+- [Joint rules](reference-joint-rules.md) — tools/joint_rules.py: limits + coupling (scapula follows arm, spine/neck share); audit+apply every key; Studio button Liên động + bridge `anim rules`
+- [G-LumberCity](project-g-lumbercity.md) — Unity E:\Horus\G-LumberCity (repo airport-tycoon branch lumber_tycoon; anim test scene AnimTest/S_AnimTest_Lumber.unity), GDD Lark sheet (tab Anim&VFX → work/g_lumbercity/gdd/anim_vfx.md), Maya files E:\tvc_source\3D ANIM\G-LumberCity → Frolvy rig MC_Worker_rig.fv (Generic: rig drives team skeleton, export via fbx_ascii_keep) 2026-11-02, chars Lumber + Worker, Home id g_lumbercity; IdleWipe + CleanOutput exported + copied to Unity (meta takeName take1)
+- [G-DieLoop](project-g-dieloop.md) — = Shoot Die Repeat: GDD Google Sheet 1ZQNHEFG…, Unity E:/Horus/shot-die-repeat, team files E:/tvc_source/3D ANIM/G-ShotDieRepeat (Map01..map06; Unity folders now Jungle/Roma/Mayah/Pirate/Western/London, tools/sdr_paths.py)
+- [HorusChat MCP](reference-horuschat-mcp.md) — server `horuschat` → chat.horusjsc.com (Bearer key in .env); keep tools/horuschat_watch.py in background, report tags/DMs to user
+- [Memory backup](reference-memory-backup.md) — memory mirrored in .claude/memory_store by tools/claude_memory.py; run backup after writing memory
+- [SDR03 crossbow scale](project-sdr03-xbow-scale.md) — map3 crossbow 1.25×, arrow 1.3× thicker +12 cm, pushed to TungNV_Dev 90a6e31f 2026-11-03; aim line is code, on hold
+- [Chat dispatcher](feedback-chat-dispatcher.md) — HorusChat-watcher session also takes in + dispatches jobs: summarize, propose do/forward, one session per job, relay results
+- [SDR05 Colt](project-sdr05-colt.md) — map Western cowboy + Colt: Base (mesh) + Idle/Shoot/Reload anim-only pushed TungNV_Dev 17b6b95f, Base T-pose 1a974413 2026-11-04
+- [WorkAI](reference-workai.md) — task system workai.horusjsc.com: client tools/workai/workai.py (token in .env), keep tools/workai_watch.py running, 3 Anim missions 636 3D · 637 2D · 638 VFX (old 622–631 deleted)
+- [Edit on layer](feedback-edit-on-layer.md) — Frolvy edits: new additive layer per round via frolvy_layers.py, never key Base; bake_for_export before FBX
+- [Endless-kicker](project-endless-kicker.md) — hero Windy (wind mage + staff), Unity E:\endless-kicker v1, team Maya E:\tvc_source\3D ANIM\EndlessKicker already has Idle/Attack/Skill1–3, GDD FDD Windy
+- [Propose tools](feedback-propose-tools.md) — tự đề xuất làm tool cho công đoạn tốn thời gian, lặp lại được (user 2026-11-04)

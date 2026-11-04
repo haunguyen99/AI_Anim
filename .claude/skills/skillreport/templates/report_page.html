@@ -1,0 +1,193 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Báo cáo Cừu cầm ô</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Bố cục: một cột đọc, khối số liệu đầu trang, rồi bảng thời gian, dòng thời gian các lượt gen, lưới video, can thiệp, mạnh / yếu */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2530; --muted: #5b6676; --line: #dde2e8;
+  --accent: #b27a00; --accent-soft: #fbefcf; --pink: #c94a6c; --pink-soft: #fbe3ea;
+  --ok: #2e7d4f; --ok-soft: #e1f2e7;
+  --f-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6 }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px }
+h1 { font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 700 }
+h2 { font-size: 21px; margin: 0 0 14px; text-wrap: balance; font-weight: 700 }
+h3 { font-size: 16px; margin: 0; font-weight: 600 }
+p { margin: 0 }
+.lead { color: var(--muted); max-width: 68ch; margin-top: 10px }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600 }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 22px }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 4px; align-content: start }
+.stat b { font-family: var(--f-mono); font-size: 26px; font-weight: 600; line-height: 1.2 }
+.stat span { color: var(--muted); font-size: 13.5px }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; white-space: nowrap }
+tr:last-child td { border-bottom: 0 }
+td.r, th.r { text-align: right }
+.bar { display: flex; height: 10px; border-radius: 3px; overflow: hidden; min-width: 140px; background: var(--line) }
+.bar i { display: block; height: 100% }
+.bar .g { background: var(--accent) } .bar .h { background: var(--pink) }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 10px }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px }
+.note { font-size: 13.5px; color: var(--muted); margin-top: 10px; max-width: 80ch }
+.chip { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; white-space: nowrap; font-weight: 500 }
+.c-fix { background: var(--pink-soft); color: var(--pink) }
+.c-new { background: var(--accent-soft); color: var(--accent) }
+.c-ok { background: var(--ok-soft); color: var(--ok) }
+.vids { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px }
+.vid { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-template-rows: auto 1fr }
+.vid video { width: 100%; aspect-ratio: 718 / 810; display: block; background: #eceff4 }
+.vid .cap { padding: 12px 14px 14px; display: grid; gap: 6px; align-content: start; font-size: 14px }
+.vid .cap .meta { font-size: 12.5px; color: var(--muted); font-family: var(--f-mono) }
+.vid .cap p { color: var(--muted) }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0 }
+.panel ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 8px }
+.panel.plus h3 { color: var(--ok) } .panel.minus h3 { color: var(--pink) }
+.steps { display: grid; gap: 10px }
+.step { display: grid; grid-template-columns: 150px 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
+.step .k { font-weight: 600 }
+.step .k small { display: block; font-weight: 400; color: var(--muted); font-family: var(--f-mono); font-size: 12px }
+@media (max-width: 560px) { .step { grid-template-columns: 1fr; gap: 4px } h1 { font-size: 25px } }
+a { color: var(--accent) }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Đánh giá phiên làm việc AI · Spine 2D · 31/10/2026</div>
+  <h1>Cừu cầm ô: từ 36 mảnh PNG tới bản giao idle + active</h1>
+  <p class="lead">Chỉ tính phần cừu cầm ô (ghép PSD, rig, idle, active, xuất file), không tính phần làm công cụ Spine Live. Số liệu lấy từ log hội thoại, lịch sử ghi file và kho phiên bản của Spine Live.</p>
+  <div class="stats">
+    <div class="stat"><b>~2 giờ 05</b><span>thời gian làm việc thực: AI gen + người xem và viết góp ý (bỏ các khoảng nghỉ trên 15 phút)</span></div>
+    <div class="stat"><b>65 phút</b><span>AI gen (tổng thời gian từ lúc gửi prompt tới lúc AI trả lời xong)</span></div>
+    <div class="stat"><b>19 lượt gen</b><span>trên 21 prompt; 2 prompt không cần gen (cho phép restart, xác nhận "Đúng rồi")</span></div>
+    <div class="stat"><b>0 key tay</b><span>người không tự key frame nào trên anim cừu; mọi thay đổi đi qua góp ý bằng lời và nét vẽ</span></div>
+  </div>
+</header>
+
+<section>
+  <h2>Thời gian theo giai đoạn</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Giai đoạn</th><th class="r">Prompt</th><th class="r">Lượt gen</th><th class="r">AI gen</th><th class="r">Người xem + góp ý</th><th>Tỉ lệ</th></tr></thead>
+    <tbody>
+      <tr><td>Ghép PSD từ 36 mảnh</td><td class="r num">1</td><td class="r num">1</td><td class="r num">14.4′</td><td class="r num">0′</td><td><div class="bar"><i class="g" style="width:39%"></i></div></td></tr>
+      <tr><td>Rig (+ 2 lần cập nhật asset)</td><td class="r num">4</td><td class="r num">3</td><td class="r num">16.4′</td><td class="r num">7.5′</td><td><div class="bar"><i class="g" style="width:44%"></i><i class="h" style="width:20%"></i></div></td></tr>
+      <tr><td>Idle loop 90F</td><td class="r num">4</td><td class="r num">4</td><td class="r num">10.7′</td><td class="r num">16.0′</td><td><div class="bar"><i class="g" style="width:29%"></i><i class="h" style="width:43%"></i></div></td></tr>
+      <tr><td>Active một lần 90F</td><td class="r num">6</td><td class="r num">6</td><td class="r num">19.9′</td><td class="r num">25.0′</td><td><div class="bar"><i class="g" style="width:53%"></i><i class="h" style="width:67%"></i></div></td></tr>
+      <tr><td>Chỉnh frame nhắm / mở mắt</td><td class="r num">5</td><td class="r num">4</td><td class="r num">3.3′</td><td class="r num">10.2′</td><td><div class="bar"><i class="g" style="width:9%"></i><i class="h" style="width:27%"></i></div></td></tr>
+      <tr><td>Xuất file giao</td><td class="r num">1</td><td class="r num">1</td><td class="r num">1.1′</td><td class="r num">1.0′</td><td><div class="bar"><i class="g" style="width:3%"></i><i class="h" style="width:3%"></i></div></td></tr>
+      <tr><td><b>Tổng</b></td><td class="r num"><b>21</b></td><td class="r num"><b>19</b></td><td class="r num"><b>65.8′</b></td><td class="r num"><b>59.7′</b></td><td></td></tr>
+    </tbody>
+  </table></div>
+  <div class="legend"><span><i style="background:var(--accent)"></i>AI gen</span><span><i style="background:var(--pink)"></i>Người xem kết quả + viết góp ý (khoảng giữa hai prompt, chỉ tính khi ≤ 15 phút)</span></div>
+  <p class="note">Ngoài ra có một khoảng 31 phút giữa lúc giao PSD và prompt rig, trong đó người đã tự sửa PSD trong Photoshop (tách 4 ruy băng, chuyển <span class="num">hand_R</span> vào nhóm ô). Khoảng này không tính vào 2 giờ 05; tính cả thì phiên kéo dài 2 giờ 37 (08:36 → 11:12). Lượt rig thứ hai có kèm việc thêm công cụ Scale cho Spine Live, và lượt "Cho phép restart" (0.7′) là việc của công cụ; hai phần này nhỏ, vẫn nằm trong số trên.</p>
+</section>
+
+<section>
+  <h2>19 lượt gen và thay đổi ở mỗi lượt</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Giờ</th><th>Người yêu cầu</th><th>AI thay đổi</th><th class="r">Gen</th></tr></thead>
+    <tbody>
+      <tr><td class="num">08:36</td><td>Ghép 36 mảnh thành PSD như ảnh mẫu</td><td><span class="chip c-new">mới</span> PSD 1292×1687, 5 nhóm layer, dò vị trí mảnh tự động bằng cách so ảnh mẫu</td><td class="r num">14.4′</td></tr>
+      <tr><td class="num">09:21</td><td>Rig theo idea dài: ctrl ở ngọn ô, chuỗi ô → tay → thân, xương mặt, 4 ruy băng…</td><td><span class="chip c-new">mới</span> 35 xương, mesh thân / tay / ruy băng, giỏ không xoay theo cha, anim <span class="num">rig_test</span></td><td class="r num">9.1′</td></tr>
+      <tr><td class="num">09:33</td><td>Vẽ nét: sửa hướng xương tóc, spine; thêm xương khăn, 2 tai</td><td><span class="chip c-fix">sửa</span> 38 xương, tai mesh 2 xương, spine từ cổ xuống mông</td><td class="r num">5.4′</td></tr>
+      <tr><td class="num">09:44</td><td>Cập nhật asset (body có thêm cổ)</td><td><span class="chip c-fix">sửa</span> dựng lại rig theo PSD mới, lệch 0 px</td><td class="r num">1.2′</td></tr>
+      <tr><td class="num">09:49</td><td>Asset mới + idle loop lơ lửng</td><td><span class="chip c-new">mới</span> idle 90F: ô bồng bềnh 28 px, cừu trễ kiểu con lắc, overlap bằng sóng sin, chớp mắt F62</td><td class="r num">3.6′</td></tr>
+      <tr><td class="num">09:59</td><td>Ruy băng mềm hơn; chớp mắt theo spec 60% → nhắm → 60%; cừu chậm nhịp hơn ô; miệng scale dọc</td><td><span class="chip c-fix">sửa</span> ruy băng ±16°, trễ 26F; cừu trễ ô 20F; chớp F60–66</td><td class="r num">2.8′</td></tr>
+      <tr><td class="num">10:06</td><td>Ảnh vẽ: trục scale mắt, miệng bị lệch xéo</td><td><span class="chip c-fix">sửa</span> xương mặt xoay theo trục mặt nghiêng 28°, scale theo X</td><td class="r num">2.4′</td></tr>
+      <tr><td class="num">10:10</td><td>Mũi gắn vào đầu, miệng chậm lại, tai cần như physics</td><td><span class="chip c-fix">sửa</span> tai theo quán tính của đầu, trễ 12–29F</td><td class="r num">2.0′</td></tr>
+      <tr><td class="num">10:15</td><td>"OK, làm active"</td><td><span class="chip c-new">mới</span> active loop 60F, ô cao hơn idle 20 px (hiểu sai: cần chạy một lần)</td><td class="r num">2.6′</td></tr>
+      <tr><td class="num">10:23</td><td>Hành động mạnh hơn, đầu / cuối là idle, ô vọt lên rồi hạ từ từ</td><td><span class="chip c-new">làm lại</span> active một lần 90F = idle + lớp hành động; ô vọt 55 px</td><td class="r num">4.2′</td></tr>
+      <tr><td class="num">10:28</td><td>Đang giật cục, cần bay nhanh chứ không giật</td><td><span class="chip c-fix">sửa</span> bỏ nhịp lấy đà, tăng / giảm tốc êm; tốc độ đỉnh 24 → 7 px/frame</td><td class="r num">2.0′</td></tr>
+      <tr><td class="num">10:34</td><td>Ô xoay luôn, không hold; cao hơn; mượt</td><td><span class="chip c-fix">sửa</span> spline C2 liền mạch, ô lên 70 px, nghiêng 7° rồi quay về ngay</td><td class="r num">3.5′</td></tr>
+      <tr><td class="num">10:42</td><td>Overlap người còn lệch nhịp; bớt key; giỏ trôi khỏi tay</td><td><span class="chip c-fix">sửa</span> chuỗi tay → thân → đầu chung nhịp; giỏ key theo tay; 861 → 417 key</td><td class="r num">2.5′</td></tr>
+      <tr><td class="num">10:51</td><td>Ruy băng, khăn, tai còn cứng; mắt nhắm giữ 2 frame</td><td><span class="chip c-fix">sửa</span> physics lò xo thật cho cả idle và active; chớp mắt nhắm F63–64</td><td class="r num">5.2′</td></tr>
+      <tr><td class="num">11:05</td><td>Nhắm F34, mở F55</td><td><span class="chip c-fix">sửa</span> mắt active nhắm F34–54</td><td class="r num">1.5′</td></tr>
+      <tr><td class="num">11:07</td><td>Nhắm từ F27</td><td><span class="chip c-fix">sửa</span> nhắm F27–54</td><td class="r num">0.6′</td></tr>
+      <tr><td class="num">11:08</td><td>Nhắm từ F20</td><td><span class="chip c-fix">sửa</span> nhắm F20–54</td><td class="r num">0.5′</td></tr>
+      <tr><td class="num">11:10</td><td>Mở mắt F50</td><td><span class="chip c-ok">duyệt</span> nhắm F20–49, mở F50</td><td class="r num">0.6′</td></tr>
+      <tr><td class="num">11:11</td><td>Xuất file chỉ có idle + active</td><td><span class="chip c-ok">giao</span> <span class="num">SheepUmbrella_final.spine</span>, kiểm lại bằng Spine CLI</td><td class="r num">1.1′</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Video các bản thay đổi lớn</h2>
+  <p class="lead" style="margin:0 0 16px">Xuất bằng Spine CLI từ đúng file của từng lượt (kho phiên bản Spine Live), 30 fps. Idle phát 3 vòng. Active phát idle → active → idle để thấy chỗ nối.</p>
+  <div class="vids">
+    <figure class="vid" style="margin:0"><video src="v/01_rig_v2.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Rig bản đầu</h3><span class="meta">bản #2 · lượt 2 · 09:30</span><p>35 xương theo idea, anim kiểm rig. Người chỉ ra hướng xương tóc, spine sai và thiếu xương khăn, tai. Video dùng ảnh asset mới nhất.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/02_rig_v5.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Rig đã sửa</h3><span class="meta">bản #5 · lượt 3–5 · 09:49</span><p>38 xương, tai mesh 2 xương, khăn trái 2 xương, spine từ cổ xuống mông; asset cập nhật cổ và giỏ.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/03_idle_v7.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Idle bản đầu</h3><span class="meta">bản #7 · lượt 5 · 09:51</span><p>Ô bồng bềnh, cừu đung đưa trễ, overlap bằng sóng sin. Cừu còn xoay gần như cùng lúc với ô.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/04_idle_v9.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Idle: cừu trễ sau ô</h3><span class="meta">bản #9 · lượt 6 · 10:01</span><p>Cừu trễ ô 20 frame, ruy băng rộng và trễ hơn, chớp mắt theo spec của người. Trục scale mắt còn lệch xéo.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/05_idle_v14.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Idle được duyệt</h3><span class="meta">bản #14 · lượt 7–8 · 10:11</span><p>Xương mặt theo trục mặt nghiêng 28°, mũi bỏ anim, tai đi theo quán tính của đầu.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/06_active_v23.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Active bản đầu</h3><span class="meta">bản #23 · lượt 9 · 10:17</span><p>AI làm thành loop 60F, cao hơn idle 20 px, nên chỗ nối idle → active nhảy hình. Hành động yếu.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/07_active_v25.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Active chạy một lần</h3><span class="meta">bản #25 · lượt 10 · 10:26</span><p>Đầu và cuối trùng idle F0. Ô vọt 55 px nhưng giật cục: tốc độ nhảy từ 0 lên 24 px/frame.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/08_active_v26.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Active bay êm</h3><span class="meta">bản #26 · lượt 11 · 10:29</span><p>Tăng / giảm tốc êm, hết giật. Ô nghiêng rồi đứng yên tới F40 (hold), người phải góp ý tiếp.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/09_active_v48.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Ô xoay liền mạch</h3><span class="meta">bản #48 · lượt 12 · 10:36</span><p>Mốc nối bằng spline C2, ô lên 70 px, nghiêng 7° rồi quay về ngay. Thân cừu còn lệch nhịp, giỏ trôi khỏi tay.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/10_active_v49.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Overlap chung một nhịp</h3><span class="meta">bản #49 · lượt 13 · 10:43</span><p>Tay → thân → đầu dùng chung nhịp, giỏ đi liền tay, số key giảm từ 861 còn 417.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/11_physics_v53.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Physics thật</h3><span class="meta">bản #53 · lượt 14 · 10:55</span><p>Ruy băng, khăn, tai chạy mô phỏng lò xo ở cả idle và active. Chớp mắt nhắm 2 frame.</p></figcaption></figure>
+    <figure class="vid" style="margin:0"><video src="v/12_final_v57.mp4" controls loop muted playsinline preload="metadata"></video><figcaption class="cap"><h3>Bản giao</h3><span class="meta">bản #57 · lượt 15–19 · 11:10</span><p>Mắt active nhắm F20–49, mở F50. Xuất <span class="num">SheepUmbrella_final.spine</span> chỉ gồm idle + active.</p></figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Người vẫn phải làm gì</h2>
+  <p class="lead" style="margin:0 0 16px">Người không key tay frame nào. Vai trò của người là đạo diễn: nhìn ra chỗ chưa đạt, mô tả hoặc vẽ ra, đưa số frame cụ thể.</p>
+  <div class="steps">
+    <div class="step"><div class="k">Sửa asset<small>trước lượt 2, lượt 4, lượt 5</small></div><p>Tự sửa PSD trong Photoshop 3 lần: tách 4 ruy băng và chuyển <span class="num">hand_R</span> vào nhóm ô; vẽ thêm cổ cho <span class="num">body</span>; cắt bớt <span class="num">basket_B</span>. AI chỉ ghép mảnh, không vẽ thêm được phần thiếu.</p></div>
+    <div class="step"><div class="k">Vẽ nét lên ảnh<small>lượt 3, lượt 7</small></div><p>Vẽ hướng xương tóc, spine, chỗ cần thêm xương khăn và tai; vẽ 3 nét đỏ chỉ trục mặt để AI sửa trục scale của mắt và miệng.</p></div>
+    <div class="step"><div class="k">Thử sửa curve<small>10:31 – 10:33</small></div><p>Mở Graph và sửa curve 8 lần, lần nào cũng Hoàn tác ngay, rồi chuyển sang mô tả bằng lời: "trục xoay của ô sẽ xoay luôn chứ không cần hold". Sửa tay trên 861 key dày đặc lúc đó khó hơn nói cho AI làm.</p></div>
+    <div class="step"><div class="k">So phiên bản<small>10:13 – 10:14</small></div><p>Bấm qua lại 4 bản idle (#5, #12, #13, #14) trong cột Phiên bản trước khi duyệt "OK, làm active".</p></div>
+    <div class="step"><div class="k">Đưa spec chi tiết<small>lượt 6, lượt 15–18</small></div><p>Tự thiết kế cách chớp mắt (mắt mở bóp 60% trong 2 frame, đổi ảnh mắt nhắm giữ 1 frame, mở lại 60% → 100%). Chọn frame nhắm / mở mắt bằng thử dần: F34 → F27 → F20, mở F55 → F50.</p></div>
+    <div class="step"><div class="k">Phát hiện lỗi cảm giác<small>lượt 9 – 14</small></div><p>Mọi lỗi về cảm giác chuyển động đều do người chỉ ra: hành động yếu, giật cục, ô hold, thân lệch nhịp, giỏ trôi, ruy băng / khăn / tai cứng. AI chỉ đo và giải thích sau khi được báo.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Điểm mạnh và điểm yếu của AI</h2>
+  <div class="two">
+    <div class="panel plus"><h3>Mạnh</h3><ul>
+      <li>Ghép PSD từ 36 mảnh khớp ảnh mẫu, tự dò vị trí, trong 14 phút.</li>
+      <li>Rig đúng gần hết ý tưởng mô tả bằng lời ngay lượt đầu; tư thế gốc lệch 0 px so với PSD.</li>
+      <li>Idle dùng được từ bản đầu, các lượt sau chỉ tinh chỉnh. Loop khít, đo lệch 0 px.</li>
+      <li>Active nối idle khít cả vị trí lẫn tốc độ (đầu / cuối lệch 0 px).</li>
+      <li>Đo trên runtime thật (tốc độ, gia tốc, frame đỉnh) để tìm nguyên nhân, giải thích rõ vì sao lỗi.</li>
+      <li>Sửa nhỏ rất nhanh: đổi frame mắt mất khoảng 30 giây mỗi lượt.</li>
+      <li>Giữ mọi bản cũ (v2 … v17), người quay lại bản nào cũng được.</li>
+      <li>Physics lò xo cho loop tuần hoàn và nối idle → active; tự bớt key mà giữ đường cong.</li>
+    </ul></div>
+    <div class="panel minus"><h3>Yếu</h3><ul>
+      <li>Không tự thấy lỗi cảm giác (giật, hold, lệch nhịp, cứng). Active mất 6 lượt và khoảng 45 phút, phần lớn để sửa những lỗi người phải chỉ ra.</li>
+      <li>Hiểu sai yêu cầu: làm active thành loop; đoán "xương mẫu" là xương mũi.</li>
+      <li>Rig đầu bỏ sót chi tiết: hướng xương tóc, spine; không tính tới mặt nghiêng nên trục scale mắt, miệng bị xéo.</li>
+      <li>Lựa chọn rig gây lỗi về sau: giỏ "không xoay theo cha" làm giỏ trôi khỏi tay khi cừu xoay người.</li>
+      <li>Overlap ban đầu là sóng sin đặt tay nên cứng; chỉ chuyển sang physics thật khi người yêu cầu.</li>
+      <li>Bản active đầu có 861 key, quá dày để người sửa tay.</li>
+      <li>Công cụ xem trước nháp vẽ sai giỏ, nên bước tự kiểm của AI không đáng tin bằng Spine Live.</li>
+      <li>Xen việc làm công cụ (Scale, restart server) vào giữa luồng anim.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Cách tính</h2>
+  <p class="note" style="margin:0">Thời gian AI gen = từ lúc gửi prompt tới tin nhắn cuối của AI trong lượt đó. Thời gian người = khoảng giữa lúc AI trả lời xong và prompt kế tiếp, chỉ tính khi ≤ 15 phút (dài hơn coi là nghỉ). Giờ theo giờ Việt Nam ngày 31/10/2026. Video xuất bằng Spine 4.2.43 CLI từ các bản trong kho phiên bản <span class="num">work/store/_sys/spine_live/versions/</span>, cùng thư mục ảnh hiện tại; bản file MP4 nằm ở <span class="num">work/test/spine/SheepUmbrella/review/</span>.</p>
+</section>
+
+</div>
+
+</body></html>

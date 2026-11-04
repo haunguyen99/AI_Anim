@@ -263,7 +263,7 @@ async function openPose(p) {
       LIVE = { rest, snap };
     }
     // rig dựng ở Studio (Rig): đốt ngón, mũi chân, joint phụ (giáp vai, túi…) cũng là điểm khớp chọn / xoay / key được (user 2026-10-27)
-    for (const n of Object.keys(B)) if (!NAMES[n] && (/^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+|Scarf\d+)_[LR]$/.test(n) || n === "Weapon")) { NAMES[n] = jointLabel(n); JOINTS.push(n); }
+    for (const n of Object.keys(B)) if (!NAMES[n] && (/^((Index|Middle|Ring|Pinky|Thumb)Finger\d|Toes|joint\d+|Scarf\d+)_[LR]$/.test(n) || n === "Weapon")) { NAMES[n] = jointLabel(n); JOINTS.push(n); }   // Ninja: khăn + kunai chọn/key được
     if (RIGSET() && RIGSET().joints) JOINTS = JOINTS.filter(n => { const j = RIGSET().joints[n]; return !j || j.ctl !== false; });   // Rig: khớp không điều khiển thì không có điểm
     gB = {}; ghost.traverse(o => { if (o.isBone) gB[o.name] = o; });
     buildCache(g1.animations[0]);
@@ -637,7 +637,7 @@ $("play").onclick = () => {
 };
 function tickPlay(now) {
   if (!playing) return;
-  const f = 1 + ((playF0 - 1 + Math.floor((now - playT0) / 1000 * (P.fps || 30))) % (P.frames || 1));
+  const f = 1 + ((playF0 - 1 + Math.floor((now - playT0) / 1000 * (P.fps || 30))) % PER());   // loop: F cuối = F1, chỉ phát F1..F(N-1) (không thì mỗi vòng khựng 1 frame)
   if (f !== frame) goto(f);
 }
 
@@ -4618,7 +4618,7 @@ window.DDC = window.DDC || {};
 window.DDC.playblast = async function (opt) {
   opt = opt || {};
   if (!ready || !model) throw new Error("Model chưa tải xong.");
-  const cams = opt.cams || ["right", "left", "front", "top"], cw = opt.cw || 450, ch = opt.ch || 600, dist = opt.dist || 1, n = P.frames || 1, fps = P.fps || 30;
+  const cams = opt.cams || ["right", "left", "front", "top"], cw = opt.cw || 450, ch = opt.ch || 600, dist = opt.dist || 1, n = PER(), fps = P.fps || 30;   // loop: quay F1..F(N-1), F cuối = F1 sẽ thành frame khựng khi trang Review phát lặp
   const mime = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
   if (!mime) throw new Error("Trình duyệt không quay được video (MediaRecorder).");
   const VIEW = opt.view || viewSnap(), G = pbGate();

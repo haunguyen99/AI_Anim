@@ -18,8 +18,9 @@ ROOT = os.path.abspath(os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
 import render_fbx_tex as RT
 import fbxanim
+import sdr_paths as SP   # folder map Unity: tên mới (Roma, Mayah...) hoặc cũ MapNN
 
-RIG_FBX = r"E:\Horus\shot-die-repeat\Assets\_Game\Animations\Map03\MC_char_map3_Rig.fbx"
+RIG_FBX = SP.anim(3, "MC_char_map3_Rig.fbx")
 TEX = r"E:\Horus\shot-die-repeat\Assets\_Game\3D\Texture\T_Color_ShotDieRepeat.tga"
 CACHE = os.path.join(ROOT, "work", "_cache", "rigpose", "rig_extract")   # mesh/xương đọc từ FBX (theo file + mtime)
 

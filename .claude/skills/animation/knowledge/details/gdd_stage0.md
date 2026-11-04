@@ -17,7 +17,7 @@ Clip đầu tiên: SDR map3 nỏ (`work/shoot_die_repeat/sdr03/`).
 | G3 | Phân tích từng clip theo mẫu `sdr06/analysis.md` | `analysis.md` |
 | G4 | Ref = render model thật (mục "Trình tự G4") → prompt theo **mẫu prompt** dưới → `tools/codex_img.py` (lần lượt) → `tools/keypose_scale.py` + xem từng ảnh | `keys/k*.png` |
 | G5 | Trang duyệt (artifact): key pose + thước frame + bảng pha + câu hỏi có phương án đề xuất | `review/index.html` |
-| G4b | Duyệt ảnh với team: Home `/keypose?job=<dự án>/<job>` (★ / ✕ / ghi chú, nút Yêu cầu thêm ảnh). Yêu cầu tới (kind `keypose_req`): viết lại phần sửa thành tiếng Anh rõ ràng, chạy `tools/keypose_gen.py <id> --extra "..."` nền (~1,5 phút/ảnh, lần lượt), xem ảnh ra, ghi `--reply` ngắn | `keys/<key>_rN.png` |
+| G4b | Duyệt ảnh với team: Home `/keypose?job=<dự án>/<job>` (★ / ✕ / ghi chú, nút Yêu cầu thêm ảnh). Yêu cầu tới (kind `keypose_req`): viết lại phần sửa thành tiếng Anh rõ ràng, chạy `tools/keypose_gen.py <id> --extra "..."` nền (~1,5 phút/ảnh, lần lượt), xem ảnh ra, **gọi director mốc `key-pose` (mục "Đồng nhất chuỗi ảnh" phần 7)**, ghi `--reply` ngắn | `keys/<key>_rN.png` |
 
 ## Luật cho "phân tích sát"
 - **Mỗi ý một nhãn nguồn:** [GDD] trích nguyên văn câu gốc, [rig] đo trên rig, [clip cũ], [suy luận], [?]. Người duyệt soát kỹ chỗ [suy luận].
@@ -57,6 +57,7 @@ với mong muốn". Áp cho **mọi** lần gọi Codex: key mới, sửa, góc 
 5. **Kiểm**: `tools/keypose_scale.py keys/*.png --ref model_ref/scale_side.png` (tỉ lệ vũ khí), rồi xem từng ảnh theo checklist:
    đúng tay, đủ 2 tay, cơ chế prop đúng trạng thái, biên độ đúng số trong analysis, chân/tấn giữ nguyên. Ghi lệch vào chú thích trang.
 6. **Kiểm cả chuỗi** như flipbook 2D (mục "Đồng nhất chuỗi ảnh", phần 5) rồi mới gửi.
+7. **Director check**: subagent `animation-director` mốc `key-pose` chấm chuỗi so với GDD (phần 7 cùng mục), ≤ 2 vòng sửa, rồi mới gửi.
 
 ### Mẫu prompt (giữ thứ tự khối; điền phần <…>)
 ```
@@ -184,6 +185,28 @@ coi là **hỏng**. Đây là luật cứng cho mọi lần tạo ảnh (G4, G4b
 - Sửa key chủ thì xem lại cả chuỗi. Key nào không còn khớp thì sinh lại theo thứ tự.
 - Góc phụ: mỗi góc là một chuỗi riêng và cũng phải theo luật 1–5. Mỗi key ở góc phụ dựng từ key cùng tên ở góc chính đã ★, dùng key
   liền trước **cùng góc** làm ref khung.
+
+**7. Director check (bước bắt buộc, người dùng 2026-10-31: "thêm bước agent check vào trong Image key")**
+Sau khi cả chuỗi (hoặc phần vừa sinh lại) qua đo ngay sau mỗi ảnh + soát bằng mắt, và **trước khi báo "xong" / gửi người dùng**, gọi subagent
+`animation-director` mốc `key-pose`. Áp cho mọi đường vào: G4, G4b (`keypose_req`), Tạo ảnh trong panel Key Pose, sửa bằng `--markup`, góc phụ,
+Anim mới từ Studio. Không gọi cho một key lẻ chỉ dời khung / căn lại.
+- **Đưa gì:** id clip + mốc `key-pose`; yêu cầu gốc của GD (ô GDD hoặc `anim_list.md`); thiết kế đã duyệt (`analysis.md` bảng pha); `keys/keypose.json`
+  (phases); đường dẫn ảnh đang dùng của từng pha + ảnh ghép cả chuỗi để xem nhanh; **số đo** `keypose_chain.py measure` (feet / hipx / H) của
+  các ảnh; các quyết định mới của người dùng sau bảng thiết kế (git log, mục blocking trong analysis). **KHÔNG đưa kết luận của mình** (director chấm
+  độc lập, đưa hypothesis thì nó hay xác nhận lại). Chỉ yêu cầu xem + chấm, không sửa, không tạo ảnh.
+- **Director chấm gì:** (a) từng bước của GD có thấy trong ảnh không (đúng tay: xác định tay bằng vị trí vai so với Idle, không bằng "trái/phải" trong
+  ảnh; prop đúng trạng thái và **nằm trọn trong khung**); (b) đọc cả chuỗi như flipbook: nhịp, khoảng cách pose, điểm gãy, đổi vai trò hai tay;
+  (c) chân khóa sàn nếu thiết kế không có bước; (d) silhouette ở camera game; (e) ảnh có theo quyết định mới nhất của người dùng chứ không chỉ theo bảng cũ.
+- **Kết quả:** Duyệt → báo người dùng. Cần sửa → sinh lại **chỉ các key mức A/B** theo prompt director gợi ý (giữ bản cũ `_rN`), chạy lại bước 5 + gọi
+  lại director, **tối đa 2 vòng**, rồi mới gửi người dùng kèm danh sách lỗi còn lại. Lỗi director hỏi ý người dùng (vd thiết kế cũ mâu thuẫn quyết định
+  mới) thì **hỏi, không tự sửa**. Ghi lời nhắn trên trang: "director: Duyệt / còn lỗi …".
+- Director không ghi `director_log.md` khi đầu bài chỉ cho xem: animator tự thêm 1 dòng (mốc `key-pose`, lỗi, đã sửa chưa).
+- **Bài học lần đầu chạy (SDR01 Shoot, 2026-10-31):** chuỗi 5 ảnh Codex qua hết đo chuỗi nhưng director bắt được F7 **đổi tay** (tay ném co, tay ngắm duỗi)
+  và dao bị cắt khỏi khung, cả hai mắt thường của animator cũng suýt bỏ qua. Đo chuỗi không thấy lỗi chân trước trượt ~12 cm (F5/F7/F11) vì `foot` chỉ
+  so chân gần nhất; chân kia chỉ ra ở `stance` (6,5 % chỉ là "chú ý"). **Pha không có bước mà `stance` > 4 %, hoặc cạnh bàn chân trước lệch > 2 % chiều
+  cao so với key chủ (đo `feet` của `keypose_chain.py measure`) thì coi là lỗi, không phải chú ý.** Prompt có hai tay phải tả bằng **vị trí vai trong
+  ảnh gốc** ("tay cầm dao ở ảnh gốc, vai bên TRÁI màn hình") kèm câu "KHÔNG đảo tay", và ghi "dao nằm trọn trong khung, cách mép ≥ 80 px".
+  ComfyUI (Qwen Image Edit) sinh từ ảnh Idle cho pose kém hơn Codex chuỗi: chân lệch, pose thiếu biên độ; chỉ dùng thử.
 
 ## Anim mới từ Studio (Image Key "+ Anim mới", 2026-10-30)
 Người dùng: "Khi người dùng muốn thêm một anim mới. Khi click vào tạo anim hãy gửi cho AI yêu cầu". Yêu cầu lưu ở `work/store/keypose/animreqs/<id>.json` {char (id Studio), charName, job, name, desc, loop, frames (null = AI đề xuất), fps, doc (link / ghi chú GDD), by}. Bộ canh `notes_watch.py` in mục `kind: anim_req` và đánh dấu picked. Trạng thái hiện ngay trong cột Anim của Image Key: cập nhật bằng `tools/notes_watch.py --anim-status <id> <picked|analysis|review|images|done|error> "lời nhắn"`.
