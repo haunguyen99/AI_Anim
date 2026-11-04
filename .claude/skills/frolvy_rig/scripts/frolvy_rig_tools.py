@@ -231,7 +231,10 @@ def check_rig_moves(api, ctl="CTL_Shoulder_L", joint="DEF_Wrist_L", sw="CTL_ArmS
     a = P(api, joint); t = api.transform(ctl)
     api.set_transform(ctl, t[:3], [0, 0, -45], t[6:9]); b = P(api, joint)
     api.set_transform(ctl, t[:3], t[3:6], t[6:9])
-    for k, v in s0.items(): api.set_attr(sw + "." + k, v)
+    # fkIk back BEFORE autoSnap: restoring autoSnap first makes the fkIk change snap the
+    # FK pose onto the IK controls (2026-11-03: CTL_PoleLeg_R/L ended 10-24 cm off, legs uneven)
+    for k in ("fkIk", "autoSnap"):
+        if k in s0: api.set_attr(sw + "." + k, s0[k])
     moved = math.dist(a, b) > 0.01
     print("rig moves:", moved)
     return moved
@@ -589,8 +592,11 @@ def deform_test(api, obj, tests, verts=None, switches=("CTL_ArmSwitch_L", "CTL_A
                 res[i] = math.dist(p, q)
             out[(ctl, tuple(rot))] = res
     finally:
-        for s, v in saved:
-            for a, val in v.items(): api.set_attr(s + "." + a, val)
+        # fkIk back BEFORE autoSnap (else the switch snaps FK pose onto IK/pole controls:
+        # 2026-11-03 Ninja poles ended 7.6 cm off, FK arm got 0.2-0.4 deg)
+        for k in ("fkIk", "autoSnap"):
+            for s, v in saved:
+                if k in v: api.set_attr(s + "." + k, v[k])
     return out
 
 
