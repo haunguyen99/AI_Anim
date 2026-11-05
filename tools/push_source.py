@@ -27,6 +27,7 @@ os.chdir(ROOT)
 # .claude/mcp_store KHÔNG đẩy (có khoá MCP).
 ALLOW = [
     "README.md", "MAP.md", "CLAUDE.md", "requirements.txt", ".gitignore", ".vscode/extensions.json",
+    ".claude/settings.json", ".claude/output-styles/**",
     ".claude/skills/**", ".claude/agents/**", ".claude/memory_store/**", "docs/**", "tools/**",
     "work/clips.json", "work/patch_localdb.py",
     "work/pose_lab/index.html", "work/pose_lab/*.py", "work/pose_lab/fbx/*.py", "work/pose_lab/fbx/*.js", "work/pose_lab/fbx/test.html",

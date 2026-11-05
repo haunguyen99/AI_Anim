@@ -47,7 +47,8 @@ if ($code) {
     Write-Host "[OK] Extension $EXT_ID đã có."
   } elseif ($Install) {
     & $code --install-extension $EXT_ID 2>$null | Out-Null
-    Write-Host "[OK] Đã cài extension $EXT_ID."
+    if ((& $code --list-extensions 2>$null) -contains $EXT_ID) { Write-Host "[OK] Đã cài extension $EXT_ID." }
+    else { Write-Host "[LỖI] Cài extension $EXT_ID không thành công (kiểm mạng rồi chạy lại)."; exit 1 }
   } else {
     Write-Host "[THIẾU] Extension $EXT_ID chưa có. Chạy lại với -Install."
   }
