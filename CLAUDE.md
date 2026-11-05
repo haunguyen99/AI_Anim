@@ -17,5 +17,10 @@
 - Bản sao bộ nhớ ở `.claude/memory_store/` (trong git). Nếu `MEMORY.md` trong bộ nhớ phiên đang trống hoặc thiếu, chạy `.venv/Scripts/python.exe -I tools/claude_memory.py restore` rồi đọc `.claude/memory_store/MEMORY.md`.
 - Sau khi ghi / sửa memory: chạy `tools/claude_memory.py backup` để bản sao luôn mới.
 
+## VS Code + Claude Code (máy mới / người mới)
+- Team dùng được Claude trong VS Code (extension `anthropic.claude-code`), song song với app Claude desktop. Cài và cấu hình theo `docs/vscode_pilot.md` mục 7: `tools/setup_vscode.ps1 -Install` cài VS Code + extension; `-Endpoint lan` (IP LAN `http://192.168.10.29:40741`, trong công ty) hoặc `-Endpoint public` (`https://llmpro.horusjsc.com`, ở ngoài).
+- Key `llmpro` chỉ để trong `~/.claude/settings.json` của từng máy: không ghi vào repo, không in ra chat. Khi người dùng nhờ cài, chạy script, hỏi trước khi cài, và nhắc khởi động lại VS Code / app sau khi đổi endpoint.
+- Việc cần Artifact (trang review, Pose Lab trên claude.ai), trình duyệt trong app hay chia session: làm trong app Claude desktop.
+
 ## Trả lời
 - Mọi câu trả lời bằng tiếng Việt.
