@@ -22,7 +22,6 @@
 - [Vietnamese replies](feedback-vietnamese.md) — every chat reply in Vietnamese, incl. long reports (user corrected 2026-10-21)
 - [Pole not free](feedback-pole-not-free.md) — IK poles parented (knee→foot, elbow→chest/hand), direction in key spec, pole_audit.py before render
 - [Report slow steps](feedback-report-slow-steps.md) — tell user up front when a step takes long (time + why)
-- [Report slow steps](feedback-report-slow-steps.md) — tell the user which steps take time (with rough minutes) + how to cut them
 - [One view at a time](feedback-one-view-at-a-time.md) — match/review one camera view per round, then the next
 - [Ref|Anim side by side](feedback-ref-anim-side-by-side.md) — send REF and ANIM separate, no blended overlay
 - [Intro + report decks](reference-intro-deck.md) — intro deck 'Quy trình diễn hoạt với AI' (32 slides) + report deck 'Báo cáo áp dụng AI cho diễn hoạt' (10 slides)
@@ -68,3 +67,12 @@
 - [Endless-kicker](project-endless-kicker.md) — hero Windy (wind mage + staff), Unity E:\endless-kicker v1, team Maya E:\tvc_source\3D ANIM\EndlessKicker already has Idle/Attack/Skill1–3, GDD FDD Windy
 - [Propose tools](feedback-propose-tools.md) — tự đề xuất làm tool cho công đoạn tốn thời gian, lặp lại được (user 2026-11-04)
 - [VS Code setup](reference-vscode-pilot.md) — team uses Claude in VS Code too: tools/setup_vscode.ps1 (-Install, -Endpoint lan|public), docs/vscode_pilot.md §7; LAN http://192.168.10.29:40741, key only in each user's ~/.claude/settings.json
+- [Fit controls after Build Rig](frolvy-fit-controls-after-build.md) — in Frolvy run fit_controls.snug(api) (menu Build Rig + Fit Controls) right after Build/Rebuild Rig
+- [Game rig: base joints only](frolvy-game-rig-base-joints-only.md) — no helper set / twist / bendy; skin only to DEF, max 4 influences
+- [Frolvy root joint](frolvy-rig-root-at-origin.md) — default Root at 0,0,0 + Pelvis, but game rigs: Root_M is the hip joint (no Pelvis); how to convert
+- [RPG2 hero: new anims only](rpg2-hero-new-anims.md) — redo dual-blade set from scratch, never touch old Hero_RPG2 files in D:\rpg-game1
+- [Frolvy feedback: keep it short](frolvy-feedback-simple.md) — per bug only Bug / How to see / Request; one row in work/frolvy_feedback.md
+- [Loop anim seam smooth](frolvy-loop-seam-smooth.md) — idle/run/walk in Frolvy: after each finished edit round run loop_seam.smooth(api) (per layer, closes F-last = F1, shared tangent)
+- [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
+- [Polish keeps blocking poses](polish-keeps-blocking-poses.md) — when polishing/splining, never change approved blocking key poses; ask first
+- [Studio script single writer](studio-script-single-writer.md) — pose scripts via the Studio bridge must be the only writer; check frame before each key (Auto key on)

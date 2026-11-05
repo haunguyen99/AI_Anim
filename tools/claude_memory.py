@@ -11,6 +11,7 @@ Kèm cấu hình MCP: .mcp.json + .claude/settings.local.json -> .claude/mcp_sto
 khoá .env của MCP chat -> .claude/mcp_store/secrets (git bỏ qua). restore chỉ ghi file MCP còn thiếu, --force ghi đè.
 
 Restore chỉ ghi thêm / ghi đè file cùng tên, không xoá file đang có ở đích.
+MEMORY.md (chỉ mục) được gộp theo dòng, không ghi đè.
 """
 import argparse
 import re
@@ -37,10 +38,29 @@ def files(d: Path):
     return {f.relative_to(d).as_posix(): f for f in d.rglob("*") if f.is_file()} if d.exists() else {}
 
 
+def merge_index(src: Path, dst: Path) -> bool:
+    """Gộp MEMORY.md: giữ mọi dòng của đích, thêm dòng mới của nguồn (theo file được trỏ tới).
+    Tránh việc máy ít memory ghi đè làm mất chỉ mục của cả team."""
+    def key(line):
+        m = re.search(r"\]\(([^)]+)\)", line)
+        return m.group(1) if m else line.strip()
+    old = dst.read_text(encoding="utf-8").splitlines() if dst.exists() else []
+    seen = {key(l) for l in old if l.strip()}
+    add = [l for l in src.read_text(encoding="utf-8").splitlines() if l.strip() and key(l) not in seen]
+    if not add and dst.exists():
+        return False
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    dst.write_text("\n".join([l for l in old if l.strip()] + add) + "\n", encoding="utf-8", newline="\n")
+    return True
+
+
 def copy_all(src: Path, dst: Path) -> int:
     n = 0
     for rel, f in files(src).items():
         t = dst / rel
+        if rel == "MEMORY.md":
+            n += merge_index(f, t)
+            continue
         if t.exists() and t.read_bytes() == f.read_bytes():
             continue
         t.parent.mkdir(parents=True, exist_ok=True)

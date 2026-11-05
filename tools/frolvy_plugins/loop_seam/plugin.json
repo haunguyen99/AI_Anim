@@ -1,0 +1,8 @@
+{
+  "id": "loop_seam",
+  "version": "0.1.0",
+  "entry": "loop_seam.py",
+  "api_version": 1,
+  "name": "Loop Seam",
+  "description": "Make a looping anim (idle, run, walk) join smoothly: last key = first key on every channel, one shared tangent at both ends, then a world-space check. Plugins > Smooth Loop Seam."
+}

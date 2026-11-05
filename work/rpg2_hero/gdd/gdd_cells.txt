@@ -1,0 +1,532 @@
+MEDIA: 86
+=== SHEET: Team info xl/worksheets/sheet1.xml
+A1: Member Name | B1: Team | C1: Chuyên môn | D1: Effort | F1: Số tiếng tối thiểu tuần
+A2: Chu Văn Mai | B2: PM/ GD | C2: GD | D2: 0.8
+A3: Nguyễn Đức Dũng | B3: GD | C3: GD | D3: 1.0 | F3: ~40h/tuần
+A4: Phạm Thành Công | B4: GD | C4: GD | D4: 1.0 | F4: ~40h/tuần
+A6: Hồ Hữu Dương | B6: Art Animation | C6: VFX | D6: 0.5 | F6: 20h/ tuần
+A7: Nguyễn Lê Hoàng | B7: Art Animation | C7: Animation | D7: 1.0 | F7: 40h/tuần
+A8: Nguyễn Văn Hậu | B8: Art Animation | C8: Animation | D8: 0.2 | F8: 8h/ tuần
+A9: Phạm Thị Phương | B9: Tester | C9: Tester | D9: 0.8 | F9: 32h/tuần
+A10: Cao Giang Nam | B10: Tester | C10: Tester | D10: 0.8 | F10: 32h/tuần
+A11: Thân Xuân Huy | B11: Dev | C11: Dev | D11: 0.9 | F11: 36h/tuần
+A12: Khuất Đình Mạnh | B12: Dev | C12: Dev | D12: 0.9 | F12: 36h/tuần
+A13: Đỗ Minh Vượng | B13: Dev | C13: Dev | D13: 0.9 | F13: 36h/tuần
+A15: Vy Hồng Hạ | B15: 3D Art | C15: 3D Art | D15: 0.3 | F15: 12h/tuần
+A16: Lê Thị Mỹ Linh | B16: 3D Art | C16: 3D Art | D16: 1.0 | F16: 40h/tuần
+A17: Đỗ Minh Tấn | B17: 3D Art | C17: 3D Art | D17: 1.0 | F17: 40h/tuần
+A18: Tạ Thị Thanh Huyền | B18: 3D Art | C18: 3D Art | D18: 0.6 | F18: 24h/tuần
+A20: Đặng Đình Nam | B20: 2D | C20: 2D | D20: 0.3 | F20: 12h/tuần
+A21: Trần Mai Anh | B21: 2D | C21: 2D | D21: 1.0 | F21: 40h/tuần
+=== SHEET: Tổng quan dự án xl/worksheets/sheet2.xml
+A1: Tổng quan dự án Assassin Quest : Hero RPG
+A5: I . Mô tả dự án
+A6: Tên game : Assassin Quest : Hero RPG
+A7: Package name : com.horus.assassin.hero
+A8: Genre : Casual/idle RPG
+A9: Platform : IOS / Android
+A10: Target audience :: Casual / Hybridcasual
+A12: Đơn giản hóa trải nghiệm RPG chuyên sâu : Mang cảm giác thăng tiến nhân vật và xây dựng căn cứ vào thiết kế casual chuẩn mực
+A18: II . Tài liệu dự án
+A19: https://docs.google.com/spreadsheets/d/1nKwqG7xkOQsPQWUXq9q6zC8XgXxh_gGMpvj5xpksabo/edit?pli=1&gid=44524796#gid=44524796
+A21: Thiết kế tổng quan | B21: Link
+A22: Tổng quan | B22: https://www.figma.com/board/n3VXWFZcvnBN31OnXMq0lW/-RPG-2--T%E1%BB%95ng-quan-d%E1%BB%B1-%C3%A1n?node-id=0-1&t=RALy39TQa8YL1r1W-1
+A23: Core gameplay | B23: https://www.figma.com/board/TiLAzpwlnAlYpKO0LlT1gI/-RPG-2--Core-gameplay?t=RALy39TQa8YL1r1W-1
+A24: Economy & resource | B24: https://www.figma.com/board/kWgO3QrSjoMxPSVewHz6l6/-RPG-2--H%E1%BB%87-th%E1%BB%91ng-kinh-t%E1%BA%BF---lu%E1%BB%93ng-t%C3%A0i-nguy%C3%AAn?t=RALy39TQa8YL1r1W-1
+A25: Base & Meta | B25: https://www.figma.com/board/51wK3QxDmeR76AVbPFKHCk/-RPG-2--H%E1%BB%87-th%C3%B4ng-c%C3%B4ng-tr%C3%ACnh---Meta-progression?t=RALy39TQa8YL1r1W-1
+A26: Công thức tính dmg ( sửa so với bản cũ ) | B26: https://www.figma.com/board/VOJ1MWPzU3irOlLFupqMkH/-RPG-2--Damage-Calculations?node-id=0-1&t=JH03v3nFjLXrE7re-1
+A28: Hệ thống bao quát | B28: https://www.figma.com/board/KraSCxIULhhIEzr9PaXhvW/-RPG-2--T%E1%BB%95ng-h%E1%BB%A3p-h%E1%BB%87-th%E1%BB%91ng?node-id=0-1&t=Gu839L4bvRUNGhTk-1
+A29: Chỉ số nhân vật | B29: https://app.notion.com/p/RPG-2-Hero-Stats-Upgrade-3dd286b35ffd80f1939de6e0a7d1b6e4?source=copy_link
+A30: Concept & anim nhân vật | B30: https://app.notion.com/p/RPG-2-Hero-Animation-Data-3dd286b35ffd80a9a525e298fa5b2066?source=copy_link
+A31: Archetype & status effect | B31: https://app.notion.com/p/RPG-2-Charater-Archetype-Status-Effect-3e4286b35ffd801c9ff5da45d66e0b15?source=copy_link
+A32: Base systerm  | B32: https://www.figma.com/board/xTvT93wryAlo43Spj2dI1B/-RPG-2--Base-System?node-id=0-1&t=aIQVd5AFqPJTczYW-1
+A33: Building Config | B33: https://docs.google.com/spreadsheets/d/1RzwKL9nopKFOueDO9uQkrVNOr1Bndd5JAmyZ2VsbGm0/edit?gid=80289623#gid=80289623
+A34: Cargo systerm | B34: [RPG 2] System - Cargo – FigJam
+A35: UI game ( update liên tục ) | B35: https://www.figma.com/design/KJGIWRSGLYNhdXemdGkUdi/RPG2?node-id=6-3&t=0qsc5NdY2iTlrY1D-1
+A37: Hero level | B37: https://app.notion.com/p/RPG-2-Level-Hero-3f8286b35ffd8020b570cda61238a8ed?source=copy_link
+A38: Level Pass | B38: https://app.notion.com/p/RPG-2-Hero-Level-Pass-3f9286b35ffd80f1973af3e32c844ec0?source=copy_link
+A40: User journey | B40: https://docs.google.com/spreadsheets/d/1i4dXyfbDu8Mq7rO3QyyJJREHFAQ8aHfjPxao3hDQQec/edit?gid=0#gid=0
+A41: Quest | B41: https://app.notion.com/p/RPG-2-H-th-ng-nhi-m-v-3fc286b35ffd803595aecaf5558536e8
+A43: Trang bị và kho đồ (Merge/salvage/Refund/Lock) | B43: https://app.notion.com/p/RPG-2-H-th-ng-Trang-B-3f7286b35ffd8006a27dd81be26fc82b?source=copy_link
+A45: Thiết kế vũ khí
+A46: Trường kiếm | B46: [RPG 2] Thiết kế vũ khí: Trường kiếm
+A47: Long Bow | B47: [RPG 2] Thiết kế vũ khí: Long Bow
+A48: Song đao | B48: [RPG 2] Thiết kế vũ khí: Song đao
+A49: Súng đôi | B49: [RPG 2] Thiết kế vũ khí: Súng đôi
+A50: Trường thương | B50: [RPG 2] Thiết kế vũ khí: Trường thương | E50: Đang update ref anim
+A51: Gậy phép | B51: [RPG 2] Thiết kế vũ khí: Gậy phép | E51: Đang update ref anim
+A53: Weapon config | B53: https://docs.google.com/spreadsheets/d/1vNyoPIDg2O6RcflucdE7JtWsG6wavsQTtXOYkfUz1EU/edit?gid=306913436#gid=306913436
+A54: Item config | B54: https://docs.google.com/spreadsheets/d/17k-ypZa8jRj0Xei2iykdF5WbTE-H4GL5rDLXc9sOQdk/edit?gid=316932455#gid=316932455
+A55: Gacha | B55: https://app.notion.com/p/RPG-2-H-th-ng-gacha-trang-b-3fb286b35ffd80d7b73de652c4ea65f7?source=copy_link
+A57: Nhặt vật phẩm và sức chứa | B57: https://app.notion.com/p/RPG-2-Nh-t-v-t-ph-m-v-s-c-ch-a-3f7286b35ffd8026b9c5d5f50a045b62?source=copy_link
+A59: Công cụ | B59: https://app.notion.com/p/RPG-2-C-ng-c-khai-th-c-3f8286b35ffd80dc8b2bd9fb85bae4d4?source=copy_link
+A60: Tài nguyên | B60: https://app.notion.com/p/RPG-2-M-t-i-nguy-n-3f8286b35ffd802b93e2fc367d3626c7?source=copy_link
+A61: List tài nguyên | B61: https://docs.google.com/spreadsheets/d/1E0v_oCFLMbtR0fiG5clEFXkzlLQ_EgsOAGhSuTT5It4/edit?gid=0#gid=0
+A63: Lưu trũ Data các hệ thống | B63: https://app.notion.com/p/RPG-2-Thi-t-k-L-u-tr-Data-3f3286b35ffd8055b39cdf5cc5bffa77?source=copy_link
+A64: Lưu data người chơi trên server
+A66: Sửa map
+A67: Sửa map 1 map 2 | B67: https://www.figma.com/board/GHYfX152KaTg0XuBwjVLL7/-RPG-2--Layout-Map-1-2---Remake?node-id=0-1&t=bdvj0kXWpGfQvYPU-1
+A69: Kẻ địch
+A70: Kẻ địch biome 1 | B70: [RPG 2] Enemy biome 1 | D70: Map 1 quái chỉ đánh thường, boss cơ chế đơn giản
+A71: Kẻ địch biome 2 | B71: [RPG 2] Enemy biome 2 | D71: Map 2 quái chỉ đánh thường, boss cơ chế đơn giản
+A72: Kẻ địch biome 3 | B72: [RPG 2] Enemy biome 3
+A73: Kẻ địch biome 4 | B73: [RPG 2] Enemy biome 4
+A74: Kẻ địch biome 5
+A75: Kẻ địch biome 6 | J75:  
+A77: Hệ thống pet | B77: https://app.notion.com/p/RPG-2-H-th-ng-Pet-3f9286b35ffd807eae36e5911457be44?source=copy_link
+A79: Event thủ thành | B79: https://app.notion.com/p/RPG-2-S-ki-n-th-th-nh-3fe286b35ffd80bdbb57c3f8c3388af3?source=copy_link
+A81: Event Noel | B81: https://app.notion.com/p/RPG-2-Event-Noel-406286b35ffd80dab372dfbaef9d743a
+A83: Shop | B83: https://app.notion.com/p/RPG-2-Shop-407286b35ffd805f9ac6fcf7ca3b3b53
+=== SHEET: Roadmap xl/worksheets/sheet3.xml
+A1: Time line dự kiến
+A5: Sprint | B5: Ngày | C5: Nội dung
+A6: Sprint 1 | B6: 05-09/10/2026 | C6: Cung cấp document - 3d : sửa map - quái - hero . / Chuẩn bị doc core game play , economy , base & meta / Cung cấp document - anim hero - anim vũ khí  / Cung cấp cho dev document hệ thống dữ liệu về game
+A7: Sprint 2 | B7: 12 - 17/10/2026 | C7: Hoàn thiện map 1 - asset công trình - hệ thống chỉ số nhân vật - hệ thống base -Hệ thống kẻ địch / Có gameplay demo - hoàn thiện vũ khí kiếm và cung
+A8: Sprint 3 | B8: 19- 23/10/2026 | C8: Hoàn thiện 3 map đầu - có bản build apk chơi thử  | J8: Map 1 đã có / Có asset công trình cần sửa lại theo góc camera / Đã tương tác được với hệ thống công trình / Đã có hệ thống chỉ số nhân vật / Chưa có hệ thống xây nhà + nâng cấp nhà / Anim vũ khí kiếm / Anim vũ khí cung / Skill tree / Logic chế tạo trang bị / Kẻ địch map 1 / Đã có model công cụ, Chưa có anim khai thác / model tài nguyên
+A9: Sprint 4 | B9: 26-31/10/2026 | C9: Hoàn thiện 4 map đầu - 4 vũ khí (2 xa 2 gần )
+A10: Sprint 5 | B10: 2-6/11/2026 | C10: Hoàn thành 6 map  / - 6 vũ khí  / - hệ thống build base  / - gameplay  / - event defense  /  / - hệ thống skill tree  / - hệ thông trang bị  / - Monet cơ bản inter , rw , iap / - tracking  /  / - Daily / weekly quest  / - main quest  / - Gacha / - hệ thống progress nhân vật ( chỉ số ) / 
+A11: Sprint 6 | B11: 9-14/11/2026 | C11: Up bản 0.0.1 - hệ thống pet 
+A12: Sprint 7 | B12: 16-20/11/2026 | C12: Up bản 0.0.2 ( fix bug , tối ưu) segment user theo nhãn dán 
+A13: Sprint 8 | B13: 23-28/11/2026 | C13: Up bản 0.0.3 Event noel
+=== SHEET: Timeline - Backlog xl/worksheets/sheet4.xml
+C2: Mon | D2: Tue | E2: We | F2: Th | G2: Fri | H2: Sat | I2: Sun | J2: Mon | K2: Tue | L2: We | M2: Th | N2: Fri | O2: Sat | P2: Sun | Q2: Mon | R2: Tue | S2: We | T2: Th | U2: Fri | V2: Sat | W2: Sun | X2: Mon | Y2: Tue | Z2: We | AA2: Th | AB2: Fri | AC2: Sat | AD2: Sun | AE2: Mon | AF2: Tue | AG2: We | AH2: Th | AI2: Fri | AJ2: Sat | AK2: Sun | AL2: Mon | AM2: Tue | AN2: We | AO2: Th | AP2: Fri | AQ2: Sat | AR2: Sun | AS2: Mon | AT2: Tue | AU2: We | AV2: Th | AW2: Fri | AX2: Sat | AY2: Sun | AZ2: Mon | BA2: Tue | BB2: We | BC2: Th | BD2: Fri | BE2: Sat | BF2: Sun | BG2: Mon | BH2: Tue | BI2: We | BJ2: Th | BK2: Fri | BL2: Sat | BM2: Sun | BN2: Mon | BO2: Tue | BP2: We | BQ2: Th | BR2: Fri | BS2: Sat | BT2: Sun
+A3: Bản update date | B3: Backlog | C3: 46300.0 | D3: 46301.0 | E3: 46302.0 | F3: 46303.0 | G3: 46304.0 | H3: 46305.0 | I3: 46306.0 | J3: 46307.0 | K3: 46308.0 | L3: 46309.0 | M3: 46310.0 | N3: 46311.0 | O3: 46312.0 | P3: 46313.0 | Q3: 46314.0 | R3: 46315.0 | S3: 46316.0 | T3: 46317.0 | U3: 46318.0 | V3: 46319.0 | W3: 46320.0 | X3: 46321.0 | Y3: 46322.0 | Z3: 46323.0 | AA3: 46324.0 | AB3: 46325.0 | AC3: 46326.0 | AD3: 46327.0 | AE3: 46328.0 | AF3: 46329.0 | AG3: 46330.0 | AH3: 46331.0 | AI3: 46332.0 | AJ3: 46333.0 | AK3: 46334.0 | AL3: 46335.0 | AM3: 46336.0 | AN3: 46337.0 | AO3: 46338.0 | AP3: 46339.0 | AQ3: 46340.0 | AR3: 46341.0 | AS3: 46342.0 | AT3: 46343.0 | AU3: 46344.0 | AV3: 46345.0 | AW3: 46346.0 | AX3: 46347.0 | AY3: 46348.0 | AZ3: 46349.0 | BA3: 46350.0 | BB3: 46351.0 | BC3: 46352.0 | BD3: 46353.0 | BE3: 46354.0 | BF3: 46355.0 | BG3: 46356.0 | BH3: 46357.0 | BI3: 46358.0 | BJ3: 46359.0 | BK3: 46360.0 | BL3: 46361.0 | BM3: 46362.0 | BN3: 46363.0 | BO3: 46364.0 | BP3: 46365.0 | BQ3: 46366.0 | BR3: 46367.0 | BS3: 46368.0 | BT3: 46369.0
+B4: Clone Git
+B5: Concept nhân vật
+B6: 3d Nhân vật
+B7: Animation nhân vật cơ bản - đi đứng - chết 
+B8: Điều khiển nhân vật và camera
+B9: Code Điều khiển nhân vật và camera
+B10: Combat nền tảng - tính dmg - logic chọn mục tiêu - tầm đánh
+B11: Code Combat nền tảng - tính dmg - logic chọn mục tiêu - tầm đánh
+B12: Gameplay từng loại vũ khí
+B13: Code Gameplay từng loại vũ khí
+B14: Yêu cầu animation về vũ khí kiếm
+B15: Yêu cầu animation về vũ khí Cung
+B16: Yêu cầu animation về vũ khí Kiếm đôi
+B17: Yêu cầu animation về vũ khí Súng
+B18: Yêu cầu animation về vũ khí Thương
+B19: Yêu cầu animation về vũ khí Gậy phép
+B20: Làm animation về vũ khí kiếm
+B21: Làm animation về vũ khí Cung
+B22: Làm animation về vũ khí Kiếm đôi
+B23: Làm animation về vũ khí Súng
+B24: Làm animation về vũ khí Thương
+B25: Làm animation về vũ khí Gậy phép
+B26: Làm VFX về vũ khí kiếm
+B27: Làm VFX về vũ khí Cung
+B28: Làm VFX về vũ khí Kiếm đôi
+B29: Làm VFX về vũ khí Súng
+B30: Làm VFX về vũ khí Thương
+B31: Làm VFX về vũ khí Gậy phép
+B32: Làm 3d asset tài nguyên gỗ
+B33: Làm 3d asset tài nguyên đá
+B34: Làm 3d asset tài nguyên gỗ cứng
+B35: Làm 3d asset tài nguyên quặng sắt
+B36: Làm 3d asset tài nguyên corawood
+B37: Làm 3d asset tài nguyên bạc
+B38: Làm 3d asset tài nguyên Elderwood
+B39: Làm 3d asset tài nguyên kim cương
+B40: Làm 3d asset tài nguyên darkwood
+B41: Làm 3d asset tài nguyên abyssium
+B42: Làm 3d asset tài nguyên infernium
+B43: Logic chết - hồi sinh - hồi thành
+B44: Code Logic chết - hồi sinh - hồi thành
+B45: Demo UI Mastery vũ khí
+B46: Setup UI Mastery vũ khí
+B47: Thiết kế Hệ thống chỉ số
+B48: Code hệ thống chỉ số
+B49: Thiết kế progression - mốc tiến trình unlock nâng cấp
+B50: Thiết kế đường tăng sức mạnh
+B51: Logic hệ thống upgrade
+B52: Code Logic hệ thống upgrade
+B53: Tính năng revert tài nguyên nâng cấp
+B54: Code Tính năng revert tài nguyên nâng cấp
+B55: Demo UI Upgrade chỉ số
+B56: Setup UI Upgrade chỉ số
+B57: Thiết kế hệ thống mastery vũ khí
+B58: Code hệ thống mastery vũ khí
+B59: Demo UI mastery vũ khí
+B60: Setup UI mastery vũ khí
+B61: Hệ thống trang bị
+B62: Code hệ thống trang bị
+B63: Vẽ concept Giày
+B64: Vẽ concept Vòng cổ
+B65: Vẽ concept nhẫn
+B66: Tính năng marge trang bị
+B67: Code Tính năng marge trang bị
+B68: Demo UI Inventory
+B69: Setup UI Inventory
+B70: Demo UI upgrade trang bị
+B71: Setup UI upgrade trang bị
+B72: Demo UI marge trang bị
+B73: Setup UI marge trang bị
+B74: Hệ thống pet
+B75: Code Hệ thống pet
+B76: Demo UI Pet
+B77: Setup UI Pet
+B78: Logic hệ thống base
+B79: Code Logic hệ thống base
+B80: Demo UI nâng cấp base
+B81: Setup UI nâng cấp base
+B82: Yêu cầu về anim thu thập tài nguyên
+B83: Vẽ concept tài nguyên
+B84: Làm 3d tài nguyên
+B85: Làm VFX tài nguyên
+B86: Logic thu thập tài nguyên
+B87: Code logic thu thập tài nguyên
+B88: Logic hệ thống currency
+B89: Code Logic hệ thống currency
+B90: Logic hệ thống reward
+B91: Code Logic hệ thống reward
+B92: Logic hệ thống status effect Buff
+B93: Code Logic hệ thống status effect Buff
+B94: Logic hệ thống status effect Debuff
+B95: Code Logic hệ thống status effect Debuff
+B96: Logic hệ thống status effect Crowd Control
+B97: Code Logic hệ thống status effect Crowd Control
+B98: Logic hệ thống status effect Damege over time
+B99: Code Logic hệ thống status effect Damege over time
+B100: Làm VFX Effect buff
+B101: Làm VFX Effect debuff
+B102: Làm VFX Effect crowd control
+B103: Làm VFX Effect Damage over time
+B104: Hệ thống enemy - archetype
+B105: Code Hệ thống enemy - archetype
+B106: Hệ thống enemy - hành vi
+B107: Code Hệ thống enemy - hành vi
+B108: Sửa layout map 1 - GD
+B109: Sửa map 1 - 3d
+B110: Sửa layout map 2 -GD
+B111: Sửa layout map 2 - 3D
+B112: Sửa layout map 3 -GD
+B113: Sửa layout map 3 - 3D
+B114: Sửa layout map 4-GD
+B115: Sửa layout map 4 - 3D
+B116: Sửa layout map 5-GD
+B117: Sửa layout map 5  -3D
+B118: Sửa layout map 6-GD
+B119: Sửa layout map 6 -  3D
+B120: Vẽ concept nhà chính
+B121: Vẽ concept lò rèn
+B122: Vẽ concept nhà kho
+B123: Vẽ concept nhà pet
+B124: Vẽ concept nhà chế tạo
+B125: Làm 3d nhà chính
+B126: Làm 3d lò rèn
+B127: Làm 3d nhà kho
+B128: Làm 3d nhà pet
+B129: Làm 3d nhà chế tạo
+B130: Làm 3d hàng rào gỗ
+B131: Làm 3d cổng thành gỗ
+B132: Mini map
+B133: Hệ thống quest - main quest
+B134: Code hệ thống main quest
+B135: Demo UI main quest
+B136: Setup UI main quest
+B137: Hệ thống quest - side quest
+B138: Code hệ thống side quest
+B139: Demo UI side quest
+B140: Setup UI side quest
+B141: Hệ thống daily reward
+B142: Code hệ thống daily reward
+B143: Demo UI daily reward
+B144: Setup UI daily reward
+B145: Hệ thống Daily quest / weekly quest
+B146: Code hệ thống Daily / weekly quest
+B147: Demo UI daily/ weekly quest
+B148: Setup UI daily/ weekly quest
+B149: Hệ thống event - fix event ingame
+B150: Code Hệ thống event - fix event ingame
+B151: Fix event - defense nhà
+B152: Code Fix event - defense nhà
+B153: Demo UI event defense nhà
+B154: Setup UI event defense nhà
+B155: Fix event tower
+B156: Code Fix event tower
+B157: Demo UI event tower
+B158: Setup UI event tower
+B159: Hệ thống event Live Ops
+B160: Code Hệ thống event Live Ops
+B161: Event Cây thông noel
+B162: Code Event Cây thông noel
+B163: Demo UI cây thông noel
+B164: Setup UI cây thông noel
+B165: Hệ thống shop
+B166: Code hệ thống shop
+B167: Demo UI shop
+B168: Setup UI shop
+B169: Hệ thống gacha
+B170: Code hệ thống gacha
+B171: Demo UI gacha
+B172: Setup UI gacha
+B173: Hệ thống IAP Offer
+B174: Code Hệ thống IAP Offer
+B175: Thiết kế Gói starter pack
+B176: Code Thiết kế Gói starter pack
+B177: Thiết kế gói sub
+B178: Code Thiết kế gói sub
+B179: Thiết kế gói IAP tài nguyên raw
+B180: Code Thiết kế gói IAP tài nguyên raw
+B181: Thiết kế gói IAP bundle map
+B182: Code Thiết kế gói IAP bundle map
+B183: Thiết kế gói IAP hỗ trợ theo tiến trình
+B184: Code Thiết kế gói IAP hỗ trợ theo tiến trình
+B185: Demo UI Scene game play
+B186: Setup UI Scene game play
+B187: SFX toàn bộ game
+B188: Hệ thống save/load dữ liệu
+B189: Tracking event
+B190: Gắn tracking event
+B191: Thiết kế tutorial
+B192: Code Tutorial
+B193: Demo UI Tutorial
+B194: Setup UI Tutorial
+B195: Làm screenshot Store IOS / Android
+B196: Làm Icon Game
+B197: Demo UI chết / hồi sinh
+B198: Demo UI setting
+B199: Demo UI IAP offer
+B200: Setup UI chết / hồi sinh
+B201: Setup UI setting
+B202: Setup UI IAP offer
+B203: Tích hợp 3rd party - applovin , firebase ....
+B204: Tool account
+=== SHEET: Value(giá trị vật phẩm) xl/worksheets/sheet5.xml
+=== SHEET: Progression Chỉ số nhân vật xl/worksheets/sheet6.xml
+A2: Hero Config — Bộ tham số hiện tại
+A3: Nguồn: HeroConfigSO.asset | Snapshot 30/10/2026 | Các tỷ lệ lưu ở dạng thập phân.
+A4: Nhà chính tối đa | B4: 11.0
+A6: Chỉ số | B6: StatType | C6: BaseStat | D6: MaxValue | E6: Cấp / Nhà chính | F6: Cấp tối đa | G6: LinearValue | H6: CurvePower | I6: Base_gold_cost | J6: r_gold_cost_initial | K6: decay_rate
+A7: Sát thương cơ bản | B7: 200.0 | C7: 10.0 | D7: 1000.0 | E7: 20.0 | F7: 220.0 | G7: 0.35 | H7: 1.50 | I7: 5.0 | J7: 843.0 | K7: 80.0
+A8: Máu tối đa | B8: 100.0 | C8: 100.0 | D8: 10000.0 | E8: 20.0 | F8: 220.0 | G8: 0.45 | H8: 1.40 | I8: 4.0 | J8: 868.0 | K8: 80.0
+A9: Hồi máu mỗi giây | B9: 101.0 | C9: 1.0 | D9: 100.0 | E9: 5.0 | F9: 55.0 | G9: 0.30 | H9: 1.60 | I9: 12.0 | J9: 3937.0 | K9: 320.0
+A10: Giáp | B10: 300.0 | C10: 0.0 | D10: 2500.0 | E10: 10.0 | F10: 110.0 | G10: 0.20 | H10: 1.80 | I10: 7.0 | J10: 1817.0 | K10: 160.0
+A11: Tốc độ di chuyển | B11: 106.0 | C11: 5.0 | D11: 8.0 | E11: 5.0 | F11: 55.0 | G11: 0.70 | H11: 1.20 | I11: 17.0 | J11: 3755.0 | K11: 320.0
+A12: Tỷ lệ chí mạng | B12: 103.0 | C12: 0.0 | D12: 0.25 | E12: 5.0 | F12: 55.0 | G12: 0.35 | H12: 1.50 | I12: 15.0 | J12: 3820.0 | K12: 320.0
+A13: Sát thương chí mạng | B13: 104.0 | C13: 46143.0 | D13: 46144.0 | E13: 5.0 | F13: 55.0 | G13: 0.45 | H13: 1.40 | I13: 10.0 | J13: 4033.0 | K13: 320.0
+A14: Hút máu | B14: 107.0 | C14: 0.0 | D14: 0.1 | E14: 5.0 | F14: 55.0 | G14: 0.20 | H14: 1.80 | I14: 19.0 | J14: 3697.0 | K14: 320.0
+A15: Trọng lượng | B15: 500.0 | C15: 30.0 | D15: 100000.0 | E15: 50.0 | F15: 550.0 | G15: 0.15 | H15: 1.80 | I15: 5.0 | J15: 292.0 | K15: 32.0
+A17: Quy ước: 0.0843 = 8,43%. Base_gold_cost là vàng nâng từ cấp 1 lên cấp 2.
+A18: BaseStat/MaxValue của Crit và Hút máu là tỷ lệ: 0.25 = 25%; CritDamage 1.5 = 150%.
+A19: Snapshot lưu cấu hình; chỉnh Excel không tự cập nhật asset trong Unity.
+=== SHEET: Dailyweekly quest xl/worksheets/sheet7.xml
+A1: Nhiệm vụ hằng ngày
+A3: Nhiệm vụ | B3: Yêu cầu | C3: Điểm
+A4: Đăng nhập | B4: 1.0 | C4: 5.0
+A5: Mở rương trên bản đồ | B5: 5.0 | C5: 10.0
+A6: Tiêu diệt kẻ địch | B6: 1000.0 | C6: 10.0
+A7: Xem quảng cáo nhận thưởng | B7: 10.0 | C7: 15.0
+A8: Nhận trang bị | B8: 30.0 | C8: 10.0
+A9: Mua vật phẩm trong cửa hàng | B9: 5.0 | C9: 20.0
+A10: Nâng cấp năng lực bất kỳ | B10: 30.0 | C10: 10.0
+A11: Tiêu diệt boss | B11: 20.0 | C11: 10.0
+A12: Sử dụng vé Raid | B12: 3.0 | C12: 20.0
+C13: 110
+A15: Nhiệm vụ hằng tuần
+A17: Nhiệm vụ | B17: Yêu cầu | C17: Điểm
+A18: Đăng nhập | B18: 7.0 | C18: 5.0
+A19: Nhận vũ khí Epic | B19: 20.0 | C19: 15.0
+A20: Thu thập Boss Core | B20: 500.0 | C20: 15.0
+A21: Hợp nhất vũ khí | B21: 100.0 | C21: 10.0
+A22: Tiêu diệt kẻ địch | B22: 7000.0 | C22: 5.0
+A23: Sử dụng vé Tháp thử thách | B23: 14.0 | C23: 10.0
+A24: Xem quảng cáo nhận thưởng | B24: 35.0 | C24: 20.0
+A25: Mở rương trên bản đồ | B25: 15.0 | C25: 15.0
+A26: Mua vật phẩm trong cửa hàng | B26: 70.0 | C26: 25.0
+C27: 120
+A29: Rương | B29: Điểm cần đạt | C29: Phần thưởng daily | D29: Phần thưởng weekly
+A30: 1.0 | B30: 20.0 | C30: 20 boss core | D30: 200 gem
+A31: 2.0 | B31: 40.0 | C31: 30 gem | D31: 200 giấy nâng vũ khí
+A32: 3.0 | B32: 60.0 | C32: 3 raid ticket | D32: 250 gem
+A33: 4.0 | B33: 80.0 | C33: 100 gem | D33: 400 giấy nâng cấp ngẫu nhiên
+A34: 5.0 | B34: 100.0 | C34: 1 chìa khóa rương cao cấp | D34: 3 chìa khóa rương cao cấp
+=== SHEET: Progression chỉ số vũ khí xl/worksheets/sheet8.xml
+=== SHEET: IAP ( giá trị currency) xl/worksheets/sheet9.xml
+B1: IAP Name | C1: IAP ID | D1: Group | E1: Value | F1: Price USD | G1: Platform
+A2: gem-1 | B2: Gem 1 | C2: com.horus.hero.xp.farm.rpg.1 | D2: Gem | E2: 200.0 | F2: 1.99 | G2: Android
+A3: gem-2 | B3: Gem 2 | C3: com.horus.hero.xp.farm.rpg.2 | D3: Gem | E3: 550.0 | F3: 4.99 | G3: Android
+A4: gem-3 | B4: Gem 3 | C4: com.horus.hero.xp.farm.rpg.3 | D4: Gem | E4: 1200.0 | F4: 9.99 | G4: Android
+A5: gem-4 | B5: Gem 4 | C5: com.horus.hero.xp.farm.rpg.4 | D5: Gem | E5: 2500.0 | F5: 19.99 | G5: Android
+A6: gem-5 | B6: Gem 5 | C6: com.horus.hero.xp.farm.rpg.5 | D6: Gem | E6: 6500.0 | F6: 49.99 | G6: Android
+A7: gem-6 | B7: Gem 6 | C7: com.horus.hero.xp.farm.rpg.6 | D7: Gem | E7: 14000.0 | F7: 99.99 | G7: Android
+A8: stater-pack | B8: Starter Pack | C8: com.horus.hero.xp.farm.rpg.starter.pack | D8: Pack | E8: 1 Epic sword + 1 epic bow + 1 epic hammer + 300 DM + 50 Upgrade stone | G8: Android
+A9: subscription-week | B9: Subscription Week | C9: com.horus.hero.xp.farm.rpg.sub.week.1 | D9: Pack | G9: Android
+A10: subscription-month | B10: Subscription Month | C10: com.horus.hero.xp.farm.rpg.sub.month | D10: Pack | G10: Android
+A11: battle-pass-1 | B11: Battle pass 1 | C11: com.horus.hero.xp.farm.rpg.battle.pass.1 | D11: Pack | E11: 300 gem + 2 rương vàng  | F11: 1.99 | G11: Android
+A12: battle-pass-2 | B12: Battle pass 2 | C12: com.horus.hero.xp.farm.rpg.battle.pass.2 | D12: Pack | E12: 500 gem + 3 rương vàng  | F12: 4.99 | G12: Android
+A13: battle-pass-3 | B13: Battle pass 3 | C13: com.horus.hero.xp.farm.rpg.battle.pass.3 | D13: Pack | E13: 1000 gem + 5 rương vàng  | F13: 9.99 | G13: Android
+B14: Skip ads 1 | C14: com.horus.hero.xp.farm.rpg.skip.ads.1 | D14: Gem | E14: 15 vé skip ads | F14: 1.99 | G14: Android
+B15: Skip ads 2 | C15: com.horus.hero.xp.farm.rpg.skip.ads.2 | D15: Gem | E15: 40 vé skip ads | F15: 4.99 | G15: Android
+B16: Skip ads 3 | C16: com.horus.hero.xp.farm.rpg.skip.ads.3 | D16: Gem | E16: 85 vé skip ads | F16: 6.99 | G16: Android
+A17: com-horus-hero-xp-farm-rpg-sub-utility | B17: Weekly Utility subscription | C17: com.horus.hero.xp.farm.rpg.sub.utility | D17: Pack | G17: Android | H17: Pending
+A18: com-horus-hero-xp-farm-rpg-sub-tower | B18: Weekly Tower adventure | C18: com.horus.hero.xp.farm.rpg.sub.tower | D18: Pack | G18: Android | H18: Pending
+A19: com-horus-hero-xp-farm-rpg-sub-pet | B19: Weekly pet care | C19: com.horus.hero.xp.farm.rpg.sub.pet | D19: Pack | G19: Android | H19: Pending
+A20: com-horus-hero-xp-farm-rpg-sub-teleport | B20: Weekly teleport subscription | C20: com.horus.hero.xp.farm.rpg.sub.teleport | D20: Pack | G20: Android | H20: Pending
+A21: com-horus-hero-xp-farm-rpg-sub-treasure | B21: Weekly treasure hunt | C21: com.horus.hero.xp.farm.rpg.sub.treasure | D21: Pack | G21: Android | H21: Pending
+A22: com-horus-hero-xp-farm-rpg-biome-2 | B22: Solaria Pack | C22: com.horus.hero.xp.farm.rpg.biome.2 | D22: Pack | F22: 1.99 | G22: Android
+A23: com-horus-hero-xp-farm-rpg-biome-3 | B23: Everrain Forest Pack | C23: com.horus.hero.xp.farm.rpg.biome.3 | D23: Pack | F23: 2.99 | G23: Android
+A24: com-horus-hero-xp-farm-rpg-biome-4 | B24: Dragon Peak Pack | C24: com.horus.hero.xp.farm.rpg.biome.4 | D24: Pack | F24: 4.99 | G24: Android
+A25: com-horus-hero-xp-farm-rpg-biome-5 | B25: Grimharbor Pack | C25: com.horus.hero.xp.farm.rpg.biome.5 | D25: Pack | F25: 4.99 | G25: Android
+A26: com-horus-hero-xp-farm-rpg-biome-6 | B26: Solhaven Citadel Pack | C26: com.horus.hero.xp.farm.rpg.biome.6 | D26: Pack | F26: 7.99 | G26: Android
+A27: com-horus-hero-xp-farm-rpg-biome-7 | B27: Ruin fall Pack | C27: com.horus.hero.xp.farm.rpg.biome.7 | D27: Pack | F27: 7.99 | G27: Android
+A28: com-horus-hero-xp-farm-rpg-biome-8 | B28: Crystal Hollow Pack | C28: com.horus.hero.xp.farm.rpg.biome.8 | D28: Pack | F28: 9.99 | G28: Android
+A29: com-horus-hero-xp-farm-rpg-biome-9 | B29: Dreadmarsh Pack | C29: com.horus.hero.xp.farm.rpg.biome.9 | D29: Pack | F29: 9.99 | G29: Android
+A30: com-horus-hero-xp-farm-rpg-biome-10 | B30: Voidrift Pack | C30: com.horus.hero.xp.farm.rpg.biome.10 | D30: Pack | F30: 9.99 | G30: Android
+A31: com-horus-hero-xp-farm-rpg-biome-11 | B31: Inferno Pack | C31: com.horus.hero.xp.farm.rpg.biome.11 | D31: Pack | F31: 9.99 | G31: Android
+A34: IOS
+B35: Gem 1 | C35: com.horusent.hero.xp.farm.rpg.1 | D35: Gem | F35: 1.99 | G35: Ios
+B36: Gem 2 | C36: com.horusent.hero.xp.farm.rpg.2 | D36: Gem | F36: 4.99 | G36: Ios
+B37: Gem 3 | C37: com.horusent.hero.xp.farm.rpg.3 | D37: Gem | F37: 9.99 | G37: Ios
+B38: Gem 4 | C38: com.horusent.hero.xp.farm.rpg.4 | D38: Gem | F38: 19.99 | G38: Ios
+B39: Gem 5 | C39: com.horusent.hero.xp.farm.rpg.5 | D39: Gem | F39: 49.99 | G39: Ios
+B40: Gem 6 | C40: com.horusent.hero.xp.farm.rpg.6 | D40: Gem | F40: 99.99 | G40: Ios
+B41: Starter Pack | C41: com.horusent.hero.xp.farm.rpg.starter.pack.1 | D41: Pack | G41: Ios
+B42: Subscription Week | C42: com.horusent.hero.xp.farm.rpg.sub.week | D42: Pack | G42: Ios
+B43: Subscription Month | C43: com.horusent.hero.xp.farm.rpg.sub.month.1 | D43: Pack | G43: Ios
+A44: battle-pass-mini | B44: Battle pass Mini | C44: com.horusent.hero.xp.farm.rpg.battle.pass.1 | D44: Pack | E44: 300 gem + 2 rương vàng  | F44: 1.99 | G44: Ios
+A45: battle-pass | B45: Battle pass  | C45: com.horusent.hero.xp.farm.rpg.battle.pass.2 | D45: Pack | E45: 500 gem + 3 rương vàng  | F45: 4.99 | G45: Ios
+A46: battle-pass-elite | B46: Battle pass Elite | C46: com.horusent.hero.xp.farm.rpg.battle.pass.3 | D46: Pack | E46: 1000 gem + 5 rương vàng  | F46: 9.99 | G46: Ios
+B47: Skip ads 1 | C47: com.horusent.hero.xp.farm.rpg.skip.ads.1 | D47: Gem | E47: 15 vé skip ads | F47: 1.99 | G47: Ios
+B48: Skip ads 2 | C48: com.horusent.hero.xp.farm.rpg.skip.ads.2 | D48: Gem | E48: 40 vé skip ads | F48: 4.99 | G48: Ios
+B49: Skip ads 3 | C49: com.horusent.hero.xp.farm.rpg.skip.ads.3 | D49: Gem | E49: 85 vé skip ads | F49: 6.99 | G49: Ios
+B50: Weekly Utility subscription | C50: com.horusent.hero.xp.farm.rpg.sub.utility.week | D50: Pack | F50: 4.99 | G50: Ios | H50: Pending
+B51: Weekly Tower adventure | C51: com.horusent.hero.xp.farm.rpg.sub.tower.week | D51: Pack | F51: 6.99 | G51: Ios | H51: Pending
+B52: Weekly pet care | C52: com.horusent.hero.xp.farm.rpg.sub.pet.week | D52: Pack | F52: 6.99 | G52: Ios | H52: Pending
+B53: Weekly teleport subscription | C53: com.horusent.hero.xp.farm.rpg.sub.teleport.week | D53: Pack | F53: 1.99 | G53: Ios | H53: Pending
+B54: Weekly treasure hunt | C54: com.horusent.hero.xp.farm.rpg.sub.treasure.week | D54: Pack | F54: 3.99 | G54: Ios | H54: Pending
+B55: Solaria Pack | C55: com.horusent.hero.xp.farm.rpg.biome.2 | D55: Pack | F55: 1.99 | G55: Ios
+B56: Everrain Forest Pack | C56: com.horusent.hero.xp.farm.rpg.biome.3 | D56: Pack | F56: 2.99 | G56: Ios
+B57: Dragon Peak Pack | C57: com.horusent.hero.xp.farm.rpg.biome.4 | D57: Pack | F57: 4.99 | G57: Ios
+B58: Grimharbor Pack | C58: com.horusent.hero.xp.farm.rpg.biome.5 | D58: Pack | F58: 4.99 | G58: Ios
+B59: Solhaven Citadel Pack | C59: com.horusent.hero.xp.farm.rpg.biome.6 | D59: Pack | F59: 7.99 | G59: Ios
+B60: Ruin Fall Pack | C60: com.horusent.hero.xp.farm.rpg.biome.7 | D60: Pack | F60: 7.99 | G60: Ios
+B61: Crystal Hollow Pack | C61: com.horusent.hero.xp.farm.rpg.biome.8 | D61: Pack | F61: 9.99 | G61: Ios
+B62: Dreadmarsh Pack | C62: com.horusent.hero.xp.farm.rpg.biome.9 | D62: Pack | F62: 9.99 | G62: Ios
+B63: Voidrift Pack | C63: com.horusent.hero.xp.farm.rpg.biome.10 | D63: Pack | F63: 9.99 | G63: Ios
+B64: Inferno Pack | C64: com.horusent.hero.xp.farm.rpg.biome.11 | D64: Pack | F64: 9.99 | G64: Ios
+=== SHEET: Nháp xl/worksheets/sheet10.xml
+=== SHEET: Tổng quái theo map xl/worksheets/sheet11.xml
+A1: Biome | B1: Tên Quái / (Gắn Link Design) | C1: Hình ảnh / (gắn ảnh model đã hoàn thiện) | D1: Tên Model trong Project | E1: Tiến độ Model | F1: Tiến độ Anim | G1: Tiến độ VFX | H1: Tiến độ SFX | I1: Tiến độ Code | J1: Tiến độ Setup | K1: Tiếp độ xếp vị trí bãi farm | L1: Ghi chú
+A2: Đồng cỏ
+A3: Normal | B3: Mushroom | D3: EN_M01_Normal_03 | E3: Đã có trong Project | F3: Đã có trong Project | G3: Không có | H3: Đã có trong Project | I3: Done | J3: Done | K3: Done
+A4: Normal | B4: Slime | D4: EN_M01_Normal_01 | E4: Đã có trong Project | F4: Đã có trong Project | G4: Không có | H4: Đã có trong Project | I4: Done | J4: Done | K4: Done
+A5: Elite | B5: Slime Elite | D5: EN_M01_Elite_01 | E5: Đã có trong Project | F5: Đã có trong Project | G5: Không có | H5: Đã có trong Project | I5: Done | J5: Done | K5: Done
+A6: Boss | B6: King Slime | D6: EN_M01_Boss_01 | E6: Đã có trong Project | F6: Đã có trong Project | G6: Đã có trong Project | H6: Đã có trong Project | I6: Done | J6: Done | K6: Done
+A7: Normal | B7: Tusk | D7: EN_M01_Normal_02 | E7: Đã có trong Project | F7: Đã có trong Project | G7: Không có | H7: Đã có trong Project | I7: Done | J7: Done | K7: Done
+A8: Elite | B8: Tusk Elite | D8: EN_M01_Elite_02 | E8: Đã có trong Project | F8: Đã có trong Project | G8: Không có | H8: Đã có trong Project | I8: Done | J8: Done | K8: Done
+A9: Boss | B9: Great Tusk | D9: EN_M01_Boss_02 | E9: Đã có trong Project | F9: Đã có trong Project | G9: Đã có trong Project | H9: Đã có trong Project | I9: Done | J9: Done | K9: Done | L9: Boss mở khóa biome tiếp theo
+A10: Hoang mạc
+A11: Normal | B11: Mummy | D11: EN_M02_Normal_01 | E11: Đã có trong Project | F11: Đã có trong Project | G11: Không có | H11: Đã có trong Project | I11: Done | J11: Done | K11: Done
+A12: Normal | B12: Scorpion | D12: EN_M02_Normal_04 | E12: Đã có trong Project | F12: Đã có trong Project | G12: Không có | H12: Đã có trong Project | I12: Done | J12: Done | K12: Done
+A13: Normal | B13: Snake | D13: EN_M02_Normal_03 | E13: Đã có trong Project | F13: Đã có trong Project | G13: Không có | H13: Đã có trong Project | I13: Done | J13: Done | K13: Done
+A14: Special | B14: Treasure Goblin | D14: EN_M02_Special_01 | E14: Đã có trong Project | F14: Đã có trong Project | G14: Đã có trong Project | H14: Đã có trong Project | I14: Done | J14: Done | K14: Done
+A15: Elite | B15: Scorpion Elite | D15: EN_M02_Elite_02 | E15: Đã có trong Project | F15: Đã có trong Project | G15: Không có | H15: Đã có trong Project | I15: Done | J15: Done | K15: Done
+A16: Boss | B16: Boss Pharaoh | D16: EN_M02_Boss_01 | E16: Đã có trong Project | F16: Đã có trong Project | G16: Đã có trong Project | H16: Đã có trong Project | I16: Done | J16: Done | K16: Done
+A17: Boss | B17: Boss Lion Ant | D17: EN_M02_Boss_02 | E17: Đã có trong Project | F17: Đã có trong Project | G17: Đã có trong Project | H17: Đã có trong Project | I17: Done | J17: Done | K17: Done | L17: Boss mở khóa biome tiếp theo
+A18: Rừng rậm
+A19: Normal | B19: Sapling | D19: EN_M03_Normal_02 | E19: Đã có trong Project | F19: Đã có trong Project | G19: Không có | H19: Đã có trong Project | I19: Done | J19: Done | K19: Done
+A20: Normal | B20: Rootling | D20: EN_M03_Normal_03 | E20: Đã có trong Project | F20: Đã có trong Project | G20: Đã có trong Project | H20: Đã có trong Project | I20: Done | J20: Done | K20: Done
+A21: Normal | B21: Spider | D21: EN_M03_Normal_04 | E21: Đã có trong Project | F21: Đã có trong Project | G21: Đã có trong Project | H21: Đã có trong Project | I21: Done | J21: Done | K21: Done
+A22: Normal | B22: Big Mushroom | D22: EN_M03_Normal_05 | E22: Đã có trong Project | F22: Đã có trong Project | G22: Không có | H22: Đã có trong Project | I22: Done | J22: Done | K22: Done
+A23: Normal | B23: Goblin | D23: EN_M03_Normal_01 | E23: Đã có trong Project | F23: Đã có trong Project | G23: Không có | H23: Đã có trong Project | I23: Done | J23: Done | K23: Done
+A24: Special | B24: Witch | D24: EN_M03_Elite_02 | E24: Đã có trong Project | F24: Đã có trong Project | G24: Đã có trong Project | H24: Đã có trong Project | I24: Done | J24: Done | K24: Done
+A25: Special | B25: Orc | D25: EN_M03_Elite_01 | E25: Đã có trong Project | F25: Đã có trong Project | G25: Đã có trong Project | H25: Đã có trong Project | I25: Done | J25: Done | K25: Done
+A26: Special | B26: Bearkin | D26: EN_M03_Elite_03 | E26: Đã có trong Project | F26: Đã có trong Project | G26: Đã có trong Project | H26: Đã có trong Project | I26: Done | J26: Done | K26: Done
+A27: Boss | B27: Tree sentinal | D27: EN_M03_Boss_01 | E27: Đã có trong Project | F27: Đã có trong Project | G27: Đã có trong Project | H27: Đã có trong Project | I27: Done | J27: Done | K27: Done | L27: Boss mở khóa biome tiếp theo
+A28: Boss | B28: Chimera | D28: EN_M03_Boss_02 | E28: Đã có trong Project | F28: Đã có trong Project | G28: Đã có trong Project | H28: Đã có trong Project | I28: Done | J28: Done | K28: Done | L28: Boss event
+A29: Boss | B29: Guardian | D29: EN_M03_Boss_03 | E29: Đã có trong Project | F29: Đã có trong Project | G29: Đã có trong Project | H29: Đã có trong Project | I29: Done | J29: Done | K29: Done | L29: wait VFX
+A30: Núi tuyết
+A31: Normal | B31: Ice wolf | D31: EN_M04_Normal_03 | E31: Đã có trong Project | F31: Đã có trong Project | G31: Đã có trong Project | H31: Đã có trong Project | I31: Done | J31: Done | K31: Done
+A32: Normal | B32: Ice bat | D32: EN_M04_Normal_02 | E32: Đã có trong Project | F32: Đã có trong Project | G32: Đã có trong Project | H32: Đã có trong Project | I32: Done | J32: Done | K32: Done | L32: wait VFX
+A33: Normal | B33: Frost spirit | D33: EN_M04_Normal_01 | E33: Đã có trong Project | F33: Đã có trong Project | G33: Đã có trong Project | H33: Đã có trong Project | I33: Done | J33: Done | K33: Done | L33: wait VFX
+A34: Elite | B34: Ice bear | D34: EN_M04_Elite_01 | E34: Đã có trong Project | F34: Đã có trong Project | G34: Đã có trong Project | H34: Đã có trong Project | I34: Done | J34: Done | K34: Done | L34: wait VFX
+A35: Elite | B35: Yeti | D35: EN_M04_Elite_02 | E35: Đã có trong Project | F35: Đã có trong Project | G35: Không có | H35: Đã có trong Project | I35: Done | J35: Done | K35: Done
+A36: Boss | B36: Frost Dragon | D36: EN_M04_Boss_01 | E36: Đã có trong Project | F36: Đã có trong Project | G36: Đã có trong Project | H36: Đã có trong Project | I36: Done | J36: Done | K36: Done | L36: Boss mở khóa biome tiếp theo
+A37: Ven biển
+A38: Elite | B38: HammerHead | D38: EN_M05_Elite_01 | E38: Đã có trong Project | F38: Đã có trong Project | G38: Không có | H38: Đã có trong Project | I38: Done | J38: Done | K38: Done
+A39: Normal | B39: Shrimpy | D39: EN_M05_Normal_02 | E39: Đã có trong Project | F39: Đã có trong Project | G39: Không có | H39: Đã có trong Project | I39: Done | J39: Done | K39: Done
+A40: Normal | B40: Fishy | D40: EN_M05_Normal_01 | E40: Đã có trong Project | F40: Đã có trong Project | G40: Không có | H40: Đã có trong Project | I40: Done | J40: Done | K40: Done
+A41: Normal | B41: Cannon | D41: EN_M05_Normal_03 | E41: Đã có trong Project | F41: Đã có trong Project | G41: Không có | H41: Đã có trong Project | I41: Done | J41: Done | K41: Done
+A42: Boss | B42: Sharko | D42: EN_M05_Boss_01 | E42: Đã có trong Project | F42: Đã có trong Project | G42: Đã có trong Project | H42: Đã có trong Project | I42: Done | J42: Done | K42: Done
+A43: Boss | B43: Davy jones | D43: EN_M05_Boss_02 | E43: Đã có trong Project | F43: Đã có trong Project | G43: Đã có trong Project | H43: Đã có trong Project | I43: Done | J43: Done | K43: Done | L43: Boss mở khóa biome tiếp theo
+A44: Boss | B44: Flying Dutchman | D44: EN_M05_Boss_03 | E44: Đã có trong Project | F44: Đã có trong Project | G44: Đã có trong Project | H44: Đã có trong Project | I44: Done | J44: Done | K44: Done
+A45: Thành Phố
+A46: Normal | B46: Archer | D46: EN_M06_Normal_02 | E46: Đã có trong Project | F46: Đã có trong Project | G46: Không có | H46: Đã có trong Project | I46: Done | J46: Done | K46: Done
+A47: Normal | B47: Lance soldier | D47: EN_M06_Normal_01 | E47: Đã có trong Project | F47: Đã có trong Project | G47: Không có | H47: Đã có trong Project | I47: Done | J47: Done | K47: Done
+A48: Normal | B48: Cleric | D48: EN_M06_Normal_03 | E48: Đã có trong Project | F48: Đã có trong Project | G48: Không có | H48: Đã có trong Project | I48: Done | J48: Done | K48: Done
+A49: Normal | B49: Musketeer | D49: EN_M06_Normal_04 | E49: Đã có trong Project | F49: Đã có trong Project | G49: Không có | H49: Đã có trong Project | I49: Done | J49: Done | K49: Done
+A50: Elite | B50: Tusk knight | D50: EN_M06_Elite_01 | E50: Đã có trong Project | F50: Đã có trong Project | G50: Không có | H50: Đã có trong Project | I50: Done | J50: Done | K50: Done
+A51: Elite | B51: Lancer | D51: EN_M04_Elite_02 | E51: Đã có trong Project | F51: Đã có trong Project | G51: Không có | H51: Đã có trong Project | I51: Done | J51: Done | K51: Done
+A52: Boss | B52: Paladin | D52: EN_M06_Boss_02 | E52: Đã có trong Project | F52: Đã có trong Project | G52: Đã có trong Project | H52: Đã có trong Project | I52: Done | J52: Done | K52: Done | L52: missing VFX, SFX
+A53: Boss | B53: Archangel | D53: EN_M06_Boss_01 | E53: Đã có trong Project | F53: Đã có trong Project | G53: Đã có trong Project | H53: Đã có trong Project | I53: Done | J53: Done | K53: Done | L53: Boss mở khóa biome tiếp theo
+A54: Di tích
+A55: Normal | B55: Rocky | D55: EN_M07_Normal_01 | E55: Đã có trong Project | F55: Đã có trong Project | G55: Đã có trong Project | H55: Đã có trong Project | I55: Done | J55: Done | K55: Done
+A56: Normal | B56: Magic stone | D56: EN_M07_Normal_02 | E56: Đã có trong Project | F56: Đã có trong Project | G56: Đã có trong Project | H56: Đã có trong Project | I56: Done | J56: Done | K56: Done
+A57: Normal | B57: Earwig | D57: EN_M07_Normal_03 | E57: Đã có trong Project | F57: Đã có trong Project | G57: Đã có trong Project | H57: Đã có trong Project | I57: Done | J57: Done | K57: Done
+A58: Elite | B58: Brock | D58: EN_M07_Elite_01 | E58: Đã có trong Project | F58: Đã có trong Project | G58: Đã có trong Project | H58: Đã có trong Project | I58: Done | J58: Done | K58: Done
+A59: Elite | B59: Heartstone | D59: EN_M07_Elite_02 | E59: Đã có trong Project | F59: Đã có trong Project | G59: Đã có trong Project | H59: Đã có trong Project | I59: Done | J59: Done | K59: Done
+A60: Boss | B60: Aegor | D60: EN_M07_Boss_01 | E60: Đã có trong Project | F60: Đã có trong Project | G60: Đã có trong Project | H60: Đã có trong Project | I60: Done | J60: Done | K60: Done
+A61: Boss | B61: Rocket | D61: EN_M07_Boss_02 | E61: Đã có trong Project | F61: Đã có trong Project | G61: Đã có trong Project | H61: Đã có trong Project | I61: Done | J61: Done | K61: Done
+A62: Boss | B62: Titan | D62: EN_M07_Boss_03 | F62: Đã có trong Project | G62: Đã có trong Project | H62: Đã có trong Project | I62: Done | J62: Done | K62: Done | L62: Boss mở khóa biome tiếp theo
+A63: Hang động
+A64: Normal | B64: Mimic chest | D64: EN_M08_Normal_Mimic Chest | E64: Đã có trong Project | F64: Đã có trong Project | G64: Đang làm | H64: Đã có trong Project | I64: Done | J64: Done
+A65: Normal | B65: Nightprowler | D65: EN_M08_Normal_Nightprowler | E65: Đã có trong Project | F65: Đã có trong Project | G65: Đã có trong Project | H65: Đã có trong Project | I65: Done | J65: Done
+A66: Normal | B66: Curtle | D66: EN_M08_Normal_Curtle | E66: Đã có trong Project | F66: Đã có trong Project | G66: Không có | H66: Đã có trong Project | I66: Done | J66: Done
+A67: Normal | B67: soulwing | D67: EN_M08_Normal_Soulwing | E67: Đã có trong Project | F67: Đã có trong Project | G67: Đã có trong Project | H67: Đã có trong Project | I67: Done | J67: Done
+A68: Normal | B68: miner | E68: Đợi làm | F68: Đợi làm | H68: Đợi làm | I68: Done | J68: Done
+A69: Normal | B69: Drill | E69: Đợi làm | F69: Đợi làm | H69: Đợi làm | I69: Done | J69: Done
+A70: Elite | B70: scorpion | D70: EN_M08_Elite_Scorlion | E70: Đã có trong Project | F70: Đã có trong Project | G70: Đã có trong Project | H70: Đã có trong Project | I70: Done | J70: Done
+A71: Elite | B71: cryogor | D71: EN_M08_Elite_Cryogor | E71: Đã có trong Project | F71: Đã có trong Project | G71: Đã có trong Project | H71: Đã có trong Project | I71: Done | J71: Done
+A72: Elite | B72: bomba | D72: EN_M08_Elite_Bomba | E72: Đã có trong Project | F72: Đã có trong Project | G72: Đã có trong Project | H72: Đã có trong Project | I72: Done | J72: Done
+A73: Elite | B73: cinder | E73: Đã có trong Project | F73: Đã có trong Project | H73: Đã có trong Project | I73: Done | J73: Done
+A74: Boss | B74: Skarnfrost | D74: EN_M08_Boss_Skarnfrost | E74: Đã có trong Project | F74: Đã có trong Project | G74: Đã có trong Project | H74: Đã có trong Project | I74: Done | J74: Done
+A75: Boss | B75: Queen spider | D75: EN_M08_Boss_Queen Spider | E75: Đã có trong Project | F75: Đã có trong Project | G75: Đã có trong Project | H75: Đã có trong Project | I75: Done | J75: Done | L75: Boss mở khóa biome tiếp theo
+A76: Boss | B76: Warboom | D76: EN_M08_Boss_Warboom | E76: Đã có trong Project | F76: Đã có trong Project | G76: Đã có trong Project | H76: Đã có trong Project | I76: Done | J76: Done
+A77: Map 9 | B77: Đầm lầy
+A78: Normal | B78: Jungle Mask | D78: EN_M09_Normal_Jungle Mask | E78: Đã có trong Project | F78: Đã có trong Project | H78: Đã có trong Project | I78: Done | J78: Done
+A79: Normal | B79: Brock | D79: EN_M09_Normal_Brock | E79: Đã có trong Project | F79: Đã có trong Project | G79: Đã có trong Project | H79: Đã có trong Project | I79: Done | J79: Done
+A80: Normal | B80: Vespa | D80: EN_M09_Normal_Vespa | E80: Đã có trong Project | F80: Đã có trong Project | H80: Đã có trong Project | I80: Done | J80: Done
+A81: Normal | B81: Frogy | D81: EN_M09_Normal_Frogy | E81: Đã có trong Project | F81: Đã có trong Project | H81: Đã có trong Project | I81: Done | J81: Done
+A82: Normal | E82: Đã có trong Project | I82: Done | J82: Done
+A83: Normal | E83: Đã có trong Project | I83: Done | J83: Done
+A84: Elite | B84: Karik | D84: EN_M09_Elite_Karik | E84: Đã có trong Project | F84: Đã có trong Project | G84: Đã có trong Project | H84: Đã có trong Project | I84: Done | J84: Done
+A85: Elite | B85: Shaman | D85: EN_M09_Elite_Shaman | E85: Đã có trong Project | F85: Đã có trong Project | G85: Đã có trong Project | H85: Đã có trong Project | I85: Done | J85: Done
+A86: Elite | B86: Kharvok | D86: EN_M09_Elite_Kharvok | E86: Đang làm | F86: Đang làm | H86: Đã có trong Project | I86: Done | J86: Done
+A87: Elite | E87: Đã có trong Project | I87: Done | J87: Done
+A88: Boss | B88: Rekaton | D88: EN_M09_Boss_Rekaton | E88: Đã có trong Project | F88: Đã có trong Project | G88: Đã có trong Project | H88: Đã có trong Project | I88: Done | J88: Done
+A89: Boss | B89: Pitcherlurk | D89: EN_M09_Boss_Pitcherlurk | E89: Đã có trong Project | F89: Đã có trong Project | G89: Đã có trong Project | H89: Đã có trong Project | I89: Done | J89: Done | L89: Boss mở khóa biome tiếp theo
+A90: Boss | B90: Sagittarius | D90: EN_M09_Boss_Sagittarius | E90: Đã có trong Project | F90: Đã có trong Project | G90: Đã có trong Project | H90: Đã có trong Project | I90: Done | J90: Done
+A91: Map 10 | B91: Vùng đất chết
+A92: Normal | B92: Clawblade | D92: EN_M10_Normal_Clawblade | E92: Đã có trong Project | F92: Đã có trong Project | H92: Đã có trong Project | I92: Done | J92: Done
+A93: Normal | B93: Bonemage | D93: EN_M10_Normal_Bonemage | E93: Đã có trong Project | F93: Đã có trong Project | H93: Đã có trong Project | I93: Done | J93: Done
+A94: Normal | B94: Razorclaw | D94: EN_M10_Normal_Razorclaw | E94: Đã có trong Project | F94: Đã có trong Project | H94: Đã có trong Project | I94: Done | J94: Done
+A95: Normal | B95: Dreadfang | D95: EN_M10_Normal_Dreadfang | E95: Đã có trong Project | F95: Đã có trong Project | H95: Đã có trong Project | I95: Done | J95: Done
+A96: Normal | I96: Done | J96: Done
+A97: Normal | I97: Done | J97: Done
+A98: Elite | B98: Bonescythe | D98: EN_M10_Elite_Bonescythe | E98: Đã có trong Project | F98: Đã có trong Project | G98: Đã có trong Project | H98: Đã có trong Project | I98: Done | J98: Done
+A99: Elite | B99: Ribbelly | D99: EN_M10_Elite_Ribbelly | E99: Đã có trong Project | F99: Đã có trong Project | G99: Đã có trong Project | H99: Đã có trong Project | I99: Done | J99: Done
+A100: Elite | I100: Done | J100: Done
+A101: Boss | B101: Boneking | D101: EN_M10_Boss_Boneking | E101: Đã có trong Project | F101: Đã có trong Project | G101: Đã có trong Project | H101: Đã có trong Project | I101: Done | J101: Done
+A102: Boss | B102: Lanternback | D102: EN_M10_Boss_Lanternback | E102: Đã có trong Project | F102: Đã có trong Project | G102: Đã có trong Project | H102: Đã có trong Project | I102: Done | J102: Done | L102: Boss mở khóa biome tiếp theo
+A103: Boss | B103: Overlord | D103: EN_M10_Boss_Overlord | E103: Đã có trong Project | F103: Đã có trong Project | G103: Đã có trong Project | H103: Đã có trong Project | I103: Done | J103: Done
+A104: Map 11 | B104: Inferno
+A105: Normal | B105: Lava goblin | D105: EN_M11_Normal_Lava goblin | E105: Đã có trong Project | F105: Đã có trong Project | H105: Đã có trong Project | I105: Done | J105: Done
+A106: Normal | B106: Magmatail | D106: EN_M11_Normal_Magmatail | E106: Đã có trong Project | F106: Đã có trong Project | H106: Đã có trong Project | I106: Done | J106: Done
+A107: Normal | B107: Twinblade | D107: EN_M11_Normal_Twinblade | E107: Đã có trong Project | F107: Đã có trong Project | H107: Đã có trong Project | I107: Done | J107: Done
+A108: Normal | B108: Hornwing | D108: EN_M11_Normal_Hornwing | E108: Đã có trong Project | F108: Đã có trong Project | H108: Đã có trong Project | I108: Done | J108: Done
+A109: Normal | E109: Đã có trong Project | F109: Đã có trong Project | H109: Đã có trong Project | I109: Done | J109: Done
+A110: Normal | E110: Đã có trong Project | F110: Đã có trong Project | H110: Đã có trong Project | I110: Done | J110: Done
+A111: Elite | B111: Sucubus | D111: EN_M11_Elite_Sucubus | E111: Đã có trong Project | F111: Đã có trong Project | G111: Đã có trong Project | H111: Đã có trong Project | I111: Done | J111: Done
+A112: Elite | B112: Chainmace | D112: EN_M11_Elite_Chainmace | E112: Đã có trong Project | F112: Đã có trong Project | G112: Đã có trong Project | H112: Đã có trong Project | I112: Done | J112: Done
+A113: Elite | E113: Đã có trong Project | F113: Đã có trong Project | H113: Đã có trong Project | I113: Done | J113: Done
+A114: Boss | B114: Gaygor | D114: EN_M11_Boss_Gaygor | E114: Đã có trong Project | F114: Đã có trong Project | G114: Đã có trong Project | H114: Đã có trong Project | I114: Done | J114: Done
+A115: Boss | B115: Cerberus | D115: EN_M11_Boss_Cerberus | E115: Đã có trong Project | F115: Đã có trong Project | G115: Đang làm | H115: Đã có trong Project | I115: Done | J115: Done
+A116: Boss | B116: Inferno Lord | D116: EN_M11_Boss_Inferno Lord | E116: Đã có trong Project | F116: Đã có trong Project | G116: Đã có trong Project | H116: Đã có trong Project | I116: Done | J116: Done
+A117: Boss raid
+A118: Boss | B118: Rook | E118: Đã có trong Project | F118: Đã có trong Project | G118: Đã có trong Project | H118: Đã có trong Project | I118: Đã có trong Project | J118: Đã có trong Project
+A119: Boss | B119: Knight | E119: Đã có trong Project | F119: Đã có trong Project | G119: Đã có trong Project | H119: Đã có trong Project | I119: Đã có trong Project | J119: Đã có trong Project
+A120: Boss | B120: Bishop | E120: Đã có trong Project | F120: Đã có trong Project | G120: Đang làm | H120: Đã có trong Project | I120: Đã có trong Project | J120: Đã có trong Project
+A121: Boss | B121: Queen | E121: Đã có trong Project | F121: Đã có trong Project | G121: Đang làm
+A122: Boss | B122: King | E122: Đang làm | F122: Đang làm | G122: Đang làm
+A123: Boss | B123: Pawn | E123: Đang làm | F123: Đang làm | G123: Đang làm

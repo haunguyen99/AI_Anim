@@ -1,0 +1,41 @@
+Sent 2026-11-04 as a reply in the thread of 2 Nov (to hello@frolvy.com, Gmail huong99yl@gmail.com).
+The sent mail put item 1 = floor grid follows CTL_Main (see frolvy_feedback.md #7) first, then the items below, plus a note on autoSnap restore order.
+
+Subject: Python API issues found while auto-rigging with Rig Builder (Frolvy, Nov 2026)
+
+Hi Frolvy team,
+
+We rig game characters in Frolvy from an AI assistant over MCP (execute_code with `api`). Follow-up to our mail of 2 Nov; a few more things from rigging a new character with Rig Builder.
+
+1. `api.constrain()` constrains the FIRST selected node (doc says the last-selected one)
+   - Doc: "The last-selected node is constrained to all the others."
+   - Repro (built rig): `api.select(["DEF_Wrist_L", "CTL_ArmSwitch_L_grp"]); api.constrain("parent", True)`
+     -> the rig info shows `parentConstraint1` driving DEF_Wrist_L with target CTL_ArmSwitch_L_grp.
+     The IK arm then stops moving and `check_rig()` reports nothing.
+   - Workaround: select in the opposite order, check `get_rig_info` after every constraint.
+   - Request: make code and doc agree (Maya: last selected is driven), and return the new constraint's name instead of a bool.
+
+2. Build Rig draws controls at a fixed size and ignores the mesh
+   - On bulky characters or characters with skirts/hoods the rings end up inside the mesh or far too big; we always need a second pass to resize them.
+   - Request: an option for Build Rig to size control shapes from the mesh cross-section.
+
+3. No "do not mirror" flag on fit joints
+   - Build Rig mirrors every right-side joint, also one-sided chains (a scarf tail, a one-handed prop). Deleting the mirrored copy of a multi-joint chain leaves controls that are not under the first control's group and dead wire nodes.
+   - Request: a per-fit-joint "no mirror" flag.
+
+4. No call to ask for a node's parent
+   - `api.parent(child)` with one argument UN-parents the node, so it is easy to misuse as a getter.
+   - Request: `api.parent_of(node)` (or similar).
+
+5. Smaller ones
+   - After Build Rig, `check_rig()` reports `fng_cy_DEF_ThumbFinger*: its answer goes nowhere`.
+   - `get_attr("X.translateX")` / `get_attr("X.translate")` return None; only `get_attr("X.tx")` works. Please accept long names or raise an error.
+
+Thanks again for the API, it makes this kind of automation possible.
+
+---
+Sent 2026-11-04 via api.send_feedback('bug') (Help > Send Feedback), no log attached:
+Rotate gizmo looks wrong in the front view (Local mode)
+Bug: In the front viewport the Local rotate gizmo looks tilted the wrong way.
+How to see: Select a control that is rotated about Y (ours: CTL_Chest_M, about 25 deg in total through Root/Spine/Chest). Use the Rotate tool in Local mode and look in the front view.
+Request: Please check how the gizmo rings are drawn in ortho views. Our world_matrix reading gives about 25 deg yaw, so if the drawing is correct, a visible hint that Local follows the control's own axes would help.

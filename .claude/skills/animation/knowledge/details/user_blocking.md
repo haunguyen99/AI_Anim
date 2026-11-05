@@ -32,8 +32,9 @@ Script mẫu của app: `C:\Program Files\Frolvy\scripts\human_rig.py`, `human03
 | 2… | Tiếp như bảng dưới từ bước 2 (phân tích → sửa lỗi → breakdown → trọng lượng → polish → FBX), làm trong **Studio** thay cho Pose Lab. | AI | | như dưới |
 
 **Góp ý cho Frolvy** (người dùng 2026-10-31: "Frolvy là một ứng dụng đang phát triển. trong quá trình làm việc có vấn đề gì
-bạn hãy gửi fb cho họ"): gặp lỗi hoặc thiếu sót của Frolvy thì ghi ngay vào `work/frolvy_feedback.md`, kèm cách tái hiện, ảnh,
-log và cách tạm vượt qua. Soạn sẵn bản góp ý, hỏi người dùng rồi mới gửi qua menu **Help → Send Feedback…** trong Frolvy.
+bạn hãy gửi fb cho họ"): gặp lỗi hoặc thiếu sót của Frolvy thì thêm ngay một dòng vào bảng `work/frolvy_feedback.md`, **viết ngắn**
+(2026-11-04: "ghi feedback đơn giản hơn"): *Lỗi* một câu, *Cách thấy* 2–3 bước, *Mong muốn* một câu; không kể cách vượt qua.
+Hỏi người dùng rồi mới gửi (Help → Send Feedback… hoặc email hello@frolvy.com, trả lời trong luồng cũ), thư cũng 3 dòng mỗi lỗi.
 
 Chưa kiểm trên clip thật (2026-10-31), cần làm ở clip đầu tiên:
 - **Xương Frolvy khác xương team.** Rig team phải đi Unity nên FBX cuối vẫn ghi đè đường cong trong FBX của team (bước 7). Vì vậy

@@ -46,7 +46,7 @@
 - Đo spacing cm/F tay/prop; ~70 cm cần ≥ 5F → timing_spline.md#spacing
 - User xem frame hiển thị: delay overlap = 0 ở frame then chốt → timing_spline.md#overlap
 - Vải/phụ kiện: con lắc, trục ở điểm đính, biên độ rõ (~25°) → timing_spline.md#secondary-cloth
-- Loop: F cuối = F1, phát f1..f(N-1), bắt đầu ở đáy; clip game non-loop kết thúc bằng Idle đứng yên → timing_spline.md#loop
+- Loop: F cuối = F1, phát f1..f(N-1), bắt đầu ở đáy; idle/run/walk trên Frolvy: sau MỖI lượt sửa chạy `loop_seam.smooth(api)` (đóng key cuối = key đầu từng layer + cùng tiếp tuyến chỗ nối); clip game non-loop kết thúc bằng Idle đứng yên → timing_spline.md#loop
 
 ## Review & ghi chú
 - Mắt trước: REF|ANIM có shading mọi view, gọi tên lỗi; IoU mù trước/sau → review_process.md#eye-vs-iou

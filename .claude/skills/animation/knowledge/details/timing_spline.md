@@ -83,6 +83,16 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
 - **Studio / playblast (2026-10-29, Ninja Idle, user: "loop bị giật"):** anim đúng (F41 = F1, tốc độ liền) nhưng nút Phát và `anim playblast`
   chạy F1..F41 → F41 rồi F1 cùng một pose = 1 frame khựng mỗi vòng. Đã sửa ở master Pose Lab (`% PER()`, playblast `n = PER()`) +
   `port_pose.py`. Khi user nói loop giật: đo nối trước, rồi kiểm số frame của video (`n` phải = frames − 1 với clip loop).
+- **Chỗ nối loop trên Frolvy (2026-11-05, RPG2 Hero Blade Idle, user: "sao phần tay chuyển động vẫn bị giựt đầu cuối. ghi lệnh tự động smooth đầu cuối sau khi sửa xong 1 lệnh cho các anim idle run walk"):**
+  hai nguyên nhân, đều áp cho **mọi clip loop (idle, run, walk)**:
+  1. **Key cuối không bằng key đầu** (kênh "trôi"): layer cộng `fix_r1_tay_xoay_it_dich_nhieu` có cổ tay rx 0 → −1,3°, đao rz 0 → −0,5° trong một vòng. Đao dài 40 cm nhân 1° thành ~7 mm/F → mũi đao vọt 16 mm/F ở chỗ nối (bình thường ~6). Chỉ đặt tiếp tuyến thì không hết.
+  2. **Tiếp tuyến tự động hai key mút tính một phía** nên tốc độ gãy ở chỗ nối.
+  **Lệnh tự động** (chạy sau MỖI lượt sửa xong, trước khi báo user / playblast; memory `frolvy-loop-seam-smooth`):
+  `exec(open(r'D:\Project\AI_Anim\tools\frolvy_plugins\loop_seam\loop_seam.py', encoding='utf-8').read()); smooth(api)` (cũng có trong menu Plugins: Smooth Loop Seam).
+  Làm theo TỪNG layer (solo layer để `get_attr` đọc giá trị riêng của nó): kênh có key cuối ≠ key đầu thì trừ đường thẳng `gap·(t−đầu)/(cuối−đầu)` ở mọi key (key cuối = key đầu, phần đóng vòng trải đều, không dồn vào 3 frame cuối);
+  rồi cùng một tiếp tuyến ở key đầu và key cuối `s = (v(key sau đầu) − v(key trước cuối)) / (khoảng thời gian qua chỗ nối)` (`api.set_key_tangent` đơn vị **mỗi giây** = s·fps), `set_infinity cycle`. Chỉ đọc giá trị KEY nên chạy lại ra cùng kết quả.
+  Kiểm bằng `seam_report`: mỗi điểm thế giới chuyển động (cổ tay, khuỷu, mũi đao, đầu, hông) có gia tốc chỗ nối / gia tốc lớn nhất giữa vòng ≤ 2 và tốc độ vọt ≤ ×2 (F cuối trùng F đầu 0,0 mm).
+  **Bẫy Frolvy trong layer cộng:** `get_attr` trả Base + layer nhưng `set_attr` / `set_key` ghi giá trị gộp vào layer → mỗi lần key cộng dồn thêm phần Base; `api.move_key(path, f, f, value)` mới là giá trị riêng của layer. Luôn xem `api.layers()` trước khi tin số key (Frolvy mở lại từ .fv có thể có layer mới).
 
 ## end-on-idle
 - Đuôi clip non-loop cho game (SDR Attack): user muốn **các frame cuối là pose Idle đứng yên** (F20–F26 = Idle, không nhích quá đà) —

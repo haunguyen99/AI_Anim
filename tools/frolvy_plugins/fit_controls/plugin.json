@@ -4,5 +4,5 @@
   "entry": "fit_controls.py",
   "api_version": 1,
   "name": "Fit Controls",
-  "description": "Grow or slide rig controls until they sit outside the mesh. Plugins > Fit Controls to Mesh, or Build Rig + Fit Controls."
+  "description": "Draw rig controls a few cm outside the mesh (works with skirts, capes, hoods). Plugins > Build Rig + Fit Controls, Snug Controls to Mesh, or Fit Controls to Mesh (old grow/slide)."
 }

@@ -1,0 +1,34 @@
+Subject: Python API / MCP issues found while scripting animation (Frolvy 0.9.24)
+
+Hi Frolvy team,
+
+We drive Frolvy from an AI assistant through the MCP server (execute_code with `api`) to block and retarget game animation. Thanks for the great API. Here are five issues we hit, each with repro steps and the workaround we used.
+
+1. No way to set the frame range from the API
+   - `api.frame_range()` is read-only. The only other "range" call is `set_ref_range` (reference clip, not the scene).
+   - Repro: `print([n for n in dir(api) if 'range' in n])` -> ['frame_range', 'set_ref_range'].
+   - Workaround: the user sets the range by hand on the timeline.
+   - Request: `api.set_frame_range(start, end)` (ideally playback and animation range separately).
+
+2. `set_frame` silently clamps to the playback range
+   - Repro: range 0-30; `api.set_frame(45)` returns True; select a control; `api.set_key()` -> the key lands on frame 30, not 45.
+   - Workaround: key on frame 30, then `api.move_key(path, 30, 45, value)` (move_key accepts frames outside the range).
+   - Request: return False / raise when the frame is outside the range, or allow it.
+
+3. Changing frames discards edits on unkeyed channels
+   - Repro (no keys in the scene): at frame 0 `api.set_attr("CTL_RootX_M.ry", 20)`; `api.set_frame(1)`; `api.get_attr("CTL_RootX_M.ry")` -> 0. Maya keeps the value of a channel that has no keys.
+   - Related: on a frame with no key, `set_attr(...)` then `set_key()` keys the OLD value.
+   - Workaround: `set_frame(F)`, `set_key()` first, then `set_attr` (edits the new key).
+   - Request: keep the values (as Maya does), or at least warn and document it on `set_frame` / `set_key`.
+
+4. `set_key()` skips enum attributes
+   - Repro: select `CTL_ArmSwitch_L`, set `handPose` = 2 (Fist), `api.set_key()` -> `api.list_keys("CTL_ArmSwitch_L.handPose")` is empty; float dials on the same control are keyed.
+   - Request: key enum dials (stepped) like other keyable attributes.
+
+5. `delete_node` cannot delete a camera
+   - Repro: `c = api.create_camera(); api.delete_node(c)` -> False, the camera stays. `api.select([c]); api.delete_selection()` works.
+   - Request: let `delete_node` delete cameras, or return a reason.
+
+Environment: Windows 11, Frolvy 0.9.24, Python API via Frolvy-mcp.exe (127.0.0.1:9877).
+
+Thanks!

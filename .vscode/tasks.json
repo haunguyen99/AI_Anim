@@ -1,0 +1,59 @@
+{
+  // Ctrl+Shift+P -> "Tasks: Run Task". Bản VS Code của .claude/launch.json (app desktop).
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Home + Studio server (8780)",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-I", "tools/home/server.py"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Anim viewer (8765)",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-m", "http.server", "8765", "--bind", "127.0.0.1"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Pose Lab (8771)",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-m", "http.server", "8771", "--bind", "127.0.0.1", "--directory", "work/pose_lab"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Rig Lab (8772)",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-m", "http.server", "8772", "--bind", "127.0.0.1", "--directory", "work/rig_lab/pages"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Studio: trạng thái cầu nối",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-I", "tools/studio_cmd.py", "state"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude memory: restore (máy mới)",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-I", "tools/claude_memory.py", "restore"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude memory: backup",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-I", "tools/claude_memory.py", "backup"],
+      "problemMatcher": []
+    }
+  ]
+}

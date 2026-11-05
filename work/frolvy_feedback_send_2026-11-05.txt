@@ -1,0 +1,14 @@
+Sent 2026-11-05 via api.send_feedback (Help > Send Feedback), no log attached.
+
+[bug] Textures show upside down (V flipped)
+Bug: A material's texture map is drawn flipped vertically, so the character gets the wrong colours (blotchy body, purple blades).
+How to see: Import an FBX character with its UVs, set_texture() its TGA (bottom-left origin, 24-bit) or a PNG copy - both look wrong. Flip the image vertically and it looks right.
+Request: Please read UV V the same way as Maya/Unity (V up from the bottom of the image).
+
+[idea] Paste Connect like Maya
+Request: Add a Paste Connect command like Maya: copy a node's connection (e.g. a material/texture or an attribute link) and paste it onto other selected nodes so they get the same connection, instead of setting each one by hand.
+
+[bug] Unkeyed rotations of the FK spine reset to 0 on Set Key
+Bug: Rotations set on unkeyed channels of the spine chain are lost when keying.
+How to see: No keys yet; in one script set rx/ry/rz on CTL Root, Spine1, Chest, Neck and also move Head / IK hand; select all, Set Key -> the spine rotations key as 0 (translations are kept). Same for the first key after deleting all keys.
+Request: Keep the values that were set until Set Key.
