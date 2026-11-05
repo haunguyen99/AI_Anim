@@ -76,3 +76,4 @@
 - [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
 - [Polish keeps blocking poses](polish-keeps-blocking-poses.md) — when polishing/splining, never change approved blocking key poses; ask first
 - [Studio script single writer](studio-script-single-writer.md) — pose scripts via the Studio bridge must be the only writer; check frame before each key (Auto key on)
+- [RPG2 hero: auto textures](rpg2-hero-auto-textures.md) — Frolvy plugin hero_textures puts the textures on the meshes whenever a scene is opened (one Frolvy restart to load); by hand: apply(api, force=True)
