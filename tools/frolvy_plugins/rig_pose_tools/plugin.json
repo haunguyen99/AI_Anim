@@ -1,0 +1,8 @@
+{
+  "id": "rig_pose_tools",
+  "version": "0.1.0",
+  "entry": "rig_pose_tools.py",
+  "api_version": 1,
+  "name": "Rig Pose Tools",
+  "description": "Put a Rig Builder rig back to its T-pose (every CTL_ control to 0) in one click."
+}

@@ -1,0 +1,838 @@
+<title>Gaygor Idle Review Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: review-room app in one dark look - top bar with draw tools, playlist | viewer | notes,
+   and a timeline bar fixed to the bottom edge (play, frame cells with note markers, frame counter, transport). */
+:root {
+  --bg: #16181c;         /* room */
+  --panel: #1f2227;
+  --raise: #2a2e35;
+  --line: #343943;
+  --ink: #e4e7ec;
+  --muted: #8b93a1;
+  --accent: #1fa37a;     /* selection / play-head */
+  --pencil: #ff4b3e;     /* note markers, default ink */
+  --done: #4cc287;
+  --font-ui: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-num: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --tl: 46px;            /* timeline strip height */
+  --tr: 40px;            /* transport row height */
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 13px; line-height: 1.45; overflow: hidden; }
+button, select, textarea, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 calc(var(--tl) + var(--tr) + env(safe-area-inset-bottom, 0px)); }
+
+/* top bar */
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+.crumb { display: grid; line-height: 1.2; min-width: 0; }
+.crumb small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.proj { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 3px 6px; font-weight: 600; font-size: 13px; }
+.crumb b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file { font-weight: 600; font-size: 14px; padding: 4px 10px; background: var(--raise); border-radius: 4px; white-space: nowrap; }
+.tools { display: flex; align-items: center; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.tool { width: 32px; height: 30px; display: grid; place-items: center; border: 0; background: none; border-radius: 4px; color: var(--muted); }
+.tool:hover { background: var(--raise); color: var(--ink); }
+.tool.on { background: var(--accent); color: #fff; }
+.tool svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sw { width: 18px; height: 18px; border-radius: 3px; border: 2px solid transparent; }
+.tool.color.on { background: var(--raise); }
+.tool.color.on .sw { border-color: #fff; }
+.vsep { width: 1px; height: 22px; background: var(--line); margin: 0 6px; }
+
+/* three panes */
+.main { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; min-height: 0; }
+.pane { min-height: 0; overflow-y: auto; }
+.list { border-right: 1px solid var(--line); }
+.list h2, .side h2 { font-size: 13px; font-weight: 600; margin: 0; padding: 10px 10px 8px; display: flex; gap: 6px; align-items: baseline; }
+.list h2 span, .side h2 span { color: var(--muted); font-weight: 400; font-size: 11px; }
+.item { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px; padding: 6px 10px 6px 6px; border: 0; width: 100%; text-align: left; background: none; border-left: 3px solid transparent; }
+.item.on { background: #1fa37a33; border-left-color: var(--accent); }
+.item img { width: 96px; aspect-ratio: 768 / 720; object-fit: contain; border-radius: 2px; background: #464b52; }
+.item b { display: block; font-weight: 500; font-size: 12px; overflow-wrap: anywhere; }
+.item small { color: var(--muted); font-size: 11px; }
+
+.viewer { position: relative; display: grid; place-items: center; min-height: 0; min-width: 0; padding: 12px; container-type: size; overflow: hidden; }
+.viewer.hand, .viewer.hand #ink { cursor: grab; }
+.viewer.panning, .viewer.panning #ink { cursor: grabbing; }
+.stage { --arw: 768; --arh: 720; position: relative; width: min(100cqw, 100cqh * var(--arw) / var(--arh)); aspect-ratio: var(--arw) / var(--arh); max-width: 100%; touch-action: none;
+  transform-origin: 0 0; will-change: transform; }
+.zoombox { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 2px; background: #000a; border-radius: 4px; padding: 2px; z-index: 2; }
+.zoombox button { border: 0; background: none; color: var(--ink); min-width: 28px; height: 26px; border-radius: 3px; font-family: var(--font-num); font-size: 12px; }
+.zoombox button:hover { background: #ffffff1f; }
+[hidden] { display: none !important; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#ink { cursor: default; }
+#ink.draw { cursor: crosshair; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+.cprog { position: absolute; left: 8px; bottom: 8px; z-index: 4; font: 11px/1 var(--font-num, ui-monospace, monospace); color: var(--muted); background: color-mix(in srgb, var(--panel, #1a202a) 85%, transparent); padding: 3px 7px; border-radius: 6px; pointer-events: none; }
+.zoomtag { position: absolute; top: 10px; left: 50%; translate: -50% 0; font-size: 12px; background: #000a; padding: 3px 10px; border-radius: 4px; color: var(--ink); pointer-events: none; white-space: nowrap; z-index: 2; }
+
+.side { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; }
+.side .head { display: flex; align-items: center; justify-content: space-between; padding-right: 8px; }
+.filter { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; font-size: 12px; }
+.notes { overflow-y: auto; padding: 0 10px 10px; display: grid; gap: 8px; align-content: start; }
+.note { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: grid; gap: 4px; }
+.note.sel { border-color: var(--accent); }
+.note.done { opacity: .6; }
+.note .top2 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.note img { width: 20px; height: 20px; border-radius: 50%; }
+.note .who { font-weight: 600; }
+.note .part { color: var(--muted); font-size: 11px; }
+.fbtn { font-family: var(--font-num); font-weight: 700; font-size: 11px; background: var(--pencil); color: #fff; border: 0; border-radius: 3px; padding: 1px 6px; }
+.note p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.note .acts { display: flex; gap: 6px; }
+.mini { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 1px 8px; font-size: 11px; }
+.empty { color: var(--muted); text-align: center; padding: 24px 10px; margin: 0; }
+.compose { border-top: 1px solid var(--line); padding: 10px; display: grid; gap: 6px; background: var(--panel); }
+.compose textarea { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; min-height: 56px; resize: vertical; width: 100%; }
+.compose select { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; width: 100%; }
+.compose .row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.fchk { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--accent); font-weight: 600; }
+.submit { background: var(--accent); border: 0; color: #fff; font-weight: 600; border-radius: 4px; padding: 5px 14px; }
+.submit[disabled] { opacity: .45; cursor: not-allowed; }
+.status { font-size: 11px; color: var(--muted); min-height: 1.4em; }
+.round { margin: 0 10px 8px; padding: 8px 10px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 6px; }
+.round .st { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.round .st i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.round[data-s="sent"] .st i { background: #f2b33d; }
+.round[data-s="working"] .st i { background: #4aa8ff; }
+.round[data-s="fixed"] .st i { background: var(--done); }
+.round small { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+.aibtn { background: #f2b33d; color: #1b1405; border: 0; border-radius: 4px; padding: 6px 10px; font-weight: 700; }
+.aibtn.arm { background: #ff8a3d; }
+.aibtn[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* bottom timeline, fixed */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 1px solid var(--line); z-index: 5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+.strip { height: var(--tl); display: grid; grid-template-columns: 52px minmax(0, 1fr) 64px; align-items: stretch; border-bottom: 1px solid var(--line); }
+.playbig { border: 0; background: none; display: grid; place-items: center; color: var(--ink); border-right: 1px solid var(--line); }
+.playbig svg { width: 22px; height: 22px; fill: currentColor; }
+.cells { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); touch-action: none; cursor: ew-resize; user-select: none; }
+.cell { position: relative; border-right: 1px solid #ffffff10; background: #ffffff06; }
+.cell:nth-child(2n) { background: #ffffff0b; }
+.cell .n { position: absolute; top: 2px; left: 3px; font-family: var(--font-num); font-size: 9px; color: var(--muted); }
+.cell .mk { position: absolute; bottom: 5px; left: 50%; translate: -50% 0; width: 9px; height: 9px; border-radius: 2px; background: var(--pencil); }
+.cell .mk.done { background: var(--done); }
+.head-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent); pointer-events: none; }
+.head-line::before { content: ""; position: absolute; top: 0; left: -5px; width: 12px; height: 8px; background: var(--accent); border-radius: 0 0 3px 3px; }
+.curf { display: grid; place-items: center; font-family: var(--font-num); font-weight: 700; font-size: 20px; color: var(--accent); background: #1fa37a1f; font-variant-numeric: tabular-nums; }
+.transport { height: var(--tr); display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: nowrap; overflow-x: auto; }
+.transport .tool { width: 34px; }
+.fps { font-family: var(--font-num); font-size: 11px; color: var(--muted); padding: 0 6px; display: flex; align-items: center; gap: 4px; }
+.fps select { background: var(--raise); border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; font-size: 11px; }
+.keys { display: none; font-size: 11px; color: var(--muted); margin-left: 12px; white-space: nowrap; }
+
+@media (max-width: 1000px) { .main { grid-template-columns: minmax(0, 1fr) 280px; } .list { display: none; } }
+@media (max-width: 700px) {
+  body { overflow: auto; }
+  .app { height: auto; }
+  .main { grid-template-columns: minmax(0, 1fr); }
+  .viewer { height: 62vh; }
+  .side { border-left: 0; border-top: 1px solid var(--line); overflow: visible; }
+  .notes { overflow: visible; }
+  .keys { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/*IBTN*/
+.ibtn { font-size: 0 !important; line-height: 0; display: inline-flex; align-items: center; justify-content: center; padding: 0 !important; flex: none; }
+.ibtn::before { content: ''; width: 16px; height: 16px; background: currentColor; -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+.mini.ibtn { width: 26px; height: 22px; } .mini.ibtn::before { width: 14px; height: 14px; }
+.zoombox button.ibtn { min-width: 28px; }
+.submit.ibtn { width: 40px; height: 30px; } .submit.ibtn::before { width: 18px; height: 18px; }
+.aibtn.ibtn:not(.arm) { width: 40px; height: 30px; } .aibtn.ibtn:not(.arm)::before { width: 18px; height: 18px; }
+.aibtn.arm { font-size: 12px !important; line-height: 1.3 !important; }
+.aibtn.arm::before { content: none; }
+#keysHelp { margin-left: auto; color: var(--muted); }
+.item small { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+[data-ic="send"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M3%2011l18-8-8%2018-2-8z%22/%3E%3C/svg%3E"); }
+[data-ic="minus"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%2012h14%22/%3E%3C/svg%3E"); }
+[data-ic="plus"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M12%205v14M5%2012h14%22/%3E%3C/svg%3E"); }
+[data-ic="trash"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%207h16M9%207V4h6v3M6%207l1%2013h10l1-13%22/%3E%3C/svg%3E"); }
+[data-ic="check"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M5%2012.5l4.5%204.5L19%207%22/%3E%3C/svg%3E"); }
+[data-ic="reset"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2012a8%208%200%20108-8%208%208%200%2000-5.7%202.4L4%209%22/%3E%3Cpath%20d=%22M4%204v5h5%22/%3E%3C/svg%3E"); }
+[data-ic="edit"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M4%2020l4-1%2011-11-3-3L5%2016z%22/%3E%3Cpath%20d=%22M14%206l3%203%22/%3E%3C/svg%3E"); }
+[data-ic="close"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M6%206l12%2012M18%206L6%2018%22/%3E%3C/svg%3E"); }
+[data-ic="help"] { --ic: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22none%22%20stroke=%22black%22%20stroke-width=%221.9%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Ccircle%20cx=%2212%22%20cy=%2212%22%20r=%229%22/%3E%3Cpath%20d=%22M9.5%209.5a2.5%202.5%200%20114%202c-1%20.7-1.5%201.2-1.5%202.5M12%2017h.01%22/%3E%3C/svg%3E"); }
+</style>
+
+<div class="app">
+  <div class="top">
+    <label class="crumb"><small>Boss Gaygor · anim</small><select class="proj" id="proj" aria-label="Chọn project" hidden></select><span class="proj">Idle (xoay trái phải, 133F)</span></label>
+    <div class="file" id="fileName">EN_M11_Boss_Gaygor_Attack · blocking v1 (stepped)</div>
+    <div class="tools" role="toolbar" aria-label="Công cụ vẽ">
+      <button class="tool" id="tHand" title="Kéo khung hình (H) - hoặc giữ chuột giữa" aria-label="Kéo khung hình"><svg viewBox="0 0 24 24"><path d="M8 13V5a1.5 1.5 0 013 0v6M11 11V4a1.5 1.5 0 013 0v7M14 11V5.5a1.5 1.5 0 013 0V14a7 7 0 01-7 7h-.5a6 6 0 01-4.6-2.2L3 15.5a1.5 1.5 0 012.3-1.9L8 16"/></svg></button>
+      <button class="tool" id="tPen" title="Bút vẽ (D)" aria-label="Bút vẽ"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></button>
+      <button class="tool" id="tUndo" title="Hoàn tác nét (Ctrl+Z)" aria-label="Hoàn tác nét"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg></button>
+      <button class="tool" id="tClear" title="Xoá nét chưa gửi" aria-label="Xoá nét chưa gửi"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+      <span class="vsep"></span>
+      <span id="colors" style="display:flex;gap:2px"></span>
+      <span class="vsep"></span>
+      <span id="sizes" style="display:flex;gap:2px" role="group" aria-label="Cỡ bút"></span>
+      <span class="vsep"></span>
+      <button class="tool" id="tOnion" title="Hiện nét vẽ của frame lân cận" aria-label="Onion skin"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg></button>
+    </div>
+  </div>
+
+  <div class="main">
+    <nav class="pane list" aria-label="Danh sách clip">
+      <h2><span id="projName" style="color:var(--ink);font-size:13px;font-weight:600">Boss_Gaygor</span> <span id="clipCount"></span></h2>
+      <div id="clips"></div>
+    </nav>
+
+    <section class="viewer" aria-label="Khung xem">
+      <div class="stage" id="stage">
+        <video id="vid" muted playsinline preload="auto" hidden></video>
+        <canvas id="img" width="768" height="720"></canvas>
+        <canvas id="ink" width="768" height="720" aria-label="Vùng vẽ ghi chú"></canvas>
+        <div class="loading" id="loading">Đang tải frame…</div>
+        <div class="cprog" id="cprog" hidden title="Đang giải mã video thành từng frame để tua mượt (xem được ngay)"></div>
+      </div>
+      <div class="zoomtag" id="zoomTag">front · left / back · top</div>
+      <div class="zoombox" role="group" aria-label="Thu phóng">
+        <button id="zOut" title="Thu nhỏ (-)" aria-label="Thu nhỏ">−</button>
+        <button id="zFit" title="Vừa khung (A)" aria-label="Vừa khung">100%</button>
+        <button id="zIn" title="Phóng to (+)" aria-label="Phóng to">+</button>
+      </div>
+    </section>
+
+    <aside class="side" aria-label="Ghi chú">
+      <div class="head"><h2>Ghi chú <span id="count">0</span></h2>
+        <select class="filter" id="flt" aria-label="Lọc ghi chú"><option value="all">Tất cả</option><option value="open">Chưa sửa</option><option value="done">Đã sửa</option></select></div>
+      <div class="round" id="round" data-s="none">
+        <div class="st"><i></i><span id="roundTxt">Vòng review đang mở</span></div>
+        <small id="roundSub"></small>
+        <button class="aibtn" id="aiSend">Gửi feedback cho AI</button>
+      </div>
+      <div class="notes" id="notes"><p class="empty">Chưa có ghi chú.</p></div>
+      <div class="compose">
+        <select id="part" aria-label="Bộ phận">
+          <option>Toàn thân / timing</option><option>Đầu</option><option>Cổ · ngực</option><option>Hông</option>
+          <option>Vai</option><option>Tay phải · khiên</option><option>Tay trái</option><option>Chùy</option><option>Chân</option>
+        </select>
+        <textarea id="text" placeholder="Ghi chú cho frame này…"></textarea>
+        <div class="row">
+          <span class="fchk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg><span id="newF">Frame 1</span></span>
+          <button class="submit" id="send">Gửi</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="strip">
+    <button class="playbig" id="play" aria-label="Phát / dừng"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4l13 8-13 8z"/></svg></button>
+    <div class="cells" id="cells" role="slider" aria-label="Timeline" aria-valuemin="1" tabindex="0"><div class="head-line" id="headLine"></div></div>
+    <div class="curf" id="curf">1</div>
+  </div>
+  <div class="transport">
+    <button class="tool" id="first" title="Về frame đầu (Home)" aria-label="Về frame đầu"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6z"/></svg></button>
+    <button class="tool" id="prev" title="Frame trước (←)" aria-label="Frame trước"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button class="tool" id="next" title="Frame sau (→)" aria-label="Frame sau"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="tool" id="prevN" title="Ghi chú trước (,)" aria-label="Ghi chú trước"><svg viewBox="0 0 24 24"><path d="M11 6l-6 6 6 6M19 6l-6 6 6 6"/></svg></button>
+    <button class="tool" id="nextN" title="Ghi chú sau (.)" aria-label="Ghi chú sau"><svg viewBox="0 0 24 24"><path d="M13 6l6 6-6 6M5 6l6 6-6 6"/></svg></button>
+    <button class="tool on" id="loop" title="Lặp" aria-label="Lặp"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 014-4h12M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 01-4 4H4"/></svg></button>
+    <span class="fps"><select id="speed" aria-label="Tốc độ phát"><option value="1">30fps</option><option value="0.5">15fps</option><option value="0.25">8fps</option></select></span>
+    <button class="tool" id="keysHelp" data-ic="help" title="Phím tắt: ← → frame · Space phát · , . ghi chú · D bút · [ ] cỡ bút · lăn chuột zoom · H / chuột giữa kéo · A vừa khung" aria-label="Phím tắt"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17h.01"/></svg></button>
+  </div>
+</div>
+
+<script>
+/*LOCALDB*/
+// Kho dữ liệu trên máy cho các Lab khi không có db của claude.ai: nói chuyện với Home server (tools/home/store.py), ghi file thật vào work/store/<ns>/.
+// Cùng giao diện với db của artifact (doc/collection, get/set/update/delete/add/onSnapshot) nên mã Lab không phải đổi.
+// Kèm nút "Lưu trữ" (xuất / mở file .json). Nguồn: tools/home/localdb.js, nhúng bằng work/patch_localdb.py.
+(function () {
+  const API = (window.LOCALDB_API || "http://127.0.0.1:8780") + "/api/store";
+  const slug = s => String(s || "page").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "page";
+  const NS = (new URLSearchParams(location.search).get("ns")) || slug(document.title);
+  const enc = encodeURIComponent;
+  async function call(method, path, body) {
+    const r = await fetch(API + "/" + path, { method, headers: body !== undefined ? { "Content-Type": "application/json" } : {}, body: body !== undefined ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error("store " + r.status);
+    return r.json();
+  }
+  const snapOf = (id, data) => ({ id, exists: data !== null && data !== undefined, data: () => data });
+  const watchers = {};   // col → { subs:Set, last:string, timer }
+  async function fetchCol(col) { const r = await call("GET", enc(NS) + "/" + enc(col)); return r.docs; }
+  const colSnap = docs => { const d = docs.map(x => snapOf(x.id, x.data)); return { docs: d, size: d.length, empty: !d.length, forEach: f => d.forEach(f) }; };
+  async function tick(col) {
+    const w = watchers[col]; if (!w || !w.subs.size) return;
+    try {
+      const docs = await fetchCol(col), sig = JSON.stringify(docs);
+      if (sig !== w.last) { w.last = sig; const sn = colSnap(docs); w.subs.forEach(f => { try { f(sn); } catch (e) { console.error(e); } }); }
+    } catch (e) {}
+  }
+  const poke = col => { if (watchers[col]) tick(col); };
+  function docRef(col, id) {
+    const base = () => enc(NS) + "/" + enc(col) + "/" + id.split("/").map(enc).join("/");
+    return {
+      id, path: col + "/" + id,
+      get: async () => { const r = await call("GET", base()); return snapOf(id, r.exists ? r.data : null); },
+      set: async d => { await call("PUT", base(), d); poke(col); },
+      update: async d => { await call("PATCH", base(), d); poke(col); },
+      delete: async () => { await call("DELETE", base()); poke(col); },
+    };
+  }
+  function colRef(col) {
+    return {
+      id: col, doc: id => docRef(col, id),
+      get: async () => colSnap(await fetchCol(col)),
+      add: async d => { const r = await call("POST", enc(NS) + "/" + enc(col), d); poke(col); return docRef(col, r.id); },
+      onSnapshot: cb => {
+        const w = watchers[col] || (watchers[col] = { subs: new Set(), last: null, timer: 0 });
+        w.subs.add(cb); w.last = null; tick(col);
+        if (!w.timer) w.timer = setInterval(() => tick(col), 2000);
+        return () => { w.subs.delete(cb); if (!w.subs.size) { clearInterval(w.timer); w.timer = 0; } };
+      },
+    };
+  }
+  const db = { isLocal: true, ns: NS, doc: path => { const [c, ...r] = path.split("/"); return docRef(c, r.join("/")); }, collection: colRef };
+  window.localDB = async function () {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 1200);
+      const r = await fetch(API + "/_ping", { signal: ctl.signal }); clearTimeout(t);
+      if (!r.ok) return null; await r.json(); return db;
+    } catch (e) { return null; }
+  };
+
+  // ---- nút Lưu trữ: nơi lưu hiện tại, xuất / mở file .json
+  const ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.700 3.100 3 7 3s7-1.300 7-3V6M5 12v6c0 1.700 3.100 3 7 3s7-1.300 7-3v-6"/></svg>';
+  const css = document.createElement("style");
+  css.textContent = ".dbw{position:relative;display:inline-flex;align-items:center}.dbw>button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--panel,#1d2026));color:var(--fg,var(--text,#e6e9ee));cursor:pointer;position:relative}.dbw>button i{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;background:#3ab06f}.dbw>button.warn i{background:#e3a008}.dbm{position:fixed;z-index:60;min-width:250px;max-width:min(340px,calc(100vw - 16px));padding:10px;border-radius:10px;background:var(--panel,#1d2026);color:var(--fg,var(--text,#e6e9ee));border:1px solid var(--line,#2a2f38);box-shadow:0 8px 24px #0004;font:12px/1.4 system-ui,sans-serif;display:none}.dbm.show{display:block}.dbm b{display:block;font-size:12px;margin-bottom:2px}.dbm p{margin:0 0 8px;color:var(--mute,var(--muted,#8b93a0));word-break:break-all}.dbm .r{display:flex;gap:6px}.dbm button{flex:1;height:32px;border-radius:8px;border:1px solid var(--line,#2a2f38);background:var(--raise,var(--bg,#14161a));color:inherit;cursor:pointer;font:inherit}.dbm .t{margin-top:8px;color:var(--accent,#4aa3ff)}body.tm .dbw>button{width:40px;height:40px}body.tm .dbm button{height:40px}";
+  document.head.appendChild(css);
+  window.dbWidget = function (o) {
+    const { db: d, cols, host } = o;
+    if (document.getElementById("dbW")) document.getElementById("dbW").remove();
+    const local = !!(d && d.isLocal), ok = !!d;
+    const where = local ? "Máy này: work/store/" + NS : ok ? "claude.ai: AI đọc được" : "Chỉ trình duyệt này (chưa nối kho)";
+    const w = document.createElement("span"); w.className = "dbw"; w.id = "dbW";
+    w.innerHTML = '<button type="button" title="Lưu trữ: xuất / mở file" aria-label="Lưu trữ" class="' + (ok ? "" : "warn") + '">' + ICON + '<i></i></button><div class="dbm" role="dialog"><b>Nơi lưu</b><p>' + where + '</p><div class="r"><button type="button" data-a="ex">Xuất file</button><button type="button" data-a="im">Mở file</button></div><div class="t" hidden></div><input type="file" accept=".json,application/json" hidden></div>';
+    const hostEl = (host && document.querySelector(host)) || null;
+    if (hostEl) hostEl.appendChild(w); else { w.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:50"; document.body.appendChild(w); }
+    const btn = w.querySelector("button"), menu = w.querySelector(".dbm"), msg = w.querySelector(".t"), file = w.querySelector("input");
+    const say = t => { msg.textContent = t; msg.hidden = !t; };
+    btn.onclick = e => { e.stopPropagation(); const on = !menu.classList.contains("show"); menu.classList.toggle("show", on); if (on) { const r = btn.getBoundingClientRect(); menu.style.top = Math.min(r.bottom + 6, innerHeight - menu.offsetHeight - 8) + "px"; menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + "px"; } };
+    document.addEventListener("click", e => { if (!w.contains(e.target)) menu.classList.remove("show"); });
+    w.addEventListener("click", async e => {
+      const a = e.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "im") { file.click(); return; }
+      if (!d) { say("Chưa có kho để xuất. Mở bằng Home hoặc trên claude.ai."); return; }
+      try {
+        const out = { format: "ddc-store-v1", ns: NS, title: document.title, at: new Date().toISOString(), collections: {} };
+        for (const c of cols) { const sn = await d.collection(c).get(); out.collections[c] = {}; sn.docs.forEach(s => { if (s.exists) out.collections[c][s.id] = s.data(); }); }
+        const n = Object.values(out.collections).reduce((s, c) => s + Object.keys(c).length, 0);
+        const name = NS + "_" + new Date().toISOString().slice(0, 10) + ".json", blob = new Blob([JSON.stringify(out)], { type: "application/json" });
+        let saved = false;
+        try { if (window.claude && window.claude.use) { const dl = await window.claude.use("downloads"); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } } catch (e2) {}
+        if (!saved) { const u = URL.createObjectURL(blob), an = document.createElement("a"); an.href = u; an.download = name; document.body.appendChild(an); an.click(); an.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+        say("Đã xuất " + n + " mục → " + name);
+      } catch (err) { say("Không xuất được: " + (err.message || err)); }
+    });
+    file.onchange = async () => {
+      const f = file.files[0]; file.value = ""; if (!f) return;
+      try {
+        const o2 = JSON.parse(await f.text());
+        if (o2.format !== "ddc-store-v1" || !o2.collections) throw new Error("không phải file lưu của Lab");
+        if (!d) throw new Error("chưa có kho để ghi");
+        let n = 0; for (const c in o2.collections) for (const id in o2.collections[c]) { await d.doc(c + "/" + id).set(o2.collections[c][id]); n++; }
+        say("Đã mở " + n + " mục từ " + f.name + (o2.ns && o2.ns !== NS ? " (nguồn: " + o2.ns + ")" : "") + ". Tải lại trang để thấy.");
+      } catch (err) { say("Không mở được: " + (err.message || err)); }
+    };
+  };
+})();
+</script>
+<script>
+// Each entry is one reviewable clip version; frames live in <dir>f001.jpg.. (add new versions here when republishing).
+// Optional per clip: w/h = frame size of the WebM (default 768x720), views = what the grid shows (zoom tag).
+const CLIPS = [
+  { clip: "Idle", version: "pb4", label: "Ninja Idle · polish_v4 (sửa loop: 40 frame)", src: "clips/ninja_idle_pb4.webm", thumb: "clips/ninja_idle_pb4.jpg", n: 40, fps: 30, w: 1350, h: 600, views: "right (ingame) | front | top", note: "Như pb3 (polish_v4) nhưng quay F1–F40: bỏ F41 trùng F1, hết khựng ở chỗ lặp." },
+  { clip: "Idle", version: "pb3", label: "Ninja Idle · polish_v4 (tay nhẹ, overlap thân)", src: "clips/ninja_idle_pb3.webm", thumb: "clips/ninja_idle_pb3.jpg", n: 41, fps: 30, w: 1350, h: 600, views: "right (ingame) | front | top", note: "Từ polish_v4: thở 40F, đỉnh hít F17, overlap hông→lưng→ngực→cổ→đầu (F17→F25), tay trễ sau bả vai, khăn lắc trái–phải sóng gốc→đuôi." },
+  { clip: "Idle", version: "pb2", label: "ninja_idle · playblast từ Pose Lab (pb2)", src: "clips/ninja_idle_pb2.webm", thumb: "clips/ninja_idle_pb2.jpg", n: 41, fps: 30, w: 450, h: 600, views: "đang xem", note: "Quay trong Pose Lab." },
+  { clip: "Idle", version: "pb1", label: "ninja_idle · playblast từ Pose Lab (pb1)", src: "clips/ninja_idle_pb1.webm", thumb: "clips/ninja_idle_pb1.jpg", n: 41, fps: 30, w: 450, h: 600, views: "đang xem", note: "Quay trong Pose Lab." },
+  { clip: "Idle", version: "polish_v5", label: "EN_M11_Boss_Gaygor_Idle · polish v5", src: "clips/idle_polish_v5.webm",
+    thumb: "clips/idle_polish_v5.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "ĐÃ DUYỆT (2026-10-20) · tay phải xoắn về sau 40° · đã xuất FBX" },
+  { clip: "Idle", version: "polish_v4", label: "EN_M11_Boss_Gaygor_Idle · polish v4", src: "clips/idle_polish_v4.webm",
+    thumb: "clips/idle_polish_v4.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v4" },
+  { clip: "Idle", version: "polish_v3", label: "EN_M11_Boss_Gaygor_Idle · polish v3", src: "clips/idle_polish_v3.webm",
+    thumb: "clips/idle_polish_v3.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v3" },
+  { clip: "Idle", version: "polish_v2", label: "EN_M11_Boss_Gaygor_Idle · polish v2", src: "clips/idle_polish_v2.webm",
+    thumb: "clips/idle_polish_v2.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v2" },
+  { clip: "Idle", version: "polish_v1", label: "EN_M11_Boss_Gaygor_Idle · polish v1", src: "clips/idle_polish_v1.webm",
+    thumb: "clips/idle_polish_v1.jpg", n: 133, fps: 30, w: 1320, h: 628, views: "REF | ANIM · front · left / back · right", note: "polish v1 (từ spline v1)" },
+];
+const COLORS = ["#ff4b3e", "#ffd23f", "#3fd17a", "#4aa8ff", "#ffffff"];
+const $ = id => document.getElementById(id);
+const imgC = $("img"), inkC = $("ink"), ictx = imgC.getContext("2d"), kctx = inkC.getContext("2d");
+let W = imgC.width, H = imgC.height;
+const DEF_VIEWS = "front · left / back · top";
+function setFrameSize(c) {               // each clip may have its own frame size (REF|ANIM grids are wide)
+  const w = c.w || 768, h = c.h || 720;
+  if (w !== W || h !== H) { W = w; H = h; imgC.width = inkC.width = w; imgC.height = inkC.height = h; }
+  $("stage").style.setProperty("--arw", w); $("stage").style.setProperty("--arh", h);
+}
+// Projects = one animation each (CLIPS[].clip); the playlist, notes and review round only show the chosen project.
+const PROJ_NAMES = { Attack: "Attack", Idle: "Idle (xoay trái phải)", Idle_Front: "Idle_Front", SDR_Attack: "Shoot Die Repeat · Attack", SDR06_Shoot: "SDR map06 · Shoot", SDR06_Reload: "SDR map06 · Reload" };
+const PROJECTS = [...new Set(CLIPS.map(c => c.clip))];
+function savedProj() { let h = decodeURIComponent((location.hash || "").slice(1)); if (PROJECTS.includes(h)) return h;
+  try { const v = localStorage.getItem("review.project"); if (PROJECTS.includes(v)) return v; } catch {} return PROJECTS[0]; }
+let PRJ = savedProj();
+let C = CLIPS.find(c => c.clip === PRJ) || CLIPS[0], N = C.n, frame = 1, playing = false, loop = true, speed = 1, last = 0, acc = 0;
+let pen = false, color = COLORS[0], onion = true, draft = [], cur = null;
+let notes = [], selected = null, db = null, user = null, myId = null, canWrite = true;
+const vid = $("vid");
+// Every frame is decoded once into an ImageBitmap cache (a second, hidden video seeks through the clip), so
+// scrubbing and playback just draw a ready image - seeking a compressed video per mouse move stutters.
+let cache = [], cacheN = 0, cacheJob = 0;
+const cached = () => cacheN === N;
+// frame f shows during [(f-1)/fps, f/fps): seek to the middle of it
+function seek(f) { if (!cached() && vid.readyState >= 1) vid.currentTime = (f - 0.5) / C.fps; }
+async function buildCache(url) {
+  const job = ++cacheJob; cache = []; cacheN = 0;
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+  await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; }).catch(() => null);
+  if (job !== cacheJob || v.readyState < 2) return;
+  for (let f = 1; f <= N; f++) {
+    await new Promise(ok => { const t = setTimeout(ok, 2500); v.onseeked = () => { clearTimeout(t); ok(); }; v.currentTime = (f - 0.5) / C.fps; });   // quá 2,5 s không tua được thì bỏ qua frame này
+    if (job !== cacheJob) return;
+    try { cache[f] = await createImageBitmap(v); }
+    catch { const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(v, 0, 0, W, H); cache[f] = c; }
+    cacheN = f;
+    $("loading").hidden = true; $("cprog").hidden = false; $("cprog").textContent = f + " / " + N;
+  }
+  $("loading").hidden = true; $("cprog").hidden = true;
+  if (playing && !vid.paused) { vid.pause(); acc = 0; last = 0; }   // hand playback over to the cache
+  draw();
+}
+function loadFrames() {
+  cacheJob++; cache = []; cacheN = 0; setFrameSize(C); applyZoom(); $("cprog").hidden = true;
+  $("loading").hidden = false; $("loading").textContent = "Đang tải video…";
+  // load the whole (small) WebM into memory: a blob is always seekable, whatever the server does with Range requests
+  const want = C.src;
+  fetch(want).then(r => { if (!r.ok) throw 0; return r.blob(); })
+    .then(b => { if (C.src !== want) return; if (vid.dataset.blob) URL.revokeObjectURL(vid.dataset.blob);
+                 vid.dataset.blob = URL.createObjectURL(b); vid.src = vid.dataset.blob; vid.load(); buildCache(vid.dataset.blob); })
+    .catch(() => { vid.src = want; vid.load(); buildCache(want); });
+}
+vid.addEventListener("loadeddata", () => { if (!cacheN) $("loading").hidden = true; seek(frame); });
+vid.addEventListener("seeked", draw);
+vid.addEventListener("error", () => { $("loading").hidden = false; $("loading").textContent = "Không tải được video WebM."; });
+vid.addEventListener("ended", () => { stop(); go(N); });
+
+function path(ctx, s) { ctx.beginPath(); s.forEach(([x, y], k) => k ? ctx.lineTo(x * W, y * H) : ctx.moveTo(x * W, y * H)); ctx.stroke(); }
+function mine() { return notes.filter(n => n.clip === C.clip && n.version === C.version); }
+function draw() {
+  ictx.fillStyle = "#464b52"; ictx.fillRect(0, 0, W, H);
+  if (cache[frame]) ictx.drawImage(cache[frame], 0, 0, W, H);
+  else if (vid.readyState >= 2) ictx.drawImage(vid, 0, 0, W, H);
+  kctx.clearRect(0, 0, W, H); kctx.lineCap = kctx.lineJoin = "round";
+  for (const n of mine()) {
+    const d = Math.abs(n.frame - frame);
+    if (!n.strokes || d > (onion ? 2 : 0)) continue;
+    kctx.globalAlpha = d ? 0.22 : (n.status === "done" ? 0.4 : 1);
+    for (const s of n.strokes) {
+      kctx.lineWidth = ((s && s.w) || 4) + (n.id === selected ? 2 : 0);
+      kctx.strokeStyle = (s && s.c) || "#ff4b3e"; path(kctx, s.p || s);
+    }
+  }
+  kctx.globalAlpha = 1;
+  for (const s of draft) { kctx.lineWidth = s.w || 4; kctx.strokeStyle = s.c; path(kctx, s.p); }
+  $("curf").textContent = frame; $("newF").textContent = "Frame " + frame;
+  const hl = $("headLine"); hl.style.left = "calc(" + ((frame - 0.5) / N * 100) + "% - 1px)";
+  $("cells").setAttribute("aria-valuenow", frame);
+}
+function go(f) { frame = ((f - 1 + N) % N) + 1; if (!playing) seek(frame); draw(); }
+
+function buildCells() {
+  const box = $("cells"); [...box.querySelectorAll(".cell")].forEach(c => c.remove());
+  $("cells").setAttribute("aria-valuemax", N);
+  const by = {}; for (const n of mine()) (by[n.frame] = by[n.frame] || []).push(n);
+  for (let f = 1; f <= N; f++) {
+    const c = document.createElement("div"); c.className = "cell";
+    if (f === 1 || f % 5 === 0) { const s = document.createElement("span"); s.className = "n"; s.textContent = f; c.append(s); }
+    if (by[f]) { const m = document.createElement("span"); m.className = "mk" + (by[f].every(n => n.status === "done") ? " done" : ""); c.append(m); }
+    box.insertBefore(c, $("headLine"));
+  }
+  draw();
+}
+
+// scrub
+(() => {
+  const box = $("cells"); let on = false;
+  const at = e => { const r = box.getBoundingClientRect(); return Math.min(N, Math.max(1, Math.floor((e.clientX - r.left) / r.width * N) + 1)); };
+  box.addEventListener("pointerdown", e => { on = true; box.setPointerCapture(e.pointerId); stop(); go(at(e)); e.preventDefault(); });
+  box.addEventListener("pointermove", e => { if (on) { const f = at(e); if (f !== frame) go(f); } });
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(t => box.addEventListener(t, () => { on = false; }));
+})();
+
+// playback
+function tick(t) {
+  if (!playing) return;
+  if (cached()) {                                   // exact frame clock over the cache
+    if (last) acc += (t - last) / 1000 * C.fps * speed;
+    last = t;
+    if (acc >= 1) { const k = Math.floor(acc); acc -= k;
+      if (!loop && frame + k > N) { frame = N; draw(); stop(); return; }
+      frame = ((frame + k - 1) % N) + 1; draw(); }
+  } else {                                          // still decoding: follow the video
+    const f = Math.min(N, Math.floor(vid.currentTime * C.fps) + 1);
+    if (f !== frame) frame = f;
+    draw();
+  }
+  requestAnimationFrame(tick);
+}
+const PLAY = '<path d="M7 4l13 8-13 8z"/>', PAUSE = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+function play() {
+  setPen(false); if (!loop && frame >= N) { frame = 1; seek(1); }
+  playing = true; last = 0; acc = 0; $("playIcon").innerHTML = PAUSE;
+  if (cached()) { requestAnimationFrame(tick); return; }
+  vid.loop = loop; vid.playbackRate = speed;
+  vid.play().then(() => requestAnimationFrame(tick)).catch(() => { playing = false; $("playIcon").innerHTML = PLAY; });
+}
+function stop() { if (!playing) return; playing = false; $("playIcon").innerHTML = PLAY;
+  if (!vid.paused) { vid.pause(); if (!cached()) frame = Math.min(N, Math.floor(vid.currentTime * C.fps) + 1); }
+  seek(frame); draw(); }
+function noteFrames() { return [...new Set(mine().map(n => n.frame))].sort((a, b) => a - b); }
+function jumpNote(dir) { const fs = noteFrames(); if (!fs.length) return; stop();
+  const f = dir > 0 ? (fs.find(x => x > frame) ?? fs[0]) : ([...fs].reverse().find(x => x < frame) ?? fs[fs.length - 1]); go(f); }
+$("play").onclick = () => playing ? stop() : play();
+$("prev").onclick = () => { stop(); go(frame - 1); };
+$("next").onclick = () => { stop(); go(frame + 1); };
+$("first").onclick = () => { stop(); go(1); };
+$("prevN").onclick = () => jumpNote(-1);
+$("nextN").onclick = () => jumpNote(1);
+$("loop").onclick = () => { loop = !loop; vid.loop = loop; $("loop").classList.toggle("on", loop); };
+$("speed").onchange = e => { speed = +e.target.value; vid.playbackRate = speed; };
+document.addEventListener("keydown", e => {
+  if (e.target.closest("textarea, select, input")) return;
+  const k = e.key;
+  if (k === "ArrowLeft") { e.preventDefault(); stop(); go(frame - 1); }
+  else if (k === "ArrowRight") { e.preventDefault(); stop(); go(frame + 1); }
+  else if (k === " ") { e.preventDefault(); playing ? stop() : play(); }
+  else if (k === "Home") { stop(); go(1); }
+  else if (k === ",") jumpNote(-1);
+  else if (k === ".") jumpNote(1);
+  else if (k === "d" || k === "D") setPen(!pen);
+  else if (k === "h" || k === "H") setHand(!hand);
+  else if (k === "[") setSize(sizeI - 1);
+  else if (k === "]") setSize(sizeI + 1);
+  else if (k === "a" || k === "A" || k === "0") resetZoom();
+  else if (k === "+" || k === "=") zoomCenter(1.25);
+  else if (k === "-" || k === "_") zoomCenter(0.8);
+  else if ((e.ctrlKey || e.metaKey) && (k === "z" || k === "Z")) { e.preventDefault(); draft.pop(); draw(); }
+});
+
+// tools
+function setPen(on) { pen = on; $("tPen").classList.toggle("on", pen); inkC.classList.toggle("draw", pen); if (pen) { stop(); if (hand) setHand(false); } updateCursor(); }
+
+// brush size (in frame pixels, so a stroke keeps its look at any zoom) and a round cursor showing size + colour
+const SIZES = [2, 4, 7, 12, 20];
+let sizeI = 1;
+const penW = () => SIZES[sizeI];
+function setSize(i) {
+  sizeI = Math.max(0, Math.min(SIZES.length - 1, i));
+  document.querySelectorAll(".tool.size").forEach((x, j) => x.classList.toggle("on", j === sizeI));
+  updateCursor();
+}
+SIZES.forEach((w, i) => {
+  const b = document.createElement("button"); b.className = "tool size" + (i === sizeI ? " on" : "");
+  b.title = `Cỡ bút ${w}px ( [ nhỏ hơn · ] to hơn )`; b.setAttribute("aria-label", "Cỡ bút " + w);
+  const d = document.createElement("span"); const px = Math.round(4 + i * 3);
+  d.style.cssText = `width:${px}px;height:${px}px;border-radius:50%;background:currentColor;display:block`;
+  b.append(d); b.onclick = () => { setSize(i); setPen(true); };
+  $("sizes").append(b);
+});
+function updateCursor() {
+  if (!pen) { inkC.style.cursor = ""; return; }
+  const scale = inkC.getBoundingClientRect().width / W;                 // includes the viewer zoom
+  const d = Math.max(6, Math.min(120, Math.round(penW() * scale)));
+  const s = d + 6, r = d / 2, c = s / 2;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}">` +
+    `<circle cx="${c}" cy="${c}" r="${r + 1.5}" fill="none" stroke="#000" stroke-opacity=".55" stroke-width="1.5"/>` +
+    `<circle cx="${c}" cy="${c}" r="${r}" fill="${color}" fill-opacity=".85" stroke="#fff" stroke-width="1.5"/></svg>`;
+  inkC.style.cursor = `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${Math.round(c)} ${Math.round(c)}, crosshair`;
+}
+window.addEventListener("resize", updateCursor);
+$("tPen").onclick = () => setPen(!pen);
+$("tUndo").onclick = () => { draft.pop(); draw(); };
+$("tClear").onclick = () => { draft = []; draw(); };
+$("tOnion").onclick = () => { onion = !onion; $("tOnion").classList.toggle("on", onion); draw(); };
+$("tOnion").classList.toggle("on", onion);
+COLORS.forEach((c, i) => {
+  const b = document.createElement("button"); b.className = "tool color" + (i ? "" : " on"); b.setAttribute("aria-label", "Màu " + c); b.title = "Màu nét";
+  const s = document.createElement("span"); s.className = "sw"; s.style.background = c; b.append(s);
+  b.onclick = () => { color = c; document.querySelectorAll(".tool.color").forEach(x => x.classList.toggle("on", x === b)); setPen(true); updateCursor(); };
+  $("colors").append(b);
+});
+function pt(e) { const r = inkC.getBoundingClientRect(); return [+((e.clientX - r.left) / r.width).toFixed(4), +((e.clientY - r.top) / r.height).toFixed(4)]; }
+
+// zoom + pan: wheel zooms at the cursor, hand tool / middle mouse / Alt+drag pans, A resets
+const stage = $("stage"), viewer = stage.parentElement;
+let zoom = 1, tx = 0, ty = 0, hand = false, pan = null;
+function applyZoom() {
+  stage.style.transform = zoom === 1 && !tx && !ty ? "" : `translate(${tx}px, ${ty}px) scale(${zoom})`;
+  $("zFit").textContent = Math.round(zoom * 100) + "%";
+  $("zoomTag").textContent = zoom === 1 && !tx && !ty ? (C.views || DEF_VIEWS) : `Zoom ${Math.round(zoom * 100)}% · bấm A để về vừa khung`;
+  updateCursor();
+}
+function zoomAt(z2, cx, cy) {
+  z2 = Math.min(8, Math.max(0.5, z2));
+  const r = stage.getBoundingClientRect();
+  const lx = (cx - r.left) / zoom, ly = (cy - r.top) / zoom;   // point under the cursor, in unzoomed stage px
+  tx += lx * (zoom - z2); ty += ly * (zoom - z2); zoom = z2; applyZoom();
+}
+function zoomCenter(k) { const r = viewer.getBoundingClientRect(); zoomAt(zoom * k, r.left + r.width / 2, r.top + r.height / 2); }
+function resetZoom() { zoom = 1; tx = ty = 0; applyZoom(); }
+viewer.addEventListener("wheel", e => { e.preventDefault(); zoomAt(zoom * Math.exp(-e.deltaY * 0.0015), e.clientX, e.clientY); }, { passive: false });
+$("zIn").onclick = () => zoomCenter(1.25);
+$("zOut").onclick = () => zoomCenter(0.8);
+$("zFit").onclick = resetZoom;
+function setHand(on) { hand = on; $("tHand").classList.toggle("on", hand); viewer.classList.toggle("hand", hand); if (hand) setPen(false); }
+$("tHand").onclick = () => setHand(!hand);
+viewer.addEventListener("pointerdown", e => {
+  if (!(hand || e.button === 1 || e.altKey)) return;
+  e.preventDefault(); e.stopPropagation();
+  pan = { x: e.clientX, y: e.clientY, tx, ty }; viewer.setPointerCapture(e.pointerId); viewer.classList.add("panning");
+}, true);
+viewer.addEventListener("pointermove", e => { if (!pan) return; tx = pan.tx + e.clientX - pan.x; ty = pan.ty + e.clientY - pan.y; applyZoom(); });
+["pointerup", "pointercancel", "lostpointercapture"].forEach(t => viewer.addEventListener(t, () => { pan = null; viewer.classList.remove("panning"); }));
+viewer.addEventListener("auxclick", e => { if (e.button === 1) e.preventDefault(); });
+
+inkC.addEventListener("pointerdown", e => { if (pan || e.button !== 0) return; if (!pen) setPen(true); inkC.setPointerCapture(e.pointerId); cur = { c: color, w: penW(), p: [pt(e)] }; draft.push(cur); });
+inkC.addEventListener("pointermove", e => { if (!cur) return; const p = pt(e), q = cur.p[cur.p.length - 1];
+  if (Math.hypot(p[0] - q[0], p[1] - q[1]) > 0.004 / zoom) { cur.p.push(p); draw(); } });
+["pointerup", "pointercancel"].forEach(t => inkC.addEventListener(t, () => { if (cur && cur.p.length < 2) draft.pop(); cur = null; draw(); }));
+
+// playlist
+function renderClips() {
+  const box = $("clips"); box.textContent = "";
+  const list = CLIPS.filter(c => c.clip === PRJ);
+  $("clipCount").textContent = "(" + list.length + " version)"; $("projName").textContent = PROJ_NAMES[PRJ] || PRJ;
+  for (const c of list) {
+    const b = document.createElement("button"); b.className = "item" + (c === C ? " on" : "");
+    const im = document.createElement("img"); im.src = c.thumb; im.alt = ""; im.style.aspectRatio = (c.w || 768) + " / " + (c.h || 720);
+    const t = document.createElement("div"); const bb = document.createElement("b"); bb.textContent = c.label;
+    const n = notes.filter(x => x.clip === c.clip && x.version === c.version).length;
+    const sm = document.createElement("small"); sm.textContent = c.n + " frame · " + n + " ghi chú"; b.title = c.note || "";
+    t.append(bb, sm); b.append(im, t);
+    b.onclick = () => { if (c === C) return; C = c; N = c.n; frame = 1; $("fileName").textContent = c.label; loadFrames(); renderClips(); renderNotes(); renderRound(); };
+    box.append(b);
+  }
+}
+
+// notes
+async function renderNotes() {
+  const box = $("notes"); box.textContent = "";
+  const flt = $("flt").value, list = mine().filter(n => flt === "all" || (flt === "done") === (n.status === "done"));
+  $("count").textContent = mine().length;
+  if (!list.length) {
+    const p = document.createElement("p"); p.className = "empty";
+    p.textContent = !db ? "Chưa xem được ghi chú: hãy đăng nhập claude.ai (nút Sign in) rồi tải lại trang. Khi chưa đăng nhập vẫn tua và vẽ được, nhưng ghi chú không lưu."
+                        : mine().length ? "Không có ghi chú nào khớp bộ lọc." : "Chưa có ghi chú.\nHãy để lại ghi chú đầu tiên…";
+    box.append(p); buildCells(); renderClips(); return;
+  }
+  const ids = [...new Set(list.map(n => n.author).filter(Boolean))];
+  const ps = user && ids.length ? await user.profiles(ids) : {};
+  for (const n of list.sort((a, b) => a.frame - b.frame || (a.createdAt > b.createdAt ? 1 : -1))) {
+    const el = document.createElement("div"); el.className = "note" + (n.status === "done" ? " done" : "") + (n.id === selected ? " sel" : "");
+    const top = document.createElement("div"); top.className = "top2";
+    const p = ps[n.author];
+    if (p) { const im = document.createElement("img"); im.src = p.avatarUrl; im.alt = ""; top.append(im); }
+    const who = document.createElement("span"); who.className = "who"; who.textContent = (p && p.name) || "Người xem";
+    const fb = document.createElement("button"); fb.className = "fbtn"; fb.textContent = "F" + n.frame;
+    fb.onclick = () => { stop(); selected = n.id; go(n.frame); renderNotes(); };
+    const part = document.createElement("span"); part.className = "part"; part.textContent = n.part || "";
+    top.append(who, fb, part);
+    if (n.editedAt) { const ed = document.createElement("span"); ed.className = "part"; ed.textContent = "· đã chỉnh"; top.append(ed); }
+    if (editing && editing.id === n.id) { el.classList.add("sel"); el.append(top, editForm(n)); box.append(el); continue; }
+    const tx = document.createElement("p"); tx.textContent = n.text || "(chỉ có nét vẽ)";
+    el.append(top, tx);
+    el.onclick = e => { if (e.target.closest("button")) return; stop(); selected = n.id; go(n.frame); renderNotes(); };
+    if (db && canWrite) {
+      const acts = document.createElement("div"); acts.className = "acts";
+      const done = document.createElement("button"); done.className = "mini"; done.textContent = n.status === "done" ? "Mở lại" : "Đã sửa";
+      done.onclick = () => db.doc("notes/" + n.id).update({ status: n.status === "done" ? "open" : "done" }).catch(fail);
+      acts.append(done);
+      if (n.author && n.author === myId) {
+        const ed = document.createElement("button"); ed.className = "mini"; ed.textContent = "Sửa";
+        ed.onclick = () => { stop(); selected = n.id; go(n.frame); editing = { id: n.id, text: n.text || "", part: n.part || "" }; renderNotes(); };
+        acts.append(ed);
+        const del = document.createElement("button"); del.className = "mini"; del.textContent = "Xoá";
+        del.onclick = () => { if (del.dataset.arm) db.doc("notes/" + n.id).delete().catch(fail); else { del.dataset.arm = 1; del.textContent = "Bấm lần nữa để xoá"; } };
+        acts.append(del);
+      }
+      el.append(acts);
+    }
+    box.append(el);
+  }
+  buildCells(); renderClips();
+}
+$("flt").onchange = renderNotes;
+
+// edit own note: text, body part, frame (moves to the current frame), and optionally replace the sketch
+let editing = null;   // {id, text, part} - survives live re-renders while typing
+function editForm(n) {
+  const f = document.createElement("div"); f.style.display = "grid"; f.style.gap = "6px";
+  const sel = document.createElement("select"); sel.id = "edPart"; sel.setAttribute("aria-label", "Bộ phận");
+  for (const o of $("part").options) { const op = document.createElement("option"); op.textContent = o.textContent; sel.append(op); }
+  sel.value = editing.part || $("part").options[0].textContent; sel.onchange = () => editing.part = sel.value;
+  sel.style.cssText = "background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px 6px";
+  const ta = document.createElement("textarea"); ta.id = "edText"; ta.value = editing.text;
+  ta.style.cssText = "background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:6px 8px;min-height:64px;resize:vertical;width:100%";
+  ta.oninput = () => editing.text = ta.value;
+  ta.onkeydown = e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) save.click(); if (e.key === "Escape") cancel.click(); };
+  const opts = document.createElement("small"); opts.className = "part";
+  opts.textContent = "Muốn vẽ lại: vẽ nét mới lên hình rồi bấm Lưu, nét mới sẽ thay nét cũ.";
+  const row = document.createElement("div"); row.className = "acts";
+  const save = document.createElement("button"); save.className = "mini"; save.textContent = "Lưu";
+  save.style.cssText = "background:var(--accent);border-color:var(--accent);color:#fff";
+  const cancel = document.createElement("button"); cancel.className = "mini"; cancel.textContent = "Huỷ";
+  save.onclick = async () => {
+    if (frame !== n.frame && draft.length) { $("status").textContent = `Nét vẽ mới phải vẽ ở F${n.frame}, đúng frame của ghi chú.`; return; }
+    const upd = { text: editing.text.trim(), part: editing.part, editedAt: new Date().toISOString() };
+    if (draft.length) upd.strokes = draft.map(s => ({ c: s.c, w: s.w, p: s.p }));
+    if (!upd.text && !(upd.strokes || n.strokes || []).length) { $("status").textContent = "Ghi chú cần có chữ hoặc nét vẽ."; return; }
+    save.disabled = true;
+    try { await db.doc("notes/" + n.id).update(upd); if (upd.strokes) draft = []; editing = null; $("status").textContent = "Đã lưu chỉnh sửa ghi chú F" + n.frame + "."; renderNotes(); draw(); }
+    catch (e) { save.disabled = false; fail(e); }
+  };
+  cancel.onclick = () => { editing = null; renderNotes(); };
+  row.append(save, cancel);
+  f.append(sel, ta, opts, row);
+  setTimeout(() => { if (document.activeElement !== ta && editing) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }, 0);
+  return f;
+}
+function fail(e) {
+  const c = e && e.code;
+  if (c === "invalid_argument") { canWrite = false; $("send").disabled = true; $("status").textContent = "Bạn đang ở quyền chỉ xem nên không gửi được. Nhờ chủ trang cấp quyền Contributor."; renderNotes(); }
+  else if (c === "quota_exceeded") $("status").textContent = "Kho ghi chú đã đầy. Hãy xoá bớt ghi chú đã sửa.";
+  else $("status").textContent = "Chưa lưu được, thử lại sau ít giây.";
+}
+$("send").onclick = async () => {
+  const text = $("text").value.trim();
+  if (!text && !draft.length) { $("status").textContent = "Viết ghi chú hoặc vẽ lên hình trước khi gửi."; return; }
+  if (!db) { $("status").textContent = "Cần đăng nhập claude.ai để lưu ghi chú."; return; }
+  $("send").disabled = true; $("status").textContent = "Đang gửi…";
+  const body = { clip: C.clip, version: C.version, frame, part: $("part").value, text,
+    strokes: draft.map(s => ({ c: s.c, w: s.w, p: s.p })), status: "open", createdAt: new Date().toISOString() };
+  if (myId) body.author = myId;
+  try { await db.collection("notes").add(body); draft = []; $("text").value = ""; $("status").textContent = "Đã gửi ghi chú ở F" + frame + "."; }
+  catch (e) { fail(e); }
+  $("send").disabled = !canWrite;
+};
+$("text").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) $("send").click(); });
+
+// review rounds: rounds/<clip>-<version> = {clip, version, status: sent|working|fixed, sentBy, sentAt, noteCount, frames, aiNote}
+let rounds = {}, comments = null, armed = false;
+const roundId = () => (C.clip + "-" + C.version).replace(/[^A-Za-z0-9_\-.]/g, "_");
+function fmtTime(s) { try { return new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }); } catch { return s; } }
+async function renderRound() {
+  const r = rounds[roundId()], box = $("round"), btn = $("aiSend");
+  const open = mine().filter(n => n.status !== "done");
+  box.dataset.s = r ? r.status : "none";
+  let who = "";
+  if (r && r.sentBy && user) { const ps = await user.profiles([r.sentBy]); who = ps[r.sentBy].name || ""; }
+  const fr = [...new Set(open.map(n => n.frame))].sort((a, b) => a - b);
+  if (!r) { $("roundTxt").textContent = "Vòng review đang mở";
+            $("roundSub").textContent = open.length + " ghi chú chưa sửa" + (fr.length ? " · frame " + fr.join(", ") : ""); }
+  else if (r.status === "sent") { $("roundTxt").textContent = "Đã gửi cho AI, đang chờ nhận việc";
+            $("roundSub").textContent = (who ? who + " · " : "") + fmtTime(r.sentAt) + " · " + (r.noteCount || 0) + " ghi chú" + " · gõ /check_fb trong Claude để AI nhận việc"; }
+  else if (r.status === "working") { $("roundTxt").textContent = "AI đang sửa theo feedback"; $("roundSub").textContent = r.aiNote || ""; }
+  else if (r.status === "fixed") { $("roundTxt").textContent = "AI đã sửa xong vòng này"; $("roundSub").textContent = r.aiNote || ""; }
+  btn.textContent = armed ? `Đã xem hết clip? Gửi ${open.length} ghi chú (frame ${fr.join(", ")})` : (r && r.status !== "fixed" ? "Gửi lại cho AI" : "Gửi feedback cho AI");
+  btn.classList.toggle("arm", armed);
+  btn.disabled = !db || !canWrite || !open.length;
+  btn.title = !db ? "Cần đăng nhập claude.ai" : !open.length ? "Chưa có ghi chú nào chưa sửa" : "";
+}
+$("aiSend").onclick = async () => {
+  const open = mine().filter(n => n.status !== "done");
+  if (!armed) { armed = true; renderRound(); setTimeout(() => { armed = false; renderRound(); }, 6000); return; }
+  armed = false; const btn = $("aiSend"); btn.disabled = true; $("status").textContent = "Đang gửi cho AI…";
+  const frames = [...new Set(open.map(n => n.frame))].sort((a, b) => a - b);
+  let toClaude = false, note = "";
+  try {
+    if (comments && (await comments.canSendToClaude().catch(() => "off")) === "available") {
+      const anchor = await comments.anchorFor(btn);
+      const text = `Feedback xong cho ${C.clip} ${C.version}: ${open.length} ghi chú chưa sửa ở frame ${frames.join(", ")}. ` +
+                   `Đọc collection "notes" (clip ${C.clip}, version ${C.version}) trên trang review rồi sửa trong Blender.`;
+      await comments.sendToClaude({ anchor, text }); toClaude = true;
+    }
+  } catch (e) { note = e && e.code === "consent_required" ? " (bạn chưa cho phép trang gửi comment)" : ""; }
+  const body = { clip: C.clip, version: C.version, status: "sent", sentAt: new Date().toISOString(),
+                 noteCount: open.length, frames, toClaude };
+  if (myId) body.sentBy = myId;
+  try { await db.doc("rounds/" + roundId()).set(body);
+        $("status").textContent = "Đã gửi " + open.length + " ghi chú. Gõ /check_fb trong Claude để AI nhận việc; AI sửa hết trong một version."; }
+  catch (e) { fail(e); }
+  renderRound();
+};
+
+function setProject(p) {
+  if (!PROJECTS.includes(p)) return;
+  PRJ = p; try { localStorage.setItem("review.project", p); } catch {}
+  if (location.hash.slice(1) !== p) history.replaceState(null, "", "#" + encodeURIComponent(p));
+  $("proj").value = p;
+  const c = CLIPS.find(x => x.clip === p);
+  if (c !== C) { stop(); C = c; N = c.n; frame = 1; selected = null; editing = null; draft = []; $("fileName").textContent = c.label; loadFrames(); }
+  renderClips(); renderNotes(); renderRound();
+}
+for (const p of PROJECTS) { const o = document.createElement("option"); o.value = p; o.textContent = PROJ_NAMES[p] || p; $("proj").append(o); }
+$("proj").value = PRJ; $("proj").onchange = e => setProject(e.target.value);
+window.addEventListener("hashchange", () => setProject(decodeURIComponent(location.hash.slice(1))));
+$("fileName").textContent = C.label;
+loadFrames(); renderClips(); buildCells(); renderRound();
+(async () => {
+  const hasClaude = !!(window.claude && window.claude.use);
+  let d = null, u = null, cm = null;
+  if (hasClaude) [d, u, cm] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("comments")]);
+  if (!d) d = await window.localDB();   // không có db claude.ai: dùng kho trên máy (Home server)
+  db = d; user = u; comments = cm;
+  try { window.dbWidget({ db, cols: ["notes", "rounds"], host: ".top" }); } catch (e) { console.error(e); }
+  if (!hasClaude && !db) { renderNotes(); return; }
+  if (user) { myId = await user.id(); if ((await user.can("data.write")) === false) { canWrite = false; $("send").disabled = true;
+    $("status").textContent = "Bạn đang ở quyền chỉ xem: xem được ghi chú nhưng không gửi được."; } }
+  if (!db) { $("send").disabled = true; renderNotes(); return; }
+  db.collection("notes").onSnapshot(snap => {
+    notes = snap.docs.filter(s => s.exists).map(s => ({ id: s.id, ...s.data() }));
+    renderNotes(); renderRound();
+  }, () => { $("status").textContent = "Mất kết nối kho ghi chú. Tải lại trang để kết nối lại."; });
+  db.collection("rounds").onSnapshot(snap => {
+    rounds = {}; snap.docs.filter(s => s.exists).forEach(s => rounds[s.id] = s.data());
+    renderRound();
+  }, () => {});
+})();
+</script>
+<script>
+/* Nút là icon (docs/ui_guidelines.md): chữ ẩn bằng CSS và thành tooltip. Nút Gửi cho AI khi "armed" (xác nhận) hiện lại chữ. */
+(function () {
+  const BY_ID = { aiSend: "send", send: "send", zOut: "minus", zIn: "plus" };
+  const BY_TEXT = { "Đã sửa": "check", "Mở lại": "reset", "Sửa": "edit", "Xoá": "trash", "Lưu": "check", "Huỷ": "close" };
+  function sync(el) {
+    const t = el.textContent.replace(/\s+/g, " ").trim();
+    if (t && !el.dataset.t0) el.dataset.t0 = el.getAttribute("title") || "";
+    const tip = t ? (t + (el.dataset.t0 ? " - " + el.dataset.t0 : "")) : (el.dataset.t0 || "");
+    if (tip && el.title !== tip) el.title = tip;
+    if (t) el.setAttribute("aria-label", t);
+  }
+  function apply() {
+    for (const id in BY_ID) { const el = document.getElementById(id); if (el) { if (!el.dataset.ic) { el.dataset.ic = BY_ID[id]; el.classList.add("ibtn"); } sync(el); } }
+    document.querySelectorAll(".mini").forEach(el => { const ic = BY_TEXT[el.textContent.trim()]; if (ic && el.dataset.ic !== ic) { el.dataset.ic = ic; el.classList.add("ibtn"); } if (ic) sync(el); });
+  }
+  let q = 0; const sched = () => { if (!q) q = setTimeout(() => { q = 0; apply(); }, 20); };
+  new MutationObserver(sched).observe(document.body, { childList: true, subtree: true, characterData: true });
+  apply();
+})();
+</script>

@@ -1,0 +1,41 @@
+{
+ "clip": {
+  "id": "ninja_dfgfgf",
+  "character": "Ninja",
+  "stage": "p0",
+  "note": "Tạo từ Studio (Animate → Anim mới): P0 từ rig hiện tại, chờ phân tích / blocking",
+  "dir": "work/infinite_defense/ninja_dfgfgf",
+  "frames": 30,
+  "fps": 30,
+  "ref": "",
+  "desc": "",
+  "created": "2026-10-29",
+  "updated": "2026-10-29",
+  "review": {
+   "key": "ninja_dfgfgf",
+   "clip": "dfgfgf",
+   "title": "Ninja dfgfgf Review Lab",
+   "crumb": "Ninja · anim",
+   "name": "dfgfgf",
+   "parts": null,
+   "url": ""
+  },
+  "pose": {
+   "key": "ninja_dfgfgf",
+   "clip": "Ninja_dfgfgf",
+   "title": "Ninja dfgfgf Pose Lab",
+   "url": ""
+  }
+ },
+ "lines": {
+  "pose": [
+   "  { clip: \"Ninja_dfgfgf\", project: \"Ninja\", version: \"p0_v1\", date: \"2026-10-29\", frames: 30, fps: 30, keys: [1], mode: \"keys\", label: \"P0 từ rig Studio\", note: \"Tạo từ Studio (Animate → Anim mới): frame 1 = pose đứng của rig hiện tại.\", glb: \"models/ninja_dfgfgf_rig_v1.json\" },\r"
+  ]
+ },
+ "moved": [
+  "work/pose_lab/models/ninja_dfgfgf_rig_v1.json",
+  "work/pose_lab/pages/ninja_dfgfgf",
+  "work/infinite_defense/ninja_dfgfgf"
+ ],
+ "deleted": "2026-10-29 16:51:48"
+}
