@@ -83,6 +83,11 @@ Quy tắc polish cơ bản (shift keys theo chuỗi, quaternion post-multiply, `
 - **Studio / playblast (2026-10-29, Ninja Idle, user: "loop bị giật"):** anim đúng (F41 = F1, tốc độ liền) nhưng nút Phát và `anim playblast`
   chạy F1..F41 → F41 rồi F1 cùng một pose = 1 frame khựng mỗi vòng. Đã sửa ở master Pose Lab (`% PER()`, playblast `n = PER()`) +
   `port_pose.py`. Khi user nói loop giật: đo nối trước, rồi kiểm số frame của video (`n` phải = frames − 1 với clip loop).
+- **Tiếp tuyến chỗ nối (2026-11-05, RPG2 Hero Blade Idle trên Frolvy, user: "smooth frame đầu cuối để anim chuyển động mượt hơn … lưu lỗi này cho các anim loop là idle run walk"):**
+  key F đầu = F cuối chưa đủ: tiếp tuyến tự động ở 2 key mút tính một phía nên tốc độ gãy ở chỗ nối (vd cổ tay tx cuối vòng 0,05 cm/F, đầu vòng 0,58 cm/F).
+  Áp cho **mọi clip loop (idle, run, walk)**, xong mỗi lượt key: với mỗi kênh có >2 key, s = (v(F2) − v(F cuối−1)) / 2 (độ dốc qua chỗ nối),
+  đặt cùng s (không gãy) cho cả key đầu và key cuối. Frolvy: `api.set_key_tangent(path, 0, s*fps, s*fps, False)` và tương tự ở frame cuối
+  (đơn vị **mỗi giây**), kèm `set_infinity(path,'cycle','cycle')`. Kiểm: gia tốc tại chỗ nối |v1 − 2v0 + v_cuối−1| ≤ gia tốc lớn nhất giữa vòng.
 
 ## end-on-idle
 - Đuôi clip non-loop cho game (SDR Attack): user muốn **các frame cuối là pose Idle đứng yên** (F20–F26 = Idle, không nhích quá đà) —

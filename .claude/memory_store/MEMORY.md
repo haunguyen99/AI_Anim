@@ -68,3 +68,9 @@
 - [Endless-kicker](project-endless-kicker.md) — hero Windy (wind mage + staff), Unity E:\endless-kicker v1, team Maya E:\tvc_source\3D ANIM\EndlessKicker already has Idle/Attack/Skill1–3, GDD FDD Windy
 - [Propose tools](feedback-propose-tools.md) — tự đề xuất làm tool cho công đoạn tốn thời gian, lặp lại được (user 2026-11-04)
 - [VS Code setup](reference-vscode-pilot.md) — team uses Claude in VS Code too: tools/setup_vscode.ps1 (-Install, -Endpoint lan|public), docs/vscode_pilot.md §7; LAN http://192.168.10.29:40741, key only in each user's ~/.claude/settings.json
+- [Fit controls after Build Rig](frolvy-fit-controls-after-build.md) — in Frolvy run fit_controls.snug(api) (menu Build Rig + Fit Controls) right after Build/Rebuild Rig
+- [Game rig: base joints only](frolvy-game-rig-base-joints-only.md) — no helper set / twist / bendy; skin only to DEF, max 4 influences
+- [Frolvy root joint](frolvy-rig-root-at-origin.md) — default Root at 0,0,0 + Pelvis, but game rigs: Root_M is the hip joint (no Pelvis); how to convert
+- [RPG2 hero: new anims only](rpg2-hero-new-anims.md) — redo dual-blade set from scratch, never touch old Hero_RPG2 files in D:\rpg-game1
+- [Frolvy feedback: keep it short](frolvy-feedback-simple.md) — per bug only Bug / How to see / Request; one row in work/frolvy_feedback.md
+- [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
