@@ -44,6 +44,12 @@
   },
   "Windy": {
    "rig_url": ""
+  },
+  "Boss_Bastion": {
+   "rig_url": ""
+  },
+  "RPG2_Hero": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -920,6 +926,178 @@
     "title": "Windy Skill3 Wind Collapse Pose Lab",
     "url": ""
    }
+  },
+  {
+   "id": "boss_bastion_idle",
+   "character": "Boss_Bastion",
+   "stage": "blocking",
+   "note": "Idle loop 60F (F61=F1) AI key trên Frolvy: hông nhún 2,5 cm + ngả sau 3°, thân/đầu trễ 3–12F, overlap giáp/tay; chờ user xem",
+   "dir": "work/war_survival/boss_bastion_idle",
+   "frames": 60,
+   "fps": 30,
+   "ref": "Rig Frolvy: D:/tvc_source/3D ANIM/WarSurvival/Boss/Boss_Bastion/Rig/Rig.fv",
+   "desc": "Idle loop của boss Bastion. Quy trình B bản Frolvy: người dùng key blocking trên Frolvy, AI làm pose chuyển tiếp, polish, xuất FBX trong Studio.",
+   "created": "2026-10-31",
+   "updated": "2026-10-31",
+   "review": {
+    "key": "boss_bastion_idle",
+    "clip": "Idle",
+    "title": "Boss_Bastion Idle Review Lab",
+    "crumb": "Boss_Bastion · anim",
+    "name": "Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "boss_bastion_idle",
+    "clip": "Boss_Bastion_Idle",
+    "title": "Boss_Bastion Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "rpg2_hero_blade_idle",
+   "character": "RPG2_Hero",
+   "stage": "blocking",
+   "note": "Làm mới lần 2 (2026-11-05): xóa hết anim, chỉ còn pose gốc F1 trong Hero_Blade_Idle.fv; chờ user ra lệnh từng phần",
+   "review": {
+    "key": "rpg2_hero_blade_idle",
+    "clip": "Blade_Idle",
+    "title": "RPG2_Hero Blade Idle Review Lab",
+    "crumb": "RPG2_Hero · anim",
+    "name": "Blade_Idle",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Đao phải",
+     "Đao trái",
+     "Chân",
+     "Khăn/vạt áo"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "rpg2_hero_blade_idle",
+    "clip": "RPG2_Hero_Blade_Idle",
+    "title": "RPG2_Hero Blade Idle Pose Lab",
+    "url": ""
+   },
+   "dir": "work/rpg2_hero/blade_idle",
+   "desc": "Idle loop song đao: mỗi tay một đao ngang hông, lưỡi hướng lên chéo ra ngoài, hai đao rung lệch pha. Nguồn: Notion [RPG 2] Thiết kế vũ khí: Song đao, mục 3.",
+   "ref": "REF video drive.horusvn.com (chờ tải); rig Frolvy C:/Project/RPG_2/Hero/Rig/skele.fv",
+   "fps": 30,
+   "frames": 30,
+   "updated": "2026-11-05"
+  },
+  {
+   "id": "rpg2_hero_blade_attack_1",
+   "character": "RPG2_Hero",
+   "stage": "rig",
+   "note": "Làm mới, không động bản cũ. Chờ rig: Char_Main_T2 mới chưa có xương (skele.fv chỉ có mesh); concept, video ref",
+   "review": {
+    "key": "rpg2_hero_blade_attack_1",
+    "clip": "Blade_Attack_1",
+    "title": "RPG2_Hero Blade Attack 1 Review Lab",
+    "crumb": "RPG2_Hero · anim",
+    "name": "Blade_Attack_1",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Đao phải",
+     "Đao trái",
+     "Chân",
+     "Khăn/vạt áo"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "rpg2_hero_blade_attack_1",
+    "clip": "RPG2_Hero_Blade_Attack_1",
+    "title": "RPG2_Hero Blade Attack 1 Pose Lab",
+    "url": ""
+   },
+   "dir": "work/rpg2_hero/blade_attack_1",
+   "desc": "Đòn 1: S10 A5 R15, chém ngang phải→trái 180°, hold 2f cuối startup, hit-stop 1f. Nguồn: Notion [RPG 2] Thiết kế vũ khí: Song đao, mục 3.",
+   "ref": "REF video drive.horusvn.com (chờ tải); rig Frolvy C:/Project/RPG_2/Hero/Rig/skele.fv",
+   "frames": 30,
+   "fps": 30,
+   "updated": "2026-11-04"
+  },
+  {
+   "id": "rpg2_hero_blade_attack_2",
+   "character": "RPG2_Hero",
+   "stage": "rig",
+   "note": "Làm mới, không động bản cũ. Chờ rig: Char_Main_T2 mới chưa có xương (skele.fv chỉ có mesh); concept, video ref",
+   "review": {
+    "key": "rpg2_hero_blade_attack_2",
+    "clip": "Blade_Attack_2",
+    "title": "RPG2_Hero Blade Attack 2 Review Lab",
+    "crumb": "RPG2_Hero · anim",
+    "name": "Blade_Attack_2",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Đao phải",
+     "Đao trái",
+     "Chân",
+     "Khăn/vạt áo"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "rpg2_hero_blade_attack_2",
+    "clip": "RPG2_Hero_Blade_Attack_2",
+    "title": "RPG2_Hero Blade Attack 2 Pose Lab",
+    "url": ""
+   },
+   "dir": "work/rpg2_hero/blade_attack_2",
+   "desc": "Đòn 2: S10 A5 R15, đao trái chém chéo từ trên xuống sang phải. Nguồn: Notion [RPG 2] Thiết kế vũ khí: Song đao, mục 3.",
+   "ref": "REF video drive.horusvn.com (chờ tải); rig Frolvy C:/Project/RPG_2/Hero/Rig/skele.fv",
+   "frames": 30,
+   "fps": 30,
+   "updated": "2026-11-04"
+  },
+  {
+   "id": "rpg2_hero_blade_deadly_strike",
+   "character": "RPG2_Hero",
+   "stage": "rig",
+   "note": "Làm mới, không động bản cũ. Chờ rig: Char_Main_T2 mới chưa có xương (skele.fv chỉ có mesh); concept, video ref",
+   "review": {
+    "key": "rpg2_hero_blade_deadly_strike",
+    "clip": "Blade_Deadly_Strike",
+    "title": "RPG2_Hero Blade Deadly Strike Review Lab",
+    "crumb": "RPG2_Hero · anim",
+    "name": "Blade_Deadly_Strike",
+    "parts": [
+     "Thân",
+     "Đầu",
+     "Tay phải",
+     "Tay trái",
+     "Đao phải",
+     "Đao trái",
+     "Chân",
+     "Khăn/vạt áo"
+    ],
+    "url": ""
+   },
+   "pose": {
+    "key": "rpg2_hero_blade_deadly_strike",
+    "clip": "RPG2_Hero_Blade_Deadly_Strike",
+    "title": "RPG2_Hero Blade Deadly Strike Pose Lab",
+    "url": ""
+   },
+   "dir": "work/rpg2_hero/blade_deadly_strike",
+   "desc": "Deadly Strike: hai đao bắt chéo X trên đầu, chém đôi xuống rồi tách hai bên, shake nhẹ. Nguồn: Notion [RPG 2] Thiết kế vũ khí: Song đao, mục 3.",
+   "ref": "REF video drive.horusvn.com (chờ tải); rig Frolvy C:/Project/RPG_2/Hero/Rig/skele.fv",
+   "frames": 30,
+   "fps": 30,
+   "updated": "2026-11-04"
   }
  ],
  "projects": [
@@ -1014,6 +1192,30 @@
     "Windy": "hero mage gió + trượng (FDD Hero Windy)"
    },
    "char_notes": {},
+   "created": "2026-11-04"
+  },
+  {
+   "id": "war_survival",
+   "name": "War Survival",
+   "desc": "Game War Survival, boss Bastion",
+   "characters": [
+    "Boss_Bastion"
+   ],
+   "labels": {
+    "Boss_Bastion": "boss - rig Frolvy"
+   },
+   "created": "2026-10-31"
+  },
+  {
+   "id": "rpg2_hero",
+   "name": "Assassin Quest: Hero RPG (RPG 2)",
+   "desc": "Casual RPG top-down, hero Assassin song đao; repo D:/rpg-game1, file làm việc C:/Project/RPG_2/Hero",
+   "characters": [
+    "RPG2_Hero"
+   ],
+   "labels": {
+    "RPG2_Hero": "hero Assassin · song đao (Char_Main_T2) - rig Frolvy"
+   },
    "created": "2026-11-04"
   }
  ]
