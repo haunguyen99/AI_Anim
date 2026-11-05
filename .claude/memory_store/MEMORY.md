@@ -74,3 +74,6 @@
 - [RPG2 hero: new anims only](rpg2-hero-new-anims.md) — redo dual-blade set from scratch, never touch old Hero_RPG2 files in D:\rpg-game1
 - [Frolvy feedback: keep it short](frolvy-feedback-simple.md) — per bug only Bug / How to see / Request; one row in work/frolvy_feedback.md
 - [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
+- [Polish giữ pose blocking](polish-keeps-blocking-poses.md) — không tự đổi pose chính đã duyệt hoặc pose user tự chỉnh (kể cả khi sửa theo Director); muốn đổi thì hỏi trước
+- [Script Studio: một tiến trình ghi](studio-script-single-writer.md) — Auto key + frame đổi giữa chừng = key thừa; kiểm frame, chạy 1 tiến trình
+- [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
