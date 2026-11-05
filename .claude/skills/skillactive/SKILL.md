@@ -60,7 +60,17 @@ Người dùng đánh giá nhịp diễn theo cảm nhận. Công thức (sóng,
 | Physics lúc nhảy | khăn 2,2 Hz / 0,4 / ≤ 55°; tai 3,2 / 0,55 / ≤ 35°; chuông 1,9–2,0 / 0,4 / ≤ 45°; vây 2,4–2,6 / 0,6 / ≤ 22°; sừng 4 Hz / ≤ 4° |
 | Mắt / miệng | nhắm cười F20–44; miệng 1,28 từ F12–18 tới F46–56 |
 
-Cừu cầm ô (90F, vật bay kéo nhân vật): ô vọt ~70 px chếch phải tới F24, nghiêng 7° ở F25 rồi quay về ngay (không hold), hạ dần tới F86. Cừu giật xoay về trước khoảng 8° rồi đung đưa tắt dần; chuỗi tay → thân → đầu / chân / đuôi cùng một nhịp.
+**Vật bay kéo nhân vật treo (90F, duyệt ở 2 nhân vật: Cừu cầm ô, Cừu cầm bóng bay):**
+- Bản đầu **chép đúng nhịp này**, không tự lập bảng nhịp mới. Cừu cầm bóng mất 2 lượt vì bản đầu có lấy đà, vẫy tay 2 nhịp, chân đá qua lại.
+- **Ctrl:**
+  - bay lên **một lần**, không lấy đà;
+  - đỉnh ở F24 (Cừu cầm ô, 70 px) hoặc F36 (Cừu cầm bóng, 90 px; F24 bị chê "quá nhanh");
+  - nghiêng 3–7° rồi về dần, không hold;
+  - hạ đều tới F86–90.
+- **Nhân vật:** **một** nhịp lắc tắt dần (`damp`, chu kỳ 58–80F); mọi đốt cùng nhịp đó, đốt sau trễ vài frame (`lagd`).
+- **Phụ kiện:** physics giảm chấn cao (zeta 0,6–0,9), văng một lần rồi lắng.
+- **Lớp hành động:** tắt dần trong ≥ 30F cuối (`BLEND` env (48, 72) theo thang 72F). Ép trong 12F cuối thì bị chê "recover chưa mượt".
+- **Cả hai case:** người dùng tự key nhịp **tay nắm / tay vẫy** (Cừu Sakura cũng tự key thân / đầu / tay). Trước khi gen, hỏi rõ: "bạn key 2–3 pose tay nắm + tay kia không?".
 
 ## 4. Từ điển góp ý → sửa gì
 | Người dùng nói | Sửa |
