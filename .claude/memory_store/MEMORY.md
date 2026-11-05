@@ -67,3 +67,4 @@
 - [Edit on layer](feedback-edit-on-layer.md) — Frolvy edits: new additive layer per round via frolvy_layers.py, never key Base; bake_for_export before FBX
 - [Endless-kicker](project-endless-kicker.md) — hero Windy (wind mage + staff), Unity E:\endless-kicker v1, team Maya E:\tvc_source\3D ANIM\EndlessKicker already has Idle/Attack/Skill1–3, GDD FDD Windy
 - [Propose tools](feedback-propose-tools.md) — tự đề xuất làm tool cho công đoạn tốn thời gian, lặp lại được (user 2026-11-04)
+- [VS Code setup](reference-vscode-pilot.md) — team uses Claude in VS Code too: tools/setup_vscode.ps1 (-Install, -Endpoint lan|public), docs/vscode_pilot.md §7; LAN http://192.168.10.29:40741, key only in each user's ~/.claude/settings.json
