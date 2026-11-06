@@ -1,6 +1,6 @@
 # Phiên con cho Claude Code trong VS Code: thiết kế
 
-Trạng thái: **bản nháp chờ duyệt** (2026-11-05). Người đề xuất: Claude, theo yêu cầu của lead Anim.
+Trạng thái: **lớp 1 đã làm và thử (2026-11-05)**, lớp 2 chờ quyết định. Kết quả thử và các điều phải xử lý nằm trong `.claude/skills/subsession/SKILL.md`. Người đề xuất: Claude, theo yêu cầu của lead Anim.
 Liên quan: `docs/vscode_pilot.md` (thử nghiệm VS Code), `docs/huong_dan_vscode_claude.md` (hướng dẫn team).
 
 ## 1. Vấn đề
