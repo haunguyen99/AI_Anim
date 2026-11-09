@@ -1,0 +1,8 @@
+{
+  "id": "hero_textures",
+  "version": "0.1.0",
+  "entry": "hero_textures.py",
+  "api_version": 1,
+  "name": "Hero Textures",
+  "description": "RPG2 Hero (Char_Main_T2 + song dao): puts the textures on the meshes by itself whenever a scene with those meshes is opened. Plugins > Add Hero Textures does it by hand."
+}

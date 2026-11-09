@@ -22,7 +22,6 @@
 - [Vietnamese replies](feedback-vietnamese.md) — every chat reply in Vietnamese, incl. long reports (user corrected 2026-10-21)
 - [Pole not free](feedback-pole-not-free.md) — IK poles parented (knee→foot, elbow→chest/hand), direction in key spec, pole_audit.py before render
 - [Report slow steps](feedback-report-slow-steps.md) — tell user up front when a step takes long (time + why)
-- [Report slow steps](feedback-report-slow-steps.md) — tell the user which steps take time (with rough minutes) + how to cut them
 - [One view at a time](feedback-one-view-at-a-time.md) — match/review one camera view per round, then the next
 - [Ref|Anim side by side](feedback-ref-anim-side-by-side.md) — send REF and ANIM separate, no blended overlay
 - [Intro + report decks](reference-intro-deck.md) — intro deck 'Quy trình diễn hoạt với AI' (32 slides) + report deck 'Báo cáo áp dụng AI cho diễn hoạt' (10 slides)
@@ -73,7 +72,11 @@
 - [Frolvy root joint](frolvy-rig-root-at-origin.md) — default Root at 0,0,0 + Pelvis, but game rigs: Root_M is the hip joint (no Pelvis); how to convert
 - [RPG2 hero: new anims only](rpg2-hero-new-anims.md) — redo dual-blade set from scratch, never touch old Hero_RPG2 files in D:\rpg-game1
 - [Frolvy feedback: keep it short](frolvy-feedback-simple.md) — per bug only Bug / How to see / Request; one row in work/frolvy_feedback.md
-- [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
+- [Loop anim seam smooth](frolvy-loop-seam-smooth.md) — idle/run/walk in Frolvy: after each finished edit round run loop_seam.smooth(api) (per layer, closes F-last = F1, shared tangent)
+- [RPG2 hero: playblast](rpg2-hero-playblast-after-edit.md) — Frolvy: playblast ONLY when the user asks; MP4 into C:/Project/RPG_2/Hero/Hero_Blade/Blast_Test, camera1, no controls, textured, new name each time
+- [RPG2 hero: auto textures](rpg2-hero-auto-textures.md) — Frolvy plugin hero_textures puts the textures on the meshes whenever a scene is opened (one Frolvy restart to load); by hand: apply(api, force=True)
 - [Polish giữ pose blocking](polish-keeps-blocking-poses.md) — không tự đổi pose chính đã duyệt hoặc pose user tự chỉnh (kể cả khi sửa theo Director); muốn đổi thì hỏi trước
 - [Script Studio: một tiến trình ghi](studio-script-single-writer.md) — Auto key + frame đổi giữa chừng = key thừa; kiểm frame, chạy 1 tiến trình
+- [Keep existing keys](keep-existing-keys-when-editing.md) — Frolvy edits: never change the existing keys (f0/f8/f12…), add motion only on new inbetween frames
+- [Head aim keep roll](frolvy-head-aim-keep-roll.md) — Frolvy head-look: solve rx+ry+rz keeping base pitch/roll, never ry alone (gãy cổ); layer on/off check at key frames
 - [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
