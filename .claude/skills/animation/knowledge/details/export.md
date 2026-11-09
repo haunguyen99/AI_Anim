@@ -125,3 +125,7 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 - **Không thêm cluster** vào mesh trong rig mà prefab Unity đã unpack: SkinnedMeshRenderer lưu `m_Bones` = đúng số cluster (kể cả cluster rỗng) → thêm cluster lệch bindpose. Khối mới cần xương mesh đó không có (vòng cổ tay trái cần Wrist_L) → chuyển khối sang mesh có cluster đó. Điền cluster rỗng sẵn thì được.
 - Kiểm: `zom_v2/stretch_scan.py` cả 2 mesh + `zom1_map4_rebind/flip_scan.py` (lật mặt) trên 18 anim Share, so CŨ|MỚI; ảnh `anim_test.py` CHẠY TUẦN TỰ (hai lần song song ghi đè ảnh tạm `_at_*.png` → ảnh "cũ" ra mesh mới).
 - Tra prefab nào dùng rig: grep guid của .fbx.meta trong prefab (map4: prefab `En_Zom1_map4_Gameplay` dùng rig Zom2 và ngược lại).
+- **Giữ đúng phiên bản FBX của file gốc** (Mob Era Ride_Idle, 2026-10-29, user: "mở bằng maya không thấy file có gì?"): file team là FBX 7700
+  (khung bản ghi 64-bit). Bản đầu ghi bằng `fbxbin.serialize(..., 7400)` (khung 32-bit) nhưng cây vẫn khai `FBXVersion 7700` → Maya mở trống.
+  Sửa: `work/mob_era/ride_idle/export_fbx.py` đọc giữ kiểu + cờ nén + byte nén gốc của từng mảng, ghi lại đúng phiên bản file gốc;
+  đệm footer = căn 16 tính từ cuối footer id, rồi thêm 4 byte 0. Kiểm `--roundtrip`: ghi lại file gốc phải **giống từng byte** (so cây là chưa đủ).

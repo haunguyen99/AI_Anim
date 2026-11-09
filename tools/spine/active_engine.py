@@ -104,12 +104,20 @@ def build_active(cfg, write=True):
         s = K.ChainSim(rig, ch, N, 8)
         s.init(idle_fk, 0)
         has_rest = [b in TGT or b in FB for b in ch.bones]
-        s.rest = lambda i, f, s=s, hr=has_rest: idle_rot(ch.bones[i], f) if hr[i] else 0.0
+        own = getattr(ch, "rest", None)              # dáng nghỉ riêng khai trên Chain ở idle (vd bóng trôi, chân đá nhẹ)
+        if own:   # idle dùng đúng dáng nghỉ này -> active giữ nguyên nó (+ đích TGT nếu có) để F0 trùng idle
+            s.rest = own
+        else:
+            s.rest = lambda i, f, s=s, hr=has_rest: idle_rot(ch.bones[i], f) if hr[i] else 0.0
         for fr in range(1, 4 * N + 1):              # idle tới tuần hoàn (hết 4 vòng = idle F0)
             for k in range(8):
                 s.step(idle_fk, (fr - 1 + (k + 1) / 8) % N, ch.hz, ch.zeta, dt)
-        s.rest = (lambda i, f, hr=has_rest, bs=ch.bones:
-                  base(lambda x: idle_rot(bs[i], x), f) + tgt(bs[i], f) if hr[i] else 0.0)
+        if own:
+            s.rest = (lambda i, f, hr=has_rest, bs=ch.bones, own=own:
+                      own(i, f) + (tgt(bs[i], f) if hr[i] else 0.0))
+        else:
+            s.rest = (lambda i, f, hr=has_rest, bs=ch.bones:
+                      base(lambda x: idle_rot(bs[i], x), f) + tgt(bs[i], f) if hr[i] else 0.0)
         rec = {b: [] for b in ch.bones}
         last = {b: 0.0 for b in ch.bones}
         lim = ch.lim or 180.0

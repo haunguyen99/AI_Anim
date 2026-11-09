@@ -290,6 +290,48 @@ def add_translate_wires(api):
     return wired
 
 
+def fix_translate_wires(api):
+    """add_translate_wires feeds control.tN straight into DEF.tN, but the control's offset group
+    and the DEF's parent rarely share axes (chibi 2026-11-05: weapon control moved one way, the
+    staff another; 31 of 41 FK controls). Rewire each DEF channel as rest + A . control.t with
+    A = (DEF parent axes)^T (control group axes), measured in FK rest. Idempotent (wtr_ nodes)."""
+    GN = set(api.graph_nodes()); fixed = 0
+    saved = fk_rest(api)
+    try:
+        for c in controls(api):
+            if "Switch" in c or (c + "_grp") not in api.ls():
+                continue
+            src = [w for w in GN if w.startswith("wire_DEF_") and w.endswith("_tx") and c + ".tx" in api.node_connections(w)]
+            if not src:
+                continue
+            dj = src[0][5:-3]
+            if any(g.startswith("wtr_%s_" % dj) for g in GN):
+                continue
+            pd = parent(api, dj); Pd = Rw(api, pd); Pg = Rw(api, c + "_grp")
+            A = [[sum(Pd[r][i] * Pg[r][k] for r in range(3)) for k in range(3)] for i in range(3)]
+            if max(abs(A[i][k] - (1.0 if i == k else 0.0)) for i in range(3) for k in range(3)) < 1e-3:
+                continue
+            for i, ch in enumerate(("tx", "ty", "tz")):
+                old = "wire_%s_%s" % (dj, ch); rest = api.node_params(old)[1]
+                api.delete_node(old)
+                ms = []
+                for k, cc in enumerate(("tx", "ty", "tz")):
+                    if abs(A[i][k]) < 1e-4:
+                        continue
+                    nd = api.create_node("multiply", "wtr_%s_%s_%s" % (dj, ch, cc))
+                    api.connect(nd, 0, c + "." + cc); api.set_node_param(nd, 1, A[i][k]); ms.append(nd)
+                acc = ms[0]
+                for k2, nd in enumerate(ms[1:]):
+                    s = api.create_node("add", "wtr_%s_%s_sum%d" % (dj, ch, k2))
+                    api.connect(s, 0, acc); api.connect(s, 1, nd); acc = s
+                fin = api.create_node("add", old); api.connect(fin, 0, acc); api.set_node_param(fin, 1, rest)
+                api.set_node_output(fin, dj + "." + ch)
+            fixed += 1
+    finally:
+        restore_switches(api, saved)
+    return fixed
+
+
 SWITCHES = ("CTL_ArmSwitch_L", "CTL_ArmSwitch_R", "CTL_LegSwitch_L", "CTL_LegSwitch_R", "CTL_SpineSwitch_M")
 
 
@@ -536,6 +578,8 @@ def after_rebuild(api, one_side=("Weapon", "Arrow"), prop_side="_R", labels=None
     delete_one_side_props(api, one_side, other)
     w = add_translate_wires(api)
     rest = sync_rest(api)
+    w2 = fix_translate_wires(api)
+    print("translate wires re-axed:", w2)
     piv = sync_control_pivots(api)
     thumb_into_palm(api)
     th = fix_thumb_curl(api)

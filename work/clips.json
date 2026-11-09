@@ -793,7 +793,7 @@
    "stage": "analysis",
    "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
    "dir": "work/endless_kicker/windy_idle",
-   "frames": 60,
+   "frames": 40,
    "fps": 30,
    "ref": "",
    "desc": "Idle loop: đứng gác, trượng dựng đuôi chạm đất bên phải, áo choàng bay theo gió",

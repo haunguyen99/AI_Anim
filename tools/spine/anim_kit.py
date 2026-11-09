@@ -353,7 +353,8 @@ class ChainSim:
         self.R = [self.B[b].get("rotation", 0) for b in ch.bones]
         self.b0 = self.B[ch.bones[0]]
         self.pts = None
-        self.rest = lambda i, f: 0.0          # góc nghỉ local thêm (cừu: dáng idle + đích)
+        # góc nghỉ local thêm (cừu: dáng idle + đích); Chain có thể khai báo sẵn `rest(i, frame)` (vd chân đá nhẹ theo nhịp)
+        self.rest = getattr(ch, "rest", None) or (lambda i, f: 0.0)
 
     def root(self, fk, f):
         px, py, pr = fk(self.b0["parent"], f, {})

@@ -55,7 +55,7 @@ bản ngay sau khi người tự key tay, bản giao. Thường 10–12 mốc. L
 (cột "Spine Live AI ghi" trong bảng), hoặc lần ghi người cuối nếu mốc là bản người sửa.
 
 Viết `<dự án>/_review/spec.json` (mẫu và giải thích trong đầu `tools/report/render_versions.py`), tên video `NN_<giai đoạn>_vNN`.
-Cần Home chạy và một trang Spine Live mở: `preview_start` với url `http://127.0.0.1:8780/spine?json=<file json>`.
+Cần server Spine Live chạy (`preview_start {name: "spine-live"}`) và một trang Spine Live mở: `preview_start` với url `http://127.0.0.1:8781/spine?json=<file json>`.
 ```bash
 .venv/Scripts/python.exe -I tools/report/render_versions.py <dự án>/_review/spec.json
 ```

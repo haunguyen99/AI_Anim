@@ -37,6 +37,8 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#prop-hand-side-fk` | tay thao tác prop ở phía xa camera; chọn FK/IK; đọc tay vs prop ở góc top |
 | `#thick-bar-grip` | nắm thanh/tay quay dày; "bị nắm nhiều quá", ngón xuyên prop; rig tay trái lật trục |
 | **qa_anatomy.md** `#joint-coupling` | dựng / sửa bất kỳ key nào; khớp dùng lẻ loi (vai đứng yên khi giơ tay, chỉ xoay đầu không xoay cổ); thêm / chỉnh luật liên động |
+| `#ref-arm-retarget-anat` | lắp key ref lên rig: vai/cổ tay vặn ngược nhau, khuỷu lệch bản lề, "gập quá mức" |
+| `#chibi-retarget-skin` | retarget ref người thường lên chibi đầu to; về main cuối clip; sửa skin weight nách lồi lõm |
 | **props_weapons.md** | |
 | `#heavy-prop-lever` | prop nặng cầm một đầu (chùy, búa) |
 | `#long-prop-flick` | đầu prop dài bị giật/vẩy |

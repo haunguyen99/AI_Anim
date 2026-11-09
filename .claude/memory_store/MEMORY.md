@@ -74,6 +74,7 @@
 - [Frolvy feedback: keep it short](frolvy-feedback-simple.md) — per bug only Bug / How to see / Request; one row in work/frolvy_feedback.md
 - [Loop anim seam smooth](frolvy-loop-seam-smooth.md) — idle/run/walk in Frolvy: after each finished edit round run loop_seam.smooth(api) (per layer, closes F-last = F1, shared tangent)
 - [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
-- [Polish keeps blocking poses](polish-keeps-blocking-poses.md) — when polishing/splining, never change approved blocking key poses; ask first
-- [Studio script single writer](studio-script-single-writer.md) — pose scripts via the Studio bridge must be the only writer; check frame before each key (Auto key on)
+- [Polish giữ pose blocking](polish-keeps-blocking-poses.md) — không tự đổi pose chính đã duyệt hoặc pose user tự chỉnh (kể cả khi sửa theo Director); muốn đổi thì hỏi trước
+- [Script Studio: một tiến trình ghi](studio-script-single-writer.md) — Auto key + frame đổi giữa chừng = key thừa; kiểm frame, chạy 1 tiến trình
 - [RPG2 hero: auto textures](rpg2-hero-auto-textures.md) — Frolvy plugin hero_textures puts the textures on the meshes whenever a scene is opened (one Frolvy restart to load); by hand: apply(api, force=True)
+- [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
