@@ -106,7 +106,8 @@ Nhanh hơn khoảng 0,2–0,4 s mỗi lần gọi (~15–20 %). Một lượt c�
 5. **Mở:** `code "E:\AI Animation"`. VS Code gợi ý cài extension Claude Code (theo `.vscode/extensions.json`). Bấm biểu tượng Claude (✱) ở thanh bên hoặc góc trên phải.
 6. **Lần đầu:** gõ `/` → MCP → bật các server dự án. Phải thấy `Connected` cho frolvy, maya, spine, horuschat, comfyui; rocketchat là chat cũ, tắt cũng được.
 7. **Làm việc:** gõ yêu cầu bằng tiếng Việt như trong app desktop. `@` hoặc `+` để gắn file hay ảnh (thả ảnh thì giữ `Shift`); `/` cho skill (`/director`, `/new_clip`, `/check_fb`…). Nút model (`claude-opus[1m] Medium`) đổi mức suy nghĩ. Nút `Auto` / `Manual` / `Plan` đổi chế độ quyền. Claude đọc `CLAUDE.md` và `MAP.md` tự động.
-8. **Xem kết quả:** ảnh, video mở bằng cách bấm file trong cây thư mục. Thay đổi xem ở Source Control (biểu tượng nhánh). Trang Studio / Home: `Ctrl+Shift+P` → `Simple Browser: Show` → `http://127.0.0.1:8780/`.
-9. Việc cần trang review, Pose Lab trên claude.ai, hay chia việc cho nhiều session: làm trong app Claude desktop.
+8. **Chạy server:** `Ctrl+Shift+P` → `Tasks: Run Task` → `Home + Studio server (8780)` (thay cho preview trong app desktop; các Lab và sao lưu bộ nhớ cũng ở đây).
+9. **Xem kết quả:** ảnh, video mở bằng cách bấm file trong cây thư mục. Thay đổi xem ở Source Control (biểu tượng nhánh). Trang Studio / Home: `Ctrl+Shift+P` → `Simple Browser: Show` → `http://127.0.0.1:8780/`.
+10. Việc cần trang review, Pose Lab trên claude.ai, hay chia việc cho nhiều session: làm trong app Claude desktop.
 
 Lỗi thường gặp: AI báo lỗi kết nối → đang ở ngoài mạng công ty mà endpoint là IP LAN, chạy `-Endpoint public`. Đổi endpoint xong phải khởi động lại VS Code / app Claude.
