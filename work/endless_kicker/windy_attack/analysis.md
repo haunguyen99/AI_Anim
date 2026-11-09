@@ -134,7 +134,9 @@ quanh trục) trừ khi user muốn khác.
 
 ## E. Cần hỏi [?]
 
-1. PA A (hai tay như ref) hay B (một tay)?
+**Đã chốt (user 2026-11-05): PA B, bắn MỘT tay** — tay phải đẩy trượng ngang ra trước, tay trái giang ra sau cân bằng; bỏ bật IK tay trái và tầm với 0,42 m. Trượng 2,15 m một tay: kiểm cổ tay ≤ 0,42 m và đầu trượng không võng.
+
+1. ~~PA A hay B~~ (xong).
 2. Có cần frame smear F8 (trượng vượt ngang rồi bật về) không, hay giữ sạch?
 3. Bắn liên tục: game có phát Attack nối Attack không (đòn sau bắt đầu ngay F24 của đòn trước)? Nếu có, F0/F24 phải trùng Idle F0 tuyệt đối (đang thiết kế như vậy). Xuất 24 hay 25 frame?
 4. Ref lúc bắn: mình đọc là tay sau ở hông, tay trước đỡ giữa cán, nhưng góc ngang khó phân biệt tay nào trước. Windy chân phải trước + tay phải sau, tay trái trước là thế vặn chéo (đã tính bằng xoay ngực 30–40°). Có muốn đổi: tay phải trước, tay trái giữ đuôi không?

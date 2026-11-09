@@ -106,3 +106,93 @@ Còn vài điểm nhỏ ở mức C (xem ghi chú kỹ thuật).
 - [đo] Đuôi F9 (−0,25; 0,85; −0,83): cán qua z ≈ 0 ở x ≈ −0,20, y ≈ 0,87 (ngang eo). Kiểm mesh eo/hông phải + áo choàng ở đoạn này.
 - [đo ước] F8: cổ tay (−0,25; 1,00; 0,28), chỗ nắm 15 cm trước ≈ (−0,25; 1,0; 0,43). Tới vai trái (lấy vị trí F9) ≈ 0,45 m.
 - Không ảnh/ref trên máy; Duyệt cho phần thiết kế chữ/số. P0 cần chấm bằng ảnh cam game + top + bên phải.
+
+## Director – windy_attack blocking stepped (F0,5,7,9,13,18,24) – mốc blocking – 2026-11-06
+**Kết luận: Cần sửa** (các key chính đúng hướng; còn 2 lỗi A là đuôi trượng chạm/cắm đất giữa các key, và thiếu key kiểm soát)
+Ý chính: Đường trượng đúng thiết kế: chĩa lên-ra sau (F5) -> lật lên trước (F7) -> ngang chĩa thẳng (F9) -> về chéo (F18). Đuôi ở 7 key đều ≥ 0 và hở thân. Nhưng trượng lật 90° quanh tay trong 2F nên đuôi quét qua điểm thấp nhất ngay giữa các key (F2-3 và F6) và sẽ cắm đất khi spline. Sau bắn F9->F13 gần như đứng im, người và tay trái cũng quá hiền.
+
+### Cần sửa (nặng -> nhẹ)
+| # | Mức | Ở đâu (frame) | Đang thấy | Nên thấy / sửa thế nào |
+|---|---|---|---|---|
+| 1 | A | Đuôi trượng, F2-F3 | F0 đuôi cách đất 4 cm, F5 đuôi lên cao 43 cm ở phía trước. Nối thẳng hai key này thì giữa chừng (~F2.5) trượng gần dựng đứng, đuôi tụt xuống dưới đất ~2 cm (đuôi cắm đất) | Key F2 (đã dự định): tay ~1,0 m, trượng còn nghiêng ≥ 40-50° để đuôi cao ≥ 12 cm, đuôi ra ngoài phải (x ≤ -0,45) |
+| 2 | A | Đuôi trượng, F6 | Trượng lật từ ngả sau (F5) sang ngả trước (F7) nên đi qua dựng đứng ở F6. Tay F6 ~1,17 m, trượng dài đuôi 1,13 m, đuôi chạm ~4 cm trên đất hoặc xuống dưới. Tay F5->F7 chỉ dời 24 cm trong khi đầu trượng đi 1,7 m: nhìn như xoay trượng tại chỗ chứ không phải vung cả tay | Thêm key F6: nâng tay lên ≥ 1,3 m (đuôi ≥ 17 cm) và đẩy tay ra ngoài phải thêm ~10 cm, để vòng cung nghiêng ra ngoài như thiết kế. Đầu trượng lúc dựng ~2,2 m: cách đầu/mũ ≥ 10 cm là được |
+| 3 | B | Sau bắn, F9-F13 | F13 gần trùng F9: tay y hệt, đầu trượng chỉ nhích ~5 cm (~3°). Giữ 4F thì sau phát bắn nhìn đơ, không có "theo đà" | Thêm key F11 vượt đà: tay đẩy thêm ~5-6 cm ra trước (cánh tay mới duỗi ~80%, còn dư tầm), đầu trượng nảy lên ~5°, hông nảy lên, rồi lắng về F13 |
+| 4 | B | Thân, F5-F9 | Ngực chỉ ngả 6° ra trước lúc bắn, xoay 12° mỗi bên, hông hạ 4,5 cm. Thiết kế cần thân đổ trước 15-20°. Cú vung trông như tay vung, thân không góp lực | Tăng ngực ngả/xoay thêm (tới ~12-15° ngả trước ở F9, ngả sau rõ hơn ở F5). Giữ đầu nhìn mục tiêu, không để cổ vặn |
+| 5 | B | Tay trái, F5-F13 | Cổ tay trái đi quanh Idle: F9 chỉ lùi sau ~10 cm, ngang 12 cm. Quyết định bắn một tay cần tay trái giang cân bằng; hiện tay trái gần như bám sườn, lệ thuộc cam từ trên không đọc được cân bằng | Tay trái giang ra ngoài + sau rõ (cổ tay ~x 0,65, z -0,3, nâng ngang ngực) ở F9, ngược chiều trượng; ở F5 vươn trước; về Idle từ F13 |
+| 6 | B | Đuôi trượng, F18->F24 | Đuôi F18 cao 15 cm, F0 cao 4 cm; 6F hạ 11 cm đúng lúc spline có thể vọt xuống đất | Thêm key F21 (đuôi ≥ 8 cm), kiểm đường đuôi không < 0 ở lúc settle |
+| 7 | C | Hướng trượng F9 | Đầu trượng lệch +X ~5,7° (quay vào trong), vượt mốc ±5° một chút | Giảm còn ≤ 4° nếu muốn tuyệt đối chĩa mục tiêu; hoặc báo user chấp nhận |
+| 8 | C | Vải | Chưa key vải/áo choàng/vạt; đuôi F7 ở sau lưng (-0,31; 0,39; -0,65) có thể quét qua vạt sau phải | Key vải sau khi chốt thân; kiểm F6-F8 đuôi xuyên vạt/áo choàng |
+
+### Giữ nguyên
+- Đường trượng 7 key đúng thiết kế, đuôi hở thân: F9 cán đi qua z=0 cách tâm người ~40 cm (không đâm eo/mông), tay-vai ~36 cm trong tầm.
+- F9 trượng ngang, cao 0,95 m, chĩa +Z, đọc rõ một vạch dài ở cam từ trên.
+- F18 đã sát tầm về Idle (tay lệch 5 cm), đuôi ngoài chân phải (x -0,78).
+- Hông hạ 4,5 cm, không bước. Nhịp 5-4-4-11 đúng chốt.
+
+### Vòng sau
+- Thêm F2, F6, F11, F21, spline thử rồi đo lại đuôi từng frame (y ≥ 0,05). Người xem phải thấy cả người tham gia cú vung (thân ngả, tay trái giang), không chỉ cây trượng xoay.
+
+### Ghi chú kỹ thuật cho animator
+- [đo, từ số animator đưa] Đuôi = tay - 1,13·u (u = (đầu-tay)/|đầu-tay|, độ dài đầu-tay 1,015-1,02 m, khớp thiết kế 1,02): F0 (-0,80; 0,04; 0,04) · F5 (-0,20; 0,43; 0,77) · F7 (-0,31; 0,39; -0,65) · F9/F13 (-0,49; 0,95; -0,82) · F18 (-0,78; 0,15; -0,45). Cả 7 key y ≥ 0.
+- [đo ước] Giữa F0 và F5, nội suy hướng trượng ở giữa u ≈ (0,26; 0,93; -0,26), tay ≈ (-0,22; 1,03; 0,15) -> đuôi y ≈ -0,02. F6: u_y ≈ 1, tay ~1,17 -> đuôi y ≈ 0,04. Cần key thật để kiểm, không dựa vào tính.
+- [đo] F9 cán qua z=0 tại x ≈ -0,41, y 0,95. F7 qua z=0 tại x ≈ -0,39, y 0,95. Hở thân ≥ 15 cm.
+- [đo] F9 hướng: (0,10; 0; 1,01) -> yaw 5,7°. Vai phải ước (-0,18; 1,06; 0,02) -> cổ tay F9 = 0,36 m.
+- [đo] Tốc độ đầu trượng: F5->F7 0,85 m/F, F7->F9 0,45 m/F, F13->F18 0,16 m/F, F18->F24 ~0,09 m/F. Nhịp giảm dần hợp lý, nhưng F5->F7 cần F6 để không nhảy.
+- [mắt chưa] Dấu cổ/đầu rx (-5, -10) chưa kiểm chiều (ngửa/cúi). Không có ảnh: chấm bằng số; cần render F2, F6, F9 cam top + trước khi sau khi thêm key.
+
+## Director – windy_attack blocking vòng 2 (7 key, bắn một tay; F5/F7/F9 user chỉnh tay) – mốc blocking – 2026-11-06
+**Kết luận: Cần sửa**
+Ý chính: F0, F18, F24 ổn. Ba pose then chốt đang lệch thiết kế. F5 và F7 trượng dựng thẳng và tay duỗi quá tầm. F9 trượng chĩa sang trái chứ không chĩa trước. Sau bắn trượng về dáng Idle quá nhanh.
+
+- F0: Idle, giữ nguyên. Đuôi trượng sát đất ~4 cm, cần giữ không cắm.
+- F5: tay cách vai 0,50 (> 0,46, duỗi quá). Trượng gần dựng đứng (hướng ≈ (0,18; 0,98; 0,18)), không ngả sau 45° như thiết kế; từ trên nhìn xuống chỉ còn một chấm. Tay ra ngoài phải 0,64. Đầu/ngực gần như không đổi so Idle: lấy đà thiếu thân. Tay trái giang trước-ngoài đúng ý.
+- F7: tay lùi ra sau lưng (z −0,41), cách vai 0,58 (vượt tay dài 0,46). Trượng vẫn dựng (≈ (−0,05; 0,99; −0,22)), không "lật lên trước 45°". F5→F7 tay đi lùi sau chứ không vung qua bên phải đầu; trượng chưa quét. Đo vai thật; nếu thân xoay thì ghi lại, nếu không thì tay đang giãn.
+- F9: tay duỗi ra trước 0,72, cách vai 0,45 (sát giới hạn). Trượng hướng (0,82; 0,47; 0,37) lệch ~66° khỏi +Z, chĩa trái-lên; thiết kế yêu cầu ngang chĩa +Z ±5°. Đầu tiến trước 0,23 và hạ 11 cm, hông hạ 5 cm: đổ người tốt nhưng F7→F9 đầu đi 34 cm trong 2F. Tay trái giang ra trái-sau nhưng cùng phía với đầu trượng nên không thành đối trọng.
+- F13: tay lùi 42 cm, đầu trượng đi ~1,1 m trong 4F: đã gần như dáng F18. Không có đoạn giữ/theo đà sau bắn. Hông 0,61 chưa theo F9.
+- F18: đầu trượng lệch Idle 22 cm, tay lệch 21 cm; F13→F18 chỉ ~15 cm. Pha về 11F thực tế là đứng gần im.
+- F24 = F0 ổn.
+
+Top 3: (1) F9 xoay trượng chĩa +Z (hoặc user xác nhận chủ ý quét chéo, báo dev); (2) F5/F7 trượng ngả sau rõ + tay trong tầm 0,46, F7 tay phải đi qua trước vai bên phải; (3) F9→F13→F18 giữ dáng bắn rồi về chậm dần, không về ngay ở F13.
+Không ảnh; chấm bằng số. Cần render F5, F7, F9 cam top + trước nếu muốn xác nhận.
+
+## Director – windy_attack blocking vòng 3 (7 key, bắn một tay, FK) – mốc blocking – 2026-11-06
+**Kết luận: Cần sửa nhẹ** (không còn lỗi chặn ở pose chính; còn 3 việc trước khi qua spline)
+Ý chính: Lần này đúng ý: lấy đà trượng ra sau, lật lên trước, bắn ngang chĩa thẳng, theo đà rồi về. Hết lỗi vòng 2 (trượng chĩa trái, tay quá tầm, về quá nhanh). Chỗ còn xấu: F5→F7 trượng lật như xoay tại chỗ (tay dời ít), sau bắn thân và tay trái ít sống, vải chưa có.
+
+- F0: đúng Idle. Giữ.
+- F5: trượng chĩa ra sau-lên ~35° (thiết kế 45°, lệch ~11° đã biết), tay trong tầm (0,23). Tay trái đã giang trước. Chấp nhận. Chưa có ảnh góc trước để xem tay/đầu.
+- F7: trượng lên-ra trước ~45°, đúng. Nhưng tay chỉ dời ~0,25 m so với F5 trong khi đầu trượng đi ~1,8 m: nhìn như xoay trượng quanh tay. F6 trượng đi qua dựng đứng, đuôi có thể xuống ~0 -> kiểm khi spline.
+- F9: ngang, chĩa +Z (lệch ~3°), hông hạ 5 cm, thân ngả 17°, tay trái giang ngược phía trượng. Pose tốt nhất, đúng thiết kế. Cán đi ngang eo cách ~40 cm, hở.
+- F13: đầu trượng nảy lên ~7°, hông còn thấp, đúng ý theo đà. Nhưng tay trái và tay phải y hệt F9, đứng im hoàn toàn.
+- F18: đang hạ về, người gần Idle (hông 0,62), tay trái còn lệch ~20 cm, tay phải ~22 cm. Đuôi cao ~0,57, an toàn.
+- F24 = F0 ổn.
+
+Top 3: (1) thêm thử spline và đo đuôi F2–F3, F6 (y ≥ ~0,05), nếu cắm thì nâng tay F6 ≥ 1,3 m và đẩy ra ngoài phải ~10 cm (lặp lại từ vòng blocking trước); (2) F13 cho tay trái bắt đầu về/hạ nhẹ để khỏi đơ, vải key sau khi thân chốt; (3) xin ảnh góc trước + top cho F5, F7, F9 để xác nhận đầu/cổ không vặn và hở đầu/mũ ≥ 10 cm.
+Không ảnh/ref video; chấm bằng số.
+
+## Director – windy_attack breakdown/spline thử vòng 4 – mốc spline – 2026-11-06
+**Kết luận: Cần sửa nhẹ** (gần được; còn 2 chỗ khựng nhỏ và tay trái/cổ tay chưa sống)
+Ý chính: Lấy đà và vung đã mượt, thân có hạ hông trước tay (F3, F8). Chỗ còn khựng: ngay sau bắn (F9→F12) và đoạn về F18→F22. Không có ảnh, chấm bằng số người dùng đưa.
+
+- Lấy đà F0–F5: nhanh rồi chậm dần vào đỉnh, đúng. Hông hạ trước, tay lên sau, tốt. Từ F4 đến F7 tay gần như đứng (8–16 cm/F) và khuỷu thẳng 168° ở F5–F6, nên đỉnh nhìn hơi cứng.
+- Vung F5–F9: nổ từ F8 (tay 60, đầu trượng 88 cm/F), hông hạ trước một nhịp, đầu trượng trễ sau tay, khuỷu gập F8 rồi duỗi F9: có thân dẫn rồi tay rồi trượng. Tốt.
+- Sau bắn F9–F13: đầu trượng 100 -> 24 cm/F chỉ trong 1F (phanh gấp), rồi 18 -> 22 -> 13 (nảy lên ở F12), tay 5-6-7-3 cũng nảy ở F12. Đó là cái "khực khực".
+- Về F13–F24: F13–F16 gần như trôi chậm (9–14 cm/F) rồi F17 nhảy 25. F19 chậm lại 9 rồi F20–F21 lại nhanh 14, đuôi trượng hạ nhanh nhất ở F20–F21 (10 cm/F) trong lúc đầu trượng chậm dần, rồi phanh ở F22. Đó là cái giật F20.
+- Tay trái: ngược chiều trượng đúng, nhưng F7 và F9 gần như cùng chỗ trong khi tay phải bắn đi 1 m; không có vọt rồi lắng. Cổ tay phải: không đo được từ số này.
+- Bỏ key: nên bỏ F19 (F18, F19, F20 ba key liền trong 6F gây dao động); xem F20 còn cần không sau đó. Giữ F3, F8, F16.
+
+Top 3: (1) F9→F12 giảm tốc dần (đầu trượng ~100 -> 45 -> 28 -> 18 -> 12), xoá nảy F12; (2) bỏ F19, dàn đuôi trượng F18–F24 giảm dần đều, không nhanh nhất ở F20; (3) tay trái vọt thêm ở F10 rồi lắng, cổ tay trễ rồi bẻ ở F9, nới khuỷu F5–F6 (~155°).
+Thiếu: chưa có ảnh render, chưa có số ngực/cổ tay từng frame.
+
+## Director – windy_attack spline thử vòng 5 (có breakdown F3/F8/F11/F16/F19) – mốc spline – 2026-11-09
+**Kết luận: Cần sửa nhẹ** (vung và lấy đà ổn; còn khựng sau bắn F9-F14, thân/tay trái biên độ nhỏ, khuỷu thẳng nhiều key)
+Không có ảnh, chấm bằng số animator đưa.
+
+- Lấy đà F0-F5: nhanh rồi chậm dần, hông hạ trước tay (F3). Tốt. F4-F7 tay gần đứng (14-13-10-15 cm/F), khuỷu 155-160 gần thẳng -> đỉnh hơi cứng. F6->F7 đầu trượng 57->31 rồi F8 vọt 73: hơi do dự trước khi đập.
+- Vung F5-F9: tay 15->48->58, hông hạ F8 trước F9, trượng trễ sau tay. Đúng thứ tự. Tốt.
+- Sau bắn F9-F13: vẫn phanh gấp (tay 58->8, đầu trượng 116->22 trong 1F), rồi 22->18->4: phanh lần hai ở F11->F12. F12-F14 cả tay, trượng, hông, ngực đứng im 3F cùng lúc -> đơ, rồi mới trôi (lặp lại ý vòng 4).
+- Hồi F13-F24: vào chậm tăng dần tốt (3,2,5,6,7). F17-F21 tay đều ~7-8 cm/F, đầu trượng F20-F22 đều ~10 rồi F23->F24 7->2 phanh hơi gắt. Đuôi hạ êm, không chạm đất (min 0,04).
+- Thân: thứ tự hông -> bụng -> ngực đúng, nhưng vượt đà chỉ ~1-2 độ, ở cam trên cao không đọc được. Hông chỉ 2 cm (user dặn giữ).
+- Tay trái: sống ở F5 (vươn trước) -> F9-F11 (lùi ~11 cm), nhưng giữ giang ngoài ~x 0,57 từ F7 tới F18 (11F), rồi phải về trong 6F -> sượng.
+
+Top 3: (1) F9->F14 làm giảm tốc dần (đầu trượng ~116->55->30->15->8->5), bỏ đứng im F12-F14, cho ngực/hông bắt đầu về trước tay 1F; (2) nới khuỷu ở các frame giữa (F6, F10-F12, ~145-150) và F4-F7 tay trôi nhẹ thay vì đứng; (3) tay trái bắt đầu hạ từ F13, tăng biên độ vượt đà thân (bụng/ngực ~4-5 độ). Sau đó render F5/F7/F9/F13 cam trên + trước, rồi mới key vải.
