@@ -66,6 +66,13 @@ không dùng `flatten_layers`, `merge_layer_down` hay `bake_keys` lúc còn laye
    sai số ~0), rồi mới chạy đường xuất cũ (bake joint team → `export_scene` → `fbx_ascii_keep.py`). Scene có layer giữ lại
    làm bản gốc. Đọc lại FBX so với màn hình trước khi giao.
 
+**Lệch nhịp hai tay cho idle loop** (Hero_Blade Idle, 2026-11-05, người dùng duyệt): `FL.lag_mirror_translate(api, L, src_tay_phải, dst_tay_trái, lag=5, gain=1.15)`.
+Translate tay trái = chuyển động translate tay phải (đối xứng, tx đổi dấu) trễ `lag` frame, quanh **pose gốc của tay trái ở F0** (F0/F30 và rotate giữ nguyên).
+Bài học: (a) "giữ pose gốc, không thay đổi pose gốc": không ghi thẳng giá trị tổng của tay kia lên tay này, chỉ cộng phần dao động. (b) Chỉ làm lệch **nhịp**
+(trễ 3-5 frame), biên độ giữ cũ, nếu tăng thì 10-20% (x3 bị chê "quá nhiều"). (c) Chỉ translate: layer cộng không sai số; đặt cả rotate đối xứng lên layer
+thì lệch 5-8° vì cộng Euler không tuyến tính ở góc lớn (rz ~60°). Cần rotate thì lặp hiệu chỉnh hoặc dời chính chuyển động của tay đó, không đổi dấu.
+(d) Đổi mức lệch: `delete_layer` rồi làm lại, không chồng layer. Layer mẫu `fix_r2_tay_trai_translate_tre_5f`.
+
 Chưa thử (làm lần đầu thì kiểm trước): layer **override** (chỉ dùng khi người dùng xin dựng lại cả một đoạn), `retime_keys`
 khi đổi timing có dời key trên mọi layer không, thuộc tính tuỳ biến (switch, curl) trên layer (`list_keys` của chúng trả []).
 Studio chưa có anim layer: luật này áp dụng cho Frolvy trước.

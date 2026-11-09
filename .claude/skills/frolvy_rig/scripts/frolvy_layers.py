@@ -119,6 +119,23 @@ def report(api, nodes=None):
         print(i, names[i], {n: cs for n, cs in hit.items()})
 
 
+def lag_mirror_translate(api, layer, src, dst, lag=5, gain=1.15, period=30, step=3,
+                         signs={"tx": -1, "ty": 1, "tz": 1}):
+    """Lech nhip hai tay cho idle loop: translate cua `dst` (tay trai) = chuyen dong translate cua `src` (tay phai),
+    doi xung (tx doi dau), TRE `lag` frame, bien do x`gain` (chi 10-20%), quanh POSE GOC cua dst o F0 (F0/F30 giu
+    nguyen, rotate khong doi). Translate cong tuyen tinh nen layer cong khong sai so (rotate Euler lon thi co:
+    dung dat ca gia tri tong len layer, lech 5-8 do). Goi sau start_fix(). Tra max sai so."""
+    rt = {f: _read(api, [src], f)[src] for f in range(period)}
+    d0 = _read(api, [dst], 0)[dst]
+    r0 = rt[(0 - lag) % period]
+    err = 0.0
+    for f in range(0, period + 1, step):
+        r = rt[(f - lag) % period]
+        tg = {dst + "." + c: d0[c] + gain * s * (r[c] - r0[c]) for c, s in signs.items()}
+        err = max(err, key(api, layer, tg, f))
+    return err
+
+
 def bake_for_export(api, first, last, nodes=None, tol=1e-3):
     """Collapse the layers by hand: sample on-screen totals of every layered node, delete the layers, write the
     totals on Base every frame (linear). Run on a COPY saved before export, then reopen the layered scene.

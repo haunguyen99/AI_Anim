@@ -73,8 +73,11 @@
 - [RPG2 hero: new anims only](rpg2-hero-new-anims.md) — redo dual-blade set from scratch, never touch old Hero_RPG2 files in D:\rpg-game1
 - [Frolvy feedback: keep it short](frolvy-feedback-simple.md) — per bug only Bug / How to see / Request; one row in work/frolvy_feedback.md
 - [Loop anim seam smooth](frolvy-loop-seam-smooth.md) — idle/run/walk in Frolvy: after each finished edit round run loop_seam.smooth(api) (per layer, closes F-last = F1, shared tangent)
-- [RPG2 hero: playblast after each edit](rpg2-hero-playblast-after-edit.md) — Frolvy anim edit done → MP4 into C:\Project\RPG_2\Hero\Hero_Blade\Blast_Test, new name each time
+- [RPG2 hero: playblast](rpg2-hero-playblast-after-edit.md) — Frolvy: playblast ONLY when the user asks; MP4 into C:/Project/RPG_2/Hero/Hero_Blade/Blast_Test, camera1, no controls, textured, new name each time
+- [RPG2 hero: auto textures](rpg2-hero-auto-textures.md) — Frolvy plugin hero_textures puts the textures on the meshes whenever a scene is opened (one Frolvy restart to load); by hand: apply(api, force=True)
 - [Polish giữ pose blocking](polish-keeps-blocking-poses.md) — không tự đổi pose chính đã duyệt hoặc pose user tự chỉnh (kể cả khi sửa theo Director); muốn đổi thì hỏi trước
 - [Script Studio: một tiến trình ghi](studio-script-single-writer.md) — Auto key + frame đổi giữa chừng = key thừa; kiểm frame, chạy 1 tiến trình
-- [RPG2 hero: auto textures](rpg2-hero-auto-textures.md) — Frolvy plugin hero_textures puts the textures on the meshes whenever a scene is opened (one Frolvy restart to load); by hand: apply(api, force=True)
+- [Keep existing keys](keep-existing-keys-when-editing.md) — Frolvy edits: never change the existing keys (f0/f8/f12…), add motion only on new inbetween frames
+- [Head aim keep roll](frolvy-head-aim-keep-roll.md) — Frolvy head-look: solve rx+ry+rz keeping base pitch/roll, never ry alone (gãy cổ); layer on/off check at key frames
 - [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
+- [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
