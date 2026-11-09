@@ -215,3 +215,4 @@ Các thư mục `work/boss_gaygor/blender/` (Gaygor Idle / Idle_Front / Attack /
 - Skill `/check_fb` (`.claude/skills/check_fb/`) → nhận lượt review đã gửi, sửa gộp mọi note trong 1 version
 - Skill `/director` (`.claude/skills/director/`) → gọi tay agent Animation Director chấm một clip / rig (mốc tuỳ chọn), tự gom ảnh + số đo, báo kết quả, hỏi sửa
 - `tools/quick_sheet.py` → gộp render nhanh (`quick=F views=…`) thành 1 ảnh để tự kiểm
+| `work/rpg2_hero/` | RPG2 Hero (Assassin, song đao, 30 fps), môi trường 2026-11-09: `env.md` (đường dẫn, quy tắc, tình trạng clip), `blade_idle/` `blade_attack_1/` `blade_attack_2/` `blade_deadly_strike/` (brief.md), `gdd/`, `rig/`; file Frolvy ở `C:\Project\RPG_2\Hero\` |
