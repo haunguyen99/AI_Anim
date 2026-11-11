@@ -214,3 +214,9 @@ Người dùng: "Khi người dùng muốn thêm một anim mới. Khi click và
 2. Bản phân tích theo G3 (mẫu `sdr06/analysis.md`; không ref = nhánh C: C1 intake chỉ hỏi chỗ thiếu, C2 thiết kế + bảng timing), đọc `doc` nếu có. Bảng pha có cột **Key pose** (một pha một key, pha trùng pose dùng lại key, pha nhích nhỏ = chuyển tiếp).
 3. Chép bảng pha vào `keys/keypose.json` "clips"[<id anim>] {frames, fps, phases}. `--anim-status <id> review "Bản phân tích: <đường dẫn>, N pha / M key, chờ duyệt"` và báo người dùng; **không tạo ảnh trước khi duyệt** (cổng duyệt như mọi quy trình).
 4. Duyệt xong: `--anim-status <id> images`, tạo ảnh từng key theo G4 (góc chính trước, góc phụ khi người dùng bật), xong `--anim-status <id> done "N ảnh"`. Ảnh tự hiện trong Image Key.
+
+## Windy Idle (Endless-kicker, 2026-11-04): ảnh key đẹp lệch thiết kế, góc trên
+- **Người dùng có thể chọn ảnh lệch thiết kế đã duyệt** (k1_idle r1: tay giang ra bên thay vì khuỷu 90° ra trước; director chấm A, sinh r2 đúng thiết kế; người dùng: "tôi thấy phương án này oki rồi mà"). Ảnh key là chỗ người dùng chốt dáng: khi ảnh đẹp, đọc rõ mà lệch thiết kế thì đưa CẢ HAI bản cho người dùng chọn trước khi sinh lại; người dùng chọn thì sửa `analysis.md` theo ảnh ngay (không dựng lẫn hai bản).
+- **Concept có thể nằm trong GDD Google Doc**: tải `export?format=html`, tách ảnh base64 (`<img src="data:...">`). Dải gió / VFX trong concept: ghi rõ "do NOT draw them".
+- **Góc TRÊN hay chép T-pose cho vạt áo/đuôi**: Codex vẽ đuôi vạt dài chĩa ra sau như render T-pose dùng làm khung. Prompt phải tả cái thấy từ trên của vải RỦ (chỉ mép ngắn sau vai, ngọc ở đuôi bị che) và tay buông (chỉ thấy đỉnh vai). Sửa 1 lần là đạt (top_r2).
+- Góc phụ chỉ là ref: tay/độ dài prop/hướng xoay đầu prop mỗi góc Codex tự vẽ khác nhau (Windy right: trượng 1,32×, tay cao hơn 20 cm) → khi dựng P0 lấy theo số trên rig + góc chính, ghi danh sách "lấy theo số" vào analysis.

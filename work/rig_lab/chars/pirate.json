@@ -1,0 +1,19 @@
+{
+ "id": "pirate",
+ "name": "Pirate",
+ "ref_dir": "ref_pirate",
+ "scale": 1,
+ "body": "MC_char_map5",
+ "clothes": [],
+ "extra": [
+  "bullet",
+  "MC_char_map4_VK"
+ ],
+ "names_from": "ref_pirate",
+ "cfg": {
+  "name": "MC_char_map5"
+ },
+ "source": "Studio Nhập FBX 2026-11-06: MC_char_map4_shoot.fbx",
+ "note": "Rig chưa dựng: đặt clothes / cfg trước khi chạy build_char.py",
+ "texture": "T_Color_ShotDieRepeat.tga"
+}

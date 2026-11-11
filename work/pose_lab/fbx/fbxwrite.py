@@ -8,6 +8,8 @@ import gltfpose as g
 from fbxbin import E, serialize
 
 DT = 1539538600  # FBX ticks per frame at 30 fps
+ARMATURE = True  # False: không bọc nút Armature, `root` là gốc (rig team Jungle/Western: avatar Humanoid không có Armature)
+FPS = 30  # Jungle (24 fps): đặt fbxwrite.FPS = 24 và fbxwrite.DT = 46186158000 // 24 trước build()
 
 
 def fmt(x):
@@ -65,9 +67,11 @@ def build(path, take, out):
     N = j["nodes"]
     order, par = skeleton(j)
     nk = len(acc(j["animations"][0]["samplers"][0]["input"]))
-    names = ["Armature"] + [N[i]["name"] for i in order]
+    names = (["Armature"] if ARMATURE else []) + [N[i]["name"] for i in order]
     parent = {N[i]["name"]: (N[par[i]]["name"] if par[i] in order else "Armature") for i in order}
     parent["Armature"] = None
+    if not ARMATURE:
+        parent["root"] = None
     T = {n: [] for n in names}
     R = {n: [] for n in names}
     prev = {}
@@ -83,7 +87,7 @@ def build(path, take, out):
             FW[N[i]["name"]] = m
         FW["Armature"] = np.eye(4)
         for n in names:
-            loc = np.eye(4) if n == "Armature" else np.linalg.inv(FW[parent[n]]) @ FW[n]
+            loc = np.eye(4) if n == "Armature" else (np.linalg.inv(FW[parent[n]]) @ FW[n] if parent[n] else FW[n])
             e = euler_from(loc[:3, :3], prev.get(n))
             prev[n] = e
             T[n].append(loc[:3, 3].tolist())
@@ -108,7 +112,7 @@ def build(path, take, out):
     top = []
     top.append(E("FBXHeaderExtension", [], [E("FBXHeaderVersion", [("I", 1003)]), E("FBXVersion", [("I", 7400)]),
                                              E("EncryptionType", [("I", 0)]), E("Creator", [("S", "Pose Lab")])]))
-    top.append(E("FileId", [("R", bytes(range(16)))]))
+    top.append(E("FileId", [("R", bytes.fromhex("28b32aebb624ccc2bfc8b02aa92bfcf1"))]))  # phải khớp mã footer của fbxbin (Blender); 00..0f làm Unity báo "File is corrupted" (SDR06 Reload 2026-11-06)
     top.append(E("CreationTime", [("S", "1970-01-01 10:00:00:000")]))
     top.append(E("Creator", [("S", "Pose Lab FBX")]))
     gs = [P("UpAxis", "int", "Integer", "", ("I", 1)), P("UpAxisSign", "int", "Integer", "", ("I", 1)),
@@ -116,8 +120,8 @@ def build(path, take, out):
           P("CoordAxis", "int", "Integer", "", ("I", 0)), P("CoordAxisSign", "int", "Integer", "", ("I", 1)),
           P("OriginalUpAxis", "int", "Integer", "", ("I", -1)), P("OriginalUpAxisSign", "int", "Integer", "", ("I", 1)),
           P("UnitScaleFactor", "double", "Number", "", ("D", 1.0)), P("OriginalUnitScaleFactor", "double", "Number", "", ("D", 1.0)),
-          P("TimeMode", "enum", "", "", ("I", 6)), P("TimeSpanStart", "KTime", "Time", "", ("L", t0)),
-          P("TimeSpanStop", "KTime", "Time", "", ("L", t1)), P("CustomFrameRate", "double", "Number", "", ("D", 30.0))]
+          P("TimeMode", "enum", "", "", ("I", 6 if FPS == 30 else 14)), P("TimeSpanStart", "KTime", "Time", "", ("L", t0)),
+          P("TimeSpanStop", "KTime", "Time", "", ("L", t1)), P("CustomFrameRate", "double", "Number", "", ("D", float(FPS)))]
     top.append(E("GlobalSettings", [], [E("Version", [("I", 1000)]), E("Properties70", [], gs)]))
     top.append(E("Documents", [], [E("Count", [("I", 1)]), E("Document", [("L", 1), ("S", take), ("S", take)],
                 [E("Properties70", [], [P("SourceObject", "object", "", ""), P("ActiveAnimStackName", "KString", "", "", ("S", take))]),

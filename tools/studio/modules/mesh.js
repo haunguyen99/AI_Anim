@@ -31,6 +31,10 @@
   // vị trí gom từ hình đang hiển thị của o.mesh theo o.idx → đi theo pose / sửa điểm; không nhận raycast (chọn vẫn bằng o.mesh).
   let TEX = null, showTex = ST.pref.get("mesh:tex", true);
   const texOk = o => !!(o.uvc && o.uvc.length === o.idx.length * 2);
+  // Bảng màu (palette): UV 3 góc nằm sát ranh ô màu nên lấy mẫu nearest ra đốm. Tam giác có 3 UV gần nhau (< 0,04) → cả 3 góc về tâm = một màu phẳng.
+  M.flatUV = uvc => { const u = Float32Array.from(uvc); for (let t = 0; t + 5 < u.length; t += 6) {
+    const xs = [u[t], u[t + 2], u[t + 4]], ys = [u[t + 1], u[t + 3], u[t + 5]];
+    if (Math.max(...xs) - Math.min(...xs) < 0.04 && Math.max(...ys) - Math.min(...ys) < 0.04) { const cx = (xs[0] + xs[1] + xs[2]) / 3, cy = (ys[0] + ys[1] + ys[2]) / 3; for (let k = 0; k < 3; k++) { u[t + 2 * k] = cx; u[t + 2 * k + 1] = cy; } } } return u; };
   function dropTex(o) { if (!o.tex) return; o.mesh && o.mesh.remove(o.tex); o.tex.geometry.dispose(); o.tex.material.dispose(); o.tex = null; }
   function syncTex(o) {   // tạo / cập nhật lớp texture theo hình đang hiển thị
     if (!TEX || !texOk(o)) { dropTex(o); return; }
@@ -38,7 +42,7 @@
     if (!o.tex) {
       const g = new THREE.BufferGeometry();
       g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(n * 3), 3));
-      g.setAttribute("uv", new THREE.BufferAttribute(o.uvc, 2));
+      g.setAttribute("uv", new THREE.BufferAttribute(M.flatUV(o.uvc), 2));
       o.tex = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ map: TEX, side: THREE.DoubleSide }));
       o.tex.raycast = () => {}; o.mesh.add(o.tex);
     }
@@ -49,7 +53,7 @@
   function loadTex(url) {
     if (!url) { TEX = null; OBJ.forEach(o => { dropTex(o); applyVis(o); }); return; }
     new THREE.TextureLoader().load(url, t => {
-      t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;   // bảng màu: giữ ô màu sắc nét
+      t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;   // UV đúng mép (0,0): wrap lẫn ô cam của hàng đối diện → đốm; bảng màu: giữ ô màu sắc nét
       if (TEX) TEX.dispose(); TEX = t; OBJ.forEach(o => { dropTex(o); syncTex(o); applyVis(o); }); ST.refresh && ST.refresh();
     }, undefined, () => say("Không nạp được texture " + url));
   }

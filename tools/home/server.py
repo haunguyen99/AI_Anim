@@ -14,9 +14,9 @@ import fbx_import
 import rig_data
 import studio_bridge
 import pose_data
-import spine_live
 import scene_file
 import keypose
+import sessions
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -25,6 +25,7 @@ REVIEW_HTML = os.path.join(ROOT, "work", "review_page", "index.html")
 POSE_HTML = os.path.join(ROOT, "work", "pose_lab", "index.html")
 STAGES = ["rig", "analysis", "p0", "blocking", "spline", "polish", "export"]
 PORT = int(os.environ.get("HOME_PORT") or os.environ.get("PORT") or "8780")
+SPINE_PORT = int(os.environ.get("SPINE_PORT") or "8781")   # Spine Live chạy riêng: tools/spine_live/server.py
 LAB_DIRS = {"mesh": ("mesh_lab", "pages"), "pose": ("pose_lab", "pages"), "review": ("review_page", "pages"), "rig": ("rig_lab", "pages")}
 LAB_STATIC = {".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".glb": "model/gltf-binary", ".gltf": "model/gltf+json", ".svg": "image/svg+xml", ".bin": "application/octet-stream", ".txt": "text/plain; charset=utf-8"}
@@ -693,6 +694,23 @@ class H(SimpleHTTPRequestHandler):
         with open(path, "rb") as f:
             self.send_bytes(f.read(), ctype)
 
+    def spine_moved(self):
+        """Spine Live chạy riêng (tools/spine_live/server.py, cổng SPINE_PORT): chuyển trang sang đó, giữ query."""
+        u = urlparse(self.path)
+        host = (self.headers.get("Host") or "127.0.0.1").rsplit(":", 1)[0]
+        url = f"http://{host}:{SPINE_PORT}{u.path}" + ("?" + u.query if u.query else "")
+        import socket
+        try:
+            socket.create_connection(("127.0.0.1", SPINE_PORT), timeout=0.3).close()
+        except OSError:
+            html = ("<meta charset=utf-8><body style='font:15px sans-serif;padding:24px'>Spine Live chưa chạy. "
+                    "Bấm <b>tools/spine_live/start.bat</b> (hoặc chạy <code>.venv/Scripts/python.exe -I tools/spine_live/server.py</code>) "
+                    f"rồi mở <a href='{url}'>{url}</a>.</body>").encode("utf8")
+            return self.send_bytes(html, "text/html; charset=utf-8")
+        self.send_response(302)
+        self.send_header("Location", url)
+        self.end_headers()
+
     def do_GET(self):
         path = unquote(urlparse(self.path).path)
         if path in ("/", "/index.html"):   # mở là vào thẳng Studio (viewport), nhân vật mở lần trước
@@ -705,9 +723,15 @@ class H(SimpleHTTPRequestHandler):
             from urllib.parse import parse_qs
             if studio_bridge.handle_get(self, path, parse_qs(urlparse(self.path).query)):
                 return
-        if path in ("/spine", "/spine/") or path.startswith(("/spine/", "/api/spine/", "/spine-live/")):   # Spine Live (spine_live.py)
+        if path in ("/spine", "/spine/") or path.startswith(("/spine/", "/api/spine/", "/spine-live/")):   # Spine Live đã tách ra server riêng
+            return self.spine_moved()
+        if path in ("/keypose", "/keypose/") or path.startswith("/api/keypose/"):   # Key Pose: duyệt ảnh Codex + yêu cầu thêm ảnh (keypose.py)
             from urllib.parse import parse_qs
-            if spine_live.handle_get(self, path, parse_qs(urlparse(self.path).query)):
+            if keypose.handle_get(self, path, parse_qs(urlparse(self.path).query)):
+                return
+        if path in ("/sessions", "/sessions/") or path.startswith("/api/sessions/"):   # quản lý phiên Claude Code (sessions.py)
+            from urllib.parse import parse_qs
+            if sessions.handle_get(self, path, parse_qs(urlparse(self.path).query)):
                 return
         if path in ("/keypose", "/keypose/") or path.startswith("/api/keypose/"):   # Key Pose: duyệt ảnh Codex + yêu cầu thêm ảnh (keypose.py)
             from urllib.parse import parse_qs
@@ -795,10 +819,12 @@ class H(SimpleHTTPRequestHandler):
             n = int(self.headers.get("Content-Length", "0"))
             if studio_bridge.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
                 return
-        if path.startswith("/api/spine/"):   # Spine Live: key pose / ghi chú / hoàn tác (spine_live.py)
+        if path.startswith("/api/sessions/"):   # quản lý phiên Claude Code (sessions.py)
             n = int(self.headers.get("Content-Length", "0"))
-            if spine_live.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
+            if sessions.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
                 return
+        if path.startswith("/api/spine/"):   # Spine Live đã tách ra server riêng (tools/spine_live/server.py)
+            return self.send_json({"ok": False, "error": f"Spine Live chạy riêng ở cổng {SPINE_PORT}"}, 410)
         fn = ROUTES.get(path)
         if not fn:
             return self.send_error(404)

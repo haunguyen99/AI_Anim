@@ -22,6 +22,7 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 
 - **Chỉ joint base.** Không bật helper set (PRT/HLP/MUS), không twist, không bendy: `api.set_helper_set(False)`, `api.set_bendy_limbs(False)`, `twistJoints = 0`. Người dùng không cần các joint đó cho game.
 - **Root_M là joint hông** (kiểu AdvancedSkeleton): Root nằm ở hông, nhãn `root`, không có joint Pelvis; Spine1, Hip, giáp hông nằm thẳng dưới Root. Mặc định 0.9.22+ của Frolvy (Root ở 0,0,0 + Pelvis) KHÔNG dùng cho rig game. Joint `DEF_Root_M` mang nhãn `root`.
+- **Joint team `root` (đầu cây xương, theo `CTL_Main`) KHÔNG có skin**, hông là `Root_M` (London 2026-11-06: `root` ăn 277/1199 đỉnh → méo thân khi root dời). Trước khi xuất/đẩy rig: `.venv/Scripts/python.exe -I tools/fbx_root_skin.py check <fbx>` phải ra `ok`; lỗi thì `fix in.fbx out.fbx` (cộng weight root vào Root_M).
 - **Skin chỉ bằng joint DEF**, bỏ joint cuối/pivot (End, Heel, FootSide, Finger4), không cho thân ăn joint đạo cụ. Tối đa 4 joint mỗi đỉnh, bỏ weight < 1%.
 - **Mảnh cứng** (giáp, mặt nạ, mắt, vòng tay, đệm gối, đạo cụ) gán 100% vào joint của nó. Giáp hông: chốt cuối của Bastion là **đi theo pelvis** (100% joint HipPad, con của Root, mép trên mảnh trên theo Root), không ăn Hip; trước đó đã thử "theo chân 50%" (50% HipPad + 50% Hip) rồi bỏ. Không constraint control giáp vào joint (sinh vòng lặp).
 - **Không để joint xa ảnh hưởng.** Mỗi vùng chỉ ăn joint của nó và joint kề; tay chân không kéo thân; đầu và mặt nạ chỉ theo Head (cổ theo Neck); cổ áo/giáp thân theo thân.
