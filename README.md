@@ -30,7 +30,7 @@ Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã củ
    ```powershell
    powershell -ExecutionPolicy Bypass -File tools\setup.ps1
    ```
-   Lệnh này tạo `.venv` và cài các thư viện trong `requirements.txt`. Nó cũng cài lịch Windows `AIAnim_KnowledgePush`: mỗi ngày lúc 17:10 tự gộp và đẩy kiến thức (skill, bộ nhớ) lên GitHub (đổi giờ: `toolsknowledge_sync_install.ps1 -Time 12:30`; không cài: thêm `-NoSchedule`; gỡ: `-Remove`).
+   Lệnh này tạo `.venv` và cài các thư viện trong `requirements.txt`. Nó cũng khôi phục bộ nhớ Claude từ `.claude/memory_store` (chỉ khi bộ nhớ phiên đang trống, không đè bộ nhớ có sẵn) và cài lịch Windows `AIAnim_KnowledgePush`: mỗi ngày lúc 17:10 tự gộp và đẩy kiến thức (skill, bộ nhớ) lên GitHub (đổi giờ: `toolsknowledge_sync_install.ps1 -Time 12:30`; không cài: thêm `-NoSchedule`; gỡ: `-Remove`).
    Nó cũng tạo nhánh làm việc **`master`** trên máy (từ `main`) và chuyển sang đó; máy cài từ trước sẽ tự tạo ở lần mở Home kế tiếp (`tools\home\start.bat`). Xem [Nhánh git](#nhánh-git).
 4. **Mở thư mục trong Claude Code.** Các skill trong `.claude/skills` tự có sẵn, không cần cài thêm.
 5. **Mở Home:** gõ `/project` trong Claude Code, hoặc bấm đúp `tools\home\start.bat` (tự mở http://127.0.0.1:8780 = Studio; dự án ở /home). Các Lab cần mạng (tải three.js từ CDN). ffmpeg có thì playblast được nén lại để tua mượt; không có thì vẫn dùng được.

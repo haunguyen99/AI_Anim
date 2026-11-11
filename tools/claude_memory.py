@@ -148,10 +148,14 @@ def backup(with_sessions: bool):
         print(f"Lịch sử phiên -> {out} ({out.stat().st_size // 2**20} MB)")
 
 
-def restore(force=False):
+def restore(force=False, if_empty=False):
     if not STORE.exists():
         sys.exit(f"Chưa có bản sao lưu ở {STORE}")
     dst = live_dir()
+    idx = dst / "MEMORY.md"
+    if if_empty and idx.exists() and idx.stat().st_size > 0:
+        print(f"Bộ nhớ phiên đã có ({len(files(dst))} file ở {dst}): bỏ qua, không đè.")
+        return
     n = copy_all(STORE, dst)
     print(f"Đã khôi phục {n} file -> {dst} (tổng {len(files(dst))})")
     mcp_restore(force)
@@ -163,5 +167,6 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["backup", "restore", "status"])
     ap.add_argument("--sessions", action="store_true")
     ap.add_argument("--force", action="store_true", help="restore: ghi đè cả file MCP đang có")
+    ap.add_argument("--if-empty", action="store_true", help="restore: chỉ khôi phục khi bộ nhớ phiên đang trống (dùng trong setup.ps1)")
     a = ap.parse_args()
-    {"backup": lambda: backup(a.sessions), "restore": lambda: restore(a.force), "status": status}[a.cmd]()
+    {"backup": lambda: backup(a.sessions), "restore": lambda: restore(a.force, a.if_empty), "status": status}[a.cmd]()
