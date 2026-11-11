@@ -94,3 +94,4 @@
 - [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
 - [Frolvy layer Euler coupling](frolvy-additive-layer-euler-coupling.md) — additive layer on shoulder isn't per-channel: key whole span, re-key loop, verify muted vs on
 - [Work fast](feedback-work-fast.md) — user 2026-11-11: fewer calls (one look + one do/verify), one-step Frolvy commands `frolvy_port.py scene|keys|clear|reset`, start with `scene` (user may restart Frolvy between turns)
+- [Tự sửa xoắn](feedback-self-fix-twist.md) — sửa anim gây xoắn bộ phận thì tự dò (góc xoay thế giới/frame) và sửa luôn, không đợi user báo
