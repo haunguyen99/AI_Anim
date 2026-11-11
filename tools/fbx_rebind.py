@@ -212,6 +212,7 @@ def main():
     ap.add_argument("--map", action="append", default=[]); ap.add_argument("--mode", action="append", default=[])
     ap.add_argument("--anims", default=None); ap.add_argument("--pattern", default="Zombie_*")
     ap.add_argument("--unity", default=UNITY); ap.add_argument("--branch", default="TungNV_Dev")
+    ap.add_argument("--keep", action="append", default=[])   # mesh cũ không có bản mới (đạn, ...): giữ nguyên
     ap.add_argument("--no-images", action="store_true")
     a = ap.parse_args()
     os.makedirs(os.path.join(a.out, "src"), exist_ok=True); os.makedirs(os.path.join(a.out, "look"), exist_ok=True)
@@ -227,6 +228,7 @@ def main():
     pairs = dict(m.split("=", 1) for m in a.map)
     for n in old_names:
         if n not in pairs and n in new_names: pairs[n] = n
+    for n in a.keep: pairs[n] = n
     miss = [n for n in old_names if n not in pairs]
     if miss: raise SystemExit("Không ghép được mesh cũ %s; mesh mới có %s -> dùng --map CŨ=MỚI" % (miss, new_names))
     modes_forced = dict(m.split("=", 1) for m in a.mode)
@@ -243,9 +245,13 @@ def main():
             W[bone] = (np.array(F.props(ix[2], ix[1])[0], int), np.array(F.props(wt[2], wt[1])[0], float))
         old[n] = dict(mid=mid, M=M, V=(M[:3, :3] @ d["V"].T).T + M[:3, 3], W=W, P=d["P"],
                       clusters=[b for _, b in dst.clusters(gid)])
-    unit = 100.0 if np.ptp(np.concatenate([R.geo_data(src, src.geometry(src.model(pairs[n])))["V"] for n in old_names]), 0).max() < 10 else 1.0
+    unit = 100.0 if np.ptp(np.concatenate([R.geo_data(src, src.geometry(src.model(pairs[n])))["V"] for n in old_names if n not in a.keep]), 0).max() < 10 else 1.0
     new = {}
     for n in old_names:
+        if n in a.keep:   # giữ mesh cũ: dữ liệu mới = chính mesh cũ (đặt = đồng nhất)
+            mid = dst.model(n); d = R.geo_data(dst, dst.geometry(mid)); M = dst.world(mid)
+            d["V"] = (M[:3, :3] @ d["V"].T).T + M[:3, 3]; d["N"] = (M[:3, :3] @ d["N"].T).T
+            new[n] = d; log("- giữ nguyên mesh cũ `%s` (không có bản mới)" % n); continue
         mid = src.model(pairs[n]); d = R.geo_data(src, src.geometry(mid)); M = src.world(mid)
         d["V"] = ((M[:3, :3] @ d["V"].T).T + M[:3, 3]) * unit; d["N"] = (M[:3, :3] @ d["N"].T).T
         dp, dv, _ = R.clean_mesh(d, tol=1e-5)

@@ -167,7 +167,7 @@ def main(argv):
                     times.add(round(k.get("time", 0.0), 4))
         keys = sorted(times)
     rig = only != "anim"
-    n_steps[0] = (len(bones) + (1 if main_mesh else 0) + len(w_bones) if rig else 0) + (len(keys) + 1 if keys else 0)
+    n_steps[0] = (len(bones) + (1 if main_mesh else 0) + len(w_bones) + (0 if keys else 1) if rig else 0) + (len(keys) + 1 if keys else 0)
 
     if rig:
         push(skel(bones[:1], slots_root, skin0), "đặt ảnh lên gốc skeleton (dấu + đỏ = điểm chạm)", bones=True, mesh=False, weight="")
@@ -187,6 +187,9 @@ def main(argv):
             for bn in w_bones:
                 push(skel(bones, d["slots"], d["skins"]), f"weight {bn}: đỏ = đi theo {bn} hoàn toàn, xanh = không theo",
                      mesh=False, weight=bn)
+        if not keys:   # kết phần rig: tắt lớp tô weight / lưới, không thì trang giữ tô màu sau khi replay xong
+            push(skel(bones, d["slots"], d["skins"], {anim: d["animations"][anim]} if anim else None),
+                 "rig hoàn chỉnh", play=bool(anim), bones=True, mesh=False, weight="")
     if keys:
         A = d["animations"][anim]
         for ki, t in enumerate(keys):

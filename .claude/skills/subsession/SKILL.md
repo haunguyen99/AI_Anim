@@ -30,3 +30,7 @@ chạy · chờ (xong lượt) · **kẹt** (đang chờ duyệt quyền, xem `l
 
 ## Luật an toàn
 Phiên con không commit, không đổi nhánh, không đẩy GitHub (luật gắn sẵn cuối brief). Tối đa 4 phiên cùng lúc. Không dùng `--dangerously-skip-permissions`.
+- Phiên con nền (`claude --bg`) HIỆN trong danh sách phiên của extension VS Code (user xác nhận 2026-11-06): không cần làm cây phiên riêng, lớp 2 chỉ còn thông báo + tab Anim nếu muốn.
+- Giao diện quản lý: trang /sessions của Home (tools/home/sessions.py + sessions.html, nút trên thanh Home). Khởi động lại Home để dùng.
+- Trong VS Code: extension "Horus: Phiên Claude" (tools/vscode_ext, cài bằng `.venv/Scripts/python.exe -I tools/vscode_ext/build_vsix.py --install`, rồi Reload Window): biểu tượng ở thanh bên, cây phiên, nút giao việc / nhắn thêm / dừng / xoá, thông báo khi phiên con xong. Dữ liệu từ `subsession.py json` / `detail`.
+- Danh sách phiên lấy từ chính Claude Code (subsession.py `rows()`): claude agents + nhật ký ~/.claude/projects (tên, phiên đã đóng, cache titles_cache.json) + chỉ mục app desktop (phiên cha spawnedFrom, đã lưu trữ; đọc-chỉ, best-effort, có thể đổi khi app cập nhật). Extension mở phiên bằng lệnh claude-vscode.primaryEditor.open(sessionId, prompt) của extension Claude Code.

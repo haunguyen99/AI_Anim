@@ -20,6 +20,7 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 |---|---|
 | **text_brief.md** | chỉ có yêu cầu bằng lời (không ref, không blocking): quy trình C, intake, bản thiết kế + bảng timing, pose 10%, phần còn thiếu (pose_build, đọc key Pose Lab, FBX nguồn) |
 | **gdd_stage0.md** | có GDD (xlsx / Google Sheet) hoặc cần ảnh key pose khi không có ref: giai đoạn 0 (đọc GDD → danh sách anim → câu hỏi → phân tích có nguồn → ảnh key pose bằng Codex trên render model thật → trang duyệt), mẫu prompt, đo tỉ lệ vũ khí, lỗi Codex hay gặp |
+| **user_blocking.md** `#dùng-anim-thư-viện-mixamo-làm-bản-nền-2026-11-10` | lấy anim Mixamo/thư viện làm bản nền, retarget sang xương team (`tools/retarget/`) |
 | **user_blocking.md** | quy trình B: AI rig trên Frolvy (MCP) → user key → FBX sang Studio; hoặc team đưa FBX blocking (không ref): cổng duyệt, script mẫu, luật (RotationOrder, mũi chân, cung nhấc chân, QA fold_backs) |
 | **review_process.md** `#home-app` | Home (quản lý dự án/anim), clip tạo từ Home, trạng thái hiện trên Home |
 | **arms_hands.md** | |
@@ -37,8 +38,6 @@ Luôn đọc `CORE.md` + file này. Chỉ mở mục `details/<file>#<mục>` kh
 | `#prop-hand-side-fk` | tay thao tác prop ở phía xa camera; chọn FK/IK; đọc tay vs prop ở góc top |
 | `#thick-bar-grip` | nắm thanh/tay quay dày; "bị nắm nhiều quá", ngón xuyên prop; rig tay trái lật trục |
 | **qa_anatomy.md** `#joint-coupling` | dựng / sửa bất kỳ key nào; khớp dùng lẻ loi (vai đứng yên khi giơ tay, chỉ xoay đầu không xoay cổ); thêm / chỉnh luật liên động |
-| `#ref-arm-retarget-anat` | lắp key ref lên rig: vai/cổ tay vặn ngược nhau, khuỷu lệch bản lề, "gập quá mức" |
-| `#chibi-retarget-skin` | retarget ref người thường lên chibi đầu to; về main cuối clip; sửa skin weight nách lồi lõm |
 | **props_weapons.md** | |
 | `#heavy-prop-lever` | prop nặng cầm một đầu (chùy, búa) |
 | `#long-prop-flick` | đầu prop dài bị giật/vẩy |

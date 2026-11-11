@@ -1,0 +1,8 @@
+{
+  "id": "anim_ops",
+  "version": "0.1.0",
+  "entry": "anim_ops.py",
+  "api_version": 1,
+  "name": "Anim Ops",
+  "description": "One-call scene operations: scene report, key table, clear the keys of a body part and put its controls back to the default pose. Run from a script or tools/frolvy_port.py."
+}

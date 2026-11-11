@@ -155,7 +155,7 @@
     const n = I.count, g = new THREE.BufferGeometry();
     // normal tạo sẵn trước lần vẽ đầu: thêm thuộc tính sau khi đã vẽ thì three r128 không gắn nó (Lambert ra đen)
     g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(n * 3), 3)); g.setAttribute("normal", new THREE.BufferAttribute(new Float32Array(n * 3), 3));
-    g.setAttribute("uv", new THREE.BufferAttribute(Float32Array.from(o.uvc), 2));
+    g.setAttribute("uv", new THREE.BufferAttribute(ST.mods.mesh.flatUV(o.uvc), 2));
     const copy = () => { const pa = m.geometry.attributes.position, src = pa.array, ix = m.geometry.index.array, P = g.attributes.position.array; t.userData.v = pa.version;
       for (let k = 0; k < n; k++) { const v = 3 * ix[k]; P[3 * k] = src[v]; P[3 * k + 1] = src[v + 1]; P[3 * k + 2] = src[v + 2]; }
       g.attributes.position.needsUpdate = true; g.computeVertexNormals(); g.computeBoundingSphere(); };

@@ -22,9 +22,10 @@
 - [Vietnamese replies](feedback-vietnamese.md) — every chat reply in Vietnamese, incl. long reports (user corrected 2026-10-21)
 - [Pole not free](feedback-pole-not-free.md) — IK poles parented (knee→foot, elbow→chest/hand), direction in key spec, pole_audit.py before render
 - [Report slow steps](feedback-report-slow-steps.md) — tell user up front when a step takes long (time + why)
+- [Report slow steps](feedback-report-slow-steps.md) — tell the user which steps take time (with rough minutes) + how to cut them
 - [One view at a time](feedback-one-view-at-a-time.md) — match/review one camera view per round, then the next
 - [Ref|Anim side by side](feedback-ref-anim-side-by-side.md) — send REF and ANIM separate, no blended overlay
-- [Intro + report decks](reference-intro-deck.md) — intro deck 'Quy trình diễn hoạt với AI' (32 slides) + report deck 'Báo cáo áp dụng AI cho diễn hoạt' (10 slides)
+- [Intro + report decks](reference-intro-deck.md) — intro deck (32 slides), short guide "Làm anim với Claude" (8 slides), report deck (10 slides)
 - [Pose Lab FBX](project-poselab-fbx.md) — Pose Lab is a full anim tool (keys, spline, foot lock, ref, FBX) since 2026-10-23, physics layer since 2026-10-24; Walk keys still to block
 - [Walk right-view check](project-walk-right-view-check.md) — 2026-10-23 silhouette check OK, no key change; db keys newer than block_b3
 - [Playblast render size](feedback-playblast-render-size.md) — reset renderer size per cell + check one frame before ffmpeg (b10 was cropped)
@@ -67,6 +68,16 @@
 - [Endless-kicker](project-endless-kicker.md) — hero Windy (wind mage + staff), Unity E:\endless-kicker v1, team Maya E:\tvc_source\3D ANIM\EndlessKicker already has Idle/Attack/Skill1–3, GDD FDD Windy
 - [Propose tools](feedback-propose-tools.md) — tự đề xuất làm tool cho công đoạn tốn thời gian, lặp lại được (user 2026-11-04)
 - [VS Code setup](reference-vscode-pilot.md) — team uses Claude in VS Code too: tools/setup_vscode.ps1 (-Install, -Endpoint lan|public), docs/vscode_pilot.md §7; LAN http://192.168.10.29:40741, key only in each user's ~/.claude/settings.json
+- [Subsession](reference-subsession.md) — phiên con VS Code: tools/subsession + skill subsession (claude --bg), lớp 1 xong 2026-11-05
+- [SDR06 Reload gun F1](project-sdr06-reload-gun-f1.md) — London Reload gunF1_v2: súng giữ F1, giật nhẹ F12/F26, pushed TungNV_Dev 69832562 (2026-11-05); không dùng ik_arm cho sửa nhỏ
+- [WorkAI links](feedback-workai-links.md) — luôn kèm link mission/issue khi nhắc (user 2026-11-06)
+- [London root skin](project-london-root-skin.md) — root dính skin 277 đỉnh → Root_M, pushed TungNV_Dev 7a7609b5 (2026-11-06); Roma chưa đo
+- [SDR dispatch](feedback-sdr-session-dispatch.md) — phiên chính chỉ nhận việc + TIEN_DO.md, mỗi task một nested session (2026-11-06)
+- [BAP feedback](reference-bap-feedback.md) — tools/bap/bap.py gửi phản hồi lên bap.horusjsc.com/feedback; key wap_ trong tools/bap/.env (2026-11-06 key cũ bị 401)
+- [Pirate Reload](project-pirate-reload.md) — map4 bạch tuộc hoả mai: Reload 30F nòng giữ, polish_c (túi sau hông, đạn ngang) xong, TungNV_Dev a9d57887 (Unity OK); bỏ kéo búa (joint26 = cả khoá); PM.FPS=24
+- [Airport order](project-airport-order.md) — order anim+VFX game AIRPORT ở Lark Sheet, chưa có model, chờ An ping Hậu (2026-11-11)
+- [Push knowledge](feedback-push-knowledge.md) — /push tự đẩy kiến thức (knowledge/skill/memory) mỗi lần push và cuối việc có bài học (user 2026-11-11)
+- [Intro + report decks](reference-intro-deck.md) — intro deck 'Quy trình diễn hoạt với AI' (32 slides) + report deck 'Báo cáo áp dụng AI cho diễn hoạt' (10 slides)
 - [Fit controls after Build Rig](frolvy-fit-controls-after-build.md) — in Frolvy run fit_controls.snug(api) (menu Build Rig + Fit Controls) right after Build/Rebuild Rig
 - [Game rig: base joints only](frolvy-game-rig-base-joints-only.md) — no helper set / twist / bendy; skin only to DEF, max 4 influences
 - [Frolvy root joint](frolvy-rig-root-at-origin.md) — default Root at 0,0,0 + Pelvis, but game rigs: Root_M is the hip joint (no Pelvis); how to convert
@@ -82,3 +93,4 @@
 - [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
 - [Paseo](reference-paseo.md) — Paseo agent app: provider llmpro → LAN proxy, command = array path to ~/.local/bin/claude.exe, restart after provider changes
 - [Frolvy layer Euler coupling](frolvy-additive-layer-euler-coupling.md) — additive layer on shoulder isn't per-channel: key whole span, re-key loop, verify muted vs on
+- [Work fast](feedback-work-fast.md) — user 2026-11-11: fewer calls (one look + one do/verify), one-step Frolvy commands `frolvy_port.py scene|keys|clear|reset`, start with `scene` (user may restart Frolvy between turns)

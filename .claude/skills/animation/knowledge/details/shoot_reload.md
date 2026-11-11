@@ -138,3 +138,27 @@ SDR03 (map3, nỏ, 2026-10-28; `work/shoot_die_repeat/sdr03/`):
 - Holds where only the prop turns in the hand (wrist + prop position unchanged, Pose Lab F17/F18/F22) are NOT path keys: otherwise the whole move lands in 1 frame (F22→F23 35 cm). Keep only the prop rotation key there.
 - Hand + prop while the prop moves: arm keeps its local spline, prop rides in the hand (hand-space offset interpolated over all keys). IK of the hand onto a moving prop gave an elbow/wrist twist spike (F22 E 34°/W −25°). Prop still in the gun: IK hand onto the prop.
 - End boundary 3 frames after the last key (F28 → F31), else the return to the base lands in 1 frame (17.8 cm).
+
+## reload-barrel-locked (GSDR-1497, Jungle + Pirate Reload, 2026-11-06)
+- **GD: Reload không được đổi hướng nòng.** Khuôn đã duyệt (Jungle polish, Pirate làm theo): 30F 24 fps; thân, chân, ngực, tay
+  cầm súng = Idle mọi frame (ngực nằm trong chuỗi vai → súng, xoay ngực là lệch nòng); chỉ tay kia đi: ốp súng → túi lấy đạn →
+  giơ → lắp → về ốp súng đúng Idle ở F29-30. Nòng chỉ chúi 1,4-1,5° lúc đạn vào (xoay cổ tay cầm súng, tắt dần ~5F).
+  Đầu/cổ: nhìn túi 9°/4°, ngẩng theo đạn, gật 3,5° khi lắp. Script mẫu: `sdr04/_reload/reload30.py` (+ `polish.py`, `check.py`).
+- **Súng nạp đằng miệng mà nòng phải giữ ngang** (Pirate hoả mai 150 cm): miệng nòng ngoài tầm tay → cheat nạp ở "khoang" trên
+  thân súng ngay trước chỗ tay ốp. Đo tầm tay trước khi chọn chỗ: tay bạch tuộc ~47 cm, khoang +20 cm trước khoá duỗi thẳng vẫn
+  thiếu → +14 cm.
+- **Prop nhỏ phải ló khỏi silhouette** (director bắt 2 vòng): đạn cao hơn mặt súng ≥9-10 cm, nền sau là trời. Tay không với cao
+  được thì kẹp đạn ở đầu ngón (dời đạn +6 cm dọc trục lên trong hệ cổ tay), lúc ấn cho ngón đẩy đạn về lòng tay (offset về 0 ở F20)
+  thì tay không phải xuyên súng.
+- **Viên đạn cầm ngang** (user Pirate, ghi chú F16): đạn nằm dọc súng, mũi về miệng nòng, ngóc ~15° khi giơ, nằm phẳng lúc chạm
+  khoang rồi ấn xuống; đạn dựng đứng (kiểu thả vào miệng nòng) bị trả. Đạn ngang thì tay thấp hơn ~7 cm khi giơ (dễ với hơn).
+- Đạn nằm khuất trong nòng (con của súng): hiện ở tay khi tay chạm túi (F8), về chỗ cũ ở frame tay đang đè lên khoang (F21).
+- Túi đạn: director muốn phía camera (thắt lưng trước), nhưng **user Pirate muốn tay với ra sau** ("tay lấy đạn cần đưa ra sau"):
+  túi hông trái chếch sau. Tay khuất sau thân 4-5F ở cam game vẫn được chấp nhận. Túi phải nằm NGOÀI vạt áo: đo bán kính áo từ
+  trục thân ở độ cao bàn tay (Pirate ~22 cm), tay cách mép áo ≥2,5 cm; đường tay đi cung quanh vai (bán kính ~35-40 cm) dọc sườn,
+  không cắt qua ngực (khuỷu gập 120-137° nếu điểm giữa sát vai); cổ tay để theo cẳng tay (local như Idle) khi xa súng, hướng
+  cầm của team ở túi trước làm cổ tay dạng 60°, xoắn -77° khi túi ở sau.
+- Kiểm rig prop trước khi hứa động tác phụ: Pirate `joint26` tưởng là búa nhưng là cả miếng khoá → xoay là cả khoá bật lệch;
+  bỏ kéo búa và báo user (cần modeler tách búa thành xương riêng nếu muốn).
+- Nhân vật có râu/xúc tu treo trước ngực: kiểm khoảng cách lưới râu ↔ cẳng tay mọi frame (≥ mức Idle), né bằng xoay gốc chuỗi
+  (góc nhỏ nhất đủ né, lan ±3F có ease, vá cục bộ frame còn sát), giữ F1-3/F28-30 = Idle.

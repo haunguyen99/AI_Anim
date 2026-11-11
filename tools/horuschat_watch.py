@@ -6,6 +6,7 @@ xong thì chạy lại để canh tiếp. Không tốn lượt AI khi chờ (lon
   python tools/horuschat_watch.py            # chờ (mặc định tối đa 8 giờ)
   python tools/horuschat_watch.py --once     # chỉ kiểm một lần
   python tools/horuschat_watch.py --reset    # đặt lại mốc = bây giờ (bỏ tin cũ)
+  python tools/horuschat_watch.py --stream   # chạy liên tục, mỗi tin một dòng, không thoát (chạy bằng Monitor)
 
 Mốc: work/store/_sys/watch/horuschat.json ({"cursor": ..., "beat": giờ kiểm cuối}).
 Lần chạy đầu chỉ đặt mốc từ bây giờ, không báo tin cũ.
@@ -31,8 +32,16 @@ def save(st):
     os.makedirs(os.path.dirname(STATE), exist_ok=True)
     st["beat"] = time.strftime("%Y-%m-%dT%H:%M:%S")
     tmp = STATE + ".tmp"
-    json.dump(st, open(tmp, "w", encoding="utf8"), ensure_ascii=False, indent=1)
-    os.replace(tmp, STATE)
+    with open(tmp, "w", encoding="utf8") as f:
+        json.dump(st, f, ensure_ascii=False, indent=1)
+    for i in range(10):  # Windows: file may be briefly locked by another reader
+        try:
+            os.replace(tmp, STATE)
+            return
+        except PermissionError:
+            if i == 9:
+                return  # skip this beat, try again next loop
+            time.sleep(0.3)
 
 
 def reason(hc, me, ev, cache):
@@ -79,6 +88,7 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     args = sys.argv[1:]
     once = "--once" in args
+    stream = "--stream" in args
     hc = HorusChat()
     for i in range(60):  # server hiccup at start (HTTP 5xx, DNS): retry up to ~30 min
         try:
@@ -140,6 +150,10 @@ def main():
             st["cursor"] = r["next_cursor"]
         save(st)
         if found:
+            if stream:  # không thoát: mỗi tin một dòng, dùng với Monitor để Claude được gọi dậy từng tin
+                for why, ev in found:
+                    print(json.dumps({"why": why, **slim(ev)}, ensure_ascii=False), flush=True)
+                continue
             print(f"=== HorusChat: {len(found)} tin mới cho {me.get('display_name')} ===")
             for why, ev in found:
                 print(json.dumps({"why": why, **slim(ev)}, ensure_ascii=False))
@@ -148,7 +162,7 @@ def main():
             continue
         if r.get("has_more"):
             continue
-        if once or time.time() > deadline:
+        if once or (time.time() > deadline and not stream):
             print("Không có tin mới.")
             return
 

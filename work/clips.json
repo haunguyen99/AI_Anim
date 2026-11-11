@@ -45,6 +45,12 @@
   "Windy": {
    "rig_url": ""
   },
+  "Jungle": {
+   "rig_url": ""
+  },
+  "Pirate": {
+   "rig_url": ""
+  },
   "Boss_Bastion": {
    "rig_url": ""
   },
@@ -790,10 +796,10 @@
   {
    "id": "windy_idle",
    "character": "Windy",
-   "stage": "analysis",
-   "note": "Phân tích + rig Frolvy + skin đã duyệt 2026-11-04 (\"skin oki rồi\"). Đang tạo ảnh key pose Idle",
+   "stage": "p0",
+   "note": "P0 v3 key F1=F60 (vạt áo C người dùng chọn), director duyệt; chờ người dùng duyệt + quyết sửa cổ tay xoắn (ElbowPart1)",
    "dir": "work/endless_kicker/windy_idle",
-   "frames": 40,
+   "frames": 60,
    "fps": 30,
    "ref": "",
    "desc": "Idle loop: đứng gác, trượng dựng đuôi chạm đất bên phải, áo choàng bay theo gió",
@@ -926,6 +932,187 @@
     "title": "Windy Skill3 Wind Collapse Pose Lab",
     "url": ""
    }
+  },
+  {
+   "id": "jungle_sling_shoot",
+   "character": "Jungle",
+   "stage": "polish",
+   "note": "Jungle map1 (cao bồi + súng, MC_char_map1): clip của team tách từ MC_char_map1_shoot.fbx, chưa sửa",
+   "review": {
+    "key": "jungle_sling_shoot",
+    "clip": "Sling_Shoot",
+    "title": "Jungle Sling Shoot Review Lab",
+    "crumb": "Jungle · anim",
+    "name": "Sling_Shoot",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "jungle_sling_shoot",
+    "clip": "Jungle_Sling_Shoot",
+    "title": "Jungle Sling Shoot Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "jungle_pump",
+   "character": "Jungle",
+   "stage": "polish",
+   "note": "Jungle map1 (cao bồi + súng, MC_char_map1): clip của team tách từ MC_char_map1_shoot.fbx, chưa sửa",
+   "review": {
+    "key": "jungle_pump",
+    "clip": "Pump",
+    "title": "Jungle Pump Review Lab",
+    "crumb": "Jungle · anim",
+    "name": "Pump",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "jungle_pump",
+    "clip": "Jungle_Pump",
+    "title": "Jungle Pump Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "jungle_idle",
+   "character": "Jungle",
+   "stage": "polish",
+   "note": "Jungle map1 (cao bồi + súng, MC_char_map1): clip của team tách từ MC_char_map1_shoot.fbx, chưa sửa",
+   "review": {
+    "key": "jungle_idle",
+    "clip": "Idle",
+    "title": "Jungle Idle Review Lab",
+    "crumb": "Jungle · anim",
+    "name": "Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "jungle_idle",
+    "clip": "Jungle_Idle",
+    "title": "Jungle Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "jungle_reload",
+   "character": "Jungle",
+   "stage": "polish",
+   "note": "Jungle map1 (cao bồi + súng, MC_char_map1): clip của team tách từ MC_char_map1_shoot.fbx, chưa sửa",
+   "review": {
+    "key": "jungle_reload",
+    "clip": "Reload",
+    "title": "Jungle Reload Review Lab",
+    "crumb": "Jungle · anim",
+    "name": "Reload",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "jungle_reload",
+    "clip": "Jungle_Reload",
+    "title": "Jungle Reload Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "pirate_shoot",
+   "character": "Pirate",
+   "stage": "polish",
+   "note": "Pirate map4 (MC_char_map4): clip của team tách từ MC_char_map4_shoot.fbx (24 fps), chưa sửa",
+   "review": {
+    "key": "pirate_shoot",
+    "clip": "Shoot",
+    "title": "Pirate Shoot Review Lab",
+    "crumb": "Pirate · anim",
+    "name": "Shoot",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "pirate_shoot",
+    "clip": "Pirate_Shoot",
+    "title": "Pirate Shoot Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "pirate_pump",
+   "character": "Pirate",
+   "stage": "polish",
+   "note": "Pirate map4 (MC_char_map4): clip của team tách từ MC_char_map4_shoot.fbx (24 fps), chưa sửa",
+   "review": {
+    "key": "pirate_pump",
+    "clip": "Pump",
+    "title": "Pirate Pump Review Lab",
+    "crumb": "Pirate · anim",
+    "name": "Pump",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "pirate_pump",
+    "clip": "Pirate_Pump",
+    "title": "Pirate Pump Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "pirate_idle",
+   "character": "Pirate",
+   "stage": "polish",
+   "note": "Pirate map4 (MC_char_map4): clip của team tách từ MC_char_map4_shoot.fbx (24 fps), chưa sửa",
+   "review": {
+    "key": "pirate_idle",
+    "clip": "Idle",
+    "title": "Pirate Idle Review Lab",
+    "crumb": "Pirate · anim",
+    "name": "Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "pirate_idle",
+    "clip": "Pirate_Idle",
+    "title": "Pirate Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "pirate_reload",
+   "character": "Pirate",
+   "stage": "polish",
+   "note": "Pirate map4 (MC_char_map4): clip của team tách từ MC_char_map4_shoot.fbx (24 fps), chưa sửa",
+   "review": {
+    "key": "pirate_reload",
+    "clip": "Reload",
+    "title": "Pirate Reload Review Lab",
+    "crumb": "Pirate · anim",
+    "name": "Reload",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "pirate_reload",
+    "clip": "Pirate_Reload",
+    "title": "Pirate Reload Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "lumber_hoe",
+   "character": "Lumber",
+   "stage": "analysis",
+   "note": "chờ user duyệt bản thiết kế v3 (quy trình C; Director v2 Cần sửa lỗi A lưỡi phẳng → đã sửa v3: lưỡi 88° cắm 3,5 cm). Cuốc tạm cán 80 cm, chưa có model cuốc của team.",
+   "dir": "work/g_lumbercity/lumber_hoe",
+   "frames": 30,
+   "fps": 30,
+   "ref": "",
+   "desc": "Cuốc đất loop 31F, chạm F17 (GD 2026-11-10)",
+   "created": "2026-11-10",
+   "updated": "2026-11-10"
   },
   {
    "id": "boss_bastion_idle",

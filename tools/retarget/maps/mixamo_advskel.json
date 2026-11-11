@@ -1,0 +1,90 @@
+{
+  "_note": "Mixamo (mixamorig:) → khung xương team AdvancedSkeleton (Lumber Worker, SDR...). bones: team → nguồn. twist: joint xoắn Part1 → xương con mang xoắn.",
+  "hips": [
+    "Root_M",
+    "Hips"
+  ],
+  "leg_height": [
+    "Hip_L",
+    "LeftUpLeg"
+  ],
+  "no_align": [
+    "Root_M"
+  ],
+  "bones": {
+    "Root_M": "Hips",
+    "Spine2_M": "Spine",
+    "Chest_M": "Spine2",
+    "Neck_M": "Neck",
+    "Head_M": "Head",
+    "Scapula_L": "LeftShoulder",
+    "Shoulder_L": "LeftArm",
+    "Elbow_L": "LeftForeArm",
+    "Wrist_L": "LeftHand",
+    "Scapula_R": "RightShoulder",
+    "Shoulder_R": "RightArm",
+    "Elbow_R": "RightForeArm",
+    "Wrist_R": "RightHand",
+    "Hip_L": "LeftUpLeg",
+    "Knee_L": "LeftLeg",
+    "Ankle_L": "LeftFoot",
+    "Toes_L": "LeftToeBase",
+    "Hip_R": "RightUpLeg",
+    "Knee_R": "RightLeg",
+    "Ankle_R": "RightFoot",
+    "Toes_R": "RightToeBase",
+    "ThumbFinger1_L": "LeftHandThumb1",
+    "ThumbFinger2_L": "LeftHandThumb2",
+    "ThumbFinger3_L": "LeftHandThumb3",
+    "IndexFinger1_L": "LeftHandIndex1",
+    "IndexFinger2_L": "LeftHandIndex2",
+    "MiddleFinger1_L": "LeftHandMiddle1",
+    "MiddleFinger2_L": "LeftHandMiddle2",
+    "RingFinger1_L": "LeftHandRing1",
+    "RingFinger2_L": "LeftHandRing2",
+    "PinkyFinger1_L": "LeftHandPinky1",
+    "PinkyFinger2_L": "LeftHandPinky2",
+    "ThumbFinger1_R": "RightHandThumb1",
+    "ThumbFinger2_R": "RightHandThumb2",
+    "ThumbFinger3_R": "RightHandThumb3",
+    "IndexFinger1_R": "RightHandIndex1",
+    "IndexFinger2_R": "RightHandIndex2",
+    "MiddleFinger1_R": "RightHandMiddle1",
+    "MiddleFinger2_R": "RightHandMiddle2",
+    "RingFinger1_R": "RightHandRing1",
+    "RingFinger2_R": "RightHandRing2",
+    "PinkyFinger1_R": "RightHandPinky1",
+    "PinkyFinger2_R": "RightHandPinky2"
+  },
+  "chain_child": {
+    "Wrist_L": [
+      "MiddleFinger1_L"
+    ],
+    "Wrist_R": [
+      "MiddleFinger1_R"
+    ],
+    "Chest_M": [
+      "Neck_M"
+    ]
+  },
+  "twist": {
+    "ElbowPart1_L": "Wrist_L",
+    "ElbowPart1_R": "Wrist_R"
+  },
+  "legs": [
+    [
+      "Hip_L",
+      "Knee_L",
+      "Ankle_L"
+    ],
+    [
+      "Hip_R",
+      "Knee_R",
+      "Ankle_R"
+    ]
+  ],
+  "defaults": {
+    "align": false,
+    "_why": "Lumber Run 2026-11-10: không nắn bind (cả hai T-pose). Hông tự tính theo chiều cao hông (Slow Run: 0,86, lệch team 1–2 cm); nhân vật Mixamo khác cỡ (Standing Idle Axe hông 103 cm) thì 1,0 sai"
+  }
+}

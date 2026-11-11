@@ -3,4 +3,6 @@ rem Mo Studio cho MAY KHAC CUNG MANG (LAN): server nghe moi dia chi cua may nay,
 rem Lan dau Windows hoi tuong lua: chon "Private networks" roi Allow. Khong co mat khau: ai trong mang cung mo va sua duoc.
 rem Dong cua so nay de tat. Chi dung tren may nay thi bam start.bat.
 cd /d "%~dp0\..\.."
+rem Spine Live chay server rieng (cong 8781) trong cua so thu hai
+start "Spine Live" ".venv\Scripts\python.exe" -I tools\spine_live\server.py --lan
 ".venv\Scripts\python.exe" -I tools\home\server.py --lan

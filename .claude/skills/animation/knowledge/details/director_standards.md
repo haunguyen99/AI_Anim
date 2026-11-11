@@ -35,7 +35,6 @@ Rig / skin:
 - Quay người/quay đầu dồn vào ngực + cổ (hông gần như đứng) đọc thành robot (Lumber Idle Wipe spline v2, user 2026-11-02: "nên xoay thêm phần hông. hiện tại chỉ xoay mỗi ngực nên cảm giác cơ thể bị robot"): chia góc dọc chuỗi hông → eo → ngực → cổ → đầu (vd 35° = 8/6/8/5/8), chân IK đứng yên; đo yaw từng đốt.
 
 - Đoạn đứng chết / khựng khi nối về idle gốc (Lumber Idle Wipe polish v1 F99–F111, user 2026-11-02: "đoạn chuyển đổi ... cuối chưa được mượt. đang có một đoạn khựng"): đo tổng chuyển động thân mỗi frame; frame nào < ~20% mức thở idle trong > 4 F, hoặc bậc nhảy ở chỗ nối, là lỗi A.
-- Blocking idle key cả thân + tay + đao + yaw trong một vòng (rpg2_hero_blade_idle v2, user 2026-11-04: "làm lại, diễn phần thân trước, tay để sau. Root_M di chuyển xuống và lên, khi xuống rotate X xoay xuống theo. offset phần trên theo Root_M"; Director v2 duyệt theo số đo = bỏ sót): làm từng phần, thân trước (Root lên/xuống + rx cúi cùng pha, thân trên offset trễ dần theo Root), duyệt rồi mới tới tay/đao; không tự thêm kênh user không nêu (tz, yaw) [suy ra]
 
 ## severity
 Lỗi người dùng **đã bỏ qua khi duyệt** (hạ mức khi chấm loại tương tự):
@@ -46,5 +45,9 @@ Lỗi người dùng **đã bỏ qua khi duyệt** (hạ mức khi chấm loại
 |---|---|---|---|---|
 | 2026-10-30 | sdr01_shoot s1 pre-export | Cần sửa (A: đầu vặt 31° F6–F7; 5 lỗi B) | Đã duyệt + xuất 2026-10-29 (chấm sau) | Ngưỡng của user với clip nhỏ side-view thấp hơn Director → chưa đổi mức, chờ thêm 1 ca |
 | 2026-11-04 | windy (5 clip) analysis v1→v2.1 | v1 Cần sửa cả 5 (A: hình học trượng 215 cm cầm giữa cán: đuôi xuyên thân/ngập đất, tầm với); v2: Idle/Attack/Skill2 Duyệt, Skill1/Skill3 Cần sửa (tầm với) → v2.1 | Duyệt cả 5, chỉ chọn phương án | Lỗi A hình học prop dài ở mốc analysis đúng mức; luôn tính tầm với vai → điểm cầm cho mọi key ngay từ analysis |
-| 2026-11-04 | rpg2_hero_blade_idle blocking v2 | Duyệt (theo số đo, không ảnh) | Trả: "làm lại, diễn phần thân trước, tay để sau" | Blocking làm từng phần theo lệnh user; v3 chỉ thân → Director duyệt, đầu giảm 7° → 3,3° |
 | 2026-11-04 | windy_idle k1_idle key-pose r1 | Cần sửa (A: tay phải giang ngang ra bên, khuỷu gần thẳng, sai thiết kế khuỷu 90° cẳng tay ra trước) | Chọn r1 ("tôi thấy phương án này oki rồi mà"), bỏ r2 đã sửa đúng thiết kế | Ảnh key là chỗ user chốt dáng: lệch thiết kế mà ảnh đẹp, đọc rõ thì hạ xuống B + hỏi user chọn (đưa cả 2 bản), không tự sinh lại; user chọn thì sửa analysis theo ảnh |
+
+
+## Pirate Reload polish_c (duyệt 2026-11-06)
+- Reload giữ nòng: user duyệt khi thân/tay cầm súng = Idle, nòng chỉ chúi ≤1,5° lúc lắp. Director trả 2 lần vì prop nhỏ không đọc được (đạn phải ló ≥9-10 cm khỏi silhouette súng) và vì bỏ một ý user đã duyệt mà chưa báo.
+- User sửa 2 điều director không bắt: tay lấy đạn phải với RA SAU (túi sau hông, dù khuất cam game 4-5F) và đạn cầm NGANG dọc súng (không dựng đứng). Với nạp đạn: hỏi/đề xuất hướng cầm prop và vị trí túi ngay ở bản phân tích.

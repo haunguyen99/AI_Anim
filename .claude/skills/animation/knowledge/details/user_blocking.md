@@ -32,9 +32,8 @@ Script mẫu của app: `C:\Program Files\Frolvy\scripts\human_rig.py`, `human03
 | 2… | Tiếp như bảng dưới từ bước 2 (phân tích → sửa lỗi → breakdown → trọng lượng → polish → FBX), làm trong **Studio** thay cho Pose Lab. | AI | | như dưới |
 
 **Góp ý cho Frolvy** (người dùng 2026-10-31: "Frolvy là một ứng dụng đang phát triển. trong quá trình làm việc có vấn đề gì
-bạn hãy gửi fb cho họ"): gặp lỗi hoặc thiếu sót của Frolvy thì thêm ngay một dòng vào bảng `work/frolvy_feedback.md`, **viết ngắn**
-(2026-11-04: "ghi feedback đơn giản hơn"): *Lỗi* một câu, *Cách thấy* 2–3 bước, *Mong muốn* một câu; không kể cách vượt qua.
-Hỏi người dùng rồi mới gửi (Help → Send Feedback… hoặc email hello@frolvy.com, trả lời trong luồng cũ), thư cũng 3 dòng mỗi lỗi.
+bạn hãy gửi fb cho họ"): gặp lỗi hoặc thiếu sót của Frolvy thì ghi ngay vào `work/frolvy_feedback.md`, kèm cách tái hiện, ảnh,
+log và cách tạm vượt qua. Soạn sẵn bản góp ý, hỏi người dùng rồi mới gửi qua menu **Help → Send Feedback…** trong Frolvy.
 
 Chưa kiểm trên clip thật (2026-10-31), cần làm ở clip đầu tiên:
 - **Xương Frolvy khác xương team.** Rig team phải đi Unity nên FBX cuối vẫn ghi đè đường cong trong FBX của team (bước 7). Vì vậy
@@ -128,3 +127,12 @@ Chép `work/boss_gaygor/gaygor_attack_50_blocking/` làm mẫu (`work/<dự án>
 - Đăng version: `tools/clip_registry.py pose-version | review-version`, `build`, Artifact cùng file path.
 
 Thời gian máy chạy (Gaygor 68F, để báo trước cho user): mỗi bước dựng hoặc sửa key dưới 1 phút; QA mỗi bản khoảng 20 giây; chụp playblast 68 frame × 3 góc khoảng 3 phút (4 đợt × 17 frame); xuất FBX dưới 30 giây.
+
+## Dùng anim thư viện (Mixamo) làm bản nền (2026-11-10)
+User hỏi "tận dụng thư viện như mixamo tạo anim theo mong muốn" → thử Lumber: `Ref/Slow Run.fbx` (team đã từng dùng làm MC_Lumber_Run bằng Maya) retarget tự động bằng `tools/retarget/retarget.py`, chấm với bản team bằng `compare.py`.
+- Kết quả: thân/tay/đầu/hông trùng bản team 0°/0 cm; bàn chân trùng hướng; đùi/ống chân lệch TB ~12° (max ~28°) vì team sải dài hơn (47 vs 40 cm). Mắt: gần như giống (`work/g_lumbercity/mixamo_test/look/`).
+- Bài học: (1) cả hai T-pose thì KHÔNG nắn bind theo hướng xương (nắn tạo lệch cố định 4–14° ở tay/bàn tay); (2) hông dời tỉ lệ 1,0 (khớp team), không theo tỉ lệ chiều cao hông; (3) chân phải IK: cổ chân bám vị trí nguồn × tỉ lệ dài chân (Worker 0,72), **độ cao cổ chân tính từ sàn** (tính theo hông → lún 3 cm); ép tỉ lệ 0,86 → chân duỗi quá, lún 3 cm; (4) eo team Spine2_M nối `Spine` (không phải Spine1).
+- Hông: tự tính theo chiều cao hông (nhân vật Mixamo khác cỡ: Standing Idle Axe hông 103 cm → 0,58); tỉ lệ 1,0 chỉ đúng với Slow Run.
+- Tải Mixamo (2026-11-10, user: "Ai tự tải anim từ trên mixamo về"): khung trình duyệt của app không giữ đăng nhập Adobe → dùng Chrome của user (Claude in Chrome) đã đăng nhập; tìm bằng API trong trang (`/api/v1/products?type=Motion&query=…`, header Bearer token trong localStorage + `X-Api-Key: mixamo2`), xuất `/api/v1/animations/export` (fbx7_2019, skin false, fps 30) → chờ `/characters/<id>/monitor` → bấm link cho Chrome tải về Downloads (link có chữ ký không in ra được). Bản "Without Skin" KHÔNG có BindPose: retarget lấy T-pose từ giá trị tĩnh của xương (đã kiểm = BindPose 0°). Chrome có thể để file `.tmp` chờ "Giữ lại": file vẫn đủ (đuôi FBX đúng), chép vào `src/`.
+- Chọn clip: tên Mixamo "With Axe" là thế CHIẾN ĐẤU (chân trước sau, thân chéo ~30°, tay ra trước) → không dùng dáng của thư viện cho idle game; dùng `restyle.py`: dáng = Idle1 F1 của team, chuyển động thư viện × hệ số RIÊNG TỪNG XƯƠNG theo biên độ clip team (`--k perbone`; một hệ số chung theo ngực ra ~1/5 Idle1 → Director bắt lỗi A "đứng chết"; Logger Idle cần thêm `--mul Spine2_M=0.5,Chest_M=0.6,Shoulder_R=1.6,Elbow_R=1.5,Scapula_R=1.2` để eo/ngực = Idle1 2,9°/5°, cổ tay P 18 cm; tốc độ thân TB ≥ 70% Idle1), hông theo team (Idle1 nhún 0 cm → 0), khoá chân, nối loop, video `compare_video.py`. RÌU: xương `accessory` dùng chung cho mọi prop (bút, bình xịt, can xăng, rìu AXE1 ~123 cm) → cách cầm của Idle1 là cách cầm BÚT, gắn rìu theo đó thì cán chĩa ngang ra sau (sai). Game: `LoggerController.cs` chỉ bật rìu trên tay khi đang chặt, idle bật `Axe_Back` (rìu sau lưng) → Logger Idle tay không; luôn đọc code game xem prop nào hiện ở state đó trước khi đặt tay cầm prop. Chữ tiếng Việt trên video: font `C:/Windows/Fonts/arial.ttf` (font mặc định PIL vỡ dấu).
+- Thư viện chỉ là bản nền: tiếp theo đi như team đưa FBX blocking (khớp file → sửa theo GDD/gu game trên layer → polish). Kiểm giấy phép thư viện trước khi đưa vào game (Mixamo: dùng trong game được, không phát tán file gốc).
