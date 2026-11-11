@@ -11,33 +11,20 @@ Trả lời bằng tiếng Việt, ngắn. Spine Live: `tools/spine_live/` (tran
 
 1. **Server Spine Live:** `curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://127.0.0.1:8781/api/spine/list`.
    - Ra `200`: dùng server đang chạy (có thể do người dùng bật bằng `tools/spine_live/start.bat, tools/home/start.bat` hoặc phiên khác). Không khởi động lại.
-   - Không ra `200`: `.venv/Scripts/python.exe -I tools/spine_live/ensure_server.py` (Bash thường, không nền): bật server
-     **chạy riêng** (tách hẳn khỏi app, không cửa sổ), đợi tới khi `/api/spine/ping` trả lời rồi thoát.
-     2026-11-10: trước đây `preview_start {name: "spine-live"}` chạy server như tiến trình con của khung xem trước nên đóng
-     khung là tắt server; giờ mục `spine-live` trong `.claude/launch.json` chỉ có `url` (gắn vào server đang chạy).
-     Kiểm sống: `curl http://127.0.0.1:8781/api/spine/ping`; log: `work/store/_sys/spine_live/server.log` (+ `server_stdout.log`).
+   - Không ra `200`: `preview_start` với `{name: "spine-live"}` (`.claude/launch.json`), đợi tới khi `curl` ra `200`.
+     Không dùng `run_in_background` của Bash để chạy server (bị dừng khi lệnh nền kết thúc, lỗi 2026-11-03).
 2. **Chọn file:** `.venv/Scripts/python.exe -I tools/spine_live_recent.py [từ khoá]`.
    - In một dòng JSON `{json, label, kind, sửa lúc, url}`: file skeleton có lần sửa gần nhất (Claude gen, người dùng Key / sửa lưới trên Spine Live đều tính), lọc theo từ khoá nếu có.
    - Người dùng gõ `list` / "chọn file": `... spine_live_recent.py --list 8`, đưa danh sách và hỏi file nào (AskUserQuestion, tối đa 4 lựa chọn gần nhất).
    - `{"error": ...}`: báo đúng câu đó; không khớp từ khoá thì chạy `--list 8` để gợi ý.
 3. **Mở trong Claude:**
    - Đã có tab Spine Live trong khung trình duyệt (`tabs_context`, origin `http://127.0.0.1:8781`): `navigate` tab đó tới `url`.
-   - Chưa có: `preview_start` với `{url: <url>}` (hoặc `{name: "spine-live"}` rồi `navigate`).
+   - Chưa có: `preview_start` với `{url: <url>}`.
 4. **Kiểm đã chạy** (không chụp màn hình, `CLAUDE.md`): `javascript_tool` đợi tối đa ~5 s tới khi `player?.skeleton` có, đọc tên anim `player.skeleton.data.animations.map(a => a.name)` và `document.getElementById("status").textContent`.
    `player` khai báo bằng `let` ở script trang: đọc thẳng `player`, **không** dùng `window.player` (luôn `undefined`).
-   - `tabs_context` báo **pane hidden** (khung trình duyệt đang thu lại): player không chạy được (không có requestAnimationFrame, trang báo "player không khởi động sau 10 s"). Tự hiện khung bằng `mcp__ccd_view__show_pane {pane: "preview"}` rồi chạy lại bước 3–4.
-   - **Chỉ mở trong Claude** (người dùng 2026-11-05: "mở spinelive ngay trong claude ... chỉ mở trong claude, không đẩy ra ngoài chrome"): không mở Spine Live ở Chrome / trình duyệt thường (`Start-Process`, Claude in Chrome), không đưa link để người dùng tự mở ngoài.
+   - `tabs_context` báo **pane hidden** (khung trình duyệt đang thu lại): player không chạy được (không có requestAnimationFrame, trang báo "player không khởi động sau 10 s"). Nhờ người dùng mở khung trình duyệt của Claude rồi chạy lại bước 3–4; hoặc mở ở trình duyệt thường bằng `Start-Process "<url>"` (PowerShell) nếu họ muốn.
    - Lỗi nạp file: đọc `#msg` của trang + `read_console_messages`; thử đọc JSON / atlas bằng `spine.SkeletonJson` trong trang để biết lỗi do file hay do trang.
-5. **Báo một dòng:** đã mở file nào (label + sửa lúc), các anim có trong file (không gửi link để mở ngoài Claude).
-
-## Khi chạy trong VS Code (không có `preview_start`)
-
-Extension Claude Code trong VS Code không có khung trình duyệt của app Claude (`ToolSearch` không ra `preview_start` / `mcp__ccd_view__show_pane`). Đừng dừng lại báo "không mở được" (lỗi 2026-11-06), làm thế này:
-1. **Server chưa chạy** (bước 1 không ra `200`): tự bật, cửa sổ thu nhỏ, chạy tiếp sau khi lệnh xong:
-   `Start-Process -WindowStyle Minimized -WorkingDirectory "G:\Claude2Danim\AI_Anim" -FilePath ".venv\Scripts\python.exe" -ArgumentList "-I","tools\spine_live\server.py"` (PowerShell), rồi đợi `curl` ra `200`.
-   **Không** dùng `tools/spine_live/start.bat` / `tools/home/start.bat`: hai file đó tự mở Chrome.
-2. **Mở trang:** chọn file như bước 2, rồi đưa link `http://127.0.0.1:8781/spine?json=...` (đúng `url` của `spine_live_recent.py`) thành một dòng riêng trong câu trả lời và nói người dùng bấm vào. Dự án đặt `workbench.browser.openLocalhostLinks: true` (`.vscode/settings.json`) nên link `127.0.0.1` bấm trong chat mở ngay trong trình duyệt tích hợp của VS Code, không ra Chrome. Đây là ngoại lệ của "không đưa link" ở bước 4: trong VS Code, đó là cách mở trong cửa sổ đang làm.
-3. **Kiểm đã mở:** không có `javascript_tool`; đợi người dùng bấm rồi `tools/spine_live_cmd.py status` (thấy trang đang mở + file) thay cho bước 4.
+5. **Báo một dòng:** đã mở file nào (label + sửa lúc), các anim có trong file, link `url` (mở được ở trình duyệt thường khi server còn chạy).
 
 ## Sau khi mở
 - Đẩy bước đang làm lên trang: `tools/spine_live_cmd.py show <json> --anim <a> [--frame N] [--say "..."]` (trang ở chế độ Theo Claude tự nhảy theo); `status` để xem trang nào đang mở.
