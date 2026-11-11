@@ -1,9 +1,9 @@
 ﻿# Cài / gỡ lịch Windows tự đẩy kiến thức lên GitHub (tools/knowledge_sync.py autopush). Không cần quyền admin.
-#   powershell -ExecutionPolicy Bypass -File tools\knowledge_sync_install.ps1                 # cài, mặc định 18:00 mỗi ngày
+#   powershell -ExecutionPolicy Bypass -File tools\knowledge_sync_install.ps1                 # cài, mặc định 17:10 mỗi ngày
 #   powershell -ExecutionPolicy Bypass -File tools\knowledge_sync_install.ps1 -Time 12:30     # đổi giờ
 #   powershell -ExecutionPolicy Bypass -File tools\knowledge_sync_install.ps1 -Remove         # gỡ
 # Máy tắt đúng giờ thì chạy bù khi bật lại (StartWhenAvailable). Nhật ký: work\store\_sys\watch\knowledge_autopush.log
-param([string]$Time = '18:00', [switch]$Remove)
+param([string]$Time = '17:10', [switch]$Remove)
 $name = 'AIAnim_KnowledgePush'
 if ($Remove) {
     Unregister-ScheduledTask -TaskName $name -Confirm:$false -ErrorAction SilentlyContinue
