@@ -13,6 +13,11 @@
 - Việc nhỏ (xóa, ẩn, đổi tên): đọc đủ tên object trước, làm trong một lượt, không chờ từng bước.
 - Không thuộc quy tắc này: các bản render / playblast trong quy trình anim (quick render, so REF|ANIM, kiểm giải phẫu). Đó là bước tự kiểm tra pose, không phải chụp màn hình để báo cáo.
 
+## Làm việc nhanh (người dùng, 2026-11-11: "tối ưu cách làm việc để đạt tốc độ nhanh nhất")
+- Việc đã giao rõ thì làm luôn: một lượt xem (đếm cái sẽ đụng tới), rồi một lượt làm + kiểm; không dò từng bước nhỏ. Lệnh độc lập gọi chung một lượt, lệnh phụ thuộc nối bằng `;` trong một lần Bash. Người dùng đã ra lệnh thì không hỏi lại.
+- Frolvy: mở đầu bằng `.venv/Scripts/python.exe -I tools/frolvy_port.py scene` (file đang mở, `*` = chưa lưu, layer, key). Người dùng có thể mở lại Frolvy giữa hai lượt, scene có thể đã khác (đừng giả định). Việc hay gặp có lệnh một bước: `keys <tên>`, `clear <tên>` (xóa key + về pose mặc định), `reset <tên>` (xem đầu `tools/frolvy_port.py`). Có công cụ `frolvy` trực tiếp thì gọi `anim_ops` qua `execute_code`. Không đụng cổng của phiên khác (9878…).
+- Việc nào làm lần thứ hai thì làm thành lệnh một bước. Không đọc lại tài liệu / memory đã đọc trong phiên; ghi kiến thức một lần ở cuối việc. Báo trước bước nào lâu.
+
 ## Bộ nhớ Claude (giữ qua đổi tài khoản / máy)
 - Bản sao bộ nhớ ở `.claude/memory_store/` (trong git). Nếu `MEMORY.md` trong bộ nhớ phiên đang trống hoặc thiếu, chạy `.venv/Scripts/python.exe -I tools/claude_memory.py restore` rồi đọc `.claude/memory_store/MEMORY.md`.
 - Sau khi ghi / sửa memory: chạy `tools/claude_memory.py backup` để bản sao luôn mới.
