@@ -6,6 +6,7 @@ xong thì chạy lại để canh tiếp. Không tốn lượt AI khi chờ (h�
   python -I tools/workai_watch.py --once     # chỉ kiểm một lần
   python -I tools/workai_watch.py --scan     # liệt kê mission / issue liên quan hiện có (không đổi mốc)
   python -I tools/workai_watch.py --reset    # đặt lại mốc = bây giờ (bỏ việc cũ)
+  python -I tools/workai_watch.py --stream   # chạy liên tục, mỗi việc một dòng, không thoát (chạy bằng Monitor)
 
 Liên quan = giao cho bạn / nhắc tên bạn / cần bạn duyệt, hoặc nội dung có từ khoá anim (animation, rig, skin, FBX, Spine...).
 Bỏ qua: tin lịch tự đặt của người khác, sprint bắt đầu / kết thúc, trừ khi có từ khoá anim.
@@ -124,6 +125,7 @@ def main():
     args = sys.argv[1:]
     if "--scan" in args:
         return scan()
+    stream = "--stream" in args
     st = load()
     if "--reset" in args or "seen_notif" not in st:
         n, m = fetch()
@@ -158,6 +160,11 @@ def main():
                 out.append(mission_line(m, why))
         save(st)
         if out:
+            if stream:  # không thoát: mỗi việc một dòng, dùng với Monitor
+                for o in out:
+                    print(json.dumps(o, ensure_ascii=False), flush=True)
+                time.sleep(WAIT)
+                continue
             print(f"=== WorkAI: {len(out)} việc mới liên quan ===")
             for o in out:
                 print(json.dumps(o, ensure_ascii=False))
@@ -165,7 +172,7 @@ def main():
         if "--once" in args:
             print("Không có việc mới.")
             return
-        if time.time() > end:
+        if time.time() > end and not stream:
             print("Hết giờ canh, không có việc mới.")
             return
         time.sleep(WAIT)

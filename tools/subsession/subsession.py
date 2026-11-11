@@ -215,6 +215,15 @@ def cmd_stop(a):
     save(r)
 
 
+def cmd_rm(a):
+    r = load()
+    sid = find(r, a.id)
+    subprocess.run([CLAUDE, "rm", r[sid]["cid"][:8]], capture_output=True, cwd=ROOT)
+    r.pop(sid)
+    save(r)
+    print("đã xoá")
+
+
 def cmd_done(a):
     r = load()
     sid = find(r, a.id)
@@ -223,6 +232,181 @@ def cmd_done(a):
     r[sid]["done"] = True
     save(r)
     print("đã đánh dấu xong.")
+
+
+def _rows_live():
+    """mọi phiên claude (`claude agents --json --all`) + thông tin phiên con từ sổ: dùng cho trang Home /sessions và extension VS Code"""
+    ag = agents()
+    reg = load()
+    by = {v["cid"][:8]: (k, v) for k, v in reg.items() if v.get("cid")}
+    out = []
+    for sid, a in ag.items():
+        key, v = by.get(sid[:8], (None, None))
+        row = dict(id=sid[:8], session=sid, name=a.get("name") or "(chưa đặt tên)", kind=a.get("kind"),
+                   state=a.get("state") or a.get("status"), cwd=a.get("cwd"), started=a.get("startedAt"), sub=None)
+        if v:
+            row["sub"] = dict(key=key, status=status(reg, key, ag), parent=v.get("parent"),
+                              report=first_line(key), queued=len(v.get("queue", [])))
+        out.append(row)
+    seen = {r["id"] for r in out}
+    for k, v in reg.items():  # có trong sổ nhưng claude không còn liệt kê (đã rm)
+        if v.get("cid", "")[:8] not in seen:
+            out.append(dict(id=v.get("cid", "")[:8], session=v.get("cid"), name=v["name"], kind="background", state="gone",
+                            cwd=v.get("cwd"), started=int(v.get("started", 0) * 1000),
+                            sub=dict(key=k, status=status(reg, k, ag), parent=v.get("parent"), report=first_line(k), queued=0)))
+    out.sort(key=lambda r: r.get("started") or 0, reverse=True)
+    return out
+
+
+CACHE = Path(__file__).with_name("titles_cache.json")
+
+
+def _tail_scan(f, size):
+    """tên + câu nhắn cuối của một nhật ký phiên: chỉ đọc đầu 64KB và cuối 256KB"""
+    title = ai = last = None
+    with open(f, "rb") as fh:
+        chunks = [fh.read(65536)]
+        if size > 65536 + 262144:
+            fh.seek(size - 262144)
+            chunks.append(fh.read())
+        elif size > 65536:
+            chunks.append(fh.read())
+    for ch in chunks:
+        for l in ch.decode("utf-8", "ignore").splitlines():
+            if '"custom-title"' in l or '"ai-title"' in l or '"last-prompt"' in l:
+                try:
+                    d = json.loads(l)
+                except Exception:
+                    continue
+                t = d.get("type")
+                if t == "custom-title":
+                    title = d.get("customTitle") or title
+                elif t == "ai-title":
+                    ai = d.get("aiTitle") or d.get("title") or ai
+                elif t == "last-prompt":
+                    last = d.get("lastPrompt") or last
+    return title or ai or ((last or "")[:60] or None)
+
+
+def _history():
+    """phiên của dự án theo nhật ký ~/.claude/projects (tên, lần hoạt động cuối); có bộ nhớ đệm theo mtime"""
+    slug = re.sub(r"[^A-Za-z0-9]", "-", str(ROOT)).lower()
+    proj = next((d for d in (Path.home() / ".claude" / "projects").glob("*") if d.name.lower() == slug), None)
+    if not proj:
+        return {}
+    try:
+        cache = json.loads(CACHE.read_text("utf-8"))
+    except Exception:
+        cache = {}
+    out, new = {}, {}
+    for f in proj.glob("*.jsonl"):
+        st = f.stat()
+        c = cache.get(f.stem)
+        if not (c and c.get("m") == st.st_mtime_ns and c.get("z") == st.st_size):
+            try:
+                c = dict(m=st.st_mtime_ns, z=st.st_size, title=_tail_scan(f, st.st_size))
+            except Exception:
+                c = dict(m=st.st_mtime_ns, z=st.st_size, title=None)
+        new[f.stem] = c
+        out[f.stem] = dict(title=c.get("title"), last=int(st.st_mtime * 1000))
+    try:
+        CACHE.write_text(json.dumps(new, ensure_ascii=False), "utf-8")
+    except Exception:
+        pass
+    return out
+
+
+def _entrypoints():
+    out = {}
+    for f in (Path.home() / ".claude" / "sessions").glob("*.json"):
+        try:
+            d = json.loads(f.read_text("utf-8"))
+            out[d["sessionId"]] = d.get("entrypoint")
+        except Exception:
+            pass
+    return out
+
+
+def _app_index():
+    """chỉ mục phiên của app Claude desktop (chỉ đọc, best-effort): tên, đã lưu trữ, phiên cha. {cliSessionId: {...}}"""
+    base = os.environ.get("LOCALAPPDATA")
+    if not base:
+        return {}
+    local, out = {}, {}
+    try:
+        files = list(Path(base, "Claude-Data").glob("*/claude-code-sessions/*/*/local_*.json"))
+    except Exception:
+        return {}
+    for f in files:
+        try:
+            d = json.loads(f.read_text("utf-8"))
+        except Exception:
+            continue
+        if str(ROOT).lower() != str(d.get("originCwd") or d.get("cwd") or "").lower():
+            continue
+        cli = d.get("cliSessionId")
+        if cli:
+            local[d.get("sessionId")] = cli
+            out[cli] = dict(title=d.get("title"), archived=bool(d.get("isArchived")), last=d.get("lastActivityAt"),
+                            parent_local=(d.get("spawnedFrom") or {}).get("sessionId"), turns=d.get("completedTurns"))
+    for v in out.values():
+        v["parent"] = local.get(v.pop("parent_local"), None)
+    return out
+
+
+def rows(history_limit=40):
+    """TẤT CẢ phiên của dự án, lấy từ chính Claude Code: đang chạy (claude agents) + nhật ký phiên + chỉ mục app.
+    Mỗi dòng: id (8 ký tự), session (uuid), name, live, state, entrypoint, parent (uuid hoặc None), archived, last, sub (phiên con) ..."""
+    live = {r["session"]: r for r in _rows_live()}
+    hist, ent, app = _history(), _entrypoints(), _app_index()
+    ids = list(live)
+    recent = sorted((k for k in hist if k not in live and not app.get(k, {}).get("archived")),
+                    key=lambda k: -hist[k]["last"])[:history_limit]
+    ids += recent
+    out = []
+    for sid in ids:
+        r = live.get(sid) or dict(id=sid[:8], session=sid, kind="interactive", state="closed", cwd=str(ROOT),
+                                  started=hist[sid]["last"], sub=None, name=None)
+        a, h = app.get(sid, {}), hist.get(sid, {})
+        r["live"] = sid in live
+        r["entrypoint"] = ent.get(sid)
+        r["parent"] = a.get("parent")
+        r["archived"] = a.get("archived", False)
+        r["last"] = max(h.get("last") or 0, a.get("last") or 0) or r.get("started")
+        if not r.get("name") or r["name"].startswith("(chưa"):
+            r["name"] = a.get("title") or h.get("title") or "(chưa đặt tên)"
+        out.append(r)
+    for r in _rows_live():  # phiên con đã rm khỏi claude nhưng còn trong sổ
+        if r["session"] not in {x["session"] for x in out}:
+            r.update(live=False, entrypoint=None, parent=None, archived=False, last=r.get("started"))
+            out.append(r)
+    out.sort(key=lambda r: r.get("last") or 0, reverse=True)
+    return out
+
+
+
+def detail(rid):
+    """báo cáo + việc đã giao + log gần nhất của một phiên (rid = id claude 8 ký tự)"""
+    key = next((k for k, v in load().items() if v.get("cid", "")[:8] == rid[:8]), None)
+    out = {"report": "", "brief": "", "log": ""}
+    if key:
+        rep, br = DIR / key / "report.md", DIR / key / "brief.md"
+        out["report"] = rep.read_text("utf-8") if rep.exists() else ""
+        out["brief"] = br.read_text("utf-8") if br.exists() else ""
+    if re.fullmatch(r"[0-9a-f]{8}", rid[:8] or ""):
+        p = subprocess.run([CLAUDE, "logs", rid[:8]], capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", cwd=ROOT, timeout=20)
+        txt = re.sub(r"\x1b\[[0-9;?]*[A-Za-z]", "", p.stdout + p.stderr)
+        out["log"] = "\n".join(l.rstrip() for l in txt.splitlines() if l.strip())[-8000:]
+    return out
+
+
+def cmd_json(a):
+    print(json.dumps({"ok": True, "claude": bool(shutil.which("claude")), "rows": rows()}, ensure_ascii=False))
+
+
+def cmd_detail(a):
+    print(json.dumps(detail(a.id), ensure_ascii=False))
 
 
 def main():
@@ -238,6 +422,9 @@ def main():
     s = sp.add_parser("wait"); s.add_argument("id"); s.add_argument("--timeout", type=int, default=7200); s.set_defaults(f=cmd_wait)
     s = sp.add_parser("stop"); s.add_argument("id"); s.set_defaults(f=cmd_stop)
     s = sp.add_parser("done"); s.add_argument("id"); s.set_defaults(f=cmd_done)
+    s = sp.add_parser("rm"); s.add_argument("id"); s.set_defaults(f=cmd_rm)
+    sp.add_parser("json").set_defaults(f=cmd_json)  # cho extension VS Code / trang Home
+    s = sp.add_parser("detail"); s.add_argument("id"); s.set_defaults(f=cmd_detail)
     a = ap.parse_args()
     a.f(a)
 

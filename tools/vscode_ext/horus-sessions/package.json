@@ -1,0 +1,131 @@
+{
+  "name": "horus-sessions",
+  "displayName": "Horus: Phiên Claude",
+  "description": "Quản lý phiên Claude Code ngay trong VS Code, đồng bộ với Claude Code (cả phiên của app desktop): cây phiên cha-con, mở phiên trong Claude Code, giao việc cho phiên con, thông báo khi xong.",
+  "version": "0.2.1",
+  "publisher": "horus-anim",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:tools/subsession/subsession.py"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "horusSessions",
+          "title": "Phiên Claude",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "horusSessions": [
+        {
+          "id": "horusSessions.tree",
+          "name": "Phiên Claude"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "horusSessions.refresh",
+        "title": "Làm mới",
+        "icon": "$(refresh)",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.newTask",
+        "title": "Giao việc mới",
+        "icon": "$(add)",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.open",
+        "title": "Mở trong Claude Code",
+        "icon": "$(link-external)",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.show",
+        "title": "Xem báo cáo và log",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.send",
+        "title": "Nhắn thêm",
+        "icon": "$(comment-add)",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.stop",
+        "title": "Dừng",
+        "icon": "$(debug-stop)",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.remove",
+        "title": "Xoá",
+        "icon": "$(trash)",
+        "category": "Phiên Claude"
+      },
+      {
+        "command": "horusSessions.attach",
+        "title": "Nói chuyện trực tiếp (terminal)",
+        "icon": "$(terminal)",
+        "category": "Phiên Claude"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "horusSessions.newTask",
+          "when": "view == horusSessions.tree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "horusSessions.refresh",
+          "when": "view == horusSessions.tree",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "horusSessions.open",
+          "when": "view == horusSessions.tree && viewItem =~ /^(sub|live|closed)$/",
+          "group": "inline@0"
+        },
+        {
+          "command": "horusSessions.send",
+          "when": "view == horusSessions.tree && viewItem =~ /^(sub|live|closed)$/",
+          "group": "inline@1"
+        },
+        {
+          "command": "horusSessions.stop",
+          "when": "view == horusSessions.tree && viewItem == sub",
+          "group": "inline@2"
+        },
+        {
+          "command": "horusSessions.remove",
+          "when": "view == horusSessions.tree && viewItem == sub",
+          "group": "inline@3"
+        },
+        {
+          "command": "horusSessions.show",
+          "when": "view == horusSessions.tree && viewItem =~ /^(sub|live|closed)$/",
+          "group": "navigation@0"
+        },
+        {
+          "command": "horusSessions.attach",
+          "when": "view == horusSessions.tree && viewItem == sub",
+          "group": "navigation@1"
+        }
+      ]
+    }
+  }
+}

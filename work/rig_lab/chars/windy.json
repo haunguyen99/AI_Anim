@@ -1,0 +1,18 @@
+{
+ "id": "windy",
+ "name": "Windy",
+ "ref_dir": "ref_windy",
+ "scale": 1,
+ "body": "body3",
+ "clothes": [],
+ "extra": [
+  "staff"
+ ],
+ "names_from": "ref_windy",
+ "cfg": {
+  "name": "body3"
+ },
+ "source": "Studio Nhập FBX 2026-11-06: Hero_Windy.fbx",
+ "note": "Rig chưa dựng: đặt clothes / cfg trước khi chạy build_char.py",
+ "texture": "T_Colorpalette.tga"
+}

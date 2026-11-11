@@ -77,7 +77,7 @@ def build(rig, frames, tex_png, out, anim_name="P0"):
             if not l: J[i, 0] = jidx[bones[0]]; Wt[i, 0] = 1; continue
             for k, (w, j) in enumerate(l): J[i, k] = j; Wt[i, k] = w / s
         c = T.reshape(-1)
-        P = V[c] * 0.01; UV = np.array(m["uvc"], float).reshape(-1, 2).copy(); UV[:, 1] = 1 - UV[:, 1]   # glTF: v từ trên xuống
+        P = V[c] * 0.01; UV = np.array(m["uvc"], float).reshape(-1, 2).copy(); UV[:, 1] = 1 - UV[:, 1]; UV = np.clip(UV, 1 / 1024, 1 - 1 / 1024)   # glTF: v từ trên xuống; UV đúng mép (bảng màu) kéo vào trong nửa texel, khỏi lẫn hàng đối diện
         fn = np.cross(P[1::3] - P[0::3], P[2::3] - P[0::3]); fn /= np.linalg.norm(fn, axis=1, keepdims=True) + 1e-12
         N = np.repeat(fn, 3, axis=0)
         idx = np.arange(len(c), dtype=np.uint32 if len(c) > 65535 else np.uint16)
@@ -112,7 +112,7 @@ def build(rig, frames, tex_png, out, anim_name="P0"):
          "scenes": [{"name": "Scene", "nodes": [arm] + mesh_nodes}], "nodes": nodes, "meshes": meshes, "skins": [skin],
          "materials": [{"name": "T_Color", "doubleSided": True, "pbrMetallicRoughness": {"baseColorTexture": {"index": 0},
                         "metallicFactor": 0, "roughnessFactor": 0.9}}],
-         "textures": [{"sampler": 0, "source": 0}], "samplers": [{"magFilter": 9728, "minFilter": 9728}],
+         "textures": [{"sampler": 0, "source": 0}], "samplers": [{"magFilter": 9728, "minFilter": 9728, "wrapS": 33071, "wrapT": 33071}],
          "images": [{"mimeType": "image/png", "uri": "data:image/png;base64," + base64.b64encode(png.getvalue()).decode()}],
          "accessors": acc, "bufferViews": views,
          "buffers": [{"byteLength": len(buf), "uri": "data:application/octet-stream;base64," + base64.b64encode(bytes(buf)).decode()}]}

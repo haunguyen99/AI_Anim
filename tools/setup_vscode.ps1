@@ -54,6 +54,21 @@ if ($code) {
   }
 }
 
+# 2b. Focus View: khung chat chỉ hiện câu hỏi + câu trả lời, ẩn các bước lệnh (cài đặt riêng từng máy, không đặt qua repo được)
+$vs = Join-Path $env:APPDATA 'Code\User\settings.json'
+if ($Install -and $code) {
+  try {
+    $vj = if (Test-Path $vs) { [IO.File]::ReadAllText($vs) | ConvertFrom-Json } else { [pscustomobject]@{} }
+    if ($vj.'claudeCode.focusView' -ne $true) {
+      if (Test-Path $vs) { Copy-Item $vs "$vs.bak_setup" -Force }
+      $vj | Add-Member -NotePropertyName 'claudeCode.focusView' -NotePropertyValue $true -Force
+      New-Item -ItemType Directory -Force (Split-Path $vs) | Out-Null
+      [IO.File]::WriteAllText($vs, ($vj | ConvertTo-Json -Depth 20), (New-Object Text.UTF8Encoding $false))
+    }
+    Write-Host "[OK] Claude Focus View bật (Ctrl+Alt+F để bật/tắt)."
+  } catch { Write-Host "[!] Không đọc được settings VS Code (có chú thích?). Bật tay: Ctrl+, → claudeCode focus view." }
+}
+
 # 3. Cấu hình endpoint trong ~/.claude/settings.json (chỉ đọc key để báo có / không, không in)
 $sf = Join-Path $env:USERPROFILE '.claude\settings.json'
 if (-not (Test-Path $sf)) {

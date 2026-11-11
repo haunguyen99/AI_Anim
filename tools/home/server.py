@@ -17,6 +17,7 @@ import pose_data
 import spine_live
 import scene_file
 import keypose
+import sessions
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -709,6 +710,10 @@ class H(SimpleHTTPRequestHandler):
             from urllib.parse import parse_qs
             if spine_live.handle_get(self, path, parse_qs(urlparse(self.path).query)):
                 return
+        if path in ("/sessions", "/sessions/") or path.startswith("/api/sessions/"):   # quản lý phiên Claude Code (sessions.py)
+            from urllib.parse import parse_qs
+            if sessions.handle_get(self, path, parse_qs(urlparse(self.path).query)):
+                return
         if path in ("/keypose", "/keypose/") or path.startswith("/api/keypose/"):   # Key Pose: duyệt ảnh Codex + yêu cầu thêm ảnh (keypose.py)
             from urllib.parse import parse_qs
             if keypose.handle_get(self, path, parse_qs(urlparse(self.path).query)):
@@ -794,6 +799,10 @@ class H(SimpleHTTPRequestHandler):
         if path.startswith("/api/studio/"):
             n = int(self.headers.get("Content-Length", "0"))
             if studio_bridge.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
+                return
+        if path.startswith("/api/sessions/"):   # quản lý phiên Claude Code (sessions.py)
+            n = int(self.headers.get("Content-Length", "0"))
+            if sessions.handle_post(self, path, json.loads(self.rfile.read(n) or b"{}")):
                 return
         if path.startswith("/api/spine/"):   # Spine Live: key pose / ghi chú / hoàn tác (spine_live.py)
             n = int(self.headers.get("Content-Length", "0"))

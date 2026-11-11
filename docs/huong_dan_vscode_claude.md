@@ -88,6 +88,8 @@ Máy mới thì nạp thêm bộ nhớ dự án cho Claude:
 
 Muốn đổi giọng (ngắn hơn, chi tiết hơn…), sửa file style đó. Trong style viết rõ người đọc là ai và muốn trả lời ra sao.
 
+**Ẩn các khung lệnh (Bash IN/OUT…).** Khung chat mặc định hiện từng bước Claude chạy, trông như code. Bật **Focus View** để chỉ thấy câu hỏi và câu trả lời: `Ctrl+Alt+F`, hoặc `Ctrl+,` → `claudeCode` → tích **Focus View** (script `-Install` bật sẵn). Bấm vào chỗ đã gập để xem lại các bước khi cần. Tin nhắn người dùng và AI nằm cùng một bên, không đổi được; mốc giờ gửi trên mỗi tin giúp phân biệt.
+
 **Việc vẫn làm trong app Claude desktop:** đăng hoặc sửa trang review và Pose Lab trên claude.ai (Artifact), việc cần AI tự bấm trong trình duyệt, chia việc ra nhiều session.
 
 ## 6. Ở ngoài công ty / lỗi thường gặp

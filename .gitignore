@@ -34,3 +34,9 @@ work/pose_lab/models/
 *.gif
 *.rar
 tools/workai/.env
+
+# phiên con (subsession)
+tools/subsession/registry.json
+work/_subsessions/
+tools/bap/.env
+tools/subsession/titles_cache.json
