@@ -112,6 +112,7 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 - Thân liền khối (Director zom2 2026-11-02, Duyệt vòng 2): gán CỨNG khối giải phẫu trước — chậu → Root_M (núm đầu đùi |x|≥9 → Hip), cột cổ |x|≤6 →
   chuỗi Chest→Neck (4 cm sát đáy sọ dốc sang Head 0,8), Scapula chỉ |x|≥8, mảnh QA trên đáy hàm → Head; skin theo khoảng cách chỉ để hòa khớp,
   làm mượt riêng vùng khớp hông. Quét giãn cả Body lẫn QA (`MESH=_Body`). Cổ ×3,6 ở cú giật đầu chấp nhận (sọ to che).
+- **Mẫu mới tỉ lệ khác (zom1 Western V2, 2026-11-05, `work/shoot_die_repeat/zom1_map5_rig/`):** 3D co model (cao 188→177, sải tay 206→163) → không rebind giữ bind pose được, phải rig lại bằng `rig_v2.py`. Ngưỡng cm cố định của tay hỏng với tay ngắn (khuỷu rơi sát vai x 29,5): bàn tay / khe núm khuỷu tính theo tỉ lệ đầu ngón, CHỈ khi cách cũ không thấy bàn tay (găng QA map4 thì giữ cách cũ, lần đầu làm lệch ngón zom1 map4 26 cm). Sửa `rig_v2.py` xong luôn chạy lại 4 con v2 cũ, so `joints_*.json` (phải 0,000 cm). Kiểm thêm tay xuyên thân (`zom1_map5_rig/check.py`): tay ngắn + anim Humanoid chung → Walk4/Walk5 xuyên áo (rig cũ cũng có ở Walk5). Tên file 3D có thể sai (V2 của zom1 chứa mesh tên zom2): kiểm lưới / tên mesh trước, hỏi người dùng. Đổi tên mesh hoặc số cluster → prefab đã unpack phải gắn lại mesh + xương.
 - **FBX xuất từ Frolvy vào Unity (G-LumberCity 2026-11-03):** take tên `take1` (FBX Maya team là `Take 001`) → khi chép `.meta` mẫu của team phải đổi `takeName: take1`, `firstFrame` theo LocalStart của FBX (Frolvy xuất từ F1), guid + internalID mới; team bật loop ở `.anim` tách trong editor, FBX mới chưa có `.anim`.
 - **FBX anim G-LumberCity chỉ joint + anim, không mesh** (user 2026-11-03 "fbx chỉ giữ joint với anim thôi ko cần mesh"): `export_clip(..., meshes=False)` mặc định; `tools/fbx_ascii_keep.py --no-meshes` bỏ cả Geometry + Skin/Cluster, không chỉ Model mesh. Kiểm số object sau khi lọc: chỉ còn Model/NodeAttribute LimbNode + AnimationCurve(Node) + Stack/Layer.
 - **FBX chỉ joint (không mesh) vào Unity Generic + avatar copy:** khi `root` là node gốc DUY NHẤT trong file, Unity gộp nó vào prefab root → lỗi "Copied Avatar Rig Configuration mis-match … Cannot find root motion transform 'root'" (G-LumberCity 2026-11-03; bản còn mesh thì không lỗi vì có 3 node gốc). Sửa: `.meta` đặt `preserveHierarchy: 1`. Kiểm bằng Editor.log (`%LOCALAPPDATA%\Unity\Editor\Editor.log`, grep "mis-match").
@@ -125,7 +126,21 @@ Quy trình chuẩn: SKILL.md bước 7 (`legacy/blender/export_clip.py`). Duyệ
 - **Không thêm cluster** vào mesh trong rig mà prefab Unity đã unpack: SkinnedMeshRenderer lưu `m_Bones` = đúng số cluster (kể cả cluster rỗng) → thêm cluster lệch bindpose. Khối mới cần xương mesh đó không có (vòng cổ tay trái cần Wrist_L) → chuyển khối sang mesh có cluster đó. Điền cluster rỗng sẵn thì được.
 - Kiểm: `zom_v2/stretch_scan.py` cả 2 mesh + `zom1_map4_rebind/flip_scan.py` (lật mặt) trên 18 anim Share, so CŨ|MỚI; ảnh `anim_test.py` CHẠY TUẦN TỰ (hai lần song song ghi đè ảnh tạm `_at_*.png` → ảnh "cũ" ra mesh mới).
 - Tra prefab nào dùng rig: grep guid của .fbx.meta trong prefab (map4: prefab `En_Zom1_map4_Gameplay` dùng rig Zom2 và ngược lại).
-- **Giữ đúng phiên bản FBX của file gốc** (Mob Era Ride_Idle, 2026-10-29, user: "mở bằng maya không thấy file có gì?"): file team là FBX 7700
-  (khung bản ghi 64-bit). Bản đầu ghi bằng `fbxbin.serialize(..., 7400)` (khung 32-bit) nhưng cây vẫn khai `FBXVersion 7700` → Maya mở trống.
-  Sửa: `work/mob_era/ride_idle/export_fbx.py` đọc giữ kiểu + cờ nén + byte nén gốc của từng mảng, ghi lại đúng phiên bản file gốc;
-  đệm footer = căn 16 tính từ cuối footer id, rồi thêm 4 byte 0. Kiểm `--roundtrip`: ghi lại file gốc phải **giống từng byte** (so cây là chưa đủ).
+
+## FBX Pose Lab: FileId phải khớp footer (SDR06 London Reload, 2026-11-06)
+- Unity báo "Couldn't import file / File is corrupted" khi FBX do `work/pose_lab/fbx/fbxwrite.py` ghi có `FileId` = `00 01 … 0f` (giả) nhưng footer là mã Blender (`fbxbin`). Mã footer sinh từ FileId + CreationTime, hai bên phải khớp. Trước khi đẩy anim: so 16 byte FileId với một FBX Unity nhập được (Blender: `28b32aeb b624ccc2 bfc8b02a a92bfcf1`). Đã sửa trong fbxwrite.py; vá file cũ tại chỗ bằng cách thay 16 byte (không đổi độ dài).
+- Cây xương / số node đúng chưa đủ để chắc file nhập được. Kiểm bằng Unity (Console) hoặc mayapy FBXImport; không có mayapy trên máy này.
+- Meta bị Unity ghi lại sau lần nhập lỗi (đổi Humanoid → Generic, mất event): `git checkout` meta về bản đã đẩy trước khi commit.
+
+
+## SDR anim-only theo khuôn team: chọn avatar nguồn (Pirate Reload, 2026-11-06)
+- Avatar nguồn của meta = avatar mà prefab nhân vật đang dùng (`m_Avatar` trong prefab Actors/<Map>/…Gameplay.prefab), không mặc định Base.
+  Jungle: Base có avatar → source Base. Pirate: Base `MC_char_map4.fbx` là animationType 0 (không avatar), prefab dùng avatar của
+  `MC_char_map4_shoot.fbx` → meta copy từ meta team, `avatarSetup: 2`, `lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: <guid shoot>, type: 3}`.
+- Script: `sdr04/_reload/export_pirate.py` (gọi write_anim của `sdr01/_reload/export_team.py`; đừng đặt trùng tên file export_team.py
+  ở thư mục khác rồi import, nó tự import chính nó).
+- **Prop đổi chỗ tức thì (đạn từ nòng vào tay) trong Unity:** key mỗi frame vẫn bị Unity nội suy giữa 2 frame → prop bay ngang người
+  (user thấy trong preview Pirate Reload). Chèn key giữ giá trị cũ ở 1/100 frame trước frame đổi chỗ + meta `resampleCurves: 0`
+  (`export_pirate.py` step_keys). User xác nhận trong Unity hết bay (2026-11-06), kể cả xương có PreRotation.
+
+- **Rebind GSDR-1547 (2026-11-10, `work/shoot_die_repeat/rebind_gsdr1547/`):** mesh Khải ở `3D/Model/FIX_0911/<Map>/` (tên mesh trong file vẫn là map1/map3, không khớp rig → luôn `--map`; tên rig/prefab zom1↔zom2 đặt chéo). Mesh cũ không có bản mới (đạn `bullet` Pirate MC) → `--keep bullet` (thêm vào `fbx_rebind.py`). Trước khi rebind SO đỉnh model mới với model cũ (Pirate MC, Mayah MC y hệt 0,000 cm → không cần làm; Mayah zom3 chỉ lệch ≤1,9 cm). MC có súng 2 cluster: ICP lấy theo thân, súng lệch 60 cm nếu model đặt khác pose rig.

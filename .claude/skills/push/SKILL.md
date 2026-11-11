@@ -29,6 +29,27 @@ Người dùng 2026-10-29: "từ giờ update push thì sẽ đẩy toàn bộ c
 3. **Đẩy:** `.venv\Scripts\python.exe -I tools\push_source.py --yes -m "<lời nhắn ngắn nêu việc đã làm, tiếng Anh>"`. Không có lời nhắn từ người dùng thì tự viết từ các thay đổi (không viết chung chung "update").
 4. **Báo kết quả:** commit, số file thêm / sửa / xoá, và việc còn chờ. Đẩy thất bại (người khác vừa đẩy) thì chạy lại để lấy bản mới; **không** dùng `--force`.
 
+## Kiến thức: kiểm, gộp và tự đẩy lên git (người dùng 2026-11-11)
+
+Kiến thức (`.claude/skills/animation/knowledge/**`, các skill khác trong `.claude/skills/**`, bộ nhớ `.claude/memory_store/**`, `tools/claude_memory.py`) là phần quý nhất của repo, không để nằm lại chỉ trên máy. Nhưng nhiều máy cùng đẩy lên `main`, mà `push_source.py` ghi file trên máy ĐÈ lên GitHub: máy khác đã sửa file thì lần đẩy sau xoá mất việc đó (2026-11-11: 30 file khác nhau, trong đó `frolvy_layers.py`, `REPORTS.md`, `frolvy_rig/SKILL.md`, 7 memory mới). Vì vậy **luôn gộp trước khi đẩy**.
+
+### Bước A, trước MỌI lần đẩy kiến thức (cả `/push` thường lẫn tự đẩy)
+1. `.venv\Scripts\python.exe -I tools\knowledge_merge.py` (xem báo cáo: file nào chỉ remote đổi, file nào cả hai đổi). Công cụ so 3 bản (gốc = lần đồng bộ cuối lưu ở `.git/knowledge_sync_base`, máy này, `origin/main`). Chưa có gốc thì `--base <sha>` (commit `origin/main` lần đẩy / gộp cuối).
+2. Có gì cần gộp thì `... knowledge_merge.py --apply`: chỉ remote đổi → lấy remote; chỉ máy này đổi → giữ; cả hai → gộp 3 chiều (`MEMORY.md` gộp theo dòng). Giữ kiểu xuống dòng của file.
+3. Thoát mã 2 (còn dấu `<<<<<<< may-nay` / `>>>>>>> remote`) thì **tự sửa tay từng chỗ** rồi mới đẩy: thường giữ cả hai phần; hai dòng sửa cùng một câu thì giữ bản remote và thêm phần riêng của máy này. Đọc nội dung hai bên, không chọn bừa; chỗ không chắc thì hỏi người dùng. `grep -rn "<<<<<<< may-nay" .claude tools/claude_memory.py` phải trống.
+4. Có memory mới từ remote: `tools\claude_memory.py restore` (đưa vào bộ nhớ phiên, gộp `MEMORY.md` theo dòng), rồi `backup`.
+5. Commit kết quả gộp trên `master` (`git add` đúng các file kiến thức, không `git add -A`), lời nhắn `knowledge: gộp từ GitHub main …`.
+6. `--dry-run` kiểm lại: sau khi gộp, file nào chỉ do remote đổi không còn nằm trong danh sách SỬA. Còn file lạ hoặc XOÁ thì dừng hỏi.
+
+### Bước B, đẩy
+- **Mỗi `/push` thường:** có file kiến thức sửa chưa commit thì chạy `claude_memory.py backup` (nếu bộ nhớ đổi), commit riêng đúng các file đó (`knowledge: <bài học chính>`), làm Bước A, rồi đẩy `main` như bình thường.
+- **Cuối mỗi việc có ghi bài học mới** (`knowledge/details/*.md`, `director_standards.md`, memory): tự đẩy riêng phần kiến thức, không chờ `/push`, không kéo theo file làm dở của việc khác:
+  - Bước A, rồi `.venv\Scripts\python.exe -I tools\push_source.py --only .claude/skills .claude/memory_store tools/claude_memory.py --committed --dry-run` (chỉ bản đã commit, chỉ thêm / sửa);
+  - dry-run chỉ có file kiến thức, không XOÁ, không file lạ thì `--yes -m "knowledge: <bài học>"`; ngược lại dừng và hỏi;
+  - file Spine Live (`.claude/skills/spine2d/**`, `spinelive/**`) vẫn đi nhánh `spine-live`, công cụ tự bỏ qua.
+- **Sau khi đẩy xong:** `.venv\Scripts\python.exe -I tools\knowledge_merge.py --mark` (ghi `origin/main` mới làm gốc cho lần sau). Quên bước này thì lần sau gộp thừa chứ không mất dữ liệu.
+- Báo người dùng một dòng: đã gộp / đẩy kiến thức gì, commit nào. Đẩy thất bại (người khác vừa đẩy) thì quay lại Bước A; không `--force`.
+
 ## Quy tắc
 
 - Không đẩy `master`, không `git push --force`, không đẩy dữ liệu (`work/*/pages`, `work/store`, models, clips, `.blend` / `.fbx` / video).

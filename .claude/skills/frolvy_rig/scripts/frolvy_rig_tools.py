@@ -5,7 +5,7 @@ execute_code tool (the `api` object is Frolvy's). Pure Python: Frolvy's Python h
     import importlib, frolvy_rig_tools as R; importlib.reload(R)
     R.check_model(api)                      # step 1: read the model
     R.zero_controls(api)                    # before ANY Build / Rebuild Rig
-    R.after_rebuild(api, one_side=("Weapon","Arrow"), prop_side="_R")   # after every Rebuild; names are prefixes ("ScarfA" = whole chain)
+    R.after_rebuild(api, one_side=("Weapon","Arrow"), prop_side="_R")   # after every Rebuild
     R.skin_report(api, "Body")              # audit, then fix with the skin_* helpers
     R.skin_pass(api, "Body", R.BASTION_SKIN, head_neck_keep=ids, profile=True)   # after bind
     R.skin_pass(api, "Body", R.BASTION_SKIN, head_neck_keep=ids, profile=False)  # after a smooth
@@ -231,10 +231,7 @@ def check_rig_moves(api, ctl="CTL_Shoulder_L", joint="DEF_Wrist_L", sw="CTL_ArmS
     a = P(api, joint); t = api.transform(ctl)
     api.set_transform(ctl, t[:3], [0, 0, -45], t[6:9]); b = P(api, joint)
     api.set_transform(ctl, t[:3], t[3:6], t[6:9])
-    # fkIk back BEFORE autoSnap: restoring autoSnap first makes the fkIk change snap the
-    # FK pose onto the IK controls (2026-11-03: CTL_PoleLeg_R/L ended 10-24 cm off, legs uneven)
-    for k in ("fkIk", "autoSnap"):
-        if k in s0: api.set_attr(sw + "." + k, s0[k])
+    for k, v in s0.items(): api.set_attr(sw + "." + k, v)
     moved = math.dist(a, b) > 0.01
     print("rig moves:", moved)
     return moved
@@ -245,23 +242,19 @@ def delete_one_side_props(api, names=("Weapon", "Arrow"), side="_L"):
     """Build Rig mirrors every right-side joint; delete the mirrored copies of one-sided props
     and the wire_ nodes they leave (never touch wire_DEF_Root_M_*: Rig Builder's own)."""
     api.set_component_mode("object")   # delete_selection in face/vertex mode deletes scene-wide faces
-    # names are prefixes: "ScarfA" takes the whole chain ScarfA1..ScarfAEnd. Chain controls are
-    # NOT nested under the first one's _grp (Hero 2026-11-04), so every link is deleted itself.
-    pat = re.compile(r"^(CTL|DEF)_(%s)\w*%s(_grp)?$" % ("|".join(map(re.escape, names)), side))
-    found = [n for n in api.ls() if pat.match(n)]
-    found.sort(key=lambda n: (not n.endswith("_grp"), not n.startswith("DEF_")))
-    for n in found:
-        if n in api.ls():
-            api.select([n])
-            if api.selection() == [n] and api.component_mode() == "object":
-                api.delete_selection()
+    for nm in names:
+        for n in ("CTL_%s%s_grp" % (nm, side), "DEF_%s%s" % (nm, side), "CTL_%s%s" % (nm, side)):
             if n in api.ls():
-                print("WARNING could not delete", n)
+                api.select([n])
+                if api.selection() == [n] and api.component_mode() == "object":
+                    api.delete_selection()
+                if n in api.ls():
+                    print("WARNING could not delete", n)
     api.select([])
     for _ in range(2):
         for p in api.check_rig():
             w = p.split(":")[0]
-            if w.startswith("wire_DEF_") and pat.match(w[5:].split("_" + side[1:] + "_")[0] + side):
+            if w.startswith("wire_DEF_") and any(nm + side in w for nm in names):
                 try: api.delete_node(w)
                 except Exception: pass
 
@@ -288,48 +281,6 @@ def add_translate_wires(api):
         if "tx" in api.locked_channels(c):
             api.lock_channels(c, "tx ty tz", False)
     return wired
-
-
-def fix_translate_wires(api):
-    """add_translate_wires feeds control.tN straight into DEF.tN, but the control's offset group
-    and the DEF's parent rarely share axes (chibi 2026-11-05: weapon control moved one way, the
-    staff another; 31 of 41 FK controls). Rewire each DEF channel as rest + A . control.t with
-    A = (DEF parent axes)^T (control group axes), measured in FK rest. Idempotent (wtr_ nodes)."""
-    GN = set(api.graph_nodes()); fixed = 0
-    saved = fk_rest(api)
-    try:
-        for c in controls(api):
-            if "Switch" in c or (c + "_grp") not in api.ls():
-                continue
-            src = [w for w in GN if w.startswith("wire_DEF_") and w.endswith("_tx") and c + ".tx" in api.node_connections(w)]
-            if not src:
-                continue
-            dj = src[0][5:-3]
-            if any(g.startswith("wtr_%s_" % dj) for g in GN):
-                continue
-            pd = parent(api, dj); Pd = Rw(api, pd); Pg = Rw(api, c + "_grp")
-            A = [[sum(Pd[r][i] * Pg[r][k] for r in range(3)) for k in range(3)] for i in range(3)]
-            if max(abs(A[i][k] - (1.0 if i == k else 0.0)) for i in range(3) for k in range(3)) < 1e-3:
-                continue
-            for i, ch in enumerate(("tx", "ty", "tz")):
-                old = "wire_%s_%s" % (dj, ch); rest = api.node_params(old)[1]
-                api.delete_node(old)
-                ms = []
-                for k, cc in enumerate(("tx", "ty", "tz")):
-                    if abs(A[i][k]) < 1e-4:
-                        continue
-                    nd = api.create_node("multiply", "wtr_%s_%s_%s" % (dj, ch, cc))
-                    api.connect(nd, 0, c + "." + cc); api.set_node_param(nd, 1, A[i][k]); ms.append(nd)
-                acc = ms[0]
-                for k2, nd in enumerate(ms[1:]):
-                    s = api.create_node("add", "wtr_%s_%s_sum%d" % (dj, ch, k2))
-                    api.connect(s, 0, acc); api.connect(s, 1, nd); acc = s
-                fin = api.create_node("add", old); api.connect(fin, 0, acc); api.set_node_param(fin, 1, rest)
-                api.set_node_output(fin, dj + "." + ch)
-            fixed += 1
-    finally:
-        restore_switches(api, saved)
-    return fixed
 
 
 SWITCHES = ("CTL_ArmSwitch_L", "CTL_ArmSwitch_R", "CTL_LegSwitch_L", "CTL_LegSwitch_R", "CTL_SpineSwitch_M")
@@ -500,19 +451,11 @@ def _fix_thumb_curl(api, flipped):
 
 
 def reparent_switches(api, where=None):
-    """Put each switch under Rig Builder's <FK end>_follow group (parent-constrained to the DEF joint):
-    it then follows the limb in IK AND FK with no loop (Hero 2026-11-04, tested both modes).
-    Under the FK end control (the old default) it stays behind when the limb is in IK - user:
-    "khi di chuyển ik tay, switch control chưa đi theo". Falls back to the old parents when a rig
-    has no _follow groups."""
-    old = {"CTL_ArmSwitch_L": "CTL_Wrist_L", "CTL_ArmSwitch_R": "CTL_Wrist_R",
-           "CTL_SpineSwitch_M": "CTL_Chest_M", "CTL_LegSwitch_L": "CTL_IKAnkle_L",
-           "CTL_LegSwitch_R": "CTL_IKAnkle_R"}
-    follow = {"CTL_ArmSwitch_L": "CTL_Wrist_L_follow", "CTL_ArmSwitch_R": "CTL_Wrist_R_follow",
-              "CTL_SpineSwitch_M": "CTL_Chest_M_follow", "CTL_LegSwitch_L": "CTL_Ankle_L_follow",
-              "CTL_LegSwitch_R": "CTL_Ankle_R_follow"}
-    have = set(api.ls())
-    where = where or {sw: (follow[sw] if follow[sw] in have else old[sw]) for sw in old}
+    """Switch controls cannot follow a DEF joint (it reads the switch's own fkIk -> loop).
+    Default here: arm/spine switches under the FK end control, leg switches under IK foot."""
+    where = where or {"CTL_ArmSwitch_L": "CTL_Wrist_L", "CTL_ArmSwitch_R": "CTL_Wrist_R",
+                      "CTL_SpineSwitch_M": "CTL_Chest_M", "CTL_LegSwitch_L": "CTL_IKAnkle_L",
+                      "CTL_LegSwitch_R": "CTL_IKAnkle_R"}
     for sw, tgt in where.items():
         g = sw + "_grp"
         if g not in api.ls() or tgt not in api.ls() or parent(api, g) == tgt:
@@ -522,64 +465,12 @@ def reparent_switches(api, where=None):
             t = api.transform(g); api.set_transform(g, [t[i] + w0[i] - w1[i] for i in range(3)], t[3:6], t[6:9])
 
 
-def _curve_world(api, c):
-    q = api.curve_points(c); M = api.world_matrix(c)
-    return [(M[0] * q[i] + M[4] * q[i + 1] + M[8] * q[i + 2] + M[12],
-             M[1] * q[i] + M[5] * q[i + 1] + M[9] * q[i + 2] + M[13],
-             M[2] * q[i] + M[6] * q[i + 1] + M[10] * q[i + 2] + M[14]) for i in range(0, len(q), 3)]
-
-
-def match_switches(api, pairs=(("CTL_ArmSwitch", "DEF_Wrist"), ("CTL_LegSwitch", "DEF_Ankle"))):
-    """Left and right switch icons the same size and in mirrored places, at the REST pose.
-    Build Rig + fit() left Hero's right arm switch 2 cm wide, inside the hand, while the left one was
-    5.6 cm and 35 cm above / 22 cm outside the wrist (user: "shape control switch ở tay phải bé quá",
-    "đặt vị trí giống tay trái để dễ nhìn hơn"). The side whose icon sits farther from its joint
-    (the one fit() slid out of the mesh) is copied onto the other."""
-    for sw, jn in pairs:
-        L, Rr = sw + "_L", sw + "_R"
-        if L not in api.ls() or Rr not in api.ls():
-            continue
-        cen = lambda c: [sum(p[k] for p in _curve_world(api, c)) / len(_curve_world(api, c)) for k in range(3)]  # noqa: E731
-        ext = lambda c: max(max(p[k] for p in _curve_world(api, c)) - min(p[k] for p in _curve_world(api, c)) for k in range(3))  # noqa: E731
-        dist = {s: math.dist(cen(sw + s), P(api, jn + s)) for s in ("_L", "_R")}
-        src, dst = ("_L", "_R") if dist["_L"] >= dist["_R"] else ("_R", "_L")
-        S, D = sw + src, sw + dst
-        # size: scale the shape about its own centre
-        q = api.curve_points(D); n = len(q) // 3
-        lc = [sum(q[3 * i + k] for i in range(n)) / n for k in range(3)]
-        k = ext(S) / max(ext(D), 1e-9)
-        api.set_curve_points(D, list(range(n)), [lc[j] + (q[3 * i + j] - lc[j]) * k for i in range(n) for j in range(3)])
-        # place: mirror the source centre across x, move the group in its parent's space
-        cs, cd = cen(S), cen(D)
-        d = (-cs[0] - cd[0], cs[1] - cd[1], cs[2] - cd[2])
-        g = D + "_grp"; M = api.world_matrix(parent(api, g))
-        R3 = ((M[0], M[4], M[8]), (M[1], M[5], M[9]), (M[2], M[6], M[10]))
-        dl = _solve3(R3, d)
-        t = api.transform(g); api.set_transform(g, [t[i] + dl[i] for i in range(3)], t[3:6], t[6:9])
-        cd2 = cen(D)
-        print("%s: %s copied onto %s (size x%.2f, mirror error %.4f)" % (sw, src, dst, k, math.dist((-cs[0], cs[1], cs[2]), cd2)))
-
-
-def _solve3(m, v):
-    """Solve m * x = v for a 3x3 m (rows)."""
-    (a, b, c), (d, e, f), (g, h, i) = m
-    det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g)
-    if abs(det) < 1e-12:
-        return v
-    inv = ((e * i - f * h, c * h - b * i, b * f - c * e),
-           (f * g - d * i, a * i - c * g, c * d - a * f),
-           (d * h - e * g, b * g - a * h, a * e - b * d))
-    return tuple(sum(inv[r][k] * v[k] for k in range(3)) / det for r in range(3))
-
-
 def after_rebuild(api, one_side=("Weapon", "Arrow"), prop_side="_R", labels=None, switches=None):
     """Everything Rebuild Rig drops or leaves behind, in order, then a report."""
     other = "_L" if prop_side == "_R" else "_R"
     delete_one_side_props(api, one_side, other)
     w = add_translate_wires(api)
     rest = sync_rest(api)
-    w2 = fix_translate_wires(api)
-    print("translate wires re-axed:", w2)
     piv = sync_control_pivots(api)
     thumb_into_palm(api)
     th = fix_thumb_curl(api)
@@ -698,11 +589,8 @@ def deform_test(api, obj, tests, verts=None, switches=("CTL_ArmSwitch_L", "CTL_A
                 res[i] = math.dist(p, q)
             out[(ctl, tuple(rot))] = res
     finally:
-        # fkIk back BEFORE autoSnap (else the switch snaps FK pose onto IK/pole controls:
-        # 2026-11-03 Ninja poles ended 7.6 cm off, FK arm got 0.2-0.4 deg)
-        for k in ("fkIk", "autoSnap"):
-            for s, v in saved:
-                if k in v: api.set_attr(s + "." + k, v[k])
+        for s, v in saved:
+            for a, val in v.items(): api.set_attr(s + "." + a, val)
     return out
 
 

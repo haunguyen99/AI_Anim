@@ -16,7 +16,7 @@ Mọi số mặc định dưới đây là số **người dùng đã duyệt**,
 3. Kiểm rig theo danh sách mục 2. Thiếu thì sửa rig trước (sửa sau tốn cả vòng anim).
 
 ## 1. Thông tin cần có (chỉ hỏi cái còn thiếu)
-- File skeleton JSON + ảnh (`work/<game>/spine/<anim>/`). Spine Live: `http://127.0.0.1:8781/spine?json=<json>`.
+- File skeleton JSON + ảnh (`work/<game>/spine/<anim>/`). Spine Live: `http://127.0.0.1:8780/spine?json=<json>`.
 - Mô tả của người dùng: cái gì chuyển động (ctrl tổng, thân, tay cầm đồ, chân, tai, khăn, chuông...).
 - Độ dài loop: mặc định **96F** (cưỡi vật) / **90F** (lơ lửng), 30 fps.
 
@@ -41,8 +41,7 @@ Bộ máy (`tools/spine/idle_engine.py` + `tools/spine/anim_kit.py`), đã kiể
 | Vai trò | Giá trị | Nguồn |
 |---|---|---|
 | Ctrl tổng (vật cưỡi) | xoay ±3°, nhấp nhô 6 px lệch 1/4 nhịp | Sakura |
-| Ctrl bay (ô, chùm bóng) | nhấp nhô 14 px, trôi ngang 6 px, nghiêng 1,5° theo vận tốc | Cừu cầm ô, Cừu cầm bóng |
-| Nhân vật treo dưới ctrl bay | dây / tay nắm bù hẳn nghiêng ctrl + con lắc ~1,2° trễ 20F; thân **±2,5–3° góc thế giới** (đo `pose`, góc local cộng dồn dọc chuỗi treo) | Cừu cầm bóng |
+| Ctrl bay (ô) | nhấp nhô 14 px, trôi ngang 6 px, nghiêng 1,5° theo vận tốc | Cừu cầm ô |
 | Nhân vật đi theo ctrl | trễ **~20F** so với ctrl (người dùng: "cừu đang xoay cùng lúc với ô" = sai) | Cừu cầm ô |
 | Thân → đầu | 2 / 1,5 / 2,5°, pha 0,10 / 0,18 / 0,28; quán tính 1,0·8F / 0,6·5F / 0,7·6F | Sakura |
 | Thân / đuôi vật cưỡi | nhịp 2: 2 / 3,5 / 7°, pha 0,15 / 0,30 / 0,45 | Sakura |

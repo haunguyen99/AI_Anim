@@ -106,3 +106,8 @@ Giai đoạn trong sổ: `analysis` → `p0` → `blocking` → `polish` → `ex
   - **Khe chùy–vai phải đo tới cả đoạn vai→khuỷu,** như bodyIssues của trang. Đo tới điểm khớp vai thì Python báo sạch mà trang vẫn báo lấn 2–3 cm (F16–17).
   - **Lớp an toàn đẩy cứng gây giật:** đẩy 23° trong một frame ở F7. Cho đệm mềm làm việc, lớp an toàn chỉ can thiệp khi lấn sâu hơn 1 cm (`V2_SAFE`).
   - **Nới cả mức khe tối thiểu (+1,5 cm) là sai:** bả vai trái mất hết độ trễ, và F21 bị đẩy 15°.
+
+## Worker Hoe (2026-11-10): prop dài trên nhân vật chibi
+- Director v1 bắt 3 lỗi A ở bản thiết kế (tầm tay, cán xuyên bụng, cán xuyên đầu ở đỉnh) vì AI ước tầm với bằng tay (ghi 35 cm, thật 42–48). Luật: **mọi con số tầm với / khoảng hở trong bản thiết kế phải đo trên rig thật** trước khi gửi: `work/g_lumbercity/lumber_hoe/geom.py` (Idle F1 → hạ hông, gập thân, khoá chân, IK hai tay lên cán, skin mesh, đo theo nhóm xương trội, dò lưới).
+- Chibi tay 36 cm: cầm SÁT ĐUÔI cán (2 tay cách nhau ~16 cm), cán chéo (lưỡi bên phải, đuôi cạnh hông trái) để khỏi xuyên bụng; đỉnh: tay trước ngực, cán qua vai phải, lưỡi trên mũ. Lưỡi lệch phải ≥ 25 cm mới lộ ở cam game nhìn lưng.
+- Loop có va chạm: đặt frame chạm GIỮA clip (team chop chạm F15, giữ 11 F), F1 = dáng trung tính; giữ tấn = Idle để blend không trượt chân.

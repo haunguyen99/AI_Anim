@@ -260,3 +260,10 @@ hoặc preview `home`, http://127.0.0.1:8780), một người dùng, dữ liệu
 `anim playblast` trên tab Studio đang ẩn ghi theo thời gian thực (~1 s mỗi frame anim): 30 frame ra video 30,5 s / 915 frame.
 Kiểm sau mỗi playblast: `ffprobe -count_frames` phải = số frame anim. Server Home (`_retime_playblast` trong `tools/home/server.py`)
 tự lấy frame giữa mỗi đoạn khi video có > 1,5× số frame (cần khởi động lại server để có hiệu lực).
+
+## Pose Lab model fps (2026-11-06)
+- `tools/poselab_model.py` ghi thời gian frame f = f/`FPS` (mặc định 30). Version khai `fps: 24` trong POSES thì Studio đọc
+  (f-1)/24 → chiếu nhanh 1,25x và mấy frame cuối đứng (các bản Jungle/Pirate team trước 2026-11-06 bị vậy khi xem). Clip 24 fps:
+  đặt `PM.FPS = 24` trước `PM.build`. Chỉ ảnh hưởng xem trong Studio; FBX xuất bằng fbxwrite từ list frame vẫn đúng 24 fps.
+- Trang Studio đọc danh sách version lúc mở clip: thêm version vào `work/pose_lab/index.html` rồi chạy `split_pages.py`
+  (PYTHONIOENCODING=utf8) và mở lại clip (`anim clip <khác>` rồi `anim clip <clip>`). Nhiều tab Studio cùng mở: dùng `--cid`.
