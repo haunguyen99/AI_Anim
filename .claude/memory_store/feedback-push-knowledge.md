@@ -1,11 +1,11 @@
 ---
 name: feedback-push-knowledge
-description: skill /push tự đẩy kiến thức (knowledge, skill, memory_store) lên git, mỗi /push và cuối mỗi việc có bài học mới (user 2026-11-11)
+description: /push luôn gộp với GitHub main trước khi đẩy (tools/knowledge_merge.py, gốc chung từng file) và tự đẩy kiến thức; master và main KHÔNG chung lịch sử (user 2026-11-11)
 metadata:
   type: feedback
 ---
 
-Kiến thức không để nằm lại chỉ trên máy: /push commit file kiến thức đang sửa dở rồi đẩy; cuối việc có ghi bài học thì tự đẩy riêng phần kiến thức bằng `push_source.py --only .claude/skills .claude/memory_store --committed`.
+Trước MỌI lần đẩy chạy `tools/knowledge_merge.py [--apply]`: gộp từng file giữa máy này, origin/main và gốc chung của file (tự tìm theo lịch sử). Kiến thức (skill, memory_store) còn được tự đẩy riêng cuối mỗi việc có bài học (`push_source.py --only … --committed`).
 
-**Why:** user 2026-11-11 yêu cầu thêm nhiệm vụ tự đẩy kiến thức vào skill push, vì kiến thức là phần quý nhất của repo.
-**How to apply:** xem mục "Kiến thức: tự đẩy lên git" trong `.claude/skills/push/SKILL.md`; dry-run có XOÁ/file lạ thì dừng hỏi. Liên quan [[feedback-update-knowledge]], [[reference-github-source]], [[reference-memory-backup]].
+**Why:** user 2026-11-11. `push_source.py` ghi file máy này đè lên main và coi file máy khác vừa thêm là XOÁ: lần đầu thử ghi đè sẽ mất plugin Frolvy loop_seam/hero_textures/rig_pose_tools, bản mới animation-director, anim_kit, memory và 9 skill/memory chưa từng có ở máy này. master và main không chung lịch sử (main = chỉ mã nguồn), nên không merge/pull git được. `work/clips.json` gộp theo mục (id), không theo dòng.
+**How to apply:** xem mục "Gộp với GitHub trước mỗi lần đẩy" trong `.claude/skills/push/SKILL.md`. Dry-run có XOÁ ngoài ý muốn thì dừng hỏi. Pushed 2610052 (2026-11-11). Liên quan [[feedback-update-knowledge]], [[reference-github-source]], [[reference-memory-backup]].
