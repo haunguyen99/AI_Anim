@@ -109,15 +109,9 @@ def clips_merge(o, b, t):
     return s.encode("utf-8"), "gộp theo mục (clips.json)" + (f"; cả hai sửa, giữ máy này: {', '.join(kept)}" if kept else "")
 
 
-def main():
-    global THEIRS, REF_BRANCH
-    args = sys.argv[1:]
-    git("fetch", "origin")
-    if "--ref" in args:
-        THEIRS, REF_BRANCH = args[args.index("--ref") + 1], True
-    scope = args[args.index("--scope") + 1] if "--scope" in args else "all"
-    groups = ["knowledge", "code"] if scope == "all" else [scope]
-    apply = "--apply" in args
+def merge(groups, apply=False):
+    """Gộp (hoặc chỉ xem nếu apply=False) các file thuộc `groups`. Trả (báo cáo [(việc, file)], file cần xem tay).
+    Gọi `git fetch origin` trước khi dùng."""
     rep, manual = [], []
     if REF_BRANCH:
         mb = git("merge-base", "origin/main", THEIRS).stdout.decode().strip()
@@ -174,6 +168,18 @@ def main():
         rep.append((how, f))
         if apply and new != o:
             path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(new)
+    return rep, manual
+
+
+def main():
+    global THEIRS, REF_BRANCH
+    args = sys.argv[1:]
+    git("fetch", "origin")
+    if "--ref" in args:
+        THEIRS, REF_BRANCH = args[args.index("--ref") + 1], True
+    scope = args[args.index("--scope") + 1] if "--scope" in args else "all"
+    apply = "--apply" in args
+    rep, manual = merge(["knowledge", "code"] if scope == "all" else [scope], apply)
     for how, f in rep:
         print(f"{how:50} {f}")
     print(f"Tổng {len(rep)} file cần gộp / xem" + ("" if apply else " (xem trước, chưa ghi; thêm --apply)"))
@@ -182,4 +188,5 @@ def main():
     return 0
 
 
-sys.exit(main())
+if __name__ == "__main__":
+    sys.exit(main())

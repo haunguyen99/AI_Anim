@@ -45,6 +45,14 @@ Nhiều máy cùng đẩy lên `main`, mà `push_source.py` ghi file trên máy 
   - dry-run chỉ có file kiến thức, không XOÁ, không file lạ thì `--yes -m "knowledge: <bài học>"`; ngược lại dừng và hỏi.
 - Báo người dùng một dòng: đã gộp / đẩy gì, commit nào. Không `--force`.
 
+## Nhắc và tự đẩy kiến thức theo lịch (người dùng 2026-11-11)
+
+Hai cơ chế tự động chạy song song với việc Claude tự đẩy cuối mỗi việc có bài học (`tools/knowledge_sync.py`):
+- **Nhắc (hook):** mỗi lần mở phiên / gửi tin, hook kiểm (tối đa 1 lần / 20 phút, `git fetch` 1 lần / giờ). Có kiến thức chưa đẩy, hoặc GitHub có bản kiến thức mới từ máy khác, hoặc lần tự đẩy theo lịch dừng vì cần gộp tay thì hook đưa vào ngữ cảnh một thông điệp "Kiến thức: …". **Việc của Claude:** cuối lượt trả lời đó nhắc người dùng MỘT dòng và hỏi có đẩy luôn không; đồng ý mới làm Bước A + B (Bước A trước, vì máy khác có thể đã đổi cùng file). Không tự đẩy khi người dùng chưa đồng ý ở lượt này; nhắc lại tối đa 1 lần / giờ nên không cần nhắc dồn.
+- **Lịch Windows `AIAnim_KnowledgePush`** (mặc định 18:00 mỗi ngày, máy tắt thì chạy bù khi bật; cài / đổi giờ / gỡ: `powershell -ExecutionPolicy Bypass -File tools\knowledge_sync_install.ps1 [-Time 12:30] [-Remove]`): chạy `knowledge_sync.py autopush` không cần Claude: sao lưu bộ nhớ, commit file kiến thức đang sửa dở, gộp với GitHub (chỉ khi mọi file gộp SẠCH), rồi đẩy riêng các file kiến thức khác GitHub (`--only … --committed`, không xoá gì). Có xung đột / không có gốc chung / file nhị phân thì **dừng**, ghi `needs_merge` để hook nhắc ở phiên sau: khi đó Claude làm Bước A tay (sửa xung đột), rồi đẩy.
+- Xem tình trạng: `.venv\Scripts\python.exe -I tools\knowledge_sync.py check`; nhật ký lần tự đẩy: `work\store\_sys\watch\knowledge_autopush.log`. Chỉ đụng kiến thức (`.claude/skills`, `.claude/memory_store`, `tools/claude_memory.py`); tool / tài liệu / Lab vẫn chờ `/push`.
+- `push_source.py` đẩy `main` thành công thì ghi mốc `last_seen_remote` vào `knowledge_sync.json` (để hook không nhắc oan "GitHub có bản mới" về chính commit của mình).
+
 ## Quy tắc
 
 - Không đẩy `master`, không `git push --force`, không đẩy dữ liệu (`work/*/pages`, `work/store`, models, clips, `.blend` / `.fbx` / video).

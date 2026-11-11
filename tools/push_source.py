@@ -173,6 +173,16 @@ def main():
     if r.returncode:
         sys.exit("Đẩy thất bại (có thể người khác vừa đẩy: chạy lại để lấy bản mới, không dùng --force).")
     print("Đã đẩy commit", commit[:7])
+    if br == "main":   # mốc cho tools/knowledge_sync.py (nhắc khi GitHub có bản mới từ máy khác)
+        try:
+            sf = os.path.join(ROOT, "work", "store", "_sys", "watch", "knowledge_sync.json")
+            import json
+            st = json.load(open(sf, encoding="utf-8")) if os.path.exists(sf) else {}
+            st["last_seen_remote"] = commit
+            os.makedirs(os.path.dirname(sf), exist_ok=True)
+            json.dump(st, open(sf, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
