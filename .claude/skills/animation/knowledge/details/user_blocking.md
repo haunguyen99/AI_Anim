@@ -200,3 +200,11 @@ User hỏi "tận dụng thư viện như mixamo tạo anim theo mong muốn" �
 - Overshoot F22–35: hip lên nhanh (đỉnh ~F25) rồi xuống nhẹ + hold; thân quá đà xoay tiếp theo hướng đà vào đòn (hướng = vận tốc F20→22), mạnh ở F22–25 rồi chỉ còn ~30%, nhân kernel sin lên đỉnh t=3 rồi tắt dần (0.65e^(-(t-3)/2)+0.35e^(-(t-3)/6)); lag thân chỉ nửa lag cũ; hip trans X/Z đi tiếp ~3 cm rồi hồi. Cap: hip 3°, Spine 2.5°, Chest 4°, cổ 3°, vai 2°.
 - BẪY WRAP: get_attr trả góc ±180; move_key(get_attr+offset) ghi lại giá trị đã wrap → key lệch 360° so với key kề → tay xoay một vòng giữa hai key. Với kênh xoay sát ±180 (IKWrist rz) luôn ghi lại +360 cùng vòng với key kề, rồi quét bước nhảy >180 ở mọi kênh xoay.
 - Thêm key liên tiếp: đọc giá trị nền từ F-chính (không đọc curve sau khi đã thêm key kề, curve đã bị tangent kéo đi).
+
+## Cổ tay bị xoắn trong Frolvy: cách dò và sửa (Attack_02 v3, 2026-11-11)
+- `get_attr` trả góc đã TÁCH từ ma trận (bọc ±180), không phải giá trị key thật; gần gimbal (ry ≈ ±90) ra lật 180° cả ba trục. Không có hàm đọc key thô.
+- Dò xoắn: `world_matrix` mỗi frame, góc giữa hai frame liền nhau = acos((trace(R0ᵀR1)−1)/2). Bình thường ≤ 5–30°/frame; 100–180°/frame = xoay một vòng giữa hai key (key khác nhánh 360° hoặc 180° tương đương euler).
+- Sửa: với key lỗi, thử các biểu diễn euler tương đương ((rx,ry,rz)+k·360 và (rx+180,180−ry,rz+180)), giữ cái cho ma trận thế giới không đổi tại key đó (<1°) và GẦN NHẤT giá trị thô của key trước; ghi bằng move_key. Làm lần lượt từng key theo thời gian, rồi đo lại cả đoạn.
+- Không chọn nhánh bằng "tổng góc trong cửa sổ" khi key bên cạnh chưa sửa (ra -411, -448…). Không fit tangent theo snapshot cũ (user đã thêm key khác).
+- Sau khi đổi nhánh key, tangent tự tính có thể vọt (35→36 107°/frame): đặt lại tangent in=out = (giá trị key sau − key trước)/khoảng frame.
+- LUẬT (user 2026-11-11): sau mỗi lượt sửa trong Frolvy, tự đo góc xoay thế giới/frame của mọi control đã đụng tới; thấy xoắn (≥ ~90°/frame) thì tự sửa luôn, không đợi user báo.
