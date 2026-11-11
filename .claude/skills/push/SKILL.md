@@ -1,21 +1,15 @@
 ---
 name: push
-description: Đẩy mã nguồn của dự án lên GitHub (haunguyen99/AI_Anim, nhánh main; chỉnh sửa Spine Live vào nhánh spine-live): skill, tool, quy trình, tài liệu, mã các trang Lab. Dùng khi người dùng gõ /push, nói "push", "đẩy lên GitHub", "cập nhật repo". Không đẩy dữ liệu (model, video, FBX, trang đã build).
+description: Đẩy mã nguồn của dự án lên GitHub (haunguyen99/AI_Anim, nhánh main): skill, tool, quy trình, tài liệu, mã các trang Lab. Dùng khi người dùng gõ /push, nói "push", "đẩy lên GitHub", "cập nhật repo". Không đẩy dữ liệu (model, video, FBX, trang đã build).
 ---
 
 # /push: đẩy mã nguồn lên GitHub
 
 Repo GitHub `main` **chỉ chứa mã nguồn**; nhánh `master` trên máy chứa cả dữ liệu làm việc nên **không bao giờ** đẩy `master`. Việc đẩy do `tools/push_source.py` làm: nó dựng một commit từ cây `origin/main` cộng các file nguồn trong danh sách cho phép (skill `.claude/skills/**`, bộ nhớ Claude `.claude/memory_store/**` (từ 2026-11-04, để tài khoản khác `tools/claude_memory.py restore` được; chạy `claude_memory.py backup` trước khi đẩy), `tools/**`, `docs/**`, `README.md`, `MAP.md`, `requirements.txt`, `.gitignore`, `work/clips.json`, và mã các Lab: `work/pose_lab`, `work/review_page`, `work/rig_lab`, `work/mesh_lab`), dùng chỉ mục tạm nên không đụng nhánh và không commit lẫn file đang làm dở. Trả lời bằng tiếng Việt.
 
-## Spine Live: luôn vào nhánh `spine-live`
+## Chỉ có hai nhánh: `master` (máy) và `main` (GitHub)
 
-Người dùng 2026-10-29: "từ giờ update push thì sẽ đẩy toàn bộ chỉnh sửa của spine_live vào nhánh spine-live". Chỉnh sửa Spine Live **không** đẩy lên `main`:
-- Lệnh: `.venv\Scripts\python.exe -I tools\push_source.py --spine-live --dry-run`, rồi `--spine-live --yes -m "..."`.
-- File Spine Live (danh sách `SPINE_LIVE` đầu `push_source.py`): `tools/spine_live/**`, `tools/home/spine_live.py`, `tools/home/spine_edit.py`, `tools/spine_live_cmd.py`, `tools/spine_live_replay.py`, `.claude/skills/spine2d/**`. Thêm file Spine Live mới thì thêm vào `SPINE_LIVE`.
-- `MAP.md` trên nhánh có dòng của phiên khác: `--spine-live` chỉ thay các dòng Spine Live (`SPINE_LIVE_MAP`), không đè cả file.
-- Nhánh `spine-live` có thể mới hơn máy này (Spine làm ở máy khác, 2026-10-31: `spine_live.py`, `index.html`, `spine_live_cmd.py` trên nhánh mới hơn). Luôn `--dry-run` trước; file nào trên máy cũ hơn nhánh thì đẩy bằng `--only <file của việc này>` (không đưa `MAP.md` vào `--only`: `--spine-live` tự ghép đúng dòng). Sửa file đã có trên nhánh thì lấy bản nhánh làm gốc (`git show origin/spine-live:<file>`) rồi ghép phần mới vào.
-- `tools/home/server.py` dùng chung với các tính năng khác: không đẩy theo Spine Live. Nếu Spine Live cần sửa `server.py`, kiểm `git diff origin/spine-live -- tools/home/server.py` trước, chỉ đưa phần của Spine Live lên (bản trên nhánh có thể có tính năng máy này chưa có).
-- `/push` có cả việc khác lẫn Spine Live: đẩy hai lần: `--spine-live` cho Spine Live, rồi lần thường cho `main`. Lần thường (lên `main`) tự bỏ qua mọi file trong `SPINE_LIVE` (không thêm / sửa / xoá chúng trên `main`).
+Nhánh `spine-live` đã bỏ (người dùng 2026-11-11, đã đưa Spine Live vào `main` rồi xoá nhánh). Spine Live (`tools/spine_live/**`, `tools/home/spine_live.py`, `spine_edit.py`, `spine_bridge.py`, `tools/spine_live_*.py`, `.claude/skills/spine2d/**`) đẩy lên `main` như mọi file khác, không có `--spine-live`. Đừng tạo lại nhánh khác trên GitHub.
 
 ## Khi gõ /push [lời nhắn]
 
@@ -34,7 +28,7 @@ Người dùng 2026-10-29: "từ giờ update push thì sẽ đẩy toàn bộ c
 Nhiều máy cùng đẩy lên `main`, mà `push_source.py` ghi file trên máy ĐÈ lên GitHub và coi file máy khác vừa thêm là "XOÁ". Không gộp trước thì lần đẩy sau xoá mất việc của máy kia (2026-11-11: 30 file kiến thức khác nhau, 8 file `tools/` bị coi là XOÁ: plugin Frolvy `loop_seam`, `hero_textures`, `rig_pose_tools`…). Vì vậy **luôn gộp trước khi đẩy**, cả `/push` thường (tool, tài liệu, mã Lab, `MAP.md`, `clips.json`) lẫn đẩy riêng kiến thức. Kiến thức (`.claude/skills/**`, `.claude/memory_store/**`, `tools/claude_memory.py`) là phần quý nhất của repo, không để nằm lại chỉ trên máy.
 
 ### Bước A: gộp (trước MỌI lần đẩy)
-1. `.venv\Scripts\python.exe -I tools\knowledge_merge.py` xem báo cáo (không ghi gì; `--scope knowledge` hoặc `--scope code` để chỉ một nhóm). Công cụ so từng file giữa máy này, `origin/main` và **gốc chung của file đó** (tự tìm: bản mới nhất trong lịch sử `origin/main` trùng một bản trong lịch sử `master`), nên không cần dấu đồng bộ và không bị lệch khi máy khác đã đẩy từ trước. Phạm vi = đúng các file `/push` đẩy (trừ Spine Live, đi nhánh `spine-live`).
+1. `.venv\Scripts\python.exe -I tools\knowledge_merge.py` xem báo cáo (không ghi gì; `--scope knowledge` hoặc `--scope code` để chỉ một nhóm). Công cụ so từng file giữa máy này, `origin/main` và **gốc chung của file đó** (tự tìm: bản mới nhất trong lịch sử `origin/main` trùng một bản trong lịch sử `master`), nên không cần dấu đồng bộ và không bị lệch khi máy khác đã đẩy từ trước. Phạm vi = đúng các file `/push` đẩy.
 2. Có gì cần gộp thì thêm `--apply`:
    - bản remote = gốc chung → máy này đã có / mới hơn: giữ; bản máy này = gốc chung → lấy remote; cả hai khác gốc → gộp 3 chiều (`MEMORY.md` gộp theo dòng; `work/clips.json` gộp theo MỤC: nhân vật theo tên, clip / dự án theo id, hợp hai bên, mục cả hai sửa thì giữ bản máy này và báo); giữ kiểu xuống dòng của file;
    - file remote có mà máy này chưa từng có → thêm về; file máy này đã xoá (từng có trong `master`) → giữ xoá và báo, `/push` sẽ xoá trên GitHub: hỏi người dùng nếu không chắc;

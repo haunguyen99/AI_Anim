@@ -6,7 +6,8 @@ GỐC CHUNG. Gốc chung của từng file tự tìm, không cần dấu đồng
 mà nội dung trùng một bản nào đó trong lịch sử `master` (hoặc bản đang có trên máy). Phạm vi = đúng danh sách cho phép
 của push_source (trừ file Spine Live, đi nhánh spine-live).
 
-Dùng:  python tools/knowledge_merge.py [--scope knowledge|code|all]   xem báo cáo (không ghi gì)
+Dùng:  python tools/knowledge_merge.py [--scope knowledge|code|all] [--ref NHÁNH]   xem báo cáo (không ghi gì)
+       (--ref origin/<nhánh>: gộp riêng các file một nhánh khác main đã đổi; dùng khi cần cứu nhánh trước khi xoá)
        ... --apply   ghi vào thư mục làm việc (xung đột để dấu <<<<<<< may-nay ... >>>>>>> remote)
   knowledge = .claude/skills, .claude/memory_store, tools/claude_memory.py;  code = mọi file cho phép còn lại.
 Quy tắc cho từng file khác nhau giữa máy này và origin/main:
@@ -24,6 +25,7 @@ import push_source as ps   # danh sách cho phép / loại trừ dùng chung v�
 
 R = pathlib.Path(ps.ROOT)
 THEIRS = "origin/main"
+REF_BRANCH = False   # --ref: nhánh khác main (vd nhánh sắp bỏ), chỉ gộp các file nhánh đó đã đổi từ chỗ tách khỏi main
 ENV = {**os.environ, "MSYS_NO_PATHCONV": "1"}
 norm = lambda b: b.replace(b"\r\n", b"\n")
 H = lambda b: hashlib.sha1(norm(b)).hexdigest()
@@ -44,7 +46,7 @@ def group(f):
 
 
 def in_scope(f):
-    return bool(f) and ps.allowed(f) and not any(f == o or f.startswith(o + "/") for o in ps.SPINE_LIVE)
+    return bool(f) and ps.allowed(f)
 
 
 def history(ref, f):
@@ -108,14 +110,21 @@ def clips_merge(o, b, t):
 
 
 def main():
+    global THEIRS, REF_BRANCH
     args = sys.argv[1:]
-    git("fetch", "origin", "main")
+    git("fetch", "origin")
+    if "--ref" in args:
+        THEIRS, REF_BRANCH = args[args.index("--ref") + 1], True
     scope = args[args.index("--scope") + 1] if "--scope" in args else "all"
     groups = ["knowledge", "code"] if scope == "all" else [scope]
     apply = "--apply" in args
     rep, manual = [], []
-    tree = [n for n in git("ls-tree", "-r", "--name-only", THEIRS).stdout.decode().split("\n")
-            if in_scope(n) and group(n) in groups]
+    if REF_BRANCH:
+        mb = git("merge-base", "origin/main", THEIRS).stdout.decode().strip()
+        names = git("diff", "--name-only", "--diff-filter=AM", mb, THEIRS).stdout.decode().split("\n")
+    else:
+        names = git("ls-tree", "-r", "--name-only", THEIRS).stdout.decode().split("\n")
+    tree = [n for n in names if in_scope(n) and group(n) in groups]
     for f in tree:
         t = show(THEIRS, f)
         path = R / f

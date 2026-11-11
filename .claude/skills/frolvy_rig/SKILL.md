@@ -112,6 +112,7 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 - **Sau `open_scene` (vd cuối `export_clip`) undo trống và `new_scene()`/`open_scene()` trả False nếu scene bị coi là có thay đổi**; lệnh `import_file` ngay sau đó sẽ nhập CHỒNG vào scene rig. Luôn `assert api.new_scene()`; muốn bỏ thay đổi thì `save_scene(<temp>\junk.fv)` rồi `open_scene(file sạch)`.
 - Tay "găng" (chỉ ngón giữa + ngón cái, Windy): fit Middle1–3 + Thumb1–3, Rig Builder dựng được; `fix_thumb_curl` đã sửa để lấy đốt cuối có thật (ThumbFinger3).
 - Tự render mesh đã biến dạng khi viewport Frolvy quá nhỏ: `api.mesh_data(mesh, True)` → JSON trong temp → `work/endless_kicker/rig/render_posed.py`.
+- **Xoá key hàng loạt, đưa bộ phận về pose mặc định** (khăn Ninja 2026-11-11, người dùng bảo xoá, 636 key / 8 control, Frolvy 0.9.54): không có lệnh xoá cả đường cong, `delete_key(path, frame)` xoá MỘT key mỗi lệnh (frame lấy từ `list_keys(path)`, đều là số nguyên) và mỗi `execute_code` giới hạn ~320 lệnh API → chia lần chạy ~270 lệnh (3 lần = 3 bước undo), script chạy lại được (liệt key lại mỗi lần). Sau đó `set_attr(kênh, 0.0)` từng kênh tx/ty/tz/rx/ry/rz của control (scale bị khoá, `attr_info` trả None cho kênh transform, `list_attrs` chỉ có attr tuỳ biến) → kiểm lại 0 key, giá trị 0 (lệch ~1e-8° ở rx). Không dùng `go_to_bind_pose` (đưa CẢ rig về 0) hay `snapshot_curves` làm bản lưu (ghi đè snapshot Graph Editor của người dùng). Bản lưu thật là file .fv trên đĩa: không `save_scene` khi chưa được bảo.
 
 ## Unity Generic: rig Frolvy lái skeleton của team
 

@@ -38,8 +38,8 @@ Repo **chỉ có mã nguồn**: skill, tool, tài liệu quy trình và mã củ
 ## Nhánh git
 
 - **`master`**: nhánh làm việc của từng máy, chứa cả dữ liệu (model, video, kho key). Chỉ nằm trên máy, **không bao giờ đẩy lên GitHub**. Được tạo tự động từ `main` (`tools/ensure_master.py`, chạy trong `setup.ps1` và `start.bat`; máy đã có `master` thì bỏ qua).
-- **`main`** (GitHub): chỉ mã nguồn. Lấy mã mới của team về `master`: `git pull origin main`. Đẩy mã nguồn: `/push` (dựng commit từ `origin/main`, đứng nhánh nào cũng được, không kéo dữ liệu theo).
-- **`spine-live`** (GitHub): chỉnh sửa Spine Live, đẩy bằng `/push` (`--spine-live`).
+- **`main`** (GitHub): chỉ mã nguồn. Lấy mã mới của team về `master`: `tools/knowledge_merge.py --apply` (gộp từng file; `git pull` không dùng được vì `master` và `main` không chung lịch sử). Đẩy mã nguồn: `/push` (dựng commit từ `origin/main`, đứng nhánh nào cũng được, không kéo dữ liệu theo).
+- Chỉ có hai nhánh này. Nhánh `spine-live` đã bỏ (2026-11-11): Spine Live đi chung `main`.
 
 ## Bắt đầu dùng
 

@@ -4,13 +4,11 @@ Cách làm (không đụng nhánh đang làm, không đổi index thật, không
   1. fetch origin; dựng cây mới = cây origin/main + các file nguồn trong danh sách cho phép (đọc từ thư mục làm việc) - các file nguồn đã bị xoá ở máy
      thì bị xoá khỏi cây;
   2. commit lên origin/main (fast-forward) bằng chỉ mục tạm `.git/index_push`, gán nhánh cục bộ `source`, `git push origin source:main`.
-Dùng: python tools/push_source.py [--dry-run] [-m "lời nhắn"] [--yes] [--only PATH…] [--committed] [--branch TÊN] [--spine-live]
+Dùng: python tools/push_source.py [--dry-run] [-m "lời nhắn"] [--yes] [--only PATH…] [--committed] [--branch TÊN]
   --dry-run   chỉ liệt kê thay đổi sẽ đẩy
   --yes       đẩy luôn (bắt buộc để đẩy thật; thiếu thì chỉ liệt kê)
   --only      chỉ đẩy các file / thư mục này (vd đẩy một việc khi phiên khác đang sửa dở file khác); không xoá gì
-  --branch    đẩy lên nhánh GitHub khác main (vd spine-live), cây dựng trên nhánh đó (chưa có thì trên main); vẫn chỉ fast-forward
-  --spine-live đẩy chỉnh sửa Spine Live vào nhánh spine-live: chỉ file Spine Live (SPINE_LIVE), MAP.md chỉ thay dòng Spine Live;
-              lần đẩy thường lên main tự bỏ qua các file này
+  --branch    đẩy lên nhánh GitHub khác main, cây dựng trên nhánh đó (chưa có thì trên main); vẫn chỉ fast-forward (từ 2026-11-11 chỉ dùng main)
   --committed lấy nội dung đã commit (HEAD) thay vì thư mục làm việc: bỏ qua thay đổi chưa commit; không xoá gì
 Giữ nguyên bản trên GitHub của `.claude/launch.json` và `.mcp.json` (bản trên máy có cấu hình riêng).
 """
@@ -40,31 +38,8 @@ ALLOW = [
 DENY = ["**/.env", "**/__pycache__/**", "**/*.pyc", "**/.venv/**", "tools/spine_mcp/.venv/**", "**/node_modules/**", "work/*/pages/**",
         "work/store/**", "work/pose_lab/models/**", "work/review_page/clips/**"]
 KEEP_REMOTE = {".claude/launch.json", ".mcp.json"}
-# --spine-live (người dùng 2026-10-29: mọi chỉnh sửa Spine Live đẩy vào nhánh spine-live): các file của Spine Live,
-# còn MAP.md chỉ thay các dòng Spine Live (giữ dòng của phiên khác trên nhánh)
-SPINE_LIVE = ["tools/spine_live", "tools/home/spine_live.py", "tools/home/spine_edit.py", "tools/spine_live_cmd.py",
-              "tools/spine_live_replay.py", "tools/spine/new_spine_anim.py", ".claude/skills/spine2d"]
-SPINE_LIVE_MAP = ["| `tools/spine_live/` + `tools/home/spine_live.py` |", "| `tools/spine_live_cmd.py` |", "| `tools/spine_live_replay.py` |", "| `tools/spine/new_spine_anim.py` |"]
-
-
-def merged_map(remote_blob):
-    """MAP.md của nhánh, thay các dòng Spine Live bằng bản trên máy. Trả về bytes hoặc None nếu không đổi."""
-    rb = subprocess.run(["git", "cat-file", "-p", remote_blob], cwd=ROOT, capture_output=True).stdout
-    CRLF, LF = bytes([13, 10]), bytes([10])
-    nl = CRLF if CRLF in rb else LF
-    R = rb.split(nl)
-    L = open(os.path.join(ROOT, "MAP.md"), "rb").read().replace(CRLF, LF).split(LF)
-    hit = False
-    for pre in SPINE_LIVE_MAP:
-        pb = pre.encode("utf8")
-        li = [l for l in L if l.startswith(pb)]
-        ri = [i for i, l in enumerate(R) if l.startswith(pb)]
-        if len(li) == 1 and len(ri) == 1 and R[ri[0]] != li[0]:
-            R[ri[0]] = li[0]; hit = True
-        elif len(li) == 1 and not ri:   # dòng mới: chèn sau dòng Spine Live
-            at = next((i for i, l in enumerate(R) if l.startswith(SPINE_LIVE_MAP[0].encode("utf8"))), None)
-            if at is not None: R.insert(at + 1, li[0]); hit = True
-    return nl.join(R) if hit else None
+# Nhánh spine-live đã bỏ (người dùng 2026-11-11): Spine Live đi chung main như mọi file khác.
+SPINE_LIVE = []
 MAX_BYTES = 5 * 1024 * 1024
 
 
@@ -131,15 +106,9 @@ def main():
     ap.add_argument("--only", nargs="+", default=None)
     ap.add_argument("--committed", action="store_true")
     ap.add_argument("--branch", default="main", help="nhánh GitHub đích (mặc định main); nhánh chưa có thì dựng từ cây main")
-    ap.add_argument("--spine-live", action="store_true", help="đẩy chỉnh sửa Spine Live vào nhánh spine-live (MAP.md chỉ thay dòng Spine Live)")
     a = ap.parse_args()
-    if a.spine_live:
-        a.branch = "spine-live"; a.only = a.only or SPINE_LIVE
     only = [o.replace("\\", "/").rstrip("/") for o in a.only] if a.only else None
-    sl = lambda p: any(p == o or p.startswith(o + "/") for o in SPINE_LIVE)
-    # lên main (không --spine-live): bỏ qua file Spine Live, chúng chỉ vào nhánh spine-live (người dùng 2026-10-29)
-    skip_sl = (a.branch.strip() or "main") == "main" and not a.spine_live
-    inside = lambda p: (only is None or any(p == o or p.startswith(o + "/") for o in only)) and not (skip_sl and sl(p))
+    inside = lambda p: (only is None or any(p == o or p.startswith(o + "/") for o in only))
     head = {}
     if a.committed:   # blob đã commit của từng file nguồn
         for ln in git("ls-tree", "-r", "HEAD").splitlines():
@@ -168,13 +137,7 @@ def main():
         if p not in remote: add.append(p)
         elif remote[p] != h: mod.append(p)
     for p in sorted(remote):
-        if allowed(p) and p not in local and only is None and not a.committed and not (skip_sl and sl(p)): rem.append(p)
-    if a.spine_live and "MAP.md" in remote:   # MAP.md: chỉ các dòng Spine Live
-        mm = merged_map(remote["MAP.md"])
-        if mm is not None:
-            cmd = ["git", "hash-object", "--no-filters", "--stdin"] + (["-w"] if a.yes and not a.dry_run else [])
-            new_hash["MAP.md"] = subprocess.run(cmd, cwd=ROOT, input=mm, capture_output=True).stdout.decode().strip()
-            mod.append("MAP.md")
+        if allowed(p) and p not in local and only is None and not a.committed: rem.append(p)
     for p in big: print("BỎ QUA (quá 5 MB):", p)
     dirty = [] if a.committed else [ln[3:] for ln in git("status", "--short").splitlines() if ln[3:] in set(add + mod)]
     if not (add or mod or rem):
