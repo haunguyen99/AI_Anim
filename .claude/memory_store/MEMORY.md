@@ -93,3 +93,4 @@
 - [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
 - [Paseo](reference-paseo.md) — Paseo agent app: provider llmpro → LAN proxy, command = array path to ~/.local/bin/claude.exe, restart after provider changes
 - [Frolvy layer Euler coupling](frolvy-additive-layer-euler-coupling.md) — additive layer on shoulder isn't per-channel: key whole span, re-key loop, verify muted vs on
+- [Work fast](feedback-work-fast.md) — user 2026-11-11: fewer calls (one look + one do/verify), one-step Frolvy commands `frolvy_port.py scene|keys|clear|reset`, start with `scene` (user may restart Frolvy between turns)
