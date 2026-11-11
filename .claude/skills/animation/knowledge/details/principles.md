@@ -138,6 +138,6 @@ Squash/stretch tư thế; "vải ít động" = Secondary + Exaggeration), rồi
 | Đạo cụ nặng (chùy) | Follow through, Arcs | Đòn bẩy tì vai, đầu nặng trễ | Đỉnh trễ vai 5F, biên độ 7.7 cm |
 | Giáp/khiên cứng | Solid posing | Theo xoắn cánh tay trên, không biến dạng | Khiên tay phải |
 | Vải / vạt / áo choàng | Secondary, Follow through, Exaggeration | Con lắc giảm chấn + gió, trục ở điểm đính | Vạt khố 26°/25°, chu kỳ 20/24F |
-| Tóc / đuôi / dây | Secondary, Overlap | (chưa làm) chuỗi con lắc, mỗi đốt trễ thêm | - |
+| Tóc / đuôi / dây / khăn mỏng | Secondary, Overlap, Drag | Hướng THẾ GIỚI mỗi đốt đuổi theo hướng "cứng" (cha thật × local đích) qua 2 tầng lọc slerp, τ tăng ra đuôi (0,7 / 1,2 / 1,5 / 1,8 F); local = cha⁻¹ × hướng thật. Đừng cộng trễ vào góc local: khăn gắn ngực vẫn quay cứng theo ngực (đầu khăn nhanh nhất cùng frame tay ném) | Khăn Ninja Attack polish_v15 (`polish_v15.py`): đầu khăn đỉnh 79 → 28 cm/F, trễ tay 1–2 F, về Idle ≤ 12 cm/F |
 | Ngón tay | Secondary | Theo cổ tay +1F | Ngón tay phải |
 | Mắt / mặt | Appeal, Anticipation | (chưa có rig mặt) | - |

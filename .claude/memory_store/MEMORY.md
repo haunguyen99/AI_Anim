@@ -80,3 +80,5 @@
 - [Keep existing keys](keep-existing-keys-when-editing.md) — Frolvy edits: never change the existing keys (f0/f8/f12…), add motion only on new inbetween frames
 - [Head aim keep roll](frolvy-head-aim-keep-roll.md) — Frolvy head-look: solve rx+ry+rz keeping base pitch/roll, never ry alone (gãy cổ); layer on/off check at key frames
 - [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
+- [Paseo](reference-paseo.md) — Paseo agent app: provider llmpro → LAN proxy, command = array path to ~/.local/bin/claude.exe, restart after provider changes
+- [Frolvy layer Euler coupling](frolvy-additive-layer-euler-coupling.md) — additive layer on shoulder isn't per-channel: key whole span, re-key loop, verify muted vs on
