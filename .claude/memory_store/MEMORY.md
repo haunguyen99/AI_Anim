@@ -94,3 +94,7 @@
 - [Paseo](reference-paseo.md) — Paseo agent app: provider llmpro → LAN proxy, command = array path to ~/.local/bin/claude.exe, restart after provider changes
 - [Frolvy layer Euler coupling](frolvy-additive-layer-euler-coupling.md) — additive layer on shoulder isn't per-channel: key whole span, re-key loop, verify muted vs on
 - [Work fast](feedback-work-fast.md) — user 2026-11-11: fewer calls (one look + one do/verify), one-step Frolvy commands `frolvy_port.py scene|keys|clear|reset`, start with `scene` (user may restart Frolvy between turns)
+- [Pets bay lơ lửng](project-pets-float.md) — Infinite Defense pets hover, không tiếp xúc đất (2026-11-11); Mecha Pup anim làm mẫu
+- [FBX Base vs anim](feedback-fbx-base-vs-anim.md) — xuất FBX: Base = xương + mesh, file anim = chỉ xương + clip, không mesh (user 2026-11-12)
+- [Pets → Unity folder](reference-pets-unity-folder.md) — đích FBX Pet: endless-kicker/Assets/_Game/Animation/New_Pet/Pet_<Tên>/; làm việc ở Ngoc/EndlessKicker/New_PET
+- [Pet FBX → Unity fixes](reference-pet-fbx-unity-fixes.md) — Frolvy FBX vỡ skin / lỗi Copy Avatar: fbx_unity_bind, fbx_add_sibling, fbx_strip_anim + kiểm bằng Unity batchmode (2026-11-12)
