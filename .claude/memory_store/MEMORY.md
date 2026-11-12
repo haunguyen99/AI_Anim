@@ -100,3 +100,8 @@
 - [Pet FBX → Unity fixes](reference-pet-fbx-unity-fixes.md) — Frolvy FBX vỡ skin / lỗi Copy Avatar: fbx_unity_bind, fbx_add_sibling, fbx_strip_anim + kiểm bằng Unity batchmode (2026-11-12)
 - [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
 - [Tự sửa xoắn](feedback-self-fix-twist.md) — sửa anim gây xoắn bộ phận thì tự dò (góc xoay thế giới/frame) và sửa luôn, không đợi user báo
+- [Spine feedback scope](spine-feedback-scope.md) — góp ý anim chỉ sửa anim đang mở trên Spine Live; rig / weight sửa toàn bộ anim
+- [Trial files](trial-files.md) — file thử rig / anim: trial.py new/done, ghi kết quả vào trials.md, xoá ngay khi có kết quả
+- [Spine Live in Claude only](spine-live-in-claude-only.md) — mở Spine Live chỉ trong khung trình duyệt của Claude, không ra Chrome
+- [Spine Live in Paseo](spine-live-in-paseo.md) — chạy trong Paseo: mở Spine Live bằng browser_* của Paseo, đẩy sửa thẳng lên trang, không đưa link
+- [Rig in Studio](rig-in-studio-not-maya.md) — rig theo rig mẫu .ma của team: làm trong Studio Rig (ref_skeleton tên mẫu + cfg.extra), không dựng trong Maya

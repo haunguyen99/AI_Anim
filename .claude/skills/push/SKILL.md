@@ -1,6 +1,6 @@
 ---
 name: push
-description: Đẩy mã nguồn của dự án lên GitHub (haunguyen99/AI_Anim, nhánh main): skill, tool, quy trình, tài liệu, mã các trang Lab. Dùng khi người dùng gõ /push, nói "push", "đẩy lên GitHub", "cập nhật repo". Không đẩy dữ liệu (model, video, FBX, trang đã build).
+description: "Đẩy mã nguồn của dự án lên GitHub (haunguyen99/AI_Anim, nhánh main): skill, tool, quy trình, tài liệu, mã các trang Lab. Dùng khi người dùng gõ /push, nói \"push\", \"đẩy lên GitHub\", \"cập nhật repo\". Không đẩy dữ liệu (model, video, FBX, trang đã build)."
 ---
 
 # /push: đẩy mã nguồn lên GitHub

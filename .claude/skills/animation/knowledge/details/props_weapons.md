@@ -115,3 +115,12 @@ Trượng dài cầm giữa cán (Windy, Endless-kicker, phân tích 2026-11-04,
 - **Quay người cầm trượng ngang**: đặt trượng tiếp tuyến (vuông góc tay), không hướng tâm (đuôi xuyên người).
 - **Prop rời tay (joint con của root)**: key theo người khi bay; trước frame nắm lại phải "hút về" trong tầm tay (vai → điểm cầm ≤ tầm với − 5 cm).
 - Luôn tính tầm với vai → điểm cầm cho mọi key trong bản phân tích, trước khi gửi.
+
+## Rìu / vũ khí cầm tay khi đặt pose bằng script (Hero_Axe Walk_Atk, 2026-11-10, user trả v2: "2 tay rìu bị ngược, ném xuống cũng ngược, xoắn lỗi mesh", "cẳng và cổ tay đều bị xoáy quá đà")
+- Đo trục vũ khí từ HÌNH (đầu rìu = phía rộng dọc cán, lưỡi lớn = phía có bề rộng dọc cán lớn nhất), ở **tư thế bind trong toạ độ thế giới**, cho TỪNG tay. Rig AdvancedSkeleton lật trục khớp bên trái: trục trong khung khớp của tay trái khác tay phải; trục bind-thế-giới thì đối xứng (Axe: đầu +Z cả hai, lưỡi R −X / L +X, đều quay ra ngoài). Dùng với phép xoay F·bind⁻¹, không trộn khung khớp.
+- Không xoay cổ tay để "đúng hướng lưỡi": cầm vũ khí giữ như pose gốc (cán ⟂ cẳng tay, lưỡi theo cẳng tay). Khuỷu chỉ gập quanh bản lề cố định trong cẳng tay; cẳng tay + cổ tay KHÔNG vặn; động tác bổ/chém ở cổ tay = nghiêng về phía ngón út (trục ⟂ cẳng tay và cán), gập/ngửa nhỏ ±30°. Phần xoay cần thêm lấy ở vai (xoay ngoài ~90–110° khi giơ qua đầu là bình thường).
+- Lưỡi đi trước theo chiều vung: lưỡi ≈ trục quay × hướng cán (lấy đà sau đầu: lưỡi hướng lên; lúc bổ: lưỡi hướng xuống).
+- Kiểm trước khi gửi: độ xoắn từng khớp so với pose gốc (`twist_check.py`: khuỷu 0°, cổ tay ≤ ~20°), khoảng hở vũ khí với đầu/thân/chân bỏ tay đang cầm (`clearance.py`, đuôi cán dài cũng phải tính), ảnh cận cánh tay. Hai tay phải ra lời giải đối xứng; lệch là dấu hiệu sai trục.
+- Bản lề "bắp tay × cẳng tay" không ổn định khi tay gần thẳng (lúc bổ): dùng bản lề cố định trong khung cẳng tay.
+- Góp ý user cùng clip (spline, 2026-11-10): đỉnh giơ vũ khí qua đầu = tay giơ cạnh đầu, nắm tay ở trên-sau đầu (KHÔNG vòng sâu ra sau gáy, KHÔNG dang rộng ra hai bên), cổ tay giữ thẳng như walk (không bẻ về phía đầu), hai tay đối xứng; cổ tay xoay đều cùng lúc tay đưa lên (không có pose cổ tay riêng ở key giữa). Hai tay bổ cùng lúc (không trễ tay trái ở đoạn bổ); trễ cổ tay tăng/giảm nhanh gây giật tốc độ. Cổ tay thẳng ⇒ hướng cán do cách xoay cánh tay quyết định: chọn độ xoay vai nhỏ nhất so với pose gốc rồi nhận hướng cán, đừng ép.
+- Khi user chụp ảnh khung nghiêng: xác định camera ở bên nào trước khi gọi "tay phải/trái" (vật ló ra sau đầu thường là tay phía xa).

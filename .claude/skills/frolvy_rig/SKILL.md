@@ -157,6 +157,8 @@ Sửa anim đã có (góp ý, clip đã xuất) thì không key lên Base: mỗi
 - **"1 chuỗi" = một chuỗi tổng, không phải mỗi bên một** (chibi áo choàng 2026-11-05, user: "đã bảo là 1 thôi sao vẫn để 2"): joint side "right" bị Rig Builder nhân sang L. Áo choàng/đuôi một chuỗi: đặt ở x = 0, `set_joint_label(n,"centre","prop")` → ra `DEF_Cape*_M`, không nhân đôi.
 - **Dời control FK mà joint đi hướng khác** (chibi 2026-11-05, user: "control đi 1 đằng vũ khí đi 1 đằng"): `add_translate_wires` nối thẳng tN→tN nhưng nhóm offset của control và cha của DEF khác trục (31/41 control). `after_rebuild` giờ gọi `fix_translate_wires` (rest + A·t, A đo ở FK rest). Kiểm: dời control 5 cm theo từng trục ở FK, `inv(ctl)·DEF` không đổi. Control đạo cụ đặt ngoài phần mesh phình (vòng gậy từng lọt trong đầu gậy).
 - **Key sau `set_transform` mất xoay** (Windy idle F0 2026-11-05): `set_transform(c, t, r, s)` trên rig tham chiếu (namespace) rồi `set_key()` → kênh rx/ry/rz bị key = 0 (translate giữ). Đặt xoay bằng `set_attr(c+".rx", …)` từng kênh trước khi key, rồi `set_frame` qua lại và đọc lại để chắc.
+- **Lần gộp kiến thức 2026-11-12 (`11705e3`) đã thay `frolvy_rig_tools.py` bằng bản cũ** (mất `match_switches`, `fix_translate_wires`); khôi phục từ `651edba`. Thiếu hàm nào trong `R` thì so với lịch sử git trước khi viết lại.
+- Chuỗi không muốn Build nhân sang bên kia (vải hai bên khác nhau): đặt side `centre` cho từng chuỗi, tên riêng mỗi bên (Hero Axe `FurR*`, `FurL*`).
 - Đường dẫn script trong máy này: `C:\Users\Admin\Documents\AI_animation\.claude\skills\frolvy_rig\scripts` (không phải ổ D).
 
 ## Báo kết quả
