@@ -76,6 +76,30 @@ Chưa thử (làm lần đầu thì kiểm trước): layer **override** (chỉ 
 khi đổi timing có dời key trên mọi layer không, thuộc tính tuỳ biến (switch, curl) trên layer (`list_keys` của chúng trả []).
 Studio chưa có anim layer: luật này áp dụng cho Frolvy trước.
 
+## Chép anim giữa hai cửa sổ Frolvy (Hero_Blade Attack_02 v1 → v2, 2026-11-11)
+
+Hai cửa sổ Frolvy là hai tiến trình riêng: `copy_keys` ở cửa sổ này, `paste_keys` ở cửa sổ kia trả False; `create_connection` file kia chỉ mang
+node ngoài rig (rig lồng trong reference không theo, anim cũng không). Cách chép đã chạy được (72 control, ~8100 key, giống từng frame):
+1. Cửa sổ nguồn: ghi giá trị tại frame key (`get_attr`, tạm thư mục temp) ra JSON. Cửa sổ đích (`use_instance(port)`): dựng lại theo frame tăng dần
+   bằng `select` + `set_key` rồi `move_key` về đúng giá trị + `set_key_interp('spline')`; kênh không có key tại frame đó thì `delete_key`.
+2. `get_attr` luôn trả góc xoay trong ±180, nên chép xong phải `euler_filter` cả 72 control (không thì cổ tay quay đường dài ở F29–F31).
+3. Key dựng từ frame nhỏ lên bị tính auto tangent thiếu key phía sau: **chạm lại mọi key** (`move_key` cùng giá trị, góc xoay dùng chuỗi đã unroll,
+   hai lượt) cho kênh còn lệch. Chạm lại là cách duy nhất đưa key về auto sạch (`set_key_interp` không xóa tangent tay).
+4. Kiểm: so mọi kênh transform + thuộc tính tại mọi frame, và vị trí thế giới các joint DEF (ngưỡng 1 mm). Đầu kiếm lộ lệch xoay cổ tay sớm nhất.
+Kết quả: chỉ lệch ở 7 frame giữa key của cổ tay (F5 trái; F20, F24, F34–F40 phải), đầu kiếm tới 14 cm. Nguyên nhân: v1 có vài key tangent không
+phải auto thật (chạm lại key ở v1 thì F5 khớp v2; đã hoàn tác), bản chép ra auto sạch hơn bản gốc. Muốn khớp y hệt thì ép tangent tay (`set_key_tangent`).
+Lưu ý khác: `frame_range()` là playback range, người dùng đổi trong lúc làm, đừng ghi đè; file mới từ người dùng chưa có tex: `hero_textures.apply(api, force=True)`.
+
+## Thêm in-between / breakdown vào giữa key chính trên Frolvy (Hero_Blade Attack_02 F0-18, 2026-11-11)
+
+Lệnh một bước: `tools/frolvy_inbetween.py` (`exec(...); run(api)` trong execute_code; `run(api, dry=True)` chỉ đếm). Nguyên tắc đã dùng:
+- Không đổi key chính, không đụng key từ F19; chỉ thêm key ở frame giữa (F3 5 7 8 và F10-17), giá trị = đường cong hiện có + lệch nhỏ.
+- **Key hip (Root_M) trước** (người dùng 2026-11-11): mọi frame giữa đều có key hip trước, rồi spine chain, khuỷu, cổ tay. Hip dẫn trước 0.3 frame ở F3 5 7 8; frame giữa còn lại key đúng giá trị đường cong. Lần đầu tôi bỏ sót hip, người dùng nhắc.
+- Tay lệch nhịp: cổ tay kéo trễ (trái 0.35, phải 0.2 frame), pole khuỷu dẫn trước 0.3 frame (gốc dẫn, ngọn kéo). Chỉ dịch thời gian nên cung đường giữ nguyên.
+- Overlap thân: Spine1 → Chest → Neck kéo trễ dần so với hip (0.25 / 0.35 / 0.45 frame) ở F3 5 7 8; đoạn giữ F9-18 từng chết cứng nên thêm follow-through rx sau điểm dừng F9. Đừng dựa lag vào xoay Root ở đoạn giữ: người dùng tự sửa key Root (F4, F6, F18) và bỏ đoạn Root ry nhô, lag đó thành vô nghĩa.
+- Sau khi thêm key phải chạm lại key <=18 của kênh đã sửa (auto tangent), KHÔNG chạm key sau đó (giữ tangent người dùng). Không `euler_filter` sau khi thêm key: lật rz cổ tay 180 độ ở F19/F21.
+- Người dùng có thể mở lại / lưu file giữa hai lượt: chụp lại base từ scene hiện tại, đừng dùng dump cũ. Key chưa lưu mất khi Frolvy khởi động lại.
+
 ## Các bước sau khi có blocking (từ 2026-10-23)
 
 Từ 2026-10-31 các bước này làm trong Studio. Tên lệnh Pose Lab dưới đây là của clip mẫu.
@@ -136,3 +160,51 @@ User hỏi "tận dụng thư viện như mixamo tạo anim theo mong muốn" �
 - Tải Mixamo (2026-11-10, user: "Ai tự tải anim từ trên mixamo về"): khung trình duyệt của app không giữ đăng nhập Adobe → dùng Chrome của user (Claude in Chrome) đã đăng nhập; tìm bằng API trong trang (`/api/v1/products?type=Motion&query=…`, header Bearer token trong localStorage + `X-Api-Key: mixamo2`), xuất `/api/v1/animations/export` (fbx7_2019, skin false, fps 30) → chờ `/characters/<id>/monitor` → bấm link cho Chrome tải về Downloads (link có chữ ký không in ra được). Bản "Without Skin" KHÔNG có BindPose: retarget lấy T-pose từ giá trị tĩnh của xương (đã kiểm = BindPose 0°). Chrome có thể để file `.tmp` chờ "Giữ lại": file vẫn đủ (đuôi FBX đúng), chép vào `src/`.
 - Chọn clip: tên Mixamo "With Axe" là thế CHIẾN ĐẤU (chân trước sau, thân chéo ~30°, tay ra trước) → không dùng dáng của thư viện cho idle game; dùng `restyle.py`: dáng = Idle1 F1 của team, chuyển động thư viện × hệ số RIÊNG TỪNG XƯƠNG theo biên độ clip team (`--k perbone`; một hệ số chung theo ngực ra ~1/5 Idle1 → Director bắt lỗi A "đứng chết"; Logger Idle cần thêm `--mul Spine2_M=0.5,Chest_M=0.6,Shoulder_R=1.6,Elbow_R=1.5,Scapula_R=1.2` để eo/ngực = Idle1 2,9°/5°, cổ tay P 18 cm; tốc độ thân TB ≥ 70% Idle1), hông theo team (Idle1 nhún 0 cm → 0), khoá chân, nối loop, video `compare_video.py`. RÌU: xương `accessory` dùng chung cho mọi prop (bút, bình xịt, can xăng, rìu AXE1 ~123 cm) → cách cầm của Idle1 là cách cầm BÚT, gắn rìu theo đó thì cán chĩa ngang ra sau (sai). Game: `LoggerController.cs` chỉ bật rìu trên tay khi đang chặt, idle bật `Axe_Back` (rìu sau lưng) → Logger Idle tay không; luôn đọc code game xem prop nào hiện ở state đó trước khi đặt tay cầm prop. Chữ tiếng Việt trên video: font `C:/Windows/Fonts/arial.ttf` (font mặc định PIL vỡ dấu).
 - Thư viện chỉ là bản nền: tiếp theo đi như team đưa FBX blocking (khớp file → sửa theo GDD/gu game trên layer → polish). Kiểm giấy phép thư viện trước khi đưa vào game (Mixamo: dùng trong game được, không phát tán file gốc).
+
+## Giãn nhịp (retime) key chính trên Frolvy (Hero_Blade Attack_02, +6 frame, 2026-11-11)
+- `retime_keys` chỉ co giãn đều quanh pivot, KHÔNG dịch được (scale 1 = không làm gì) và làm tròn frame → không dùng để dời key.
+- Cách dời: `copy_keys(tất cả node, a, b)` + `paste_keys(frame đích, 'replace', node)` rồi `delete_key` frame cũ trên mọi kênh. Làm từ cuối về đầu (dời đuôi +6 trước, rồi key chính từ lớn xuống nhỏ). Giữ nguyên giá trị raw (không lệch xoay), kiểm 13.8k giá trị = 0 lệch.
+- Trước khi giãn: xóa in-between đã thêm (script sinh lại sau). Key chính sau giãn: 0 2 4 7 10 15 24, từ F19 dời +6.
+- `tools/frolvy_inbetween.py`: `set_timing(main, stop, extra)` đặt nhịp mới rồi `run(api)`; MOVE/IB tự suy ra.
+- `api.ls('*')` trả rỗng; lấy tên node từ danh sách đã lưu. `list_attrs` không gồm tx..rz (phải liệt kê kênh riêng).
+- Dời key chính cũng làm key cuối (24) tính lại tangent với hàng xóm mới → đường cong đoạn sau có thể khác nhẹ bản trước (Root ry F25–29).
+
+## Thân trên không đứng ở đoạn giữ trước lấy đà (Hero_Blade Attack_02 F9-18, 2026-11-11)
+- Đoạn giữ F9→F18 mà thân trên phẳng thì nhìn "đứng": key lại F10-17 mỗi frame. Hip (Root) đi ease-in (t²) từ key F9 đến F18 → chậm đầu, nhanh dần vào pose lấy đà. Spine1 → Chest → Neck → Scapula có bump xoay nhẹ (ry/rz ~1-2°, sin(π·u^1.5)) trễ dần 1/2/3 frame, về 0 đúng ở key F18 (không đổi key chính).
+- Thêm key ở F17 làm auto tangent của key F18 tính lại → đoạn F19+ lệch (tới 2.5°). Đo F19-31 trước/sau; trả lại bằng `set_key_tangent(p, 18, 0, s, broken=True)`: s=0 nếu đường cũ phẳng, còn lại tìm s tuyến tính (đo ở s=0 và s=10, giải). Đơn vị slope rất nhỏ/frame (slope 1 ≈ +0.02° ở F19).
+- Shoulder CTL toàn 0 (không có chuyển động) → "vai" dùng Scapula_R/L (rz).
+
+## Kéo dài anticipation bằng hold (Hero_Blade Attack_02, +6 frame, 2026-11-11)
+- Không đụng F0-18: dời toàn bộ key từ F19 trở đi +6 (copy_keys 19..60 → paste_keys 25 'replace', xóa key cũ còn sót), rồi copy key F18 → paste F24 (key hold).
+- Hold chính xác: `set_key_interp(path, 18, 'stepped')` cho mọi kênh có key F18 (tay, pole, chân giữ nguyên, không đổi tangent vào F18). Riêng hip → Spine1 → Chest → Neck → Scapula không stepped mà thêm key "thở" nhẹ (hip F20, Spine1 F21, Chest F22, Neck/Scapula F23; ~0.5-0.8°, hip ty -5 mm) rồi về đúng pose F24.
+- Sau khi dời, auto tangent ở key F24 và F18 bị tính lại → đoạn vung sau bị lệch ~1-2°. Đo F25-30 trước/sau, trả lại bằng `set_key_tangent(p, 24, 0, s, True)` với s tìm tuyến tính (đo tại s=0 và s=10). Cũng làm cho vào-tangent F18 (đo theo F17) nếu F17 lệch.
+- `frame_range` phải nới tới key cuối mới.
+
+## Hip nhún trong đoạn giữ, thân hết cứng (Attack_02 F8-24, 2026-11-11)
+- Thân "cứng" ở F8-14 vì hip đi ngang/phẳng, spine chain không có gì để kéo theo. Cho hip (Root ty) xuống từ F8 (đáy ~F14, -3 cm so với F8) rồi lên nhẹ tới F24; key hip trước.
+- Spine1/Chest/Neck rx = giá trị cũ + G·(−Δhip trễ k frame): Spine1 G 40 trễ 1, Chest G 75 trễ 2, Neck G −35 trễ 3, nhân hệ số giảm dần (18−f)/5 để về đúng key F18 (không bị pop 2° ở F17→18).
+- Key F24 đổi giá trị thì đặt in-tangent 0 và fit out-slope sao cho vận tốc đầu cú vung giữ như cũ.
+
+## Hip hạ dần F8→F24 + overlap thân/vai/tay (Attack_02, 2026-11-11)
+- File có thể bị người dùng dọn lại giữa hai lượt (key còn 0-8, 15, 24): luôn đọc key hiện có trước khi làm, không dùng số frame cũ.
+- Hip ty: hạ nhanh F9–14 (smoothstep, đáy quá đà ~2 mm ở F14, bật lại ở key F15), rồi hạ chậm ease-out tới F24 (key 24 hạ thêm). Spacing mỗi frame không đều (−1 → −5.7 → +0.9 → −2 → −0.1 mm).
+- Overlap: bump sin(π·u^1.3) cho từng bộ phận, trễ dần: Spine1 1f, Chest 2f, Neck 3f, Scapula 4f, tay: IKWrist_R 2f, IKWrist_L 3f, PoleArm_R 1f, PoleArm_L 2f; hai pha (F8-15 biên độ lớn, F15-24 biên độ nửa), về 0 ở các key đã có.
+- Thêm key F23 làm tangent auto ở key F24 đổi → đường vung sau lệch; fit lại bằng set_key_tangent(p,24,0,s). Với kênh xoay vắt qua ±180, fit trên giá trị wrapped sai → dùng giá trị unwrapped, hoặc ghim vài key (26/28/30/32/34) bằng giá trị gốc nếu fit không khớp (IKWrist_L rz/ry).
+
+## Blocking F8–24 (hip drop + overlap), stepped (2026-11-11)
+- Chỉ key pose, không inbetween: hip trước (Root ty F11/14/18/21), rồi chuỗi trễ Spine1→Chest→Neck→Scapula, tay lệch nhịp (PoleArm/IKWrist R sớm hơn L 1f). Pose = nền nội suy giữa key chính + bump sin; set `stepped` cho key mới + F8, để key 24 spline.
+- Không tin biến tail cũ (S_tail) sau khi user cấu trúc lại file: đọc key hiện tại trước.
+
+## Overshoot sau attack + làm mượt F15–24 (Attack_02 v3, 2026-11-11)
+- Mượt đoạn trước đòn: xoá key nhỏ lẻ, giữ key chính + vài breakdown; pose key chính (vd F18) phải mang cùng độ trễ với hip như các frame quanh nó, nếu không bị nhảy tại key đó. Không ép tangent vào của key đón đòn về 0 (dừng rồi bật), cũng không đặt in=out lớn (hông tăng tốc thừa): chọn in-slope để gia tốc F22–23 = 0, out-slope giữ đuôi cũ.
+- Overshoot F22–35: hip lên nhanh (đỉnh ~F25) rồi xuống nhẹ + hold; thân quá đà xoay tiếp theo hướng đà vào đòn (hướng = vận tốc F20→22), mạnh ở F22–25 rồi chỉ còn ~30%, nhân kernel sin lên đỉnh t=3 rồi tắt dần (0.65e^(-(t-3)/2)+0.35e^(-(t-3)/6)); lag thân chỉ nửa lag cũ; hip trans X/Z đi tiếp ~3 cm rồi hồi. Cap: hip 3°, Spine 2.5°, Chest 4°, cổ 3°, vai 2°.
+- BẪY WRAP: get_attr trả góc ±180; move_key(get_attr+offset) ghi lại giá trị đã wrap → key lệch 360° so với key kề → tay xoay một vòng giữa hai key. Với kênh xoay sát ±180 (IKWrist rz) luôn ghi lại +360 cùng vòng với key kề, rồi quét bước nhảy >180 ở mọi kênh xoay.
+- Thêm key liên tiếp: đọc giá trị nền từ F-chính (không đọc curve sau khi đã thêm key kề, curve đã bị tangent kéo đi).
+
+## Cổ tay bị xoắn trong Frolvy: cách dò và sửa (Attack_02 v3, 2026-11-11)
+- `get_attr` trả góc đã TÁCH từ ma trận (bọc ±180), không phải giá trị key thật; gần gimbal (ry ≈ ±90) ra lật 180° cả ba trục. Không có hàm đọc key thô.
+- Dò xoắn: `world_matrix` mỗi frame, góc giữa hai frame liền nhau = acos((trace(R0ᵀR1)−1)/2). Bình thường ≤ 5–30°/frame; 100–180°/frame = xoay một vòng giữa hai key (key khác nhánh 360° hoặc 180° tương đương euler).
+- Sửa: với key lỗi, thử các biểu diễn euler tương đương ((rx,ry,rz)+k·360 và (rx+180,180−ry,rz+180)), giữ cái cho ma trận thế giới không đổi tại key đó (<1°) và GẦN NHẤT giá trị thô của key trước; ghi bằng move_key. Làm lần lượt từng key theo thời gian, rồi đo lại cả đoạn.
+- Không chọn nhánh bằng "tổng góc trong cửa sổ" khi key bên cạnh chưa sửa (ra -411, -448…). Không fit tangent theo snapshot cũ (user đã thêm key khác).
+- Sau khi đổi nhánh key, tangent tự tính có thể vọt (35→36 107°/frame): đặt lại tangent in=out = (giá trị key sau − key trước)/khoảng frame.
+- LUẬT (user 2026-11-11): sau mỗi lượt sửa trong Frolvy, tự đo góc xoay thế giới/frame của mọi control đã đụng tới; thấy xoắn (≥ ~90°/frame) thì tự sửa luôn, không đợi user báo.

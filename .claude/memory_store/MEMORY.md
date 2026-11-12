@@ -98,3 +98,5 @@
 - [FBX Base vs anim](feedback-fbx-base-vs-anim.md) — xuất FBX: Base = xương + mesh, file anim = chỉ xương + clip, không mesh (user 2026-11-12)
 - [Pets → Unity folder](reference-pets-unity-folder.md) — đích FBX Pet: endless-kicker/Assets/_Game/Animation/New_Pet/Pet_<Tên>/; làm việc ở Ngoc/EndlessKicker/New_PET
 - [Pet FBX → Unity fixes](reference-pet-fbx-unity-fixes.md) — Frolvy FBX vỡ skin / lỗi Copy Avatar: fbx_unity_bind, fbx_add_sibling, fbx_strip_anim + kiểm bằng Unity batchmode (2026-11-12)
+- [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
+- [Tự sửa xoắn](feedback-self-fix-twist.md) — sửa anim gây xoắn bộ phận thì tự dò (góc xoay thế giới/frame) và sửa luôn, không đợi user báo
