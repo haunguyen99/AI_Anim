@@ -8,13 +8,8 @@ metadata:
   modified: 2026-10-31T02:49:47.616Z
 ---
 
-<<<<<<< may-nay
-Frolvy 0.9.36 (updated 2026-11-04; MCP OK on 9877. After an update Claude must reconnect MCP: installer kills the old Frolvy-mcp.exe), Windows rig + anim app (Rig Builder with Human05 template, skin/paint weights, IK/FK, Tool Picker, FBX/glTF export baked per frame, MP4 playblast).
-MCP: `C:/Program Files/Frolvy/Frolvy-mcp.exe` (stdio) bridges to port 9877 that the running app opens; registered as `frolvy` in `.mcp.json` 2026-10-31.
-=======
 Frolvy 0.9.59 Beta seen 2026-11-12 (0.9.54 on 2026-11-11, was 0.9.36 on 2026-11-04, so bug notes tagged 0.9.36 in the skills may be outdated; `get_scene_info` has no file path: read the open scene + unsaved `*` from `Get-Process Frolvy` MainWindowTitle, recent files in `~/Documents/Frolvy/recent_scenes.json`; MCP OK on 9877. After an update Claude must reconnect MCP: installer kills the old Frolvy-mcp.exe), Windows rig + anim app (Rig Builder with Human05 template, skin/paint weights, IK/FK, Tool Picker, FBX/glTF export baked per frame, MP4 playblast).
 MCP: `C:/Program Files/Frolvy/Frolvy-mcp.exe` (stdio) bridges to port 9877 that the running app opens; registered as `frolvy` in `.mcp.json` 2026-10-31 (on the G:\Claude2Danim machine the entry was missing from .mcp.json and re-added 2026-11-12; meanwhile `tools/frolvy_port.py 9877 <script>` works without the MCP tools).
->>>>>>> remote
 Tools: get_scene_info, get_node_info, execute_code (Python, `fv`/`api` object, 320 calls, one undo step per run), find_api, get_viewport_screenshot, get_app_screenshot, list_panels, show_panel, reset_workspace, undo, redo.
 API docs: https://frolvy.com/#api (SPA, read with the browser). Sample scripts: C:\Program Files\Frolvy\scripts (human_rig.py, make_biped_fit.py, transfer_weights.py).
 Used by [[project-workflow-b-user-blocking]].
