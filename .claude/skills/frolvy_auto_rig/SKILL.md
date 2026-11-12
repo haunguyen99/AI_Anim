@@ -129,6 +129,18 @@ Sửa skin theo vùng thêm, picker: theo skill `frolvy_rig` mục 4–5. Mảnh
 - vạt váy → chuỗi Skirt;
 - khăn → chuỗi Scarf.
 
+## Hero Axe (Mob Era, 2026-11-12): bài học
+- Máy repo ở `G:\Claude2Danim\AI_Anim` (không phải D:): `auto_rig.py` nạp R / FC theo đường dẫn D:, nên chèn `frolvy_rig/scripts` + `tools/frolvy_plugins/fit_controls` của repo vào `sys.path` TRƯỚC khi import.
+- Nhân vật đã có khung xương đo sẵn (Studio Rig `work/rig_lab/ref_<nv>_*/ref_skeleton.json`, cm, tên AdvancedSkeleton): lấy lại vị trí đó cho fit, đo lại bằng `A.cut` (chỉ sửa cán rìu, đầu ngón). Script: `work/mob_era/hero_axe_rig/make_fit.py`, `skin_axe.py`, `make_picker.py`.
+- **Vải hai bên không đối xứng, không muốn Build nhân đôi** (người dùng: "cần cả bên trái nữa và hãy tắt mirror của xương vải"): mỗi dải một chuỗi riêng (`FurR1..`, `FurL1..`), side `centre` → ra `DEF_FurR1_M`, Build không nhân. Đường tâm dải: chiếu đỉnh của shell lên trục chính (SVD), lấy tâm từng lát; joint đầu ở nút thắt.
+- **`build(one_side=())` từng xoá TOÀN BỘ control bên trái**: tiền tố rỗng thành mẫu khớp mọi `_L`. Đã chặn trong `delete_one_side_props`. Hoàn tác không lấy lại được → `api.rebuild_rig()` (chưa skin) dựng lại đủ.
+- Ngón cái (găng): Rig Builder mới tự lái trục Z, `thumb_into_palm` không tạo `fng_cy` nữa; `fix_thumb_curl` tìm node bằng `api.graph_nodes()` (math node không có trong `api.ls()`). Hero Axe: phải lật dấu `fng_c_DEF_ThumbFinger*` cả hai bên (đầu ngón cái 13,7 → 11,3 cm tới ngón giữa khi nắm).
+- Skin chibi đầu to: **trên cổ (y > chỗ hẹp nhất) mọi đỉnh là đầu**, kể cả vành mũ rộng hơn vai (|x| 0,47); lọc theo |x| đã cho vành mũ ăn Shoulder (×4,4). Tay chỉ ở độ cao tay **gần thân** (bụng tròn |x| 0,28 ở y 0,8 từng ăn Shoulder), xa thân thì không giới hạn (ngón cái thõng xuống y 1,04).
+- **Control to quá sau `snug`** (người dùng: "sửa lại scale ctrl đi, đang bị to quá"): vòng ôm cả rìu / đệm vai (cổ tay 1,46 m, vai 1,12 m, mũi chân 1,19 m, Root 1,85 m). `work/mob_era/hero_axe_rig/ctl_sizes.py`: bảng cỡ đích (m) theo mặt cắt thân, thu mỗi control quanh tâm hình của nó (IK tay quanh tâm bàn tay), rồi `tidy`: vòng giữa về x = 0, bên trái = soi gương bên phải. Sau `snug` luôn đọc cỡ từng control, đạo cụ to (rìu) làm hỏng phép cắt.
+- **Global**: đầu đã có `space` (Neck/Chest/Root/World) của Rig Builder → đặt mặc định World là xoay ngực đầu đứng yên (0°). **Vai FK chưa làm được Global trong Frolvy 0.9.59**: DEF đọc thẳng kênh xoay cục bộ của control, nên constraint lên group control không tác dụng; orient constraint lên DEF thì đúng ở FK nhưng chặn IK, và trọng số constraint tự tạo không lái được (node toán, driven key, `set_node_output` đều không nhận); thêm IK thứ hai trên chuỗi tay thì Frolvy bỏ qua. Đã ghi `work/frolvy_feedback.md` #1–3. Dùng IK tay ở space World khi cần tay đứng yên lúc xoay người.
+- Cổ tay: giáp cẳng tay và phần tay nằm trong nó dùng **cùng một luật** Elbow → Wrist theo |x| 0,70 → 0,82 (cổ tay 0,82): giáp cứng 100% Elbow thì cổ giáp không theo tay (người dùng: "phần giáp gần cổ tay chưa được skin theo"), dải ngắn 0,80 → 0,88 thì bóp ×0,08. Ngón cái chỉ tính từ cổ tay ra (ngón cái thõng thấp, đỉnh đáy cẳng tay từng ăn 100% ngón cái).
+- Đáy quần liền (chibi): |x| < 8 cm dưới khớp hông = Root 50% + hai Hip chia mượt qua đường giữa; gấu quần ngang gối chuyển Hip→Knee trong 8 cm. Nhấc đùi 60°: 66 → 54 cạnh xấu, 35°: 16. Lưới quần thưa nên chưa hết.
+
 ## Sau mỗi nhân vật
 Ghi bài học mới vào đúng mục của skill này (bước nào, số đo, câu người dùng, ngày). Luật áp cho mọi rig thì ghi vào `frolvy_rig`. Hàm còn thiếu thì thêm vào `scripts/auto_rig.py` (Python thuần, Frolvy không có numpy).
 

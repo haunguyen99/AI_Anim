@@ -1,6 +1,6 @@
 ---
 name: studio
-description: Mở AI Anim Studio, ứng dụng tổng hợp chạy trên máy (http://127.0.0.1:8780): một viewport chung; General / Rig / Pose chỉ là bố cục (workspace), mọi công cụ dùng được ở mọi workspace. Dùng khi người dùng gõ /studio, nói "mở Studio", "mở app", "mở viewport", hoặc muốn mở một nhân vật / workspace cụ thể (vd "/studio zom1", "/studio pose").
+description: "Mở AI Anim Studio, ứng dụng tổng hợp chạy trên máy (http://127.0.0.1:8780): một viewport chung; General / Rig / Pose chỉ là bố cục (workspace), mọi công cụ dùng được ở mọi workspace. Dùng khi người dùng gõ /studio, nói \"mở Studio\", \"mở app\", \"mở viewport\", hoặc muốn mở một nhân vật / workspace cụ thể (vd \"/studio zom1\", \"/studio pose\")."
 ---
 
 # /studio: mở Studio
@@ -19,6 +19,15 @@ Studio là tool chính: mở `http://127.0.0.1:8780` là vào thẳng viewport v
 3. **Kiểm nhanh:** `javascript_tool` đọc `ST.char.name`, `ST.ws`, `ST.focus`, `ST.layerOn`, số mesh `ST.mods.mesh.objects().length` (đợi tới khi > 0, tối đa ~5 s); lỗi thì xem `read_console_messages` và `preview_logs`.
 4. **Bộ canh ghi chú:** `.venv/Scripts/python.exe -I tools/notes_watch.py --status`; `stopped` thì chạy `.venv/Scripts/python.exe -I tools/notes_watch.py` bằng Bash `run_in_background` (hook dự án cũng nhắc việc này khi có trang Studio mở). Khi nó thoát: làm theo `/check_fb` phần Studio, rồi bật lại.
 5. **Báo:** một dòng: đã mở nhân vật nào, workspace nào, link `http://127.0.0.1:8780` (người dùng mở được trong trình duyệt của họ khi server còn chạy). Workspace chỉ là bố cục: Rig / Anim bật trong Outliner (nút Rig, Anim) hoặc Cửa sổ → Panel ngay trong General.
+
+## Khi chạy trong VS Code (không có `preview_start`)
+
+Extension Claude Code trong VS Code không có khung trình duyệt của app Claude. Đừng dừng ở "không mở được" (lỗi 2026-11-06):
+1. **Server chưa chạy** (`curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://127.0.0.1:8780/api/chars` không ra `200`): tự bật, cửa sổ thu nhỏ:
+   `Start-Process -WindowStyle Minimized -WorkingDirectory "G:\Claude2Danim\AI_Anim" -FilePath ".venv\Scripts\python.exe" -ArgumentList "-I","tools\home\server.py"` (PowerShell), đợi ra `200`. Cần cả Spine Live thì bật thêm `tools\spine_live\server.py` cùng cách.
+   **Không** dùng `tools/home/start.bat`: file đó tự mở Chrome.
+2. **Mở trang:** chọn trang như bước 2, đưa link `http://127.0.0.1:8780/...` thành một dòng riêng và nói người dùng bấm. `.vscode/settings.json` đặt `workbench.browser.openLocalhostLinks: true` nên link mở trong trình duyệt tích hợp của VS Code.
+3. **Kiểm:** không có `javascript_tool`; sau khi người dùng mở, dùng `tools/studio_cmd.py state` (cầu nối chạy với trang ở bất kỳ trình duyệt nào). Bộ canh ghi chú (bước 4) bật bằng `Start-Process` thu nhỏ như server nếu không có `run_in_background`.
 
 ## Quy tắc
 
