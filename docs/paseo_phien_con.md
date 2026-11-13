@@ -57,3 +57,6 @@ Phiên con **không tự đánh thức phiên chính**. Phiên chính phải t�
 - **Không đổi nhánh / không mở project thật của người dùng**: repo Unity thường đang có thay đổi dở. Test Unity thì dựng project trống riêng ngoài repo, chép file cần từ `origin/<nhánh>` bằng `git show`.
 - Phiên con không có công cụ chat nên **không tự báo người dùng ngoài app**; phiên chính chuyển lời.
 - **Dấu nháy kép trong brief làm hỏng lệnh** (2026-11-13): `paseo.cmd` chạy qua cmd.exe, brief có `"..."` (ví dụ ví dụ lệnh `--text "..."`) làm `paseo run` báo "The system cannot find the file specified" và không tạo phiên. Viết brief không dùng dấu `"` (dùng `'` hoặc mô tả bằng lời, trỏ tới file brief trong repo để đọc phần có lệnh mẫu).
+
+## 6. Gọi nhanh (2026-11-13)
+Skill `/agent-free <việc>` và công cụ `tools/paseo_cmd.py` (run / ls / logs / send / stop) làm trọn mục 2 và 3: tự ghi brief vào `work/_subsessions/paseo/<tên>.md`, chỉ đưa phiên con một câu đọc file này (tránh lỗi dấu nháy kép), kiểm bằng `ls`, in id. Việc ngắn cần kết quả về phiên chính: skill `/agent-mini` (công cụ Agent).
