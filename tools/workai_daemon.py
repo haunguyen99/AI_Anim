@@ -14,13 +14,14 @@ import json, os, subprocess, sys, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import identity  # noqa: E402
 import workai_watch as W  # noqa: E402
 
 D = os.path.join(ROOT, "work", "store", "_sys", "watch")
-STATE = os.path.join(D, "workai_daemon.json")
-INBOX = os.path.join(D, "workai_inbox.jsonl")
-LOG = os.path.join(D, "workai_daemon.log")
-LOCK = os.path.join(D, "workai_daemon.lock")
+STATE = identity.state_path(os.path.join(D, "workai_daemon.json"))
+INBOX = identity.state_path(os.path.join(D, "workai_inbox.jsonl"))
+LOG = identity.state_path(os.path.join(D, "workai_daemon.log"))
+LOCK = identity.state_path(os.path.join(D, "workai_daemon.lock"))
 
 
 def log(msg):

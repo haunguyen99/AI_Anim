@@ -14,10 +14,12 @@ Lần chạy đầu chỉ đặt mốc từ bây giờ, không báo tin cũ.
 import json, os, sys, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+import identity  # noqa: E402
 sys.path.insert(0, os.path.join(ROOT, "tools", "horuschat_mcp"))
 from horuschat_mcp.client import HCError, HorusChat, q, slim  # noqa: E402
 
-STATE = os.path.join(ROOT, "work", "store", "_sys", "watch", "horuschat.json")
+STATE = identity.state_path(os.path.join(ROOT, "work", "store", "_sys", "watch", "horuschat.json"))
 WAIT = 30
 
 

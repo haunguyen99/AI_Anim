@@ -106,6 +106,11 @@ if (-not (Test-Path $sf)) {
   }
 }
 
+# 4. Mức suy nghĩ mặc định = high (Claude Code + Paseo); chạy lại nhiều lần vẫn được
+$py = Join-Path $Repo '.venv\Scripts\python.exe'
+if (Test-Path $py) { & $py -I (Join-Path $Repo 'tools\ai_effort_high.py') }
+else { Write-Host "[..] Chưa có .venv: sau khi tạo, chạy tools/ai_effort_high.py để đặt mức suy nghĩ high." }
+
 Write-Host ""
 Write-Host "Mở dự án:  code `"$Repo`"   → bấm biểu tượng Claude (✱) → lần đầu: gõ / → MCP, bật các server dự án."
 Write-Host "Bộ nhớ dự án (máy mới): .venv/Scripts/python.exe -I tools/claude_memory.py restore"

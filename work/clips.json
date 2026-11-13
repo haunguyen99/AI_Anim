@@ -56,6 +56,9 @@
   },
   "RPG2_Hero": {
    "rig_url": ""
+  },
+  "Nova": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -1285,6 +1288,71 @@
    "frames": 30,
    "fps": 30,
    "updated": "2026-11-04"
+  },
+  {
+   "id": "nova_idleshop",
+   "character": "Nova",
+   "stage": "rig",
+   "note": "Chờ rig model Nova (FBX chỉ mesh). GDD Lark tab Anim & VFX.",
+   "dir": "work/runner_hybrid/nova_idleshop",
+   "frames": 0,
+   "fps": 30,
+   "ref": "",
+   "desc": "Idle shop cầm rifle, như ref patrol idle",
+   "created": "2026-11-13",
+   "updated": "2026-11-13"
+  },
+  {
+   "id": "nova_showcase",
+   "character": "Nova",
+   "stage": "rig",
+   "note": "Chờ rig model Nova (FBX chỉ mesh). GDD Lark tab Anim & VFX.",
+   "dir": "work/runner_hybrid/nova_showcase",
+   "frames": 0,
+   "fps": 30,
+   "ref": "",
+   "desc": "Bắn lung tung lên trời, tới đoạn thay đạn thì về Idle",
+   "created": "2026-11-13",
+   "updated": "2026-11-13"
+  },
+  {
+   "id": "nova_idlegame",
+   "character": "Nova",
+   "stage": "rig",
+   "note": "Chờ rig model Nova (FBX chỉ mesh). GDD Lark tab Anim & VFX.",
+   "dir": "work/runner_hybrid/nova_idlegame",
+   "frames": 0,
+   "fps": 30,
+   "ref": "",
+   "desc": "Như IdleShop, thân dưới bay lơ lửng",
+   "created": "2026-11-13",
+   "updated": "2026-11-13"
+  },
+  {
+   "id": "nova_attack",
+   "character": "Nova",
+   "stage": "rig",
+   "note": "Chờ rig model Nova (FBX chỉ mesh). GDD Lark tab Anim & VFX.",
+   "dir": "work/runner_hybrid/nova_attack",
+   "frames": 0,
+   "fps": 30,
+   "ref": "",
+   "desc": "Bắn rifle thường (dựa trên IdleGame)",
+   "created": "2026-11-13",
+   "updated": "2026-11-13"
+  },
+  {
+   "id": "nova_cast",
+   "character": "Nova",
+   "stage": "rig",
+   "note": "Chờ rig model Nova (FBX chỉ mesh). GDD Lark tab Anim & VFX.",
+   "dir": "work/runner_hybrid/nova_cast",
+   "frames": 0,
+   "fps": 30,
+   "ref": "",
+   "desc": "Pose bắn, sấy laser thì thân trên ngả về sau (dựa trên IdleGame)",
+   "created": "2026-11-13",
+   "updated": "2026-11-13"
   }
  ],
  "projects": [
@@ -1404,6 +1472,19 @@
     "RPG2_Hero": "hero Assassin · song đao (Char_Main_T2) - rig Frolvy"
    },
    "created": "2026-11-04"
+  },
+  {
+   "id": "runner_hybrid",
+   "name": "Runner_Hybrid",
+   "desc": "CasualRunner: hero bay lơ lửng. Unity D:\\\\Project\\\\runner-hybrid · file làm việc D:\\\\tvc_source\\\\3D ANIM\\\\CasualRunner\\\\Anim\\\\anim_hero · GDD Lark Run 6 - Work tab Anim & VFX",
+   "characters": [
+    "Nova"
+   ],
+   "labels": {
+    "Nova": "Hero NOVA (rifle) - chưa rig"
+   },
+   "char_notes": {},
+   "created": "2026-11-13"
   }
  ]
 }

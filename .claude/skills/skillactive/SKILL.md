@@ -74,6 +74,21 @@ Cừu cầm ô (90F, vật bay kéo nhân vật): ô vọt ~70 px chếch phải
 | "khăn / tai chưa chuẩn physics" | `Chain` ăn đủ chuyển động (không giảm tỉ lệ), tai cứng hơn khăn; mô phỏng sau xương cha đã overlap |
 | "trục xoay hold / dừng ở mốc" | mốc nối spline liên tục, không smoothstep từng đoạn |
 | "tay che mặt" | giảm biên độ giơ tay ở pha có đầu ngửa |
+| "chuyển active -> idle khựng / giật, cần giảm tốc từ từ" (Back to School, 4 lượt) | xem mục 4b: ctrl hạ theo đường giảm dần (ease out dài), bỏ key đảo chiều ở cuối, giảm chấn cao cho chân / tay / balo, rồi chạy `smooth_tail.py` |
+| "lắc cuối mạnh quá" | bỏ cú nảy lại sau đỉnh, gió chỉ MỘT thùy (lên rồi về, không âm dư), giảm biên độ chuỗi bóng / dây ở cuối |
+| "thân dưới đứt rời thân trên" | mesh quần: xương chân mất weight dần khi lên gần hông (`fade` trong `mesh()`), bỏ khớp bẻ body1 / body2 trong chain physics |
+| "bay nhẹ" mà người xem không thấy bay | đo theo chiều cao nhân vật: 90 px trên 1275 px = không thấy; dùng ≥ 10% chiều cao (150 px) và có hạ lấy đà trước |
+
+## 4b. Chuyển active -> idle phải giảm tốc (Cừu Back to School 2026-11-13: bị chê "khựng" 4 lần liền)
+- **Đo trước khi sửa**: tốc độ thế giới (px / frame) của đầu xương ở 30 frame cuối active + 10 frame đầu idle (FK từ JSON; mẫu `work/_inbox/tung-backtoschool/spine/_fk.py`). Lỗi nhìn thấy là **dừng rồi bật lại** (tốc độ về ~0 rồi vọt lên 8-14 px/f) ở tay / chân; ctrl và thân thường đã mượt.
+- Nguyên nhân thường gặp: (1) mốc cuối của ctrl là S-curve đối xứng + một mốc dư làm nảy lại; (2) chain physics tay / chân dao động tiếp ở 2-3 Hz khi phần mờ dần (`BLEND`) đang kéo về idle; (3) mốc ACT_ROT của tay có giá trị âm / dương rồi mới về 0 (đảo chiều).
+- Cách sửa, theo thứ tự:
+  1. Đường bay hạ: nhiều mốc giảm dần kiểu mũ (vd 150 → 93% → 62% → 27% → 8% → 0 ở F44 / 52 / 60 / 66 / 72) để tốc độ giảm đều tới ~1 px/f ở F71, không mốc dưới 0.
+  2. Cú gió / lắc: một thùy, kết thúc sớm (về 0 ở ~F48 trên 72F), không âm dư.
+  3. `BLEND = dict(base=(16, 50), env=(52, 72), phys=(0, 6, 46, 72), stiff=(0, 10, 44, 62))`: cửa sổ trả về idle rộng ra, bắt đầu sớm.
+  4. Chain tay / chân / balo: giảm chấn ~1.0 (balo 0.9), lim 7-9°; tay nên bỏ khỏi `CHAINS` (chỉ `ACT_ROT`) nếu vẫn đảo chiều.
+  5. **`examples/smooth_tail.py`** (chạy sau `active_cfg.py`; chép sang thư mục anim, sửa `PATH` / đường tới `tools/spine`): lọc Gaussian góc xoay mọi xương trong F40 → F72, tail-weighted, F0 và F72 giữ nguyên (trùng idle), pad bằng idle sau F72. **`SMOOTH_SIG=5.5`** (3.5 còn dừng nhẹ). Script cũng dựng lại `mix`. Sau lọc, tốc độ giảm đơn điệu, chỗ dừng nhất còn ≥ 1.4 px/f.
+- Gửi demo: video có số frame (`jobs.py say` tự ghi), nêu fps + tổng frame + đoạn nào là anim nào.
 
 ## 5. Tự kiểm trước khi báo
 - `spine_live_cmd.py measure <json> --anim active --from idle --rot <ctrl>,spine1,head,<phụ kiện>`:
@@ -85,6 +100,9 @@ Cừu cầm ô (90F, vật bay kéo nhân vật): ô vọt ~70 px chếch phải
 - Lỗi ở chỗ nối (vị trí lệch vài px ở F0): phép làm mượt lấn sang trước F0 → nhân tín hiệu với ramp 0–8F.
 
 ## 6. Mix, xuất, nạp kho
+- **Tách anim riêng**: bản giao luôn là `idle` (loop) và `active` (một lần) riêng. Người xem chỉ muốn thấy active thì playblast chỉ active (73 frame cho 72F: frame 1 = F0, frame 73 = F72 trùng idle F0). `mix` chỉ để tự kiểm / khi game đòi, bỏ khỏi bản xuất (lọc `animations` trước khi import).
+- **Quy ước số frame**: video demo đếm từ 1; F n của Spine = frame n+1 trên video; loop idle: frame cuối (F N) = F0, không đưa F N vào video (90F loop = 90 frame).
+- **Bẫy bản xem trước**: `render_spine.py` KHÔNG vẽ đổi ảnh slot (chớp mắt / nhắm cười) và KHÔNG theo `inherit: noScale` (mũi), chỉ lấy frame `n = round(dur * fps)` (thiếu frame cuối). Bản sao đã vá ở `work/_inbox/tung-backtoschool/spine/render_demo.py` (slot attachment, noScale, thêm frame cuối). Cả hai đều là xem trước, chưa phải runtime Spine thật: luôn nói rõ chưa kiểm Spine thật.
 - Mix: `K.mix(skel, "idle", "active", "mix", t_first=END/30)` rồi `K.write_anim(...)`. Mẫu: `work/test/spine/CuuSakura/build_mix.py`. Kiểm mix F0–N trùng idle, phần sau trùng active.
 - Xuất: setting của người dùng lấy từ `C:\Users\<user>\Spine\settings\editor-2.json` khoá `json` (atlas `.atlas.txt`, scale như lần gần nhất, không PMA, cleanUp, nonessential). Mẫu `work/test/spine/CuuSakura/export_settings.json`. Bản giao chỉ giữ anim cần giao (bỏ `setup`, `rig_test`).
 - Kiểm bộ máy khớp script cũ (khi chuyển script cũ sang cấu hình): chạy cả hai trên bản sao với `ANIM_KIT_PATH=<bản sao>` và `ANIM_KIT_DRY=1`, so `K.spine_curve` từng kênh từng frame (Cừu Sakura: lệch 0).

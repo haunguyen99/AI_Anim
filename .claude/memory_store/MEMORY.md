@@ -100,17 +100,23 @@
 - [Pet FBX → Unity fixes](reference-pet-fbx-unity-fixes.md) — Frolvy FBX vỡ skin / lỗi Copy Avatar: fbx_unity_bind, fbx_add_sibling, fbx_strip_anim + kiểm bằng Unity batchmode (2026-11-12)
 - [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
 - [Tự sửa xoắn](feedback-self-fix-twist.md) — sửa anim gây xoắn bộ phận thì tự dò (góc xoay thế giới/frame) và sửa luôn, không đợi user báo
-- [Frolvy bind pose / empty curve](frolvy-bind-pose-and-empty-curve.md) — bind skin ở pose 0 (control posed = dính), channel hết key bị chết, joint ma khi dựng lại rig (Night Bat 2026-11-12)
-- [Xuất FBX khi chốt](feedback-export-only-on-approval.md) — nhánh Pet chỉ xuất FBX khi user bảo 'chốt'; vòng sửa/feedback không xuất (user 2026-11-13)
-- [WorkAI tự cập nhật trạng thái Pet](feedback-workai-auto-status.md) — tools/workai_pet_sync.py: In Progress khi agent chạy/có .fv, Done khi CHOT.txt (user 2026-11-13)
-- [Pet: mở file Frolvy mới](feedback-pet-open-latest-frolvy.md) — tools/pet_frolvy_tidy.py: đóng bản cũ, mở .fv mới cho user, không đóng cửa sổ có * (user 2026-11-13)
-- [Goat dùng rig Cow](project-goat-cow-rig.md) — Goat skin vào joint Cow, build_goat_rig.py, chưa push (2026-11-12)
 - [Spine feedback scope](spine-feedback-scope.md) — góp ý anim chỉ sửa anim đang mở trên Spine Live; rig / weight sửa toàn bộ anim
 - [Trial files](trial-files.md) — file thử rig / anim: trial.py new/done, ghi kết quả vào trials.md, xoá ngay khi có kết quả
 - [Spine Live in Claude only](spine-live-in-claude-only.md) — mở Spine Live chỉ trong khung trình duyệt của Claude, không ra Chrome
 - [Spine Live in Paseo](spine-live-in-paseo.md) — chạy trong Paseo: mở Spine Live bằng browser_* của Paseo, đẩy sửa thẳng lên trang, không đưa link
 - [Rig in Studio](rig-in-studio-not-maya.md) — rig theo rig mẫu .ma của team: làm trong Studio Rig (ref_skeleton tên mẫu + cfg.extra), không dựng trong Maya
+- [Runner_Hybrid](project-runner-hybrid.md) — CasualRunner Unity D:\Project\runner-hybrid, Hero NOVA 5 clip (GDD Lark Anim & VFX), model chưa rig (2026-11-13)
+- [Runner_Hybrid không commit Unity](feedback-runner-hybrid-no-commit.md) — tuyệt đối không commit/push repo D:\Project\runner-hybrid (user 2026-11-13)
+- [Skin ống tay cứng](frolvy-skin-arm-sleeve-rigid.md) — vertex tay chỉ bám Shoulder, không xương thân; kiểm bằng camera cận, tính ngược trọng số (Nova 2026-11-13)
+- [Goat dùng rig Cow](project-goat-cow-rig.md) — Goat skin vào joint Cow, build_goat_rig.py, chưa push (2026-11-12)
 - [AI employee](project-ai-employee.md) — AI Animation = nhân viên AI có tài khoản riêng WorkAI/HorusChat; soạn nháp + chạy máy user (2026-11-13)
 - [HorusChat thread reply](feedback-horuschat-thread-reply.md) — trả lời vào thread của từng tin, tag người đáp, không anh/chị (2026-11-13)
 - [Paseo subagent](reference-paseo-subagent.md) — giao việc phiên con bằng `paseo run` (provider bắt buộc, mã 255 vẫn tạo, kiểm bằng ls/logs), bẫy quyền kẹt; hướng dẫn ở docs/paseo_phien_con.md (2026-11-13)
 - [QLDH = thử nghiệm AI](project-quanly-dieuhanh-ai-pilot.md) — dự án QUANLY-DIEUHANH-GAME là thử nghiệm quy trình làm việc với AI, không tính vào mức việc dự án game; phòng Art Animation 7 người (2026-11-13)
+- [Skill phiên con](reference-phien-con-skills.md) — /phien_paseo (dài, gõ trực tiếp) và /phien_agent (ngắn, tự đánh thức), tools/paseo_cmd.py (2026-11-13)
+- [Frolvy bind pose / empty curve](frolvy-bind-pose-and-empty-curve.md) — bind skin ở pose 0 (control posed = dính), channel hết key bị chết, joint ma khi dựng lại rig (Night Bat 2026-11-12)
+- [Xuất FBX khi chốt](feedback-export-only-on-approval.md) — nhánh Pet chỉ xuất FBX khi user bảo 'chốt'; vòng sửa/feedback không xuất (user 2026-11-13)
+- [WorkAI tự cập nhật trạng thái Pet](feedback-workai-auto-status.md) — tools/workai_pet_sync.py: In Progress khi agent chạy/có .fv, Done khi CHOT.txt (user 2026-11-13)
+- [Pet: mở file Frolvy mới](feedback-pet-open-latest-frolvy.md) — tools/pet_frolvy_tidy.py: đóng bản cũ, mở .fv mới cho user, không đóng cửa sổ có * (user 2026-11-13)
+- [Tùng RateUs idle](project-tung-rateus-idle.md) — idle 2D RateUs_anim v2 (120F) duyệt + zip giao gửi Tùng 2026-11-13; bài học cắt chong chóng, ffmpeg, sendfile
+- [Tùng Back to School](project-tung-backtoschool.md) — idle+active 2D Spine cừu 6 bóng 2026-11-13 duyệt, zip giao; bài học chuyển active->idle giảm tốc (smooth_tail), bóng+dây physics

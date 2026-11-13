@@ -102,6 +102,7 @@ Nhanh hơn khoảng 0,2–0,4 s mỗi lần gọi (~15–20 %). Một lượt c�
    - Cài VS Code (winget, cho user, không cần admin) + extension `anthropic.claude-code`: thêm `-Install`.
    - Đổi endpoint: `-Endpoint lan` (trong mạng công ty, nhanh hơn ~15–20 %) hoặc `-Endpoint public` (`https://llmpro.horusjsc.com`, khi ở ngoài). Script sao lưu `settings.json` trước khi sửa, kiểm nối được IP LAN rồi mới đổi, và không bao giờ ghi key.
    - Cài tay nếu cần: `winget install --id Microsoft.VisualStudioCode -e --scope user`, rồi `code --install-extension anthropic.claude-code`.
+   - Script cũng đặt **mức suy nghĩ mặc định = high** cho Claude Code và Paseo (`tools/ai_effort_high.py`, chạy riêng được; `--check` chỉ báo). Mức "medium" làm Claude nghĩ ngắn, việc rig / pose / tool dễ hời hợt. Việc khó chọn tay "Extra high"; mỗi việc lớn mở một phiên mới (phiên dài làm chất lượng loãng).
 4. **Bộ nhớ dự án (máy mới):** `.venv/Scripts/python.exe -I tools/claude_memory.py restore`.
 5. **Mở:** `code "E:\AI Animation"`. VS Code gợi ý cài extension Claude Code (theo `.vscode/extensions.json`). Bấm biểu tượng Claude (✱) ở thanh bên hoặc góc trên phải.
 6. **Lần đầu:** gõ `/` → MCP → bật các server dự án. Phải thấy `Connected` cho frolvy, maya, spine, horuschat, comfyui; rocketchat là chat cũ, tắt cũng được.
