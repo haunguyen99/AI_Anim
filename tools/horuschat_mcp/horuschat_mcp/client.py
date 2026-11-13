@@ -14,7 +14,16 @@ from pathlib import Path
 from urllib import error, parse, request
 
 PKG_DIR = Path(__file__).resolve().parent.parent
-ENV_FILE = PKG_DIR / ".env"
+# Danh tính: AI_PROFILE (mặc định "ai") -> .env.<tên>; xem tools/identity.py
+def _saved_profile():
+    try:
+        return (PKG_DIR.parent / ".profile").read_text(encoding="utf8").strip()
+    except OSError:
+        return ""
+
+
+PROFILE = (os.environ.get("AI_PROFILE") or _saved_profile() or "ai").strip().lower() or "ai"
+ENV_FILE = PKG_DIR / (".env." + PROFILE)
 KEYS = ("HORUSCHAT_BASE_URL", "HORUSCHAT_API_KEY", "HORUSCHAT_WATCH")
 
 

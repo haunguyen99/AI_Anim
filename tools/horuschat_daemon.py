@@ -12,15 +12,16 @@ import json, os, subprocess, sys, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import identity  # noqa: E402
 import horuschat_watch as W  # noqa: E402
 import workai_daemon as D  # noqa: E402  (dùng lại toast)
 from horuschat_watch import HCError, HorusChat, slim  # noqa: E402
 
 DIR = os.path.join(ROOT, "work", "store", "_sys", "watch")
-STATE = os.path.join(DIR, "horuschat_daemon.json")
-INBOX = os.path.join(DIR, "horuschat_inbox.jsonl")
-LOG = os.path.join(DIR, "horuschat_daemon.log")
-LOCK = os.path.join(DIR, "horuschat_daemon.lock")
+STATE = identity.state_path(os.path.join(DIR, "horuschat_daemon.json"))
+INBOX = identity.state_path(os.path.join(DIR, "horuschat_inbox.jsonl"))
+LOG = identity.state_path(os.path.join(DIR, "horuschat_daemon.log"))
+LOCK = identity.state_path(os.path.join(DIR, "horuschat_daemon.lock"))
 
 
 def log(msg):

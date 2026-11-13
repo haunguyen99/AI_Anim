@@ -40,3 +40,5 @@ tools/subsession/registry.json
 work/_subsessions/
 tools/bap/.env
 tools/subsession/titles_cache.json
+tools/workai/.env.*
+tools/.profile

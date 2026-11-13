@@ -1,0 +1,8 @@
+{
+  "id": "overlapper",
+  "version": "0.1.0",
+  "entry": "overlapper.py",
+  "api_version": 1,
+  "name": "Overlapper",
+  "description": "Overlapping action for tails, hair, scarves, antennae: select the chain root to tip, each link follows the previous one a few frames later. Writes an override layer (weight = Amount), Base is never touched. Plugins > Overlapper."
+}

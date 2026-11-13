@@ -16,12 +16,14 @@ Lần chạy đầu chỉ đặt mốc từ bây giờ, không báo việc cũ.
 import json, os, re, sys, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+import identity  # noqa: E402
 sys.path.insert(0, os.path.join(ROOT, "tools", "workai"))
 import workai  # noqa: E402
 
-STATE = os.path.join(ROOT, "work", "store", "_sys", "watch", "workai.json")
+STATE = identity.state_path(os.path.join(ROOT, "work", "store", "_sys", "watch", "workai.json"))
 WAIT = 60
-ME = 51  # haunv
+ME = None  # id người dùng của danh tính đang chạy, lấy từ api/auth/me (whoami)
 KW = re.compile(r"\banim|animation|\brig\b|rigging|skin weight|\bfbx\b|spine|diễn hoạt|chuyển động|playblast|blocking", re.I)
 NOISE = {"self_pinned_on_schedule", "self_rescheduled", "sprint_started", "sprint_completed"}
 PERSONAL = re.compile(r"giao cho bạn|nhắc đến bạn|nhắc bạn|mention|duyệt|nghiệm thu|bình luận|comment|review|phê duyệt", re.I)
@@ -44,7 +46,19 @@ def save(st):
     os.replace(tmp, STATE)
 
 
+def whoami():
+    global ME
+    if ME is None:
+        c, o = workai.call("GET", "/api/auth/me")
+        try:
+            ME = o["data"]["user"]["id"]
+        except (TypeError, KeyError):
+            raise RuntimeError(f"api/auth/me: {c} {str(o)[:200]}")
+    return ME
+
+
 def get(path):
+    whoami()
     c, o = workai.call("GET", path)
     if c != 200 or not isinstance(o, dict) or not o.get("success"):
         raise RuntimeError(f"{path}: {c} {str(o)[:200]}")

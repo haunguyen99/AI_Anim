@@ -1,6 +1,6 @@
 """WorkAI client (workai.horusjsc.com, API at workai-be).
 
-Token lives only in tools/workai/.env (WORKAI_TOKEN=..., git-ignored). Never print it.
+Token lives only in tools/workai/.env.<profile> (WORKAI_TOKEN=..., git-ignored; profile ai|haunv, see tools/identity.py). Never print it.
 
 Usage:
   python -I tools/workai/workai.py get api/auth/me   (no leading slash: Git Bash rewrites it)
@@ -75,11 +75,16 @@ import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+import identity  # noqa: E402
 
 
 def _env():
     env = {}
-    for line in (HERE / ".env").read_text(encoding="utf-8").splitlines():
+    f = Path(identity.env_file(HERE))
+    if not f.exists():
+        sys.exit(f"Thiếu {f} (danh tính '{identity.NAME}'): tạo file với WORKAI_TOKEN=...")
+    for line in f.read_text(encoding="utf-8").splitlines():
         if "=" in line and not line.lstrip().startswith("#"):
             k, v = line.split("=", 1)
             env[k.strip()] = v.strip().strip('"').strip("'")
