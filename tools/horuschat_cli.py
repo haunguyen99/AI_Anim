@@ -141,8 +141,9 @@ def cmd_send(args):
     if d["status"] != "pending":
         sys.exit(f"Nháp #{d['id']} đã {d['status']}")
     hc = HorusChat()
-    tags = [m for m in d.get("mentions") or [] if m not in d["text"]]
-    if tags:  # nhắc ai thì phải có đủ @id:máy chủ trong chữ (như người dùng gõ) để app tô tên và báo cho người đó
+    tags = ["@" + m.lstrip("@").split(":")[0] for m in d.get("mentions") or []]
+    tags = [t for t in tags if t not in d["text"]]
+    if tags:  # nhắc ai thì chữ @tên (không :localhost, Hậu 2026-11-13) có trong tin; id đầy đủ đi trong danh sách mentions để app báo
         d["text"] = " ".join(tags) + " " + d["text"]
     try:
         if d.get("to"):
@@ -239,7 +240,8 @@ def cmd_sendfile(args):
     hc = HorusChat()
     hc.check()
     rid = hc.room_id(room)
-    tags = [m for m in mentions if m not in text]
+    tags = ["@" + m.lstrip("@").split(":")[0] for m in mentions]
+    tags = [t for t in tags if t not in text]
     if tags and text:
         text = " ".join(tags) + " " + text
     fields = {"body": text}

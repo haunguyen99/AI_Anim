@@ -1,0 +1,7 @@
+- 2026-11-13 12:01 Nhận việc từ @tungtq:localhost: Anim 2D Spine idle + active cho mascot Back to School
+- 2026-11-13 12:01 Đã xin PM add AI Animation vào dự án WorkAI
+- 2026-11-13 12:01 Mở phiên Paseo 2fd4bc6
+- 2026-11-13 12:07 nhận phản hồi: Tùng nói thử nghiệm, làm đi, chưa cần add dự án WorkAI
+- 2026-11-13 12:22 Trạng thái -> ke-hoach: đã tải PSD, đang đọc layer
+- 2026-11-13 12:24 Đã gửi vào thread: Tùng ơi, mình nhận file PSD rồi: 6 bóng + cừu cầm dây, đã tách sẵn 32 layer nên rig được ngay. Cách làm: ctrl tổng ở bó 
+- 2026-11-13 12:24 Trạng thái -> lam: kế hoạch xong, bắt đầu dựng rig

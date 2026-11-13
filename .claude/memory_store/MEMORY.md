@@ -116,3 +116,4 @@
 - [Xuất FBX khi chốt](feedback-export-only-on-approval.md) — nhánh Pet chỉ xuất FBX khi user bảo 'chốt'; vòng sửa/feedback không xuất (user 2026-11-13)
 - [WorkAI tự cập nhật trạng thái Pet](feedback-workai-auto-status.md) — tools/workai_pet_sync.py: In Progress khi agent chạy/có .fv, Done khi CHOT.txt (user 2026-11-13)
 - [Pet: mở file Frolvy mới](feedback-pet-open-latest-frolvy.md) — tools/pet_frolvy_tidy.py: đóng bản cũ, mở .fv mới cho user, không đóng cửa sổ có * (user 2026-11-13)
+- [Tùng RateUs idle](project-tung-rateus-idle.md) — idle 2D RateUs_anim v2 (120F) duyệt + zip giao gửi Tùng 2026-11-13; bài học cắt chong chóng, ffmpeg, sendfile

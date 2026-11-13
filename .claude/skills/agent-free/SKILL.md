@@ -19,6 +19,7 @@ Dùng khi việc **dài, độc lập, người dùng muốn tự nói chuyện 
 - `stop <id>` dừng.
 
 ## Bẫy
+- **Chế độ quyền:** `paseo_cmd.py run` tạo phiên với `--mode auto` mặc định (Hậu 2026-11-13: phiên ở "Always ask" đứng chờ bấm Accept từng lệnh mà nhật ký không ghi, việc Back to School đứng 19 phút). Đổi / xem: `paseo_cmd.py mode <id> [auto|default|acceptEdits|plan|bypassPermissions]`; biến `PASEO_MODE` đổi mặc định. Phiên đứng im mà không có lỗi: kiểm `paseo inspect <id>` (Mode, PendingPermissions).
 - `paseo run` hay thoát mã 255 dù phiên đã tạo: công cụ đã kiểm bằng `ls`, đừng tạo lại.
 - Provider phải là `llmpro/claude-opus[1m]` (công cụ đã đặt sẵn). Dấu nháy kép trong tin `send` bị đổi thành nháy đơn.
 - Phiên con không có công cụ chat; muốn nó gửi HorusChat thì brief phải ghi rõ lệnh (`tools/horuschat_cli.py`) và điều kiện (người dùng nói "gửi").

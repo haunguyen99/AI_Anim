@@ -1,0 +1,31 @@
+{
+ "tung-rateus-idle": {
+  "id": "tung-rateus-idle",
+  "title": "Anim idle 2D cho RateUs_anim.psd",
+  "from": "@tungtq:localhost",
+  "room": "ArtAnimVFX",
+  "thread": "$bt2pO_pJlr6pynZKfzT2v62X7D7r0huUOXMDo_ZdzyY",
+  "event": "$nPRuPzTvI2gf8MM1vV4_hpftqpEFcHYyYqvUTmNYFhQ",
+  "file": "RateUs_anim.psd",
+  "status": "dong",
+  "session": "08a79be",
+  "created": "2026-11-13 11:52",
+  "workai_issue": null,
+  "workai_asked": "2026-11-13 11:57"
+ },
+ "tung-backtoschool": {
+  "id": "tung-backtoschool",
+  "title": "Anim 2D Spine idle + active cho mascot Back to School",
+  "from": "@tungtq:localhost",
+  "room": "ArtAnimVFX",
+  "thread": "$my4vdI1MArvTD3Esi6h2xOO1Bm2DpHlhxqYmNsINYR0",
+  "event": "$WSc6DpZ0AGA7_-oq2gb9Yo-2BP4nl853RVao-eBulm0",
+  "file": "Mascot_Backtoschool.psd",
+  "project": null,
+  "status": "lam",
+  "session": "2fd4bc6",
+  "created": "2026-11-13 12:01",
+  "workai_issue": null,
+  "workai_asked": "2026-11-13 12:01"
+ }
+}
