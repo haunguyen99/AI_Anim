@@ -238,6 +238,7 @@ Các thư mục `work/boss_gaygor/blender/` (Gaygor Idle / Idle_Front / Attack /
 - Skill `/director` (`.claude/skills/director/`) → gọi tay agent Animation Director chấm một clip / rig (mốc tuỳ chọn), tự gom ảnh + số đo, báo kết quả, hỏi sửa
 - `tools/quick_sheet.py` → gộp render nhanh (`quick=F views=…`) thành 1 ảnh để tự kiểm
 | `work/rpg2_hero/` | RPG2 Hero (Assassin, song đao, 30 fps), môi trường 2026-11-09: `env.md` (đường dẫn, quy tắc, tình trạng clip), `blade_idle/` `blade_attack_1/` `blade_attack_2/` `blade_deadly_strike/` (brief.md), `gdd/`, `rig/`; file Frolvy ở `C:\Project\RPG_2\Hero\` |
+| `work/runner_hybrid/` | Runner_Hybrid / CasualRunner (2026-11-13): `README.md` (Unity `D:\Project\runner-hybrid`, file làm việc `D:\tvc_source\3D ANIM\CasualRunner\Anim\anim_hero\Hero_Nova`, GDD Lark tab Anim & VFX, quy cách hero Ranger/Druid, 5 clip Hero NOVA); Nova chưa rig |
 
 - `work/shoot_die_repeat/sdr06/_barrel/measure.py` (+ `result.txt`): đo hướng nòng súng từng frame Reload/Shoot/Idle SDR06 so với P0 (2026-11-05, việc sửa Reload London)
 - `work/shoot_die_repeat/sdr06/_barrel/fix_a_scan.py` (+ `fix_a_scan.txt`, `base_audit.py`): thử phương án A giữ nòng = P0 (xoay Wrist_R, IK tay trái), đo lệch tay trái và giới hạn khớp (2026-11-05)

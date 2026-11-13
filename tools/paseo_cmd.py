@@ -14,8 +14,10 @@ Luật chung (không commit / đẩy, không nhắn chat, không sửa ngoài th
 import os, re, subprocess, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-PASEO = r"C:\Program Files\Paseo\resources\bin\paseo.cmd"
-PROVIDER = "llmpro/claude-opus[1m]"
+_PASEO_PATHS = (r"C:\Program Files\Paseo\resources\bin\paseo.cmd",
+                os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Paseo", "resources", "bin", "paseo.cmd"))
+PASEO = next((c for c in _PASEO_PATHS if os.path.exists(c)), _PASEO_PATHS[0])
+PROVIDER = os.environ.get("PASEO_PROVIDER", "claude/claude-opus[1m]")  # máy Hậu: provider "claude" (model claude-opus[1m] qua llmpro); máy khác có thể là llmpro/...
 BRIEFS = os.path.join(ROOT, "work", "_subsessions", "paseo")
 RULES = """
 
@@ -52,7 +54,7 @@ def main():
         path = os.path.join(BRIEFS, name + ".md")
         open(path, "w", encoding="utf-8").write(body.rstrip() + RULES)
         rel = os.path.relpath(path, ROOT).replace("\\", "/")
-        prompt = f"Bạn là phiên con {name} của phiên chính, làm việc ở E:\AI Animation. Đọc file {rel} rồi làm đúng theo đó, kể cả mục LUẬT PHIÊN CON ở cuối. Bắt đầu ngay."
+        prompt = f"Bạn là phiên con {name} của phiên chính, làm việc ở {ROOT}. Đọc file {rel} rồi làm đúng theo đó, kể cả mục LUẬT PHIÊN CON ở cuối. Bắt đầu ngay."
         mode = os.environ.get("PASEO_MODE", "auto")  # mặc định Auto mode (Hậu 2026-11-13): phiên con không đứng chờ bấm Accept từng lệnh
         rc, out = run_paseo(["run", "--no-wait", "--provider", PROVIDER, "--mode", mode, "--title", name, "--cwd", ROOT, prompt])
         _, ls = run_paseo(["ls"])  # run hay trả mã 255 dù phiên đã tạo: kiểm bằng ls
