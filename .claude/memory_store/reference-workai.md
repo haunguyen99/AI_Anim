@@ -6,7 +6,7 @@ metadata:
 ---
 
 - WorkAI = company task/mission system (issues GSDR-…, IL-…, missions, workflows). UI workai.horusjsc.com, API https://workai-be.horusjsc.com (Laravel, Bearer token).
-- Token only in `tools/workai/.env` (git-ignored); never print it. Cloudflare bans the Python-urllib User-Agent, client sets its own.
+- Token only in `tools/workai/.env.<profile>` (ai|haunv, tools/identity.py; git-ignored); never print it. Cloudflare bans the Python-urllib User-Agent, client sets its own.
 - `tools/workai/workai.py get api/...` (no leading slash under Git Bash). Known: api/auth/me, api/notifications, api/missions(?page, ?assignee_id), api/missions/{id}, POST api/missions (project_id, epic_id, assignee_id, summary, description, additional_instructions), api/mission-workflows/{id}, api/issues?assignee_id=51, api/projects/81/epics.
 - User = id 51, assignee of epic 2083 "Animation chuyển đổi AI" (project 81 G - QUANLY-DIEUHANH-GAME). Anim missions: see below; session "WorkAI" (local_2d6928b4) handles workflows.
 - Session WorkAI giữ bộ canh `tools/workai_watch.py` (chạy nền; mỗi lần thoát báo người dùng ngắn gọn rồi chạy lại; `--scan` liệt kê việc liên quan). Mọi việc WorkAI do session WorkAI làm (người dùng 2026-11-04).
