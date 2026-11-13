@@ -12,3 +12,5 @@ Vũ Hữu An (@anvh) báo Hậu 2026-11-11: order anim + VFX cho game AIRPORT n�
 
 **Why:** Hiện CHƯA CÓ MODEL nên chưa làm anim được; An sẽ ping Hậu khi có model.
 **How to apply:** Chưa làm gì cho tới khi Hậu báo có model; lúc đó đọc sheet, tạo job theo workflow rig → anim. Liên quan [[project-g-lumbercity]] (cùng repo airport-tycoon).
+
+**Cập nhật 2026-11-12:** Hậu đã nhận order. Order cụ thể: https://kjpyf9h63kbl.jp.larksuite.com/sheets/DVzXsVIV3hvONHt2rmRjpBRIpud?sheet=7HmimL&rangeId=7HmimL_eF5yh53LK5 — 3 dòng: 58 thác nước (đã có asset), 59 con dê (đã có asset), 61 text New. Chưa rõ anim hay VFX từng dòng, chưa bắt đầu.

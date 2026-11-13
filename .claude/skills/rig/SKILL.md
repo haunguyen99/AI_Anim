@@ -1,6 +1,6 @@
 ---
 name: rig
-description: Gọi tool rigging Rig Lab (trang web, không Blender). Dùng khi người dùng gõ /rig, muốn rig hoặc skin một nhân vật, mở lại trang Rig Lab, hoặc đã duyệt hoặc ghi note ở các cổng của Rig Lab. Có ba chế độ: mở trang, đọc phản hồi (db), dựng nhân vật mới.
+description: "Gọi tool rigging Rig Lab (trang web, không Blender). Dùng khi người dùng gõ /rig, muốn rig hoặc skin một nhân vật, mở lại trang Rig Lab, hoặc đã duyệt hoặc ghi note ở các cổng của Rig Lab. Có ba chế độ: mở trang, đọc phản hồi (db), dựng nhân vật mới."
 ---
 
 # /rig: Rig Lab

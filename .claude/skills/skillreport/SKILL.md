@@ -27,6 +27,7 @@ Nguyên tắc:
 - Người dùng đã xoá phiên trong app thì log `.jsonl` thường **vẫn còn** ở `~/.claude/projects/<dự án>/` (Hộp quà 30/10 tìm lại được như vậy).
   Mất hẳn thì dựng lại từ sổ phiên bản Spine Live + mục Bài học trong skill + MAP + git log, và ghi rõ "không có log phiên".
 - **Phiên fork** (nhiều phiên tách từ một phiên gốc, chạy song song): mỗi log fork chép lại các lượt trước điểm fork; chạy `stats` từng phiên với `--from` = giờ fork để không đếm trùng. "Người" của các phiên song song chồng nhau: báo cáo AI gen cộng được, "người" thì không; nêu thêm "AI gen trong khoảng thời gian trôi" (vd G-LumberCity 3 g 18′ trong 2 g 24′).
+- Lượt có AI gen hàng chục giờ (vd 20:34:26, 168:20:13) là lỗi đếm: log dính sự kiện nhánh / tin nhắn chéo phiên gửi về muộn. Lấy số của bản chép lượt đó ở nhánh fork, hoặc cắt `--to` trước giờ nhắn chéo; tin `<cross-session-message>` không phải prompt của người, xếp vào "Việc khác". Dự án nhiều phiên: chạy `stats --out` từng đoạn rồi gộp theo giai đoạn bằng script riêng (mẫu `work/rpg2_hero/_review/aggregate.py`).
 - Log `.jsonl` đã bị xoá hẳn (chỉ còn `<id>.desktop-released.json` "reason: delete"): dựng lại mốc từ `git log` (giờ commit, tag duyệt, lời người dùng trích trong commit) + `director_log.md`, chỉ báo **thời gian trôi**, ghi rõ "không có log".
 - Ảnh người dùng dán (nét vẽ góp ý) nằm ở `%TEMP%/claude/<dự án>/<id phiên>/images/N.png`: dùng làm minh hoạ.
 
