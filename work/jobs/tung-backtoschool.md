@@ -22,3 +22,12 @@
 - 2026-11-13 14:14 Đã gửi vào thread: Bổ sung cho demo v4: video 30 fps, tổng 252 frame, số frame ghi góc trái trên (đếm từ 1). Frame 1-90 = idle, 91-162 = ac
 - 2026-11-13 14:14 Tiến độ 85%: Bước 4/6: v4 đã làm mượt đoạn chuyển active -> idle (tay chân hết dừng rồi bật lại) và gửi Tùng, có số frame trên hình (30fps, 252 frame: 1-90 idle, 91-162 active, 163-252 idle). Chờ góp ý. Chưa xem trên Spine thật. (dự kiến 10)
 - 2026-11-13 14:18 nhận phản hồi Hậu: chuyển active -> idle vẫn giật, cần giảm tốc từ từ (ease out)
+- 2026-11-13 14:23 Đã gửi vào thread (file demo_v5_frames.mp4): Demo v5 (30 fps, 252 frame: 1-90 idle, 91-162 active, 163-252 idle). Sửa đoạn active -> idle cho giảm tốc từ từ: ctrl hạ
+- 2026-11-13 14:23 Tiến độ 88%: Bước 4/6: v5 làm giảm tốc từ từ đoạn active -> idle (ctrl hạ theo đường giảm dần + làm mượt góc xoay cuối active), đã gửi Tùng. Chờ góp ý. Chưa xem trên Spine thật; mình đo mượt bằng tốc độ tính ra. (dự kiến 10)
+- 2026-11-13 14:25 nhận phản hồi Hậu: tách làm 2 anim (idle, active riêng), chỉ playblast anim active
+- 2026-11-13 14:25 Đã gửi vào thread (file active_v5_frames.mp4): Anim ACTIVE riêng (30 fps, 73 frame: frame 1 = F0, frame 73 = F72 trùng idle F0). Bản skeleton giờ có 2 anim tách riêng:
+- 2026-11-13 14:25 Tiến độ 88%: Bước 4/6: theo anh, đã tách 2 anim riêng (idle, active; bỏ mix khỏi bản giao) và chỉ playblast active (active_v5.mp4, 73 frame) gửi Tùng. Chờ góp ý. (dự kiến 10)
+- 2026-11-13 14:27 nhận phản hồi Hậu: Oki rồi (duyệt bản active mới nhất)
+- 2026-11-13 14:31 Trạng thái -> giao: xuất bản giao, gửi Tùng
+- 2026-11-13 14:31 Đã gửi vào thread (file Mascot_Backtoschool_giao.zip): Bản giao Mascot Back to School (Hậu đã duyệt). Gồm: export/ (Mascot_Backtoschool.json + .atlas.txt + .png theo setting e
+- 2026-11-13 14:33 Tiến độ 95%: Bước 5/6 xong: bản giao (idle + active, .spine + JSON/atlas/PNG, zip 1.8MB) đã gửi Tùng, Hậu đã duyệt. Đã ghi kiến thức (memory + skillactive/skillidle). Còn bước 6: chờ Tùng nhận bản giao rồi đóng thẻ. (dự kiến 5)

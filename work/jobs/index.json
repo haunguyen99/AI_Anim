@@ -22,14 +22,14 @@
   "event": "$WSc6DpZ0AGA7_-oq2gb9Yo-2BP4nl853RVao-eBulm0",
   "file": "Mascot_Backtoschool.psd",
   "project": null,
-  "status": "phan-hoi",
+  "status": "giao",
   "session": "2fd4bc6",
   "created": "2026-11-13 12:01",
   "workai_issue": null,
   "workai_asked": "2026-11-13 12:01",
-  "progress": "Bước 4/6: v4 đã làm mượt đoạn chuyển active -> idle (tay chân hết dừng rồi bật lại) và gửi Tùng, có số frame trên hình (30fps, 252 frame: 1-90 idle, 91-162 active, 163-252 idle). Chờ góp ý. Chưa xem trên Spine thật.",
-  "progress_at": "2026-11-13 14:14",
-  "pct": 85,
-  "eta": "10"
+  "progress": "Bước 5/6 xong: bản giao (idle + active, .spine + JSON/atlas/PNG, zip 1.8MB) đã gửi Tùng, Hậu đã duyệt. Đã ghi kiến thức (memory + skillactive/skillidle). Còn bước 6: chờ Tùng nhận bản giao rồi đóng thẻ.",
+  "progress_at": "2026-11-13 14:33",
+  "pct": 95,
+  "eta": "5"
  }
 }

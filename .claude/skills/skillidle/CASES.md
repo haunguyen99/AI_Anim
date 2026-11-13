@@ -47,6 +47,12 @@ Mỗi mục: một nhân vật đã duyệt. Đọc mục gần nhất trước 
   - giỏ `noRotationOrReflection` phải key góc thế giới;
   - key thời gian làm tròn xuống.
 
+## Cừu Back to School (6 bóng bay, vật bay kéo nhân vật) — 2026-11-13 · `work/_inbox/tung-backtoschool/spine/`
+- **Rig từ PSD** (32 layer tách sẵn, mỗi bóng gồm cả dây): `psd_extract.py` (tự đọc PSD, vì pip bị chặn) → layer PNG; `build_rig.py` dựng 45 xương + mesh weight từ alpha (lưới ô 16-20 px, weight nghịch đảo luỹ thừa 4 theo khoảng cách tới đoạn xương, tối đa 4 xương, hull dò theo biên ô) → ảnh dựng lại lệch 277 / 1,1 triệu pixel so PSD.
+- **Xương**: ctrl ở tay nắm dây (cha root xoay 0) → mỗi bóng chuỗi 3 xương `<màu>1` (từ điểm dây hội tụ) → `<màu>2` (tới nút buộc) → `<màu>3` (tới đỉnh bóng); người treo `ctrl → arm_R1 → arm_R2 → body1 → body2 / head / arm_L / leg / bag`. Đầu trục dọc mặt = 110° (đo từ mi mắt nhắm 15° / 24°).
+- **Idle 90F** (`idle_cfg.py`): ctrl ±1.5° + nhấp nhô 12 px, người treo trễ 18F (arm_R1 bù translate), chuỗi bóng = `Chain` physics mỗi bóng hz 0.68-0.95 + pha gió 0-5.5 rad, **amp 18** (200 và 30 làm bóng văng ±40-70°), chớp mắt F62. Hậu duyệt idle ngay lượt đầu.
+- **Lần sau**: bóng + dây = chain physics amp ≤ 20 (px/s²); quần / thân dưới dính hông bằng `fade`.
+
 ---
 Mẫu mục mới:
 ```

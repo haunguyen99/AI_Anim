@@ -48,6 +48,17 @@
   - nhắm mắt F20–49 (người dùng chỉnh 27 → 20, mở lại F50).
 - **Người dùng tự key**: không (sửa qua lời).
 
+## Cừu Back to School (6 bóng bay) — 2026-11-13 · `work/_inbox/tung-backtoschool/spine/`
+- **Yêu cầu** (Tùng): "Active: bay nhẹ lên lắc 1 lần như gió thổi" (idle: "lơ lửng nhẹ nhàng, các object overlapped nhẹ nhàng, nhịp có thể khác nhau nhẹ nhàng"; rig "lấy ctrl tổng từ bóng, dây, rồi kéo xương xuống người").
+- v1 (bay 90 px, gió 7°, 2-3 nhịp lắc): "idle oki, active chưa ổn lắm" (mơ hồ) → tự soi: bay quá thấp (7% chiều cao) + bóng lắc 2-3 lần = rung.
+- v2: bay 150 px có hạ lấy đà, một cú gió 9°, chuỗi bóng ít wind (0.3x lúc active) → "nhịp lắc cuối mạnh quá, thân dưới đứt rời thân trên".
+- v3: bỏ nảy lại cuối, giảm lim; quần dính hông (`fade`), bỏ body2 khỏi chain → "ổn hơn, chuyển active -> idle hơi khựng".
+- v4-v5: mục 4b (đường hạ giảm dần, BLEND rộng, giảm chấn chân tay, bỏ chain tay trái, `smooth_tail.py` σ 5.5) → "tách 2 anim, chỉ playblast active" → "Oki rồi".
+- **Giao**: idle 90F loop + active 72F một lần, 45 xương, export JSON + atlas `.atlas.txt` + PNG 2 MB + `.spine`; zip 1.8 MB gửi Tùng.
+- **Thời gian**: 5 vòng góp ý của Hậu (qua lễ tân), ~10-15 phút mỗi vòng; dựng rig + idle + active đầu ~60 phút. Người dùng tự key: không.
+- **Cấu hình chốt**: `work/_inbox/tung-backtoschool/spine/{build_rig.py, idle_cfg.py, active_cfg.py, smooth_tail.py}`; khác preset: bóng = chuỗi 3 xương, active 150 px, gió một thùy.
+- **Lần sau**: đo tốc độ cuối active trước khi gửi (mục 4b); đo chiều cao bay theo % nhân vật; lọc `animations` chỉ idle + active khi xuất.
+
 ---
 Mẫu mục mới:
 ```
