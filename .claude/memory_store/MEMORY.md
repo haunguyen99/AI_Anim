@@ -22,10 +22,10 @@
 - [Vietnamese replies](feedback-vietnamese.md) — every chat reply in Vietnamese, incl. long reports (user corrected 2026-10-21)
 - [Pole not free](feedback-pole-not-free.md) — IK poles parented (knee→foot, elbow→chest/hand), direction in key spec, pole_audit.py before render
 - [Report slow steps](feedback-report-slow-steps.md) — tell user up front when a step takes long (time + why)
+- [Report slow steps](feedback-report-slow-steps.md) — tell the user which steps take time (with rough minutes) + how to cut them
 - [One view at a time](feedback-one-view-at-a-time.md) — match/review one camera view per round, then the next
 - [Ref|Anim side by side](feedback-ref-anim-side-by-side.md) — send REF and ANIM separate, no blended overlay
-- [Intro + report decks](reference-intro-deck.md) — intro deck 'Quy trình diễn hoạt với AI' (32 slides) + report deck 'Báo cáo áp dụng AI cho diễn hoạt' (10 slides)
-- [Report slow steps](feedback-report-slow-steps.md) — tell the user which steps take time (with rough minutes) + how to cut them
+- [Intro + report decks](reference-intro-deck.md) — intro deck (32 slides), short guide "Làm anim với Claude" (8 slides), report deck (10 slides)
 - [Pose Lab FBX](project-poselab-fbx.md) — Pose Lab is a full anim tool (keys, spline, foot lock, ref, FBX) since 2026-10-23, physics layer since 2026-10-24; Walk keys still to block
 - [Walk right-view check](project-walk-right-view-check.md) — 2026-10-23 silhouette check OK, no key change; db keys newer than block_b3
 - [Playblast render size](feedback-playblast-render-size.md) — reset renderer size per cell + check one frame before ffmpeg (b10 was cropped)
@@ -91,17 +91,20 @@
 - [Keep existing keys](keep-existing-keys-when-editing.md) — Frolvy edits: never change the existing keys (f0/f8/f12…), add motion only on new inbetween frames
 - [Head aim keep roll](frolvy-head-aim-keep-roll.md) — Frolvy head-look: solve rx+ry+rz keeping base pitch/roll, never ry alone (gãy cổ); layer on/off check at key frames
 - [Báo cáo bằng lời thường](plain-language-reports.md) — nhận xét Director/QA: thấy gì → nên thấy gì → sửa hướng nào, không thuật ngữ/tên control
-- [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
+- [Paseo](reference-paseo.md) — Paseo agent app: provider llmpro → LAN proxy, command = array path to ~/.local/bin/claude.exe, restart after provider changes
 - [Frolvy layer Euler coupling](frolvy-additive-layer-euler-coupling.md) — additive layer on shoulder isn't per-channel: key whole span, re-key loop, verify muted vs on
 - [Work fast](feedback-work-fast.md) — user 2026-11-11: fewer calls (one look + one do/verify), one-step Frolvy commands `frolvy_port.py scene|keys|clear|reset`, start with `scene` (user may restart Frolvy between turns)
-- [Goat dùng rig Cow](project-goat-cow-rig.md) — Goat skin vào joint Cow, build_goat_rig.py, chưa push (2026-11-12)
-- [Intro + report decks](reference-intro-deck.md) — intro deck (32 slides), short guide "Làm anim với Claude" (8 slides), report deck (10 slides)
-- [Paseo](reference-paseo.md) — Paseo agent app: provider llmpro → LAN proxy, command = array path to ~/.local/bin/claude.exe, restart after provider changes
 - [Pets bay lơ lửng](project-pets-float.md) — Infinite Defense pets hover, không tiếp xúc đất (2026-11-11); Mecha Pup anim làm mẫu
 - [FBX Base vs anim](feedback-fbx-base-vs-anim.md) — xuất FBX: Base = xương + mesh, file anim = chỉ xương + clip, không mesh (user 2026-11-12)
 - [Pets → Unity folder](reference-pets-unity-folder.md) — đích FBX Pet: endless-kicker/Assets/_Game/Animation/New_Pet/Pet_<Tên>/; làm việc ở Ngoc/EndlessKicker/New_PET
 - [Pet FBX → Unity fixes](reference-pet-fbx-unity-fixes.md) — Frolvy FBX vỡ skin / lỗi Copy Avatar: fbx_unity_bind, fbx_add_sibling, fbx_strip_anim + kiểm bằng Unity batchmode (2026-11-12)
+- [Paseo](reference-paseo.md) — Paseo runs claude CLI via llmpro: only claude-opus/sonnet/haiku ids work (else 401), set in ~/.paseo/config.json agents.providers.claude.models; paseo restart/reload
 - [Tự sửa xoắn](feedback-self-fix-twist.md) — sửa anim gây xoắn bộ phận thì tự dò (góc xoay thế giới/frame) và sửa luôn, không đợi user báo
+- [Frolvy bind pose / empty curve](frolvy-bind-pose-and-empty-curve.md) — bind skin ở pose 0 (control posed = dính), channel hết key bị chết, joint ma khi dựng lại rig (Night Bat 2026-11-12)
+- [Xuất FBX khi chốt](feedback-export-only-on-approval.md) — nhánh Pet chỉ xuất FBX khi user bảo 'chốt'; vòng sửa/feedback không xuất (user 2026-11-13)
+- [WorkAI tự cập nhật trạng thái Pet](feedback-workai-auto-status.md) — tools/workai_pet_sync.py: In Progress khi agent chạy/có .fv, Done khi CHOT.txt (user 2026-11-13)
+- [Pet: mở file Frolvy mới](feedback-pet-open-latest-frolvy.md) — tools/pet_frolvy_tidy.py: đóng bản cũ, mở .fv mới cho user, không đóng cửa sổ có * (user 2026-11-13)
+- [Goat dùng rig Cow](project-goat-cow-rig.md) — Goat skin vào joint Cow, build_goat_rig.py, chưa push (2026-11-12)
 - [Spine feedback scope](spine-feedback-scope.md) — góp ý anim chỉ sửa anim đang mở trên Spine Live; rig / weight sửa toàn bộ anim
 - [Trial files](trial-files.md) — file thử rig / anim: trial.py new/done, ghi kết quả vào trials.md, xoá ngay khi có kết quả
 - [Spine Live in Claude only](spine-live-in-claude-only.md) — mở Spine Live chỉ trong khung trình duyệt của Claude, không ra Chrome
