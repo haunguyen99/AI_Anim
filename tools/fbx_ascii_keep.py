@@ -55,6 +55,12 @@ def keep_part(text, roots=("root",), meshes=True):
     models = [o for o in objs if o["type"] == "Model"]
     keep = set()
     todo = [o["id"] for o in models if o["name"].split("::")[-1] in roots]
+    if len(todo) > len(roots):   # deleted-and-rebuilt rigs leave zombie copies in Frolvy exports (Wind Chameleon 2026-11-12): keep the last model per root name
+        last = {}
+        for o in models:
+            n = o["name"].split("::")[-1]
+            if n in roots: last[n] = o["id"]
+        todo = list(last.values())
     if len(todo) != len(roots):
         raise SystemExit("root Model not found: %s" % (roots,))
     while todo:
