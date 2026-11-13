@@ -18,10 +18,12 @@ AI Animation là nhân viên AI của team Anim: tài khoản `@animationa:local
 1. **Nhận:** lễ tân thấy tin nhắc AI có yêu cầu việc cụ thể → kiểm không trùng thẻ → `jobs.py new` → **trả lời ngay** vào thread "đã nhận, sẽ báo kế hoạch" (không hứa hạn) → `jobs.py start` mở phiên làm → báo Hậu.
 2. **Kế hoạch (`ke-hoach`):** phiên làm tải file, đọc, viết `KE_HOACH.md`, hỏi người order các câu chặn việc **gửi thẳng vào thread** (`jobs.py say`). Báo Hậu một đoạn.
 3. **Làm (`lam`):** làm, tự kiểm kỹ.
-4. **Demo (`demo`):** gửi thẳng vào thread kèm file, tag Hậu để Hậu biết kết quả (`jobs.py say --file ... --tag-hau`).
+4. **Demo (`demo`), video luôn có số frame** (`F n / tổng`, góc trái trên, đếm từ 1; `jobs.py say` tự ghi bằng `tools/frame_burn.py`, Hậu dặn 2026-11-13) để người order góp ý đúng frame: gửi thẳng vào thread kèm file, tag Hậu để Hậu biết kết quả (`jobs.py say --file ... --tag-hau`; **SyncSketch tạm tắt**, Hậu 2026-11-13 "chưa cần"). Khi bật lại thêm `--sync`: tải video lên SyncSketch (dự án 604066, mỗi việc một review, bản mới = phiên bản mới của item) và đưa link vào tin; ghi chú trên SyncSketch đọc bằng `jobs.py notes <id>`. Cần khóa trong `tools/syncsketch/.env` (xem `.env.example`); chưa có thì chỉ gửi file vào chat.
 5. **Phản hồi (`phan-hoi`):** tin người order trong thread → lễ tân chuyển nguyên văn vào phiên làm (`paseo_cmd.py send`), báo Hậu một dòng → phiên làm ra bản mới (không ghi đè), gửi lại.
 6. **Giao (`giao`):** người order ok / xin file → xuất bản giao theo setting của Hậu, kiểm, gửi thẳng (file tối đa 10 MiB; lớn hơn thì báo Hậu).
 7. **Đóng (`dong`):** người order nhận bản giao; ghi bài học vào kiến thức.
+
+**Tiến độ (Hậu dặn 2026-11-13):** phiên làm cập nhật tiến độ mỗi khi xong / bắt đầu một bước và ít nhất mỗi ~10 phút: một dòng ngay trong phiên (bước n/6, xong gì, đang làm gì, còn gì, dự kiến), `jobs.py progress <id> "..." --pct N --eta "..."` (hiện ở `jobs.py ls`), và file `work/_inbox/<id>/TIEN_DO.md` đánh dấu [x]. Hỏi tiến độ thì đọc `jobs.py ls` / `jobs.py get <id>` trước, không phải dò nhật ký phiên.
 
 **Không cần Hậu duyệt trước khi gửi cho người order** (Hậu chọn 2026-11-13): kế hoạch, câu hỏi, demo, bản giao đều gửi thẳng vào thread; kết quả tag Hậu. Phiên làm chỉ gửi được vào thread của chính order đó (`jobs.py say` bị khóa theo thẻ).
 

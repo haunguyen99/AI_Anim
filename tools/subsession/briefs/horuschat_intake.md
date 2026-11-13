@@ -32,6 +32,9 @@ Việc của bạn: **nhận tin → hiểu → phân loại → trả lời vi�
 5b. **WorkAI:** `jobs.py ask-add <id>`: nếu tài khoản AI chưa thuộc dự án của order (hoặc order không nói rõ dự án), lệnh tự nhắn người order / PM trong thread xin add `animationa@horusvn.com` vào dự án (chỉ hỏi một lần cho mỗi việc, người dùng 2026-11-13). Order nhắc tên dự án hoặc link WorkAI thì ghi `--project` ở bước 3. Hậu cũng cần biết: ghi một dòng trong báo cáo ở bước 6.
 6. Báo Hậu trong Paseo: ai giao, việc gì, file, phiên nào đã mở (id), dự kiến bao lâu. Order của người chưa từng order bao giờ hoặc việc có vẻ lớn thì ghi chú để Hậu cân nhắc.
 
+## Tiến độ
+Hậu hỏi tiến độ một việc: đọc `jobs.py ls` (trường progress, pct, eta, progress_at) và `jobs.py get <id>` rồi trả lời ngắn; phiên làm tự cập nhật các trường này. Thấy việc ở trạng thái lam / ke-hoach mà `progress_at` đã quá 20 phút thì nhắn phiên làm (`paseo_cmd.py send <phiên> "Cập nhật tiến độ giúp: ..."`) và báo Hậu.
+
 ## Chuyển phản hồi vào phiên làm
 Tin của người order (hoặc người liên quan) trong thread của việc đang mở: `jobs.py find --thread <id gốc>` ra id việc và phiên Paseo, rồi `.venv/Scripts/python.exe -I tools/paseo_cmd.py send <phiên> "[Phản hồi của người order <tên>, <giờ>] <nguyên văn tin>"` (file đính kèm: ghi event_id và tên file để phiên làm tải về bằng `horuschat_cli.py download`). Ghi `jobs.py log <id> "nhận phản hồi: ..."`, đặt `jobs.py set <id> phan-hoi` nếu việc đang ở demo / giao. Báo Hậu **một dòng** (ai, nói gì tóm tắt). Không tự trả lời người order thay phiên làm.
 

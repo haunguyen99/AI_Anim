@@ -8,10 +8,12 @@ Mỗi order một thẻ trong work/jobs/index.json (+ nhật ký work/jobs/<id>.
   python -I tools/jobs.py find --thread <event_id>     # tìm việc theo thread / tin: in id + phiên Paseo
   python -I tools/jobs.py set <id> <trạng thái> [--session <id Paseo>] [--note "..."]
   python -I tools/jobs.py log <id> "<ghi chú>"
+  python -I tools/jobs.py progress <id> "<đang làm gì, xong gì, còn gì>" [--pct 0-100] [--eta "<dự kiến>"]   # cập nhật tiến độ (hiện ở ls, ghi vào nhật ký thẻ)
   python -I tools/jobs.py start <id>                   # dựng brief từ mẫu + tạo phiên Paseo cho việc, ghi id phiên vào thẻ
   python -I tools/jobs.py access [--project <tên>]      # dự án WorkAI mà tài khoản AI đang thuộc (có --project: báo CÓ / CHƯA)
   python -I tools/jobs.py ask-add <id>                  # AI chưa thuộc dự án của order: nhắn người order / PM trong thread xin add (chỉ hỏi một lần)
-  python -I tools/jobs.py say <id> --text "..." [--file <đường dẫn>] [--tag-hau]   # gửi vào ĐÚNG thread của order (tag người order; --tag-hau tag thêm Hậu)
+  python -I tools/jobs.py say <id> --text "..." [--file <đường dẫn>] [--tag-hau] [--no-burn] [--sync]   # file video (mp4/mov/webm) tự được ghi số frame lên hình (tools/frame_burn.py) trước khi gửi; --no-burn để gửi nguyên bản   # --sync: tải video lên review SyncSketch của việc (mỗi việc một review, bản mới = phiên bản mới) và đưa link vào tin
+  python -I tools/jobs.py notes <id>                    # đọc ghi chú / bình luận trên SyncSketch của việc   # gửi vào ĐÚNG thread của order (tag người order; --tag-hau tag thêm Hậu)
 
 `say` chỉ gửi được vào thread / phòng ghi trong thẻ (phiên làm việc không gửi lung tung được). Danh tính HorusChat theo tools/identity.py.
 """
@@ -111,7 +113,7 @@ def main():
     elif cmd == "ls":
         for jid, c in d.items():
             if "--all" in a or c["status"] in OPEN:
-                out({k: c.get(k) for k in ("id", "status", "title", "from", "session", "thread")})
+                out({k: c.get(k) for k in ("id", "status", "title", "from", "session", "progress", "pct", "eta", "progress_at")})
     elif cmd == "get":
         out(need(d, a[0]))
     elif cmd == "find":
@@ -134,6 +136,21 @@ def main():
         save(d)
         log(jid, f"Trạng thái -> {st}" + (f": {opt(a, '--note')}" if "--note" in a else ""))
         out(c)
+    elif cmd == "progress":
+        jid = a.pop(0)
+        c = need(d, jid)
+        pct, eta = opt(a, "--pct"), opt(a, "--eta")
+        text = " ".join(a).strip()
+        if not text:
+            sys.exit("progress <id> \"<nội dung>\" [--pct N] [--eta ...]")
+        c["progress"], c["progress_at"] = text, time.strftime("%Y-%m-%d %H:%M")
+        if pct is not None:
+            c["pct"] = int(pct)
+        if eta:
+            c["eta"] = eta
+        save(d)
+        log(jid, "Tiến độ" + (f" {c['pct']}%" if pct is not None else "") + f": {text}" + (f" (dự kiến {eta})" if eta else ""))
+        out({"id": jid, "progress": text, "pct": c.get("pct"), "eta": c.get("eta")})
     elif cmd == "log":
         need(d, a[0])
         log(a[0], " ".join(a[1:]))
@@ -195,11 +212,54 @@ def main():
             log(jid, "Đã xin PM add AI Animation vào dự án WorkAI")
         else:
             sys.exit(p.returncode)
+    elif cmd == "notes":
+        c = need(d, a[0])
+        if not c.get("sync_item"):
+            sys.exit("Việc này chưa tải lên SyncSketch (chưa có item).")
+        p = subprocess.run([PY, "-I", os.path.join(ROOT, "tools", "syncsketch", "ss.py"), "notes", str(c["sync_item"])],
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT)
+        print((p.stdout or "").strip() or (p.stderr or "").strip() or "(chưa có ghi chú)")
     elif cmd == "say":
         jid = a.pop(0)
         c = need(d, jid)
         text, fp = opt(a, "--text", ""), opt(a, "--file")
         tag_hau = "--tag-hau" in a
+        if fp and os.path.splitext(fp)[1].lower() in (".mp4", ".mov", ".webm", ".mkv", ".avi") and "--no-burn" not in a:
+            send_dir = os.path.join(ROOT, "work", "_inbox", jid, "send")
+            os.makedirs(send_dir, exist_ok=True)
+            burned = os.path.join(send_dir, os.path.splitext(os.path.basename(fp))[0] + "_frames.mp4")
+            bp = subprocess.run([PY, "-I", os.path.join(ROOT, "tools", "frame_burn.py"), fp, burned],
+                                capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT)
+            if bp.returncode == 0 and os.path.isfile(burned):
+                try:
+                    nfr = json.loads(bp.stdout.strip().splitlines()[-1])
+                    note = f"Video có số frame ở góc trái trên (F 1 / {nfr['frames']}, {nfr['fps']:g} fps): bạn ghi frame số mấy cần chỉnh để mình sửa đúng chỗ."
+                except (ValueError, KeyError, IndexError):
+                    note = "Video có số frame ở góc trái trên: bạn ghi frame số mấy cần chỉnh để mình sửa đúng chỗ."
+                text = (text + chr(10) if text else "") + note
+                fp = burned
+            else:
+                print("Không ghi được số frame (gửi bản gốc):", (bp.stderr or bp.stdout).strip()[:200])
+        if "--sync" in a:
+            if not fp:
+                sys.exit("--sync cần --file <video>")
+            ss = [PY, "-I", os.path.join(ROOT, "tools", "syncsketch", "ss.py"), "upload", jid, fp, "--name", os.path.basename(fp)]
+            if c.get("sync_item"):
+                ss += ["--parent", str(c["sync_item"])]
+            sp = subprocess.run(ss, capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT)
+            if sp.returncode != 0:
+                print("Tải lên SyncSketch lỗi (vẫn gửi file vào chat):", (sp.stderr or sp.stdout).strip()[:300])
+            else:
+                try:
+                    info = json.loads(sp.stdout.strip().splitlines()[-1])
+                    c["sync_review"], c["sync_url"] = info.get("review_id"), info.get("review_url")
+                    if info.get("item_id"):
+                        c["sync_item"] = info["item_id"]
+                    save(d)
+                    text = (text + chr(10) if text else "") + f"Xem và ghi chú trên SyncSketch: {info.get('review_url')}"
+                    log(jid, f"Tải lên SyncSketch review {info.get('review_id')} item {info.get('item_id')}")
+                except (ValueError, IndexError):
+                    print("Không đọc được kết quả SyncSketch:", sp.stdout.strip()[:200])
         mentions = [m for m in (c.get("from"), HAU if tag_hau else None) if m]
         base = [PY, "-I", os.path.join(ROOT, "tools", "horuschat_cli.py")]
         if fp:
