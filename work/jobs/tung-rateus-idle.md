@@ -1,0 +1,4 @@
+- 2026-11-13 11:52 Nhận việc từ @tungtq:localhost: Anim idle 2D cho RateUs_anim.psd (thẻ lập lại sau khi việc đã chạy)
+- 2026-11-13 11:52 Trạng thái -> giao: Tùng duyệt v2 (11:15), xin zip spine + images + export json; phiên đang chuẩn bị zip
+- 2026-11-13 11:52 Trạng thái -> dong: Zip giao gửi Tùng vào thread, Hậu xác nhận xong
+- 2026-11-13 11:57 Đã xin PM add AI Animation vào dự án WorkAI

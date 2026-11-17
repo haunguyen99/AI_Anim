@@ -1,0 +1,33 @@
+- 2026-11-13 12:01 Nhận việc từ @tungtq:localhost: Anim 2D Spine idle + active cho mascot Back to School
+- 2026-11-13 12:01 Đã xin PM add AI Animation vào dự án WorkAI
+- 2026-11-13 12:01 Mở phiên Paseo 2fd4bc6
+- 2026-11-13 12:07 nhận phản hồi: Tùng nói thử nghiệm, làm đi, chưa cần add dự án WorkAI
+- 2026-11-13 12:22 Trạng thái -> ke-hoach: đã tải PSD, đang đọc layer
+- 2026-11-13 12:24 Đã gửi vào thread: Tùng ơi, mình nhận file PSD rồi: 6 bóng + cừu cầm dây, đã tách sẵn 32 layer nên rig được ngay. Cách làm: ctrl tổng ở bó 
+- 2026-11-13 12:24 Trạng thái -> lam: kế hoạch xong, bắt đầu dựng rig
+- 2026-11-13 12:46 Trạng thái -> demo: demo v1 gửi Tùng
+- 2026-11-13 12:46 Đã gửi vào thread (file demo_v1.mp4): Tùng ơi, demo v1 đây (11 giây): idle loop 3s chạy 2 vòng -> active (bay nhẹ lên, 1 cú gió lắc, hạ về) -> idle lại. Rig: 
+- 2026-11-13 12:46 Tiến độ 60%: Đã tải PSD, kế hoạch gửi Tùng, dựng rig 45 xương, có anim idle (3s) + active (2,4s) + mix; đang sửa bộ render demo và tự kiểm (dự kiến khoảng 15-30 phút nữa ra demo)
+- 2026-11-13 12:46 Tiến độ 60%: Bước 3/6 xong: demo v1 đã gửi Tùng; đang chờ Tùng góp ý. Chưa kiểm trong Spine thật. (dự kiến 15)
+- 2026-11-13 12:47 Tiến độ 65%: Bước 4/6 đang chờ Tùng góp ý demo v1. Trong lúc chờ đã thử thật bằng Spine CLI: import ra .spine và export JSON + atlas OK (2 MB, đủ 3 anim idle/active/mix). Chưa xem trên runtime thật. (dự kiến 15)
+- 2026-11-13 13:45 nhận phản hồi Hậu: idle ok, active chưa ổn
+- 2026-11-13 13:45 Trạng thái -> phan-hoi
+- 2026-11-13 13:50 Đã gửi vào thread (file demo_v2.mp4): Demo v2 (8 giây: idle -> active -> idle). Idle giữ nguyên bản đã ok. Active sửa theo góp ý 'chưa ổn': bay cao rõ hơn (90
+- 2026-11-13 13:50 Tiến độ 75%: Bước 4/6: đã sửa active theo góp ý của anh (v2: bay cao 150px, 1 cú gió, bóng bớt rung) và gửi lại Tùng. Đang chờ góp ý tiếp. Chưa xem trên Spine thật. (dự kiến 10)
+- 2026-11-13 13:57 nhận phản hồi Hậu: nhịp lắc cuối của active mạnh quá; thân dưới đứt rời thân trên lúc chuyển động
+- 2026-11-13 14:06 Đã gửi vào thread (file demo_v3.mp4): Demo v3 (8 giây: idle -> active -> idle). Sửa theo góp ý: (1) nhịp lắc cuối: bỏ cú nảy lại, hạ về chậm và êm hơn, thân/đ
+- 2026-11-13 14:06 Tiến độ 80%: Bước 4/6: v3 đã sửa theo góp ý của anh (lắc cuối êm, thân dưới dính thân trên) và gửi Tùng. Chờ góp ý tiếp. Chưa xem trên Spine thật. v3 gửi trước khi có luật --sync nên chưa lên SyncSketch. (dự kiến 10)
+- 2026-11-13 14:09 nhận phản hồi Hậu: active ổn hơn; đoạn chuyển active -> idle hơi khựng, cần mượt hơn
+- 2026-11-13 14:14 Đã gửi vào thread (file demo_v4_frames.mp4): Demo v4 (8 giây: idle -> active -> idle). Sửa đoạn chuyển active -> idle cho mượt: trước đây tay và chân dừng lại rồi lạ
+- 2026-11-13 14:14 Đã gửi vào thread: Bổ sung cho demo v4: video 30 fps, tổng 252 frame, số frame ghi góc trái trên (đếm từ 1). Frame 1-90 = idle, 91-162 = ac
+- 2026-11-13 14:14 Tiến độ 85%: Bước 4/6: v4 đã làm mượt đoạn chuyển active -> idle (tay chân hết dừng rồi bật lại) và gửi Tùng, có số frame trên hình (30fps, 252 frame: 1-90 idle, 91-162 active, 163-252 idle). Chờ góp ý. Chưa xem trên Spine thật. (dự kiến 10)
+- 2026-11-13 14:18 nhận phản hồi Hậu: chuyển active -> idle vẫn giật, cần giảm tốc từ từ (ease out)
+- 2026-11-13 14:23 Đã gửi vào thread (file demo_v5_frames.mp4): Demo v5 (30 fps, 252 frame: 1-90 idle, 91-162 active, 163-252 idle). Sửa đoạn active -> idle cho giảm tốc từ từ: ctrl hạ
+- 2026-11-13 14:23 Tiến độ 88%: Bước 4/6: v5 làm giảm tốc từ từ đoạn active -> idle (ctrl hạ theo đường giảm dần + làm mượt góc xoay cuối active), đã gửi Tùng. Chờ góp ý. Chưa xem trên Spine thật; mình đo mượt bằng tốc độ tính ra. (dự kiến 10)
+- 2026-11-13 14:25 nhận phản hồi Hậu: tách làm 2 anim (idle, active riêng), chỉ playblast anim active
+- 2026-11-13 14:25 Đã gửi vào thread (file active_v5_frames.mp4): Anim ACTIVE riêng (30 fps, 73 frame: frame 1 = F0, frame 73 = F72 trùng idle F0). Bản skeleton giờ có 2 anim tách riêng:
+- 2026-11-13 14:25 Tiến độ 88%: Bước 4/6: theo anh, đã tách 2 anim riêng (idle, active; bỏ mix khỏi bản giao) và chỉ playblast active (active_v5.mp4, 73 frame) gửi Tùng. Chờ góp ý. (dự kiến 10)
+- 2026-11-13 14:27 nhận phản hồi Hậu: Oki rồi (duyệt bản active mới nhất)
+- 2026-11-13 14:31 Trạng thái -> giao: xuất bản giao, gửi Tùng
+- 2026-11-13 14:31 Đã gửi vào thread (file Mascot_Backtoschool_giao.zip): Bản giao Mascot Back to School (Hậu đã duyệt). Gồm: export/ (Mascot_Backtoschool.json + .atlas.txt + .png theo setting e
+- 2026-11-13 14:33 Tiến độ 95%: Bước 5/6 xong: bản giao (idle + active, .spine + JSON/atlas/PNG, zip 1.8MB) đã gửi Tùng, Hậu đã duyệt. Đã ghi kiến thức (memory + skillactive/skillidle). Còn bước 6: chờ Tùng nhận bản giao rồi đóng thẻ. (dự kiến 5)
