@@ -16,7 +16,10 @@ import os, re, subprocess, sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 _PASEO_PATHS = (r"C:\Program Files\Paseo\resources\bin\paseo.cmd",
                 os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Paseo", "resources", "bin", "paseo.cmd"))
-PASEO = next((c for c in _PASEO_PATHS if os.path.exists(c)), _PASEO_PATHS[0])
+if os.name != "nt":  # Linux / Mac: paseo trong PATH hoặc ~/.local/bin
+    import shutil
+    _PASEO_PATHS = (shutil.which("paseo") or "", os.path.expanduser("~/.local/bin/paseo")) + _PASEO_PATHS
+PASEO = next((c for c in _PASEO_PATHS if c and os.path.exists(c)), _PASEO_PATHS[0])
 PROVIDER = os.environ.get("PASEO_PROVIDER", "claude/claude-opus[1m]")  # máy Hậu: provider "claude" (model claude-opus[1m] qua llmpro); máy khác có thể là llmpro/...
 BRIEFS = os.path.join(ROOT, "work", "_subsessions", "paseo")
 RULES = """
