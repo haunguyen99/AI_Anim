@@ -1,0 +1,119 @@
+<title>Giờ làm thực Pet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Bố cục: một cột đọc theo mẫu skillreport; số liệu đầu trang, định nghĩa tính / không tính, bảng phiên có thanh AI / người, bảng giai đoạn Pet 25 */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2530; --muted: #5b6676; --line: #dde2e8;
+  --accent: #b27a00; --accent-soft: #fbefcf; --pink: #c94a6c; --pink-soft: #fbe3ea;
+  --ok: #2e7d4f; --ok-soft: #e1f2e7;
+  --f-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6 }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px }
+h1 { font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 700 }
+h2 { font-size: 21px; margin: 0 0 14px; text-wrap: balance; font-weight: 700 }
+h3 { font-size: 16px; margin: 0; font-weight: 600 }
+p { margin: 0 }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 10px }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600 }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 22px }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 4px; align-content: start }
+.stat b { font-family: var(--f-mono); font-size: 26px; font-weight: 600; line-height: 1.2 }
+.stat span { color: var(--muted); font-size: 13.5px }
+.warn { background: var(--pink-soft); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin-top: 16px; font-size: 14px; max-width: 80ch }
+.warn b { color: var(--pink) }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0 }
+.panel ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 8px }
+.panel.plus h3 { color: var(--ok) } .panel.minus h3 { color: var(--pink) }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; white-space: nowrap }
+tr:last-child td { border-bottom: 0 }
+td.r, th.r { text-align: right }
+tr.nolog td { color: var(--muted); font-style: italic }
+.bar { display: flex; height: 10px; border-radius: 3px; overflow: hidden; min-width: 140px; background: var(--line) }
+.bar i { display: block; height: 100% }
+.bar .g { background: var(--accent) } .bar .h { background: var(--pink) }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 10px }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px }
+.note { font-size: 13.5px; color: var(--muted); margin-top: 10px; max-width: 80ch }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Infinite Defense · Pet mới · thời gian làm thực</div>
+  <h1>AI và người làm thực bao lâu trên các phiên Pet</h1>
+  <p class="lead">Chỉ cộng lúc AI đang làm và lúc người đang xem, sửa, góp ý. Bỏ hết thời gian chờ, nghỉ, qua đêm và khoảng giữa các phiên. Số lấy từ log phiên Claude trên máy Linux, ngày 16–17/11/2026.</p>
+  <div class="stats">
+    <div class="stat"><b>3 g 20′</b><span>tổng thời gian làm thực của 4 phiên có log (200.3 phút)</span></div>
+    <div class="stat"><b>102.7′</b><span>AI làm (51%)</span></div>
+    <div class="stat"><b>97.6′</b><span>người làm: xem kết quả, sửa tay, viết góp ý (49%)</span></div>
+    <div class="stat"><b>2 g 15′</b><span>riêng Pet 25 Chrono Ouroboros ngày 17/11, từ rig tới chốt 3 FBX</span></div>
+  </div>
+  <div class="warn"><b>Pet 11–23 không đo được.</b> Log phiên Claude của các pet này ghi trên máy Windows (11–14/11), và máy đó không còn, nên mất hẳn số phút AI làm và người làm. Phần tham khảo duy nhất còn lại là giờ ước lượng trên WorkAI: tổng 18,4 giờ cho 11 pet này (1,3–2,5 giờ mỗi con), là số dự kiến, không phải số đo.</div>
+</header>
+
+<section>
+  <h2>Tính gì, bỏ gì</h2>
+  <div class="two">
+    <div class="panel plus"><h3>Tính</h3><ul>
+      <li><b>AI làm:</b> từ lúc gửi prompt tới tin nhắn cuối của AI trong lượt.</li>
+      <li><b>Người làm:</b> từ lúc AI trả lời xong tới prompt kế tiếp, khi khoảng này ≤ 15 phút: xem kết quả, sửa tay trong Frolvy, viết góp ý.</li>
+    </ul></div>
+    <div class="panel minus"><h3>Không tính</h3><ul>
+      <li>Khoảng giữa hai lượt dài hơn 15 phút: chờ, nghỉ, làm việc khác.</li>
+      <li>Lúc AI chờ người trả lời câu hỏi.</li>
+      <li>Thời gian qua đêm và khoảng giữa các phiên.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Theo phiên</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Phiên</th><th class="r">Lượt</th><th class="r">AI làm</th><th class="r">Người làm</th><th class="r">Tổng thực</th><th class="r">Bỏ (chờ / nghỉ)</th><th>AI / người (thang 140′)</th></tr></thead>
+    <tbody>
+      <tr><td>Pet 25 Chrono Ouroboros v2 · 17/11</td><td class="r num">22</td><td class="r num">82.3′</td><td class="r num">52.7′</td><td class="r num"><b>135.0′</b></td><td class="r num">263.5′</td><td><div class="bar"><i class="g" style="width:59%"></i><i class="h" style="width:38%"></i></div></td></tr>
+      <tr><td>WorkAI điều phối pet · 16–17/11</td><td class="r num">21</td><td class="r num">14.0′</td><td class="r num">21.0′</td><td class="r num"><b>35.0′</b></td><td class="r num">23 g 21′</td><td><div class="bar"><i class="g" style="width:10%"></i><i class="h" style="width:15%"></i></div></td></tr>
+      <tr><td>Pet 16 Wind Chameleon · 17/11</td><td class="r num">7</td><td class="r num">6.2′</td><td class="r num">23.9′</td><td class="r num"><b>30.1′</b></td><td class="r num">49.9′</td><td><div class="bar"><i class="g" style="width:4%"></i><i class="h" style="width:17%"></i></div></td></tr>
+      <tr><td>Pet 25 Chrono Ouroboros gốc · 16/11</td><td class="r num">1</td><td class="r num">0.2′</td><td class="r num">0′</td><td class="r num"><b>0.2′</b></td><td class="r num">0′</td><td><div class="bar"><i class="g" style="width:0.5%"></i></div></td></tr>
+      <tr><td><b>Tổng có log</b></td><td class="r num"><b>51</b></td><td class="r num"><b>102.7′</b></td><td class="r num"><b>97.6′</b></td><td class="r num"><b>200.3′</b></td><td></td><td></td></tr>
+      <tr class="nolog"><td>Pet 11–23 · 11–14/11</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">mất log</td><td class="r">—</td><td>WorkAI ước lượng 18,4 g</td></tr>
+    </tbody>
+  </table></div>
+  <div class="legend"><span><i style="background:var(--accent)"></i>AI làm</span><span><i style="background:var(--pink)"></i>Người làm</span></div>
+  <p class="note">Pet 25 v2 bỏ 6 khoảng chờ / nghỉ, dài nhất 1 giờ 42 lúc trưa. WorkAI bỏ 23 giờ 21, phần lớn là qua đêm 16 → 17/11. Pet 16 không làm anim mới, phiên chỉ kiểm mesh, UV và texture.</p>
+</section>
+
+<section>
+  <h2>Pet 25 v2 theo giai đoạn</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Giai đoạn</th><th class="r">AI làm</th><th class="r">Người làm</th><th class="r">Tổng thực</th><th>AI / người (thang 40′)</th></tr></thead>
+    <tbody>
+      <tr><td>Rig v2 + dựng lại idle / attack</td><td class="r num">6.0′</td><td class="r num">0′</td><td class="r num">6.0′</td><td><div class="bar"><i class="g" style="width:15%"></i></div></td></tr>
+      <tr><td>Rig v3 (22 joint)</td><td class="r num">5.3′</td><td class="r num">2.2′</td><td class="r num">7.5′</td><td><div class="bar"><i class="g" style="width:13%"></i><i class="h" style="width:6%"></i></div></td></tr>
+      <tr><td>Pose idle (người tự sửa pose cuối)</td><td class="r num">16.6′</td><td class="r num">23.2′</td><td class="r num">39.8′</td><td><div class="bar"><i class="g" style="width:42%"></i><i class="h" style="width:58%"></i></div></td></tr>
+      <tr><td>Idle v12 → v14</td><td class="r num">12.2′</td><td class="r num">10.4′</td><td class="r num">22.6′</td><td><div class="bar"><i class="g" style="width:31%"></i><i class="h" style="width:26%"></i></div></td></tr>
+      <tr><td>Attack v3 → v6</td><td class="r num">24.8′</td><td class="r num">12.7′</td><td class="r num">37.5′</td><td><div class="bar"><i class="g" style="width:62%"></i><i class="h" style="width:32%"></i></div></td></tr>
+      <tr><td>Chốt + xuất 3 FBX</td><td class="r num">4.3′</td><td class="r num">2.7′</td><td class="r num">7.0′</td><td><div class="bar"><i class="g" style="width:11%"></i><i class="h" style="width:7%"></i></div></td></tr>
+      <tr><td>Việc khác (chép file, git push)</td><td class="r num">13.0′</td><td class="r num">1.4′</td><td class="r num">14.4′</td><td><div class="bar"><i class="g" style="width:33%"></i><i class="h" style="width:4%"></i></div></td></tr>
+      <tr><td><b>Tổng</b></td><td class="r num"><b>82.3′</b></td><td class="r num"><b>52.7′</b></td><td class="r num"><b>135.0′</b></td><td></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Phần anim thuần (bỏ "Việc khác"): 120.6′, tức 2 giờ 01, gồm AI 69.3′ và người 51.3′. Lúc người tự sửa pose idle trong Frolvy (11:44 → 11:54) chỉ được tính 6.8′, là phần nằm giữa hai prompt; phần còn lại không đo được từ log.</p>
+</section>
+
+</div>
