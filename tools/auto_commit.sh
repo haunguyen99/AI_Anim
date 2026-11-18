@@ -9,7 +9,7 @@ flock -n 9 || { echo "$(date '+%F %T') ban: dang chay" >> "$LOG"; exit 0; }
 {
   echo "== $(date '+%F %T')"
   [ -e .git/index.lock ] && { echo "git dang ban (index.lock), bo qua"; exit 0; }
-  git add -A -- . ':!work/store/_sys/watch' ':!work/store/_sys/auto_commit.log'
+  git add -A -- . ':!work/store/_sys/watch'
   if git diff --cached --quiet; then
     echo "khong co thay doi"
   else
