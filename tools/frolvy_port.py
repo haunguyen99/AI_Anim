@@ -21,7 +21,7 @@ import os
 import subprocess
 import sys
 
-EXE = r"C:\Program Files\Frolvy\Frolvy-mcp.exe"
+EXE = r"C:\Program Files\Frolvy\Frolvy-mcp.exe" if os.name == "nt" else os.path.expanduser("~/.local/share/frolvy/Frolvy-mcp")  # Linux: AppImage dir
 
 
 def call(port, code, timeout=900):
@@ -68,6 +68,8 @@ def ops_code(cmd, args):
 
 def window_title(port):
     """Title of the Frolvy window that owns this MCP port: the open scene, `*` = unsaved changes."""
+    if os.name != "nt":
+        return None  # window titles are read on Windows only
     import ctypes
     user32 = ctypes.windll.user32
     found = []

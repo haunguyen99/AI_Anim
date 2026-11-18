@@ -21,8 +21,23 @@ Cờ tắt: work/store/_sys/watch/tro_ly_off (có file = tắt; ensure / systemd
 """
 import json, os, signal, subprocess, sys, time
 
-os.environ["AI_PROFILE"] = "haunv"  # trước khi nạp identity / client
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+
+def _owner():
+    """Danh tính của chủ trợ lý: biến TRO_LY_OWNER > file tools/.tro_ly_owner (riêng từng máy, git-ignored) > haunv."""
+    v = os.environ.get("TRO_LY_OWNER", "").strip()
+    if not v:
+        try:
+            v = open(os.path.join(ROOT, "tools", ".tro_ly_owner"), encoding="utf8").read().strip()
+        except OSError:
+            pass
+    return (v or "haunv").lower()
+
+
+OWNER = _owner()
+OWNER_NAME = "Hậu" if OWNER == "haunv" else OWNER  # tên gọi chủ trong brief / tin nhắn
+os.environ["AI_PROFILE"] = OWNER  # trước khi nạp identity / client
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 sys.path.insert(0, os.path.join(ROOT, "tools", "horuschat_mcp"))
 import identity  # noqa: E402,F401
@@ -35,13 +50,13 @@ TODO = os.path.join(ROOT, "work", "assistant", "todo.json")
 NAME = "tro-ly"
 MARK = "🤖"
 BRIEF = os.path.join(ROOT, "tools", "subsession", "briefs", "tro_ly_ca_nhan.md")
-WORKAI_ENV = os.path.join(ROOT, "tools", "workai", ".env.haunv")
-DAEMONS = {  # bộ canh nền của haunv dùng tên file gốc (không hậu tố)
-    "horuschat": ("horuschat_daemon.py", os.path.join(DIR, "horuschat_daemon.lock")),
-    "workai": ("workai_daemon.py", os.path.join(DIR, "workai_daemon.lock")),
+WORKAI_ENV = os.path.join(ROOT, "tools", "workai", ".env." + OWNER)
+DAEMONS = {  # haunv giữ tên file gốc, danh tính khác có hậu tố _<tên> (identity.state_path)
+    "horuschat": ("horuschat_daemon.py", identity.state_path(os.path.join(DIR, "horuschat_daemon.lock"))),
+    "workai": ("workai_daemon.py", identity.state_path(os.path.join(DIR, "workai_daemon.lock"))),
 }
 NUDGE = ("Phiên vừa được bật lại. Tiếp tục vai trợ lý cá nhân: chạy tro_ly.py todo ls, rồi vòng lặp tro_ly.py wait kèm "
-         "kiểm hộp thư haunv như brief. Không trả lời lại tin cũ đã xử lý.")
+         "kiểm hộp thư " + OWNER + " như brief. Không trả lời lại tin cũ đã xử lý.")
 
 
 def out(o):
@@ -140,7 +155,7 @@ def self_room(hc, set_to=None):
             jsave(STATE, st)
             return r["room_id"], me
     sys.exit("Chưa tìm thấy phòng You (phòng chỉ có mình bạn). Mở HorusChat tạo / nhắn vào \"You (yourself)\" một tin, "
-             "hoặc chỉ tay: tro_ly.py room --set <room_id>  (xem phòng: horuschat_cli.py --profile haunv rooms)")
+             "hoặc chỉ tay: tro_ly.py room --set <room_id>  (xem phòng: horuschat_cli.py --profile <chủ> rooms)")
 
 
 def owner_msgs(hc, rid, limit=50):
@@ -249,7 +264,7 @@ def keys_missing():
     try:
         from horuschat_mcp.client import load_env
         if not load_env().get("HORUSCHAT_API_KEY"):
-            miss.append(f"HorusChat (điền HORUSCHAT_API_KEY vào tools/horuschat_mcp/.env.haunv)")
+            miss.append(f"HorusChat (điền HORUSCHAT_API_KEY vào tools/horuschat_mcp/.env.{OWNER})")
     except Exception:
         miss.append("HorusChat")
     ok = False
@@ -260,7 +275,7 @@ def keys_missing():
     except OSError:
         pass
     if not ok:
-        miss.append("WorkAI (điền WORKAI_TOKEN vào tools/workai/.env.haunv)")
+        miss.append(f"WorkAI (điền WORKAI_TOKEN vào tools/workai/.env.{OWNER})")
     return miss
 
 
@@ -269,7 +284,7 @@ def start_daemons():
     for key, (script, lock) in DAEMONS.items():
         if daemon_pid(lock):
             continue
-        cmd = [sys.executable, "-I", os.path.join(ROOT, "tools", script), "--profile", "haunv"]
+        cmd = [sys.executable, "-I", os.path.join(ROOT, "tools", script), "--profile", OWNER]
         kw = {"creationflags": 0x08000000} if os.name == "nt" else {"start_new_session": True}
         subprocess.Popen(cmd, cwd=ROOT, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kw)
         started.append(key)
@@ -300,7 +315,8 @@ def ensure_session():
     if live:
         paseo_cmd.run_paseo(["send", "--no-wait", live[0]["shortId"], NUDGE])
         return "đã đánh thức: " + live[0]["shortId"]
-    body = open(BRIEF, encoding="utf-8").read()
+    body = open(BRIEF, encoding="utf-8").read().replace("assistant.py", "tro_ly.py")
+    body = body.replace("haunv", OWNER).replace("Hậu", OWNER_NAME)
     if os.name != "nt":
         body = ("> Máy Linux: thay mọi `.venv/Scripts/python.exe` bằng `python3` (vẫn có -I). Dự án: %s.\n\n" % ROOT
                 + body.replace(".venv/Scripts/python.exe", "python3"))
@@ -326,7 +342,7 @@ def cmd_on(args):
     quiet, nod = flag(args, "--quiet"), flag(args, "--no-daemons")
     miss = keys_missing()
     if miss:
-        sys.exit("Chưa bật được, thiếu khoá của tài khoản haunv: " + "; ".join(miss) + ". (Không dán khoá vào chat, điền thẳng vào file.)")
+        sys.exit("Chưa bật được, thiếu khoá của tài khoản " + OWNER + ": " + "; ".join(miss) + ". (Không dán khoá vào chat, điền thẳng vào file.)")
     if os.path.exists(OFF):
         os.remove(OFF)
     d = [] if nod else start_daemons()
@@ -356,7 +372,8 @@ def cmd_status(args):
     live = mine(ag) if ag is not None else None
     r = {"cờ tắt": os.path.exists(OFF),
          "phiên": "Paseo chưa chạy" if live is None else ([f"{a['shortId']} {a['status']}" for a in live] or "chưa có"),
-         "bộ canh nền haunv": {k: bool(daemon_pid(l)) for k, (_, l) in DAEMONS.items()},
+         "chủ": OWNER,
+         "bộ canh nền": {k: bool(daemon_pid(l)) for k, (_, l) in DAEMONS.items()},
          "thiếu khoá": keys_missing() or "không"}
     try:
         rid, me = self_room(HorusChat())
