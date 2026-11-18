@@ -121,3 +121,4 @@
 - [Tùng RateUs idle](project-tung-rateus-idle.md) — idle 2D RateUs_anim v2 (120F) duyệt + zip giao gửi Tùng 2026-11-13; bài học cắt chong chóng, ffmpeg, sendfile
 - [Tùng Back to School](project-tung-backtoschool.md) — idle+active 2D Spine cừu 6 bóng 2026-11-13 duyệt, zip giao; bài học chuyển active->idle giảm tốc (smooth_tail), bóng+dây physics
 - [Claude log backup](reference-claude-log-backup.md) — log phiên Claude + Paseo sao lưu mỗi giờ sang DataHDD/claude_log_backup (2026-11-18); /skillreport tìm ở đây khi thiếu log
+- [Trợ lý ngocvb trên Linux](project-assistant-ngocvb-linux.md) — /assistant: chủ cấu hình qua tools/.tro_ly_owner, phòng You không tên cần room --set (2026-11-18)
