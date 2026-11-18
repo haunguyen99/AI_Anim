@@ -1,0 +1,38 @@
+{
+ "summary": {
+  "turns": 1,
+  "first": "2026-10-30 08:15:56",
+  "last": "2026-10-30 08:16:15",
+  "gen": "0:20",
+  "gen_min": 0.3,
+  "human": "0:00",
+  "human_min": 0.0,
+  "answer_wait": "0:00",
+  "present": "0:20",
+  "breaks": [],
+  "versions_ai": 0,
+  "versions_user": 0
+ },
+ "turns": [
+  {
+   "n": 1,
+   "start": "2026-10-30 08:15:56",
+   "end": "08:16:15",
+   "gen_s": 20,
+   "wait_s": 0,
+   "human_after_s": 0,
+   "break_after": false,
+   "images": 0,
+   "prompt": "bật môi trường /studio",
+   "ai_last": "",
+   "tools": {
+    "Skill": 1,
+    "mcp__Claude_Browser__preview_start": 1,
+    "PowerShell": 1
+   },
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  }
+ ]
+}

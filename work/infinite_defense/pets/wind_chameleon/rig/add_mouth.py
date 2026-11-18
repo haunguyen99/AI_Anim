@@ -1,0 +1,12 @@
+# Adds DEF_Mouth_M + CTL_Mouth_M to an already built rig (same steps as build_rig.py, for one joint). Run once, then skin.py.
+if "DEF_Mouth_M" in api.ls("Joint"): raise SystemExit("already there")
+p = (0, .335, .45)
+api.select([]); j = api.create_joint(); api.select([]); api.move(j, *p); api.parent(j, "DEF_Head_M"); api.rename(j, "DEF_Mouth_M")
+try: api.set_joint_label("DEF_Mouth_M", "centre", "mouth")
+except Exception as e: print("label", e)
+c = api.create_circle(.06, "z"); api.move(c, *p); g = api.create_group(); api.move(g, *p); api.parent(c, g)
+api.rename(c, "CTL_Mouth_M"); api.rename(g, "CTL_Mouth_M_grp"); api.set_curve_color("CTL_Mouth_M", 1, .9, .1)
+api.parent("CTL_Mouth_M_grp", "CTL_Head_M")
+api.select(["CTL_Mouth_M", "DEF_Mouth_M"]); api.constrain("parent", True); api.select([])
+api.lock_channels("CTL_Mouth_M", "sx sy sz", False)
+print(len(api.ls("Joint")), len(api.ls("Curve")), api.check_rig())

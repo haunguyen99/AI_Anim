@@ -1,0 +1,5 @@
+api.set_frame(0)
+api.set_attr("CTL_TailFan.fan", -1.0); print("fan -1 grp rz:", api.get_attr("CTL_Tail5_1_L_grp.rz"), api.get_attr("CTL_Tail3_1_R_grp.rz"))
+api.set_attr("CTL_TailFan.fan", -0.5); print("fan -.5:", api.get_attr("CTL_Tail5_1_L_grp.rz"))
+api.set_attr("CTL_TailFan.fan", 0.0); print("fan 0:", api.get_attr("CTL_Tail5_1_L_grp.rz"))
+api.set_frame(0)

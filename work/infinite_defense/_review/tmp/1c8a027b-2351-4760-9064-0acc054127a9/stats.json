@@ -1,0 +1,34 @@
+{
+ "summary": {
+  "turns": 1,
+  "first": "2026-11-05 15:14:41",
+  "last": "2026-11-05 15:14:41",
+  "gen": "0:00",
+  "gen_min": 0.0,
+  "human": "0:00",
+  "human_min": 0.0,
+  "answer_wait": "0:00",
+  "present": "0:00",
+  "breaks": [],
+  "versions_ai": 0,
+  "versions_user": 0
+ },
+ "turns": [
+  {
+   "n": 1,
+   "start": "2026-11-05 15:14:41",
+   "end": "15:14:41",
+   "gen_s": 0,
+   "wait_s": 0,
+   "human_after_s": 0,
+   "break_after": false,
+   "images": 0,
+   "prompt": "UnityProject:",
+   "ai_last": "",
+   "tools": {},
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  }
+ ]
+}

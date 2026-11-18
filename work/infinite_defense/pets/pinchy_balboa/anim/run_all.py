@@ -1,0 +1,11 @@
+exec(open(r"C:\Users\Admin\Documents\AI_animation\work\infinite_defense\pets\pinchy_balboa\anim\make_clips.py").read())
+ns['build'](api); finish("Idle", 48)
+clear(30); g['build'](api); finish("Attack", 30)
+api.set_frame_range(0, 30)
+for f in range(0, 31):
+    api.set_frame(f)
+    for c in ALL: api.rotate(c, 0, 0, 0); api.move(c, 0, 0, 0)
+    api.select(ALL); api.set_key()
+api.set_frame(1); api.set_frame(0); api.set_frame_range(0, 1)
+print('base export', api.export_scene(D + r"\raw_Base.fbx", 'fbx', True, 0, 1, 30))
+api.set_frame_range(0, 30)

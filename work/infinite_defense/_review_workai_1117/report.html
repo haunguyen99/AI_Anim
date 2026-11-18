@@ -1,0 +1,209 @@
+<title>Báo cáo WorkAI Pet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Bố cục: một cột đọc, khối số liệu đầu trang, bảng phiên, bảng giai đoạn, dòng thời gian, lưới ảnh, can thiệp, mạnh / yếu (mẫu skillreport) */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2530; --muted: #5b6676; --line: #dde2e8;
+  --accent: #b27a00; --accent-soft: #fbefcf; --pink: #c94a6c; --pink-soft: #fbe3ea;
+  --ok: #2e7d4f; --ok-soft: #e1f2e7; --shot: #1e2433;
+  --f-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; --shot: #1e2433; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; --shot: #1e2433; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6 }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px }
+h1 { font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 700 }
+h2 { font-size: 21px; margin: 0 0 14px; text-wrap: balance; font-weight: 700 }
+h3 { font-size: 16px; margin: 0; font-weight: 600 }
+p { margin: 0 }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 10px }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600 }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 22px }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 4px; align-content: start }
+.stat b { font-family: var(--f-mono); font-size: 26px; font-weight: 600; line-height: 1.2 }
+.stat span { color: var(--muted); font-size: 13.5px }
+.warn { background: var(--pink-soft); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin-top: 16px; font-size: 14px; max-width: 80ch }
+.warn b { color: var(--pink) }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; white-space: nowrap }
+tr:last-child td { border-bottom: 0 }
+td.r, th.r { text-align: right }
+.bar { display: flex; height: 10px; border-radius: 3px; overflow: hidden; min-width: 140px; background: var(--line) }
+.bar i { display: block; height: 100% }
+.bar .g { background: var(--accent) } .bar .h { background: var(--pink) }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 10px }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px }
+.note { font-size: 13.5px; color: var(--muted); margin-top: 10px; max-width: 80ch }
+.chip { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; white-space: nowrap; font-weight: 500 }
+.c-fix { background: var(--pink-soft); color: var(--pink) }
+.c-new { background: var(--accent-soft); color: var(--accent) }
+.c-ok { background: var(--ok-soft); color: var(--ok) }
+.shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px }
+.shot { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; margin: 0 }
+.shot img { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; display: block; background: var(--shot) }
+.shot.wide { grid-column: 1 / -1 }
+.shot.wide img { aspect-ratio: auto; max-height: 300px }
+.shot .cap { padding: 12px 14px 14px; display: grid; gap: 6px; align-content: start; font-size: 14px }
+.shot .cap .meta { font-size: 12.5px; color: var(--muted); font-family: var(--f-mono) }
+.shot .cap p { color: var(--muted) }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0 }
+.panel ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 8px }
+.panel.plus h3 { color: var(--ok) } .panel.minus h3 { color: var(--pink) }
+.steps { display: grid; gap: 10px }
+.step { display: grid; grid-template-columns: 150px 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
+.step > * { min-width: 0 }
+.step .k { font-weight: 600 }
+.step .k small { display: block; font-weight: 400; color: var(--muted); font-family: var(--f-mono); font-size: 12px }
+@media (max-width: 560px) { .step { grid-template-columns: 1fr; gap: 4px } h1 { font-size: 25px } }
+a { color: var(--accent) }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Đánh giá phiên làm việc AI · Frolvy 3D · 16–17/11/2026</div>
+  <h1>WorkAI và Pet 25 Chrono Ouroboros: từ rig thân thẳng tới rồng cuộn tròn quanh đồng hồ cát</h1>
+  <p class="lead">Gồm phiên điều phối WorkAI và 3 phiên con do WorkAI mở trong Paseo (Pet 25 v2, Pet 16, Pet 25 gốc), trên máy Linux. Số liệu lấy từ log hội thoại Claude bằng <span class="num">tools/report/session_stats.py</span>.</p>
+  <div class="stats">
+    <div class="stat"><b>~3 giờ 20</b><span>thời gian làm việc thực của 4 phiên: AI gen + người xem và góp ý (bỏ các khoảng nghỉ trên 15 phút)</span></div>
+    <div class="stat"><b>103 phút</b><span>AI gen, trong đó Pet 25 v2 chiếm 82 phút</span></div>
+    <div class="stat"><b>51 lượt</b><span>prompt trên 4 phiên; riêng Pet 25 v2 có 22 lượt, rig → pose → idle → attack → chốt</span></div>
+    <div class="stat"><b>1 lần sửa tay</b><span>người tự sửa pose idle trong Frolvy, sau 4 lượt AI chưa ra đúng dáng vòng</span></div>
+  </div>
+  <div class="warn"><b>Thiếu dữ liệu Pet 11–23.</b> Các pet này làm trên máy Windows từ 11/11 đến 14/11, nhưng log phiên của máy đó chưa có trên máy này. Báo cáo chỉ dùng kết quả cuối của chúng: 12 pet đã chốt, đủ 36 FBX, 6 issue WorkAI chuyển sang Done.</div>
+</header>
+
+<section>
+  <h2>Thời gian theo phiên</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Phiên</th><th>Khi nào</th><th class="r">Lượt</th><th class="r">AI gen</th><th class="r">Người</th><th>Tỉ lệ (thang 85′)</th></tr></thead>
+    <tbody>
+      <tr><td>Pet 25 Chrono Ouroboros v2</td><td class="num">17/11 09:07 – 15:46</td><td class="r num">22</td><td class="r num">82.3′</td><td class="r num">52.7′</td><td><div class="bar"><i class="g" style="width:97%"></i><i class="h" style="width:3%"></i></div></td></tr>
+      <tr><td>WorkAI (điều phối)</td><td class="num">16/11 17:24 – 17/11 17:21</td><td class="r num">21</td><td class="r num">14.0′</td><td class="r num">21.0′</td><td><div class="bar"><i class="g" style="width:16%"></i><i class="h" style="width:25%"></i></div></td></tr>
+      <tr><td>Pet 16 Wind Chameleon</td><td class="num">17/11 14:22 – 15:42</td><td class="r num">7</td><td class="r num">6.2′</td><td class="r num">23.9′</td><td><div class="bar"><i class="g" style="width:7%"></i><i class="h" style="width:28%"></i></div></td></tr>
+      <tr><td>Pet 25 Chrono Ouroboros (gốc)</td><td class="num">16/11 17:16</td><td class="r num">1</td><td class="r num">0.2′</td><td class="r num">0′</td><td><div class="bar"><i class="g" style="width:0.5%"></i></div></td></tr>
+      <tr><td><b>Tổng</b></td><td></td><td class="r num"><b>51</b></td><td class="r num"><b>102.7′</b></td><td class="r num"><b>97.6′</b></td><td></td></tr>
+    </tbody>
+  </table></div>
+  <div class="legend"><span><i style="background:var(--accent)"></i>AI gen</span><span><i style="background:var(--pink)"></i>Người xem kết quả + viết góp ý (khoảng giữa hai prompt, chỉ tính khi ≤ 15 phút)</span></div>
+  <p class="note">Thanh của Pet 25 v2 bị cắt ở 85′ (AI gen 82.3′ + người 52.7′ vượt thang). Pet 16 không làm anim: phiên chỉ kiểm mesh mới, UV và texture, rồi chờ người sửa rig thành v2. Pet 25 bản gốc nhận việc rồi dừng; việc chuyển sang phiên v2.</p>
+</section>
+
+<section>
+  <h2>Pet 25 v2 theo giai đoạn</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Giai đoạn</th><th class="r">Lượt</th><th class="r">AI gen</th><th class="r">Người</th><th>Tỉ lệ (thang 40′)</th></tr></thead>
+    <tbody>
+      <tr><td>Rig v2 + dựng lại idle v7 / attack v2</td><td class="r num">1</td><td class="r num">6.0′</td><td class="r num">0′</td><td><div class="bar"><i class="g" style="width:15%"></i></div></td></tr>
+      <tr><td>Rig v3 (22 joint)</td><td class="r num">2</td><td class="r num">5.3′</td><td class="r num">2.2′</td><td><div class="bar"><i class="g" style="width:13%"></i><i class="h" style="width:6%"></i></div></td></tr>
+      <tr><td>Pose idle (v8 → v11, director, người tự sửa)</td><td class="r num">4</td><td class="r num">16.6′</td><td class="r num">23.2′</td><td><div class="bar"><i class="g" style="width:42%"></i><i class="h" style="width:58%"></i></div></td></tr>
+      <tr><td>Idle (v12 → v14)</td><td class="r num">5</td><td class="r num">12.2′</td><td class="r num">10.4′</td><td><div class="bar"><i class="g" style="width:31%"></i><i class="h" style="width:26%"></i></div></td></tr>
+      <tr><td>Attack (v3 → v6)</td><td class="r num">4</td><td class="r num">24.8′</td><td class="r num">12.7′</td><td><div class="bar"><i class="g" style="width:62%"></i><i class="h" style="width:32%"></i></div></td></tr>
+      <tr><td>Chốt + xuất 3 FBX + dọn thư mục</td><td class="r num">2</td><td class="r num">4.3′</td><td class="r num">2.7′</td><td><div class="bar"><i class="g" style="width:11%"></i><i class="h" style="width:7%"></i></div></td></tr>
+      <tr><td>Việc khác (chép sang tvc_source, git push, hỏi FBX rig)</td><td class="r num">4</td><td class="r num">13.0′</td><td class="r num">1.4′</td><td><div class="bar"><i class="g" style="width:33%"></i><i class="h" style="width:4%"></i></div></td></tr>
+      <tr><td><b>Tổng</b></td><td class="r num"><b>22</b></td><td class="r num"><b>82.3′</b></td><td class="r num"><b>52.7′</b></td><td></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Ngoài thời gian trên có 6 khoảng nghỉ trên 15 phút, dài nhất là 1 giờ 42 lúc trưa (11:58 → 13:40). Tính cả nghỉ thì phiên kéo dài 6 giờ 38. Riêng "Việc khác" có 11.5′ gen cho lần git push tới <span class="num">git.horusent.com</span>, nhưng không đẩy được vì máy chưa lưu mật khẩu.</p>
+</section>
+
+<section>
+  <h2>22 lượt của Pet 25 v2, gom theo thay đổi</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Giờ</th><th>Người yêu cầu</th><th>AI thay đổi</th><th class="r">Gen</th></tr></thead>
+    <tbody>
+      <tr><td class="num">09:07</td><td>WorkAI giao việc: làm tiếp Pet 25</td><td><span class="chip c-new">mới</span> Idle v7 và attack v2 trên rig v2 (16 joint), thân thẳng uốn sóng S. Không giống concept vòng tròn</td><td class="r num">6.0′</td></tr>
+      <tr><td class="num">09:58</td><td>Rig thế nào để thể hiện pose idle này đẹp nhất? (kèm ảnh)</td><td>Đề xuất rig v3 nhiều xương hơn, chưa làm</td><td class="r num">0.6′</td></tr>
+      <tr><td class="num">10:00</td><td>"được, rig thành bản v3"</td><td><span class="chip c-new">mới</span> Rig v3: 22 joint, mỗi khớp gập khoảng 18° khi cuộn đủ vòng; pose vòng đầu tiên</td><td class="r num">4.7′</td></tr>
+      <tr><td class="num">11:01</td><td>Pose idle theo ref đã gửi</td><td><span class="chip c-new">mới</span> Pose v8, 1 key ở frame 0</td><td class="r num">3.6′</td></tr>
+      <tr><td class="num">11:05</td><td>Gọi director ra kiểm pose</td><td>Director: <b>Cần sửa</b>. Đầu quay ngược vào tâm vòng, cằm không gác lên vành, pose phẳng</td><td class="r num">3.4′</td></tr>
+      <tr><td class="num">11:10</td><td>Sửa theo director</td><td><span class="chip c-fix">sửa</span> Pose v9, v10: ngửa đầu, dời đồng hồ cát, đầu ra trước 17 cm; director: "Duyệt kèm chỉnh nhỏ"</td><td class="r num">5.6′</td></tr>
+      <tr><td class="num">11:29</td><td>"t thấy chưa tròn đâu"</td><td><span class="chip c-fix">sửa</span> Pose v11: các khớp nằm trên đường tròn bán kính 0,54 m, lệch tối đa 3 mm (v10 lệch ±5 cm)</td><td class="r num">4.0′</td></tr>
+      <tr><td class="num">11:41</td><td>Tiến hành làm idle lơ lửng → "dùng pose t đã sửa"</td><td>Không tìm thấy pose người sửa, vì người chưa lưu file</td><td class="r num">6.1′</td></tr>
+      <tr><td class="num">11:54</td><td>Người tự sửa pose trong Frolvy rồi lưu; "dùng pose đó làm idle"</td><td><span class="chip c-new">mới</span> Idle v12: 72F, lơ lửng khoảng 5 cm, chuyển động số 8, frame 0 khớp 100% pose của người</td><td class="r num">3.5′</td></tr>
+      <tr><td class="num">13:40</td><td>Không cho đồng hồ quay</td><td><span class="chip c-fix">sửa</span> Idle v13</td><td class="r num">1.2′</td></tr>
+      <tr><td class="num">13:43</td><td>Đồng hồ nhấp nhô như đang bay</td><td><span class="chip c-ok">duyệt</span> Idle v14 (bản chốt)</td><td class="r num">1.4′</td></tr>
+      <tr><td class="num">13:46</td><td>Lưu, làm attack</td><td><span class="chip c-new">mới</span> Attack v3</td><td class="r num">3.4′</td></tr>
+      <tr><td class="num">13:50</td><td>Attack chỉ cần rồng quay 1 vòng quanh đồng hồ, đồng hồ vẫn lơ lửng</td><td><span class="chip c-new">làm lại</span> Attack v4, 40F</td><td class="r num">4.0′</td></tr>
+      <tr><td class="num">14:03</td><td>Cho quay có sức sống, hiện đang đơ</td><td><span class="chip c-fix">sửa</span> Attack v5: dồn lực 2 đợt, thân lượn, vòng co dãn 7%. <b>Người không dùng</b></td><td class="r num">13.9′</td></tr>
+      <tr><td class="num">14:19</td><td>Bỏ v5, dùng v4, làm mềm F32 → F40</td><td><span class="chip c-ok">duyệt</span> Attack v6 (bản chốt)</td><td class="r num">3.6′</td></tr>
+      <tr><td class="num">14:43</td><td>"chốt", rồi chỉ giữ file chốt</td><td><span class="chip c-ok">giao</span> 3 FBX (Base, Idle 72F, Attack 40F), <span class="num">CHOT.txt</span>; các bản cũ chuyển vào Thùng rác</td><td class="r num">4.3′</td></tr>
+      <tr><td class="num">15:13</td><td>Mesh mới, chép sang tvc_source, git push, hỏi FBX rig</td><td>Mesh đã là bản mới nhất; chép 7 file khớp từng byte; push thất bại vì chưa có mật khẩu</td><td class="r num">13.0′</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Ảnh các bản thay đổi lớn</h2>
+  <p class="lead" style="margin:0 0 16px">Không có video. Frolvy không có sổ phiên bản như Spine Live, và các bản trung gian đã bị dọn khi chốt. Ảnh dưới đây là ảnh viewport AI chụp để tự kiểm trong lúc làm.</p>
+  <div class="shots">
+    <figure class="shot"><img src="v/00_ref.png" alt="Concept rồng tím cuộn tròn quanh đồng hồ cát" loading="lazy"><figcaption class="cap"><h3>Concept</h3><span class="meta">người gửi · lượt 2</span><p>Rồng cuộn tròn quanh đồng hồ cát, đầu ở trên-trái, cằm gác lên vành.</p></figcaption></figure>
+    <figure class="shot"><img src="v/01_idle_v7_rigv2.png" alt="Idle v7 trên rig v2, thân rồng nằm thẳng" loading="lazy"><figcaption class="cap"><h3>Idle v7 trên rig v2</h3><span class="meta">lượt 1 · 09:11</span><p>Thân thẳng, uốn sóng S. Đi theo hướng cũ, không giống concept.</p></figcaption></figure>
+    <figure class="shot"><img src="v/02_rigv3_vong.png" alt="Rig v3 cuộn thành vòng quanh đồng hồ cát" loading="lazy"><figcaption class="cap"><h3>Rig v3, pose vòng đầu tiên</h3><span class="meta">lượt 3 · 10:03</span><p>22 joint. Vòng đã thành hình nhưng đầu chĩa lên, vòng chưa khép.</p></figcaption></figure>
+    <figure class="shot"><img src="v/03_pose_v8.png" alt="Pose idle v8" loading="lazy"><figcaption class="cap"><h3>Pose idle v8</h3><span class="meta">lượt 4 · 11:04</span><p>Bản đưa cho director. Director bắt lỗi đầu quay ngược vào tâm vòng.</p></figcaption></figure>
+    <figure class="shot"><img src="v/04_pose_v10.png" alt="Pose v10 sau khi sửa theo director" loading="lazy"><figcaption class="cap"><h3>Pose v10 theo director</h3><span class="meta">lượt 6 · 11:12</span><p>Đầu ngửa ra, đồng hồ dời gần đầu. Người thấy vòng vẫn chưa tròn.</p></figcaption></figure>
+    <figure class="shot"><img src="v/05_pose_v11.png" alt="Pose v11 vòng tròn đều" loading="lazy"><figcaption class="cap"><h3>Pose v11 tròn</h3><span class="meta">lượt 7 · 11:32</span><p>Khớp nằm trên đường tròn 0,54 m, lệch 3 mm. Người vẫn tự sửa tiếp.</p></figcaption></figure>
+    <figure class="shot"><img src="v/06_idle_v12.png" alt="Idle v12 dựng từ pose người sửa" loading="lazy"><figcaption class="cap"><h3>Idle v12 từ pose của người</h3><span class="meta">lượt 10 · 11:57</span><p>Vòng xoay ra camera, dời về giữa. 72F, lơ lửng, chuyển động số 8.</p></figcaption></figure>
+    <figure class="shot wide"><img src="v/08_attack_v4.png" alt="Các frame chính của attack v4" loading="lazy"><figcaption class="cap"><h3>Attack v4: rồng quay 1 vòng</h3><span class="meta">lượt 14 · 13:53</span><p>Bản người chọn làm nền cho bản chốt v6, sau khi bỏ v5.</p></figcaption></figure>
+    <figure class="shot wide"><img src="v/09_attack_v5.png" alt="Các frame chính của attack v5" loading="lazy"><figcaption class="cap"><h3>Attack v5: bản bị bỏ</h3><span class="meta">lượt 15 · 14:16 · gen 13.9′</span><p>Dồn lực, lượn thân, co dãn vòng. Lượt dài nhất phiên, người không dùng.</p></figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Người vẫn phải làm gì</h2>
+  <p class="lead" style="margin:0 0 16px">Ở Pet 25, người vừa đạo diễn vừa sửa tay. Mọi lỗi về hình dáng và cảm giác chuyển động đều do người hoặc director chỉ ra trước.</p>
+  <div class="steps">
+    <div class="step"><div class="k">Đổi hướng rig<small>lượt 2–3 · 2.2′</small></div><p>Nhận ra rig v2 thân thẳng không làm được pose vòng như concept, và yêu cầu dựng rig v3.</p></div>
+    <div class="step"><div class="k">Gọi director<small>lượt 5 · 1.3′</small></div><p>Tự đề nghị gọi director kiểm pose. Director bắt được lỗi đầu quay ngược mà AI chưa thấy.</p></div>
+    <div class="step"><div class="k">Phát hiện lỗi hình<small>lượt 7 · 8.1′</small></div><p>Chỉ ra vòng chưa tròn. AI đo lại mới thấy lệch ±5 cm.</p></div>
+    <div class="step"><div class="k">Tự sửa pose<small>11:44 – 11:54</small></div><p>Mở Frolvy, xoay vòng ra camera, dời về giữa, chỉnh xoắn thân và đuôi, rồi lưu đè lên <span class="num">idle_v11_pose.fv</span>. Đây là pose cuối cùng được dùng cho cả idle và attack.</p></div>
+    <div class="step"><div class="k">Đạo diễn chuyển động<small>lượt 11–16 · 26.6′</small></div><p>Không cho đồng hồ quay, cho đồng hồ nhấp nhô, attack chỉ quay 1 vòng, bỏ v5 quay lại v4, chỉ đúng đoạn F32 → F40 cần mềm hơn.</p></div>
+    <div class="step"><div class="k">Còn lại<small>chưa làm</small></div><p>Bấm Push trong GitHub Desktop cho <span class="num">tvc_source</span>, và mở Unity nhập thử 36 FBX trong <span class="num">Pet_NEW</span> (GEK-2370 có ghi "nhập thử").</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Điểm mạnh và điểm yếu của AI</h2>
+  <div class="two">
+    <div class="panel plus"><h3>Mạnh</h3><ul>
+      <li>Rig v3 với 22 joint, 22 control FK trong 4.7′, check_rig sạch; rig v2 giữ nguyên.</li>
+      <li>Khi được chỉ ra lỗi, tìm được nguyên nhân bằng số đo và đưa độ lệch khỏi đường tròn từ ±5 cm xuống 3 mm.</li>
+      <li>Loop và nối khít: idle f72 = f0, attack f0 = f40 = pose của người, mesh lệch 0.</li>
+      <li>Sửa nhỏ nhanh: bỏ quay đồng hồ 1.2′, cho đồng hồ nhấp nhô 1.4′.</li>
+      <li>Director có cấu trúc: bảng giống / khác ref, có mức độ và cách sửa.</li>
+      <li>WorkAI kiểm cấu trúc FBX 12 pet trong 32 giây, phát hiện socket đạn của Pet 12 tên <span class="num">Muzzle</span>, khác các pet còn lại.</li>
+      <li>WorkAI tích Done 6 issue (GEK-2358, 2366, 2367, 2369, 2370, 2273), sau đó cả nhóm Pet là Done.</li>
+    </ul></div>
+    <div class="panel minus"><h3>Yếu</h3><ul>
+      <li>Lượt đầu làm tiếp trên rig cũ thân thẳng, không đối chiếu concept vòng tròn: mất 6′ và người phải hỏi mới đổi hướng.</li>
+      <li>Không tự thấy lỗi hình: đầu quay ngược do director bắt, vòng chưa tròn do người bắt. Pose idle mất 4 lượt và 40′ của cả hai bên, cuối cùng người vẫn sửa tay.</li>
+      <li>Attack v5 tốn 13.9′ (lượt dài nhất) cho một bản người bỏ.</li>
+      <li>Không playblast lần nào. Chỉ đo số và xem vài ảnh viewport, hầu hết câu trả lời ghi "chưa playblast".</li>
+      <li>Khi chốt, Base mới ghi đè file model gốc cùng tên (77 KB). Bản sao chỉ nằm trong <span class="num">/tmp</span>, khởi động lại máy là mất.</li>
+      <li>11.5′ cho git push thất bại vì máy chưa lưu mật khẩu, lẽ ra nên hỏi người trước.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Sự cố trong phiên</h2>
+  <p class="note" style="margin:0">Lúc 16:32–16:33 ngày 17/11, thư mục <span class="num">DataHDD/AI_animation</span> và <span class="num">DataHDD/Horus/tvc_source</span> trên ổ HDD bị chuyển vào Thùng rác, trong lúc dự án đang được chép sang SSD. WorkAI mất 9.2′ gen và người mất 12.2′ để xử lý: khôi phục <span class="num">tvc_source</span>, khôi phục 359 file script, báo cáo và memory của pet vào bản SSD, rồi nối lại WorkAI từ <span class="num">/home/ngocvb/Projects/AI_animation</span>. File anim và FBX đã chốt không mất.</p>
+</section>
+
+<section>
+  <h2>Cách tính</h2>
+  <p class="note" style="margin:0">Thời gian AI gen = từ lúc gửi prompt tới tin nhắn cuối của AI trong lượt đó. Thời gian người = khoảng giữa lúc AI trả lời xong và prompt kế tiếp, chỉ tính khi ≤ 15 phút (dài hơn coi là nghỉ). Tin nhắn giao việc WorkAI gửi sang phiên con cũng được đếm là một lượt. Giờ theo giờ Việt Nam. Log dùng: Pet 25 v2 <span class="num">f77de0d4</span>, WorkAI <span class="num">7fa5a05b</span>, Pet 16 <span class="num">cb3e9e69</span>, Pet 25 gốc <span class="num">8a059edb</span>. Bản đầy đủ: <span class="num">work/infinite_defense/_review_workai_1117/BAO_CAO.md</span>.</p>
+</section>
+
+</div>

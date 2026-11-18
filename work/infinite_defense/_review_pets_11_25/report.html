@@ -1,0 +1,166 @@
+<title>Thời gian Pet 11–25</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Bố cục: một cột đọc theo mẫu skillreport; đầu trang số liệu, cảnh báo thiếu log, biểu đồ lịch theo ngày làm việc, bảng, nhận xét, Pet 25 */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2530; --muted: #5b6676; --line: #dde2e8; --grid: #eef1f4;
+  --accent: #b27a00; --accent-soft: #fbefcf; --pink: #c94a6c; --pink-soft: #fbe3ea;
+  --ok: #2e7d4f; --ok-soft: #e1f2e7;
+  --f-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440; --grid: #212833;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161c; --surface: #1a2029; --fg: #e6eaf0; --muted: #9aa5b4; --line: #2c3440; --grid: #212833;
+  --accent: #f0b939; --accent-soft: #3a2f14; --pink: #f08aa6; --pink-soft: #3d2029; --ok: #6fcf97; --ok-soft: #173326; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6 }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px }
+h1 { font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 700 }
+h2 { font-size: 21px; margin: 0 0 14px; text-wrap: balance; font-weight: 700 }
+p { margin: 0 }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 10px }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600 }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 22px }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 4px; align-content: start }
+.stat b { font-family: var(--f-mono); font-size: 26px; font-weight: 600; line-height: 1.2 }
+.stat span { color: var(--muted); font-size: 13.5px }
+.warn { background: var(--pink-soft); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin-top: 16px; font-size: 14px; max-width: 80ch }
+.warn b { color: var(--pink) }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; white-space: nowrap }
+tr:last-child td { border-bottom: 0 }
+td.r, th.r { text-align: right }
+.note { font-size: 13.5px; color: var(--muted); margin-top: 10px; max-width: 80ch }
+a { color: var(--accent) }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+/* biểu đồ lịch */
+.gantt { min-width: 760px; padding: 14px 16px 10px; display: grid; grid-template-columns: 150px repeat(5, 1fr); row-gap: 6px; font-size: 13px }
+.gantt .day { color: var(--muted); font-size: 12px; text-align: center; border-left: 1px solid var(--line); padding-bottom: 4px }
+.gantt .name { padding-right: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; align-self: center }
+.gantt .cell { position: relative; height: 18px; border-left: 1px solid var(--line); background: var(--grid) }
+.gantt .seg { position: absolute; top: 3px; bottom: 3px; border-radius: 3px; background: var(--accent) }
+.gantt .seg.vague { background: repeating-linear-gradient(45deg, var(--accent) 0 4px, var(--accent-soft) 4px 8px) }
+.gantt .chot { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--ok); border-radius: 2px }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 10px }
+.legend i { display: inline-block; width: 12px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px }
+.panel ul { margin: 0; padding-left: 18px; display: grid; gap: 8px }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Infinite Defense · Pet mới · 11–17/11/2026</div>
+  <h1>Thời gian làm 12 pet, từ Pet 11 Mecha Pup tới Pet 25 Chrono Ouroboros</h1>
+  <p class="lead">Mỗi pet gồm rig, skin, Idle, Attack và 3 FBX cho Unity, làm trong Frolvy với Claude. Mốc lấy từ WorkAI, file làm việc của từng pet và file <span class="num">CHOT.txt</span>.</p>
+  <div class="stats">
+    <div class="stat"><b>12 pet</b><span>đã chốt, đủ 36 FBX trong Unity <span class="num">Pet_NEW</span>, 12 issue WorkAI Done</span></div>
+    <div class="stat"><b>5 ngày</b><span>làm việc: giao 11/11 16:01, chốt con cuối 17/11 14:46 (bỏ cuối tuần 15–16/11)</span></div>
+    <div class="stat"><b>20,7 giờ</b><span>tổng giờ ước lượng ghi trên WorkAI cho 12 issue (1,3–2,5 giờ mỗi pet)</span></div>
+    <div class="stat"><b>4 pet</b><span>xong trong một buổi (Pet 14, 17, 18, 19): 4 g 51′ đến 6 g 12′ tính theo lịch</span></div>
+  </div>
+  <div class="warn"><b>Chưa tách được AI gen và người làm cho Pet 11–23.</b> Log phiên Claude của các pet này nằm ở máy Windows (11–14/11), chưa chép sang máy này. Báo cáo chỉ có mốc lịch. Riêng Pet 25 có log ngày 17/11 nên có số theo phút. Chép log sang thì làm lại được bản đo đầy đủ.</div>
+</header>
+
+<section>
+  <h2>Lịch làm từng pet</h2>
+  <div class="scroll"><div class="gantt" id="gantt" role="img" aria-label="Biểu đồ lịch làm từng pet theo ngày làm việc 11, 12, 13, 14 và 17 tháng 11, mỗi cột từ 8 giờ tới 18 giờ"></div></div>
+  <div class="legend"><span><i style="background:var(--accent)"></i>Từ file làm việc đầu tiên tới lúc chốt</span><span><i style="background:repeating-linear-gradient(45deg,var(--accent) 0 4px,var(--accent-soft) 4px 8px)"></i>Có làm, không rõ giờ</span><span><i style="background:var(--ok);width:4px"></i>Chốt</span></div>
+  <p class="note">Mỗi cột là một ngày làm việc từ 8:00 tới 18:00. Thanh tính theo lịch, gồm cả lúc chờ người xem và lúc phiên AI chạy song song, nên không phải số giờ làm thực. Pet 11, 12, 13, 16 có cùng giờ chốt 15:38 ngày 13/11 vì được chốt hàng loạt bằng công cụ, không phải giờ xong thật.</p>
+</section>
+
+<section>
+  <h2>Bảng mốc</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Pet</th><th>Issue</th><th>Bắt đầu</th><th>Chốt</th><th>Khoảng lịch</th><th class="r">Ước lượng</th></tr></thead>
+    <tbody id="tbl"></tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Nhận xét</h2>
+  <div class="panel"><ul>
+    <li><b>Làm song song nhiều pet.</b> Sáng 13/11 mở cùng lúc Pet 17, 18, 19, đầu chiều thêm 22 và 23, trong khi 11, 15, 16 đang chốt. Một người theo dõi 5–6 phiên AI cùng lúc.</li>
+    <li><b>Pet "một buổi".</b> Pet 14, 17, 18, 19 đi từ file đầu tiên tới chốt trong một buổi, gồm rig, skin, Idle, Attack và xuất 3 FBX.</li>
+    <li><b>Pet tốn vòng sửa nhất.</b> Pet 17 Pinchy Balboa: tay cua tách khỏi găng, 7 vòng sửa skin, có vòng người tự bind lại skin; chốt Idle v7, Attack v9. Pet 23 Kitsune: rig 73 joint, Attack sửa tới v4 (đuôi cụp). Pet 25 Chrono: đổi rig v2 sang v3, người tự sửa pose idle; chốt Idle v14, Attack v6.</li>
+    <li><b>Chưa so được với ước lượng WorkAI</b> (20,7 giờ cho 12 pet), vì chưa có số giờ làm thực của Pet 11–23.</li>
+  </ul></div>
+</section>
+
+<section>
+  <h2>Pet 25 ngày 17/11 (có log)</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Giai đoạn</th><th class="r">Lượt</th><th class="r">AI gen</th><th class="r">Người</th></tr></thead>
+    <tbody>
+      <tr><td>Rig v2 + dựng lại idle / attack</td><td class="r num">1</td><td class="r num">6.0′</td><td class="r num">0′</td></tr>
+      <tr><td>Rig v3 (22 joint)</td><td class="r num">2</td><td class="r num">5.3′</td><td class="r num">2.2′</td></tr>
+      <tr><td>Pose idle (người tự sửa pose cuối)</td><td class="r num">4</td><td class="r num">16.6′</td><td class="r num">23.2′</td></tr>
+      <tr><td>Idle v12 → v14</td><td class="r num">5</td><td class="r num">12.2′</td><td class="r num">10.4′</td></tr>
+      <tr><td>Attack v3 → v6</td><td class="r num">4</td><td class="r num">24.8′</td><td class="r num">12.7′</td></tr>
+      <tr><td>Chốt + xuất 3 FBX</td><td class="r num">2</td><td class="r num">4.3′</td><td class="r num">2.7′</td></tr>
+      <tr><td>Việc khác (chép file, git push)</td><td class="r num">4</td><td class="r num">13.0′</td><td class="r num">1.4′</td></tr>
+      <tr><td><b>Tổng</b></td><td class="r num"><b>22</b></td><td class="r num"><b>82.3′</b></td><td class="r num"><b>52.7′</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Chưa gồm phần làm trên máy Windows ngày 14/11 (Idle v1–v6, Attack v1). Báo cáo chi tiết Pet 25: <a href="https://claude.ai/artifact/Ey4RJC3CxXFoVru8gP8i4t">Báo cáo WorkAI Pet</a>.</p>
+</section>
+
+<section>
+  <h2>Cách tính</h2>
+  <p class="note" style="margin:0">Giao việc: 12 issue WorkAI tạo lúc 11/11 16:01. Bắt đầu: file sớm nhất trong <span class="num">work/infinite_defense/pets/&lt;pet&gt;/</span> (script rig, skin, anim). Chốt: giờ ghi trong <span class="num">CHOT.txt</span> của thư mục pet trong <span class="num">tvc_source</span>. Ước lượng: giờ ước lượng trên issue WorkAI. Pet 25 theo phút: log phiên Claude ngày 17/11, AI gen = từ prompt tới tin nhắn cuối của AI, người = khoảng giữa hai lượt khi ≤ 15 phút. Giờ Việt Nam.</p>
+</section>
+
+</div>
+
+<script>
+// Ngày làm việc hiển thị, mỗi ngày 8:00–18:00
+const DAYS = ["11/11", "12/11", "13/11", "14/11", "17/11"];
+const H0 = 8, H1 = 18;
+// [tên, issue, bắt đầu "dd/mm hh:mm", chốt "dd/mm hh:mm", khoảng lịch, ước lượng giờ, chốt hàng loạt?, ngày không rõ giờ]
+const PETS = [
+  ["11 Mecha Pup", "GEK-2355", "11/11 16:13", "13/11 15:38", "~2 ngày", 1.3, true],
+  ["12 Pebble Turtle", "GEK-2356", "11/11 16:24", "13/11 15:38", "~2 ngày", 1.3, true],
+  ["13 Tiny Chick", "GEK-2357", "12/11 08:43", "13/11 15:38", "~1,5 ngày", 1.3, true],
+  ["14 Lucky Neko", "GEK-2358", "14/11 10:59", "14/11 16:03", "5 g 04′", 1.5],
+  ["15 Night Bat", "GEK-2359", "12/11 10:32", "13/11 15:41", "~1 ngày", 1.7],
+  ["16 Wind Chameleon", "GEK-2360", "12/11 10:42", "13/11 15:38", "~1 ngày", 1.7, true],
+  ["17 Pinchy Balboa", "GEK-2361", "13/11 10:38", "13/11 15:29", "4 g 51′", 1.7],
+  ["18 Tengu Swift", "GEK-2362", "13/11 10:38", "13/11 16:50", "6 g 12′", 2.0],
+  ["19 Kabuto Striker", "GEK-2363", "13/11 10:40", "13/11 16:50", "6 g 10′", 1.7],
+  ["22 Steam-Pug Turbo", "GEK-2366", "13/11 13:45", "14/11 10:14", "qua đêm, ~4 g giờ làm", 1.7],
+  ["23 Kitsune Nine-Mist", "GEK-2367", "13/11 13:45", "14/11 15:55", "~1 ngày", 2.5],
+  ["25 Chrono Ouroboros", "GEK-2369", "17/11 09:07", "17/11 14:46", "14/11 + 17/11", 2.3, false, ["14/11"]],
+];
+function parse(s) { const [d, t] = s.split(" "); const [h, m] = t.split(":").map(Number); return { day: DAYS.indexOf(d), h: h + m / 60 }; }
+const pct = h => Math.max(0, Math.min(100, (h - H0) / (H1 - H0) * 100));
+const g = document.getElementById("gantt");
+g.insertAdjacentHTML("beforeend", '<div></div>' + DAYS.map(d => `<div class="day num">${d}</div>`).join(""));
+for (const p of PETS) {
+  const [name, , s, e, , , , vague = []] = p;
+  const a = parse(s), b = parse(e);
+  let row = `<div class="name">Pet ${name}</div>`;
+  DAYS.forEach((d, i) => {
+    let inner = "";
+    if (vague.includes(d)) inner += `<i class="seg vague" style="left:0;width:100%"></i>`;
+    if (i >= a.day && i <= b.day) {
+      const l = i === a.day ? pct(a.h) : 0, r = i === b.day ? pct(b.h) : 100;
+      if (r > l) inner += `<i class="seg" style="left:${l}%;width:${r - l}%"></i>`;
+    }
+    if (i === b.day) inner += `<i class="chot" style="left:calc(${pct(b.h)}% - 1px)"></i>`;
+    row += `<div class="cell">${inner}</div>`;
+  });
+  g.insertAdjacentHTML("beforeend", row);
+}
+const tb = document.getElementById("tbl");
+for (const [name, issue, s, e, span, est, batch, vague] of PETS) {
+  const start = vague ? "14/11 (Idle v1)" : s;
+  tb.insertAdjacentHTML("beforeend", `<tr><td>Pet ${name}</td><td><a href="https://workai.horusjsc.com/issues/${issue}">${issue}</a></td><td class="num">${start}</td><td class="num">${e}${batch ? " *" : ""}</td><td>${span}</td><td class="r num">${est.toFixed(1).replace(".", ",")} g</td></tr>`);
+}
+tb.insertAdjacentHTML("beforeend", `<tr><td><b>12 pet</b></td><td></td><td class="num">11/11</td><td class="num">17/11</td><td><b>5 ngày làm việc</b></td><td class="r num"><b>20,7 g</b></td></tr>`);
+</script>

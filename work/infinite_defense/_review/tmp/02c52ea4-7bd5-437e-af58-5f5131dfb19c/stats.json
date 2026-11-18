@@ -1,0 +1,66 @@
+{
+ "summary": {
+  "turns": 3,
+  "first": "2026-11-03 16:36:28",
+  "last": "2026-11-03 16:42:03",
+  "gen": "0:48",
+  "gen_min": 0.8,
+  "human": "4:46",
+  "human_min": 4.8,
+  "answer_wait": "0:00",
+  "present": "5:34",
+  "breaks": [],
+  "versions_ai": 0,
+  "versions_user": 0
+ },
+ "turns": [
+  {
+   "n": 1,
+   "start": "2026-11-03 16:36:28",
+   "end": "16:36:59",
+   "gen_s": 30,
+   "wait_s": 0,
+   "human_after_s": 20,
+   "break_after": false,
+   "images": 0,
+   "prompt": "tạo t 1 bài test cơ bản kiến thức cho 3D animator",
+   "ai_last": "# Bài test kiến thức cơ bản cho 3D Animator\n\n**Thời gian:** 45 phút. **Thang điểm:** 100.\n\n## Phần A: Trắc nghiệm (15 câu, mỗi câu 3 điểm, tổng 45)\n\n**1. 12 nguyên lý animation của Disney: \"Squash & Stretch\" dùng để làm gì?**\n- A. Tăng độ phân giải chuyển động\n- B. Thể hiện độ đàn hồi, khối lượng và lực tác động của vật thể\n- C. Giảm số keyframe\n- D. Đồng bộ lip-sync\n\n**2. \"Anticipation\" là gì?**\n- A. Chuyển động thừa sau khi dừng\n- B. Chuyển động chuẩn bị ngược hướng trước hành động chính\n- C. Giữ pose tĩnh\n- D. Thay đổi camera\n\n**3. \"Follow Through & Overlapping Action\" mô tả điều gì?**\n- A.",
+   "tools": {},
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  },
+  {
+   "n": 2,
+   "start": "2026-11-03 16:37:19",
+   "end": "16:37:29",
+   "gen_s": 11,
+   "wait_s": 0,
+   "human_after_s": 266,
+   "break_after": false,
+   "images": 0,
+   "prompt": "bài test làm trực tiếp ở đây, 15 câu trắc nghiệm thôi",
+   "ai_last": "# Bài test kiến thức cơ bản 3D Animator (15 câu trắc nghiệm)\n\nTrả lời theo dạng `1B 2A 3C ...`. Mình sẽ chấm và giải thích sau khi bạn gửi.\n\n**1.** \"Squash & Stretch\" dùng để làm gì?\n- A. Giảm số keyframe\n- B. Thể hiện độ đàn hồi, khối lượng và lực tác động của vật thể\n- C. Đồng bộ lip-sync\n- D. Tăng độ phân giải chuyển động\n\n**2.** \"Anticipation\" là gì?\n- A. Chuyển động thừa sau khi dừng\n- B. Giữ pose tĩnh\n- C. Chuyển động chuẩn bị ngược hướng trước hành động chính\n- D. Thay đổi camera\n\n**3.** \"Follow Through & Overlapping Action\" mô tả điều gì?\n- A. Mọi bộ phận dừng cùng một frame\n- B. Tóc, ",
+   "tools": {},
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  },
+  {
+   "n": 3,
+   "start": "2026-11-03 16:41:55",
+   "end": "16:42:03",
+   "gen_s": 8,
+   "wait_s": 0,
+   "human_after_s": 0,
+   "break_after": false,
+   "images": 0,
+   "prompt": "1b 2b 3d 4b 5a 6c 7b 8d 9b 10c 11b 12c 13b 14d 15a",
+   "ai_last": "# Kết quả: 12/15 (80%)\n\n**Đúng:** câu 1, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15.\n\n**Sai 3 câu:**\n\n| Câu | Bạn chọn | Đáp án đúng | Giải thích |\n|---|---|---|---|\n| 2 | B (giữ pose tĩnh) | **C** | Anticipation là chuyển động chuẩn bị ngược hướng trước hành động chính, ví dụ hạ người xuống trước khi nhảy. Giữ pose tĩnh là \"hold\", một khái niệm khác. |\n| 3 | D (làm chậm toàn bộ clip) | **B** | Follow Through & Overlapping là các bộ phận phụ (tóc, áo, đuôi, tay) dừng và chuyển động lệch nhịp so với thân chính. Nó không liên quan đến tốc độ cả clip. |\n| 5 | A (chuyển động đều tốc độ) | **D** | Slow ",
+   "tools": {},
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  }
+ ]
+}

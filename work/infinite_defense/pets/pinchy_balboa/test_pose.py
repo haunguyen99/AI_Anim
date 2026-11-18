@@ -1,0 +1,6 @@
+api.select(list(api.ls('Curve'))+list(api.ls('Joint'))); api.hide(True); api.select([])
+api.rotate("CTL_Head_M",0,25,10); api.rotate("CTL_Arm1_R",0,50,0); api.rotate("CTL_Arm2_R",0,30,20)
+api.rotate("CTL_Arm1_L",0,-40,30); api.rotate("CTL_LegM_L",0,0,40); api.rotate("CTL_LegFTip_R",50,0,0); api.rotate("CTL_BandB1_M",0,0,40)
+api.rotate("CTL_Root_M",0,0,15)
+api.look_through('front'); api.set_camera_ortho('front', True); api.set_attr('front.ow', 1.5); api.move('front',0,0.3,100)
+api.set_frame(4)

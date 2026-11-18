@@ -1,0 +1,327 @@
+10-28 15:24 131029d3 1 N0 g0.9 <command-message>studio</command-message> <command-name>/studio</command-name>
+10-28 15:25 131029d3 2 N0 g0.5 <command-message>new_clip</command-message> <command-name>/new_clip</command-name>
+10-28 15:26 131029d3 3 N10 g2.6 https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k/edit?usp=sharing
+10-28 15:32 131029d3 4 N3 g5.1 rig model ninja và weapon thôi, weapon ở bên tay trái của nhân vật
+10-28 15:40 131029d3 5 N1 g1.0 Duyệt, sang bước 3
+10-28 15:49 131029d3 6 N0 g2.8 t muốn chỉnh lại vị trí của khớp
+10-28 15:55 131029d3 7 N0 g0.3 t vừa sửa lại đấy
+10-28 15:55 131029d3 8 N0 g0.4 Sang bước 3
+10-28 15:56 131029d3 9 N0 g0.6 m k giữ mấy cái khớp t vừa chỉnh nãy à
+10-28 15:58 131029d3 10 N0 g1.3 tất cả những gì đã sửa đều mất
+10-28 16:00 131029d3 11 N2 g4.1 như hiện tại đúng r, tiếp tục đi
+10-28 16:05 131029d3 12 N0 g0.1 Tự thử trước
+10-28 16:06 131029d3 13 N4 g1.6 tiếp tục đi
+10-28 16:09 131029d3 14 N4 g0.3 Commit
+10-28 16:10 131029d3 15 N0 g3.0 từ từ , chưa bindskin cái vũ khí vào xương à
+10-28 16:14 131029d3 16 N1 g0.2 Commit
+10-28 16:14 131029d3 17 N1 g0.2 bindskin xong chưa
+10-28 16:15 131029d3 18 N3 g3.9 tiếp tục đi
+10-28 16:27 131029d3 19 N5 g11.0 Duyệt, K1
+10-28 16:40 131029d3 20 N4 g4.1 Duyệt, làm blocking
+10-28 16:48 131029d3 21 N0 g0.0 Duyệt, polish
+10-28 16:49 131029d3 22 N1 g1.5 sao phần ghi chú của t lại bị lỗi như này
+10-28 16:53 131029d3 23 N0 g1.2 t đã ghi ghi chú vẽ các thứ nhưng k thấy hiển thị ở phần ghi chú
+10-28 16:54 131029d3 24 N1 g1.5 Chỉ là thử
+10-28 17:02 131029d3 25 N0 g0.9 về lại bước blocking
+10-28 17:04 131029d3 26 N0 g0.2 xoá hết các key khác, chỉ giữ lại key f1
+10-28 17:05 131029d3 27 N0 g1.8 <command-message>push</command-message> <command-name>/push</command-name>
+10-28 17:09 131029d3 28 N1 g1.0 kéo git về
+10-28 17:21 131029d3 29 N5 g4.8 cái pose idle đang xấu quá, bây giờ m hãy dựa vào GDD và nhờ Codex ren cho cái ảnh concept key pose 
+10-28 17:26 131029d3 30 N3 g11.5 Vẽ lại từ v1
+10-28 17:40 131029d3 31 N0 g862.3 Chốt k1r2_v1
+10-29 08:18 131029d3 32 N0 g2.2 Cần sửa
+10-29 08:25 131029d3 33 N3 g8.6 có thể làm lại pose không tại t thấy mọi thứ đều chưa ổn chút nào
+10-29 08:35 131029d3 34 N2 g10.5 dùng codex ren lại cho t pose kia thành conept mặt front, mặt side và góc game -45
+10-29 08:38 ccd15219 1 N3 g3.4 kéo git về
+10-29 08:43 ccd15219 2 N3 g0.2 11 commit là gi vay
+10-29 08:48 ccd15219 3 N0 g1.6 ở phần ghi chú bên pose vẫn bị đè chữ
+10-29 08:54 131029d3 35 N2 g3.8 t thấy mặt font và side vẫn là góc nghiêng, t muốn 2 mặt đó là 90 độ hoàn toàn cơ
+10-29 08:58 131029d3 36 N2 g3.0 cái gì đấy t bảo là ren lại thôi chứ có bảo pose lại đâu
+10-29 09:00 ccd15219 4 N0 g0.8 ok giờ kéo lại git đi
+10-29 09:01 ccd15219 5 N2 g1.8 Đẩy lên
+10-29 09:03 131029d3 37 N1 g0.2 Mày đã viết tài liệu phân tích nhân vật và anim chưa
+10-29 09:08 131029d3 38 N5 g0.6 Dự vào tài liệu anim idle hãy viết prompt để chatgpt tạo ảnh ref đầy đủ các góc cho pose Idle
+10-29 09:11 131029d3 39 N5 g1.0 hãy tạo prompt đi, tạo bản tiếng việt
+10-29 09:14 131029d3 40 N1 g2.5 dựa vào prompt đã viết, gen ảnh cho t đi
+10-29 09:18 131029d3 41 N2 g3.0 uh sửa lại ô font
+10-29 09:22 131029d3 42 N1 g0.7 giờ thì ghép v2 vào bảng ref 6 ô đi
+10-29 09:23 131029d3 43 N4 g10.9 giờ dựa vào ref này m pose cho t k1 lại xem nào
+10-29 09:24 ccd15219 6 N2 g2.4 làm cho t
+10-29 09:38 131029d3 44 N3 g0.5 có thể back lại phần bindskin để t check lại bindskin k
+10-29 09:43 131029d3 45 N0 g5.1 các joint đang ảnh hưởng đến cả những vertex ở ngoài bộ phận
+10-29 09:44 ccd15219 7 N1 g1.1 kéo git mới
+10-29 09:52 131029d3 46 N0 g2.9 t vừa viết fb, sửa fb của t đi
+10-29 09:56 131029d3 47 N0 g0.4 Ổn, commit
+10-29 09:57 131029d3 48 N0 g0.2 cái bảng studio ấn gì để đổi góc viewpoint yhee
+10-29 10:00 131029d3 49 N0 g0.3 đâu ấn space có đc đâu
+10-29 10:01 131029d3 50 N0 g0.3 bạn ơi tôi k xuay đc viewpoint
+10-29 10:03 131029d3 51 N2 g5.3 giờ pose lại pose idle dựa theo dữ liệu và ref mình đã chốt đi
+10-29 10:12 131029d3 52 N1 g2.8 t vừa đưa fb, sửa điu
+10-29 10:17 131029d3 53 N3 g16.9 tự check rồi sửa đi
+10-29 10:38 131029d3 54 N1 g7.4 tham khảo pose này của t và sửa fb nhé
+10-29 10:49 131029d3 55 N0 g3.0 tôi vừa tự sửa lại pose cho bạn rồi, bạn học theo nhé
+10-29 11:03 131029d3 56 N1 g7.2 Commit trước
+10-29 11:17 131029d3 57 N3 g30.4 triển khai từ f1 t đã pose đi
+10-29 11:48 131029d3 58 N1 g4.1 2 dây áo choàng đằng sau cho bay sang trái phải trông sẽ đẹp hơn ở góc ingame
+10-29 11:53 131029d3 59 N0 g4.0 cho anim lắc ở joint đầu thôi sau làm polish sẽ chạy overlap sau m ơi
+10-29 13:34 131029d3 60 N0 g5.2 Không, xoá đi
+10-29 13:45 131029d3 61 N0 g23.1 chỉnh lại key lắc của khăn đi, lắc vẫn bị giật
+10-29 14:08 131029d3 62 N0 g20.2 Hãy thử lại
+10-29 14:29 131029d3 63 N0 g144.8 thử lại đi
+10-29 14:40 6eacd60e 1 N1 g0.8 studio
+10-29 14:42 6eacd60e 2 N1 g7.8 sửa cho key của áo choàng k bị giật
+10-29 14:50 6eacd60e 3 N0 g2.0 tắt gió đi, cho khăn lắc đều nhau và lắc sang trái phải thôi
+10-29 14:53 6eacd60e 4 N1 g0.3 key hiện tại là layout đúng k
+10-29 14:55 ccd15219 8 N2 g2.1 kéo git mới về
+10-29 15:08 6eacd60e 5 N0 g3.5 ở phần bíndskin sửa lại phần paint chỗ khớp tay giúp t
+10-29 15:12 6eacd60e 6 N0 g2.5 vẫn bị ảnh hưởng tới cánh tay quá, cánh tay vấn bị méo
+10-29 15:15 6eacd60e 7 N1 g7.7 Vẫn méo
+10-29 15:23 6eacd60e 8 N1 g0.6 Ổn, commit
+10-29 15:24 6eacd60e 9 N2 g14.7 giờ làm polish t xem đi
+10-29 15:42 6eacd60e 10 N1 g46.6 phần cánh tay chưa thấy có anim, bổ sung nhé
+10-29 16:30 6eacd60e 11 N2 g1.0 đẩy review lab cho t dc k
+10-29 16:33 6eacd60e 12 N1 g0.2 video này người khác có coi dc k
+10-29 16:34 6eacd60e 13 N3 g2.1 có
+10-29 16:43 ccd15219 9 N2 g0.9 kéo git mới về đi
+10-29 16:43 6eacd60e 14 N1 g5.0 check lại polish nhé, t thấy loop bị giật
+10-29 16:45 ccd15219 10 N0 g0.4 Khởi động lại
+10-29 16:49 ccd15219 11 N0 g0.1 ko hiểu
+10-29 16:50 ccd15219 12 N0 g0.9 tao đã mở lại home rồi
+10-29 17:02 6eacd60e 15 N4 g8.4 t vừa thêm pose anim attack, dựa vào GDD t đã gửi m. m phân tích cho t dữ liệu về anim attack đi
+10-30 08:15 dbdab09d 1 N0 g0.3 bật môi trường /studio
+10-30 11:55 85dc2ad4 1 N1 g2.2 Tiếp tục phần việc đang làm dở trên nhánh master: xem các thay đổi chưa commit, cho tôi biết chúng đ
+10-30 13:54 ccd15219 13 N0 g0.5 kéo git mới về
+10-30 14:59 ccd15219 14 N1 g1.1 kéo git về
+10-30 15:48 6036b4bc 1 N6 g1.4 mở lại phiên làm việc của studio v12
+10-30 16:43 0be6ce34 1 N5 g1.6 bây giờ t mở ứng dụng Frolvy, Rig cho t model fbx này với yêu cầu là tay phải của nhân vật cầm gậy. 
+10-30 16:45 0be6ce34 2 N0 g11.1 không, kết nối với Frolvy cho t
+10-30 16:58 0be6ce34 3 N0 g1.4 Dời gậy vào tay
+10-30 17:02 0be6ce34 4 N0 g6.3 rig cả áo choàng và 2 cái sợi đằng sau nữa
+10-30 17:11 0be6ce34 5 N0 g0.4 áo choàng để 1 khúc thôi k cần phân thành 3 đâu
+10-30 17:20 0be6ce34 6 N0 g1.7 tăng scale kích cỡ của các control trong bộ rig lên 1.2 nhé
+10-30 17:21 0be6ce34 7 N0 g13.0 được rồi giờ bindskin coi coi
+11-03 08:34 2af9618a 1 N0 g0.8 đẩy git lên
+11-03 08:35 2af9618a 2 N4 g2.2 kéo git mới về
+11-03 08:38 2af9618a 3 N2 g1.0 Đẩy luôn
+11-03 08:40 0be6ce34 8 N0 g7.7 check và tự chỉnh sửa lại bindskin của file model đang mở trong Frolvy
+11-03 08:48 0be6ce34 9 N0 g4.8 màn hình đang ở chế độ bindskin, trở về bthg giúp t
+11-03 08:54 0be6ce34 10 N0 g1.7 ừ về nó lại bình thường đi nó đang bị đen đen thì tắt nó đi giùm cái
+11-03 09:04 0be6ce34 11 N0 g2.9 có đang kết nối MCP với Frolvy k
+11-03 09:04 2af9618a 4 N0 g0.4 vừa kéo git mới về thì có những gì mới
+11-03 09:09 0be6ce34 12 N0 g0.6 kết nối MCP cho t đi
+11-03 09:11 0be6ce34 13 N0 g0.1 kết nối chưa
+11-03 09:21 0be6ce34 14 N0 g5.0 trở lại bước rig chưa tạo control cho t đi, để t chỉnh sửa lại mesh
+11-03 09:28 0be6ce34 15 N0 g5.1 t chỉnh lại mesh rồi, rig lại đi
+11-03 09:33 0be6ce34 16 N0 g1.0 hiện tại đang k thể click được để chọn control mà là quét để chọn, sửa hộ đc k
+11-03 09:37 0be6ce34 17 N0 g0.9 chưa
+11-03 09:38 0be6ce34 18 N0 g1.0 Vẫn chưa được
+11-03 09:39 0be6ce34 19 N0 g2.5 thôi kệ đi, bạn có thể cho đống control đó đẹp 1 chút k , hiện tại đang scale to quá
+11-03 09:43 0be6ce34 20 N0 g0.2 vẫn thấy to quá giảm mỗi ctrl 0,2 đi
+11-03 09:46 0be6ce34 21 N0 g9.6 check và chỉnh sửa lại bindskin cho đẹp đi, các pose gập đều bị xấu và k đc mượt đâu
+11-03 09:56 0be6ce34 22 N0 g0.1 lưu file
+11-03 10:00 0be6ce34 23 N3 g6.2 giờ rig cho t con fbx trong màn hình, chỉ rig thôi chưa bíndskin nhé, tay phải của nhân vật cầm vũ k
+11-03 10:06 0be6ce34 24 N1 g1.3 đưa weapon vào tay luôn
+11-03 10:10 0be6ce34 25 N1 g1.4 đầu gối vẫn hơi bị lệch xuống, chỉnh cho chuẩn về giữa cạnh của chuẩn đầu gối đi
+11-03 10:13 0be6ce34 26 N1 g1.9 sao 2 bên lại bị lệch nhau v
+11-03 10:15 0be6ce34 27 N2 g3.1 cũng ok rồi đấy bindskin đi
+11-03 10:20 0be6ce34 28 N2 g4.8 rig lại theo feedback nhé, nâng root lên
+11-03 10:26 0be6ce34 29 N5 g0.8 thôi, về lại bước chưa build rig đi để t tự sửa
+11-03 10:28 0be6ce34 30 N2 g1.8 rồi build rig đi
+11-03 10:30 0be6ce34 31 N1 g0.8 Đưa về chỗ cũ
+11-03 10:32 0be6ce34 32 N3 g1.4 ừ đẹp rồi bindskin đi
+11-03 10:34 0be6ce34 33 N1 g3.5 paint vỡ cái đít rồi
+11-03 10:38 0be6ce34 34 N0 g4.0 tự check và nhận xét bindskin t xem nào
+11-03 10:57 0be6ce34 35 N0 g44.1 lâu thế director ơi
+11-03 11:05 8da47427 1 N2 g11.1 check và tự chỉnh bindskin file Frolvy t đang bật
+11-03 11:18 8da47427 2 N1 g2.0 làm cho t 1 bảng picker với
+11-03 11:22 8da47427 3 N0 g1.9 có thể pose cho t pose idle vào file Frolvy k
+11-03 11:26 8da47427 4 N5 g4.0 sử dụng pose idle từ file Ninja trong Studio paste vào pose file rig trong Frolvy
+11-03 11:31 8da47427 5 N0 g0.0 Key frame 0
+11-03 11:46 3f0e1f05 1 N0 g0.0 đọc project này
+11-03 11:47 3f0e1f05 2 N0 g4.9 đọc project đi
+11-03 11:55 3f0e1f05 3 N1 g2.8 <command-message>studio</command-message> <command-name>/studio</command-name>
+11-03 13:39 3f0e1f05 4 N3 g0.4 https://claude.ai/artifact/7U5nUphRrksoxqbxTFLXHC
+11-03 13:40 3f0e1f05 5 N2 g1.3 copy pose idle và paste lại pose đó vào file rig Frolvy t đang mở đi
+11-03 13:41 3f0e1f05 6 N2 g0.7 pose idle
+11-03 13:43 3f0e1f05 7 N1 g0.7 ok thế kết nối MCP với frolvy đi r
+11-03 13:44 3f0e1f05 8 N1 g0.4 ngay
+11-03 13:47 3f0e1f05 9 N1 g0.6 có cách nào k
+11-03 13:53 3f0e1f05 10 N0 g0.4 đổi chế độ kiểu gì
+11-03 13:55 3f0e1f05 11 N0 g1.8 đổi hộ t đi
+11-03 13:56 3f0e1f05 12 N2 g8.6 đổi thành eccept edits
+11-03 14:06 3f0e1f05 13 N0 g2.6 có thể chỉnh sửa cho fle rig tay cầm weapon là tay trái của nhân vật k
+11-03 14:12 3f0e1f05 14 N2 g39.6 được, sửa đi
+11-03 14:53 3f0e1f05 15 N1 g0.6 xong chưa
+11-03 14:54 3f0e1f05 16 N1 g16.2 uk build lại cho  t bảng picker mới đi, picker cũ bị lỗi rồi
+11-03 15:10 3f0e1f05 17 N0 g2.6 được rồi, giờ bạn pose lại cho mình pose idle đi
+11-03 15:14 3f0e1f05 18 N0 g4.5 đây ref đây. pose đi
+11-03 15:18 32bb6dea 1 N1 g0.8 có đang kết nối với Frovly k
+11-03 15:20 32bb6dea 2 N0 g3.0 pose cái dáng này vô file t đang mở ở frolvy
+11-03 15:24 0be6ce34 36 N0 g0.0 Hãy thử lại
+11-03 15:25 aee856c3 1 N0 g0.1 có đang kết nối với frovly k
+11-03 15:25 aee856c3 2 N0 g0.1 ý là frolvy
+11-03 15:27 aee856c3 3 N2 g0.2 Hãy thử lại
+11-03 15:28 aee856c3 4 N1 g4.2 ref đây, pose cho t file trong Frovly dáng idle này
+11-03 15:35 aee856c3 5 N1 g0.2 Key frame 0 + lưu
+11-03 15:44 aee856c3 6 N0 g0.0 https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k/edit?hl=vi&tab=t.0
+11-03 15:46 aee856c3 7 N1 g6.6 phân tích skill 1 t coi
+11-03 15:47 d3a5179a 1 N0 g3.1 key all cho t vào f0 của file t đang bật đi
+11-03 15:53 d3a5179a 2 N0 g0.1 ko, làm trong frolvy cơ
+11-03 15:53 d3a5179a 3 N0 g0.9 đâu t có thấy key đâu
+11-03 15:55 d3a5179a 4 N0 g2.3 key vào thì mất pose idle nãy rồi m
+11-03 15:59 d3a5179a 5 N0 g0.1 giờ thì phân tích xong skill 1 chưa
+11-03 16:00 d3a5179a 6 N2 g0.7 https://docs.google.com/document/d/1fQYJ82Xi7PhQJM-eow2MMzxvO0gzE9hgI1eNGJNNa2k/edit?hl=vi&tab=t.0
+11-03 16:01 d3a5179a 7 N1 g0.4 phân tích các pose chính đo
+11-03 16:05 d3a5179a 8 N0 g0.8 giờ pose test cho t f5 xem nào
+11-03 16:07 d3a5179a 9 N0 g0.8 bạn có lộn k đấy, tay ném kunai là tay đang cầm vũ khí mà
+11-03 16:10 d3a5179a 10 N0 g0.2 t thấy kunai của t đang bị quay tứ tung, check lại nhé
+11-03 16:11 d3a5179a 11 N0 g0.5 giờ triển khai pose các pose blocking còn lại đi
+11-03 16:12 d3a5179a 12 N0 g0.5 giãn timeline các pose ra, cho chiêu này dài 24 đi
+11-03 16:16 d3a5179a 13 N0 g8.6 hiện tại: - hip chưa thấy có nhịp điệu thay đổi gì  * phần tay k cầm vũ khí cũng đang chưa có pose *
+11-03 16:27 d3a5179a 14 N0 g1.0 ê chỉnh sưa các pose chân thành thành chân ik đi
+11-03 16:35 d3a5179a 15 N3 g2.0 ê  làm cho t cái bảng picker với, khó pick control qá
+11-03 16:36 02c52ea4 1 N0 g0.5 tạo t 1 bài test cơ bản kiến thức cho 3D animator
+11-03 16:37 02c52ea4 2 N0 g0.2 bài test làm trực tiếp ở đây, 15 câu trắc nghiệm thôi
+11-03 16:41 02c52ea4 3 N0 g0.1 1b 2b 3d 4b 5a 6c 7b 8d 9b 10c 11b 12c 13b 14d 15a
+11-03 16:42 d3a5179a 16 N3 g0.5 đâu open lên
+11-03 16:53 d3a5179a 17 N1 g4.7 t muốn chỉnh các pose của skill 1 gần giống với attack ninja mà t đã train m ở trong studio ấy
+11-03 17:06 d3a5179a 18 N0 g1.1 nãy file t auto save ở ổ nào thế
+11-03 17:08 d3a5179a 19 N2 g3.4 có tái tạo dc cho t bản mới nhất t làm k
+11-03 17:32 d3a5179a 20 N1 g2.5 pose chính khi ném nè
+11-04 08:25 efa4ffa1 1 N0 g0.1 hi
+11-04 08:26 efa4ffa1 2 N0 g0.2 anim trên Frolvy
+11-04 08:26 efa4ffa1 3 N0 g0.4 kết nối
+11-04 08:29 efa4ffa1 4 N0 g0.4 đang chạy mà, kết nối mcp đi
+11-04 08:32 798033c1 1 N1 g0.5 kết nối mcp Frolvy
+11-04 08:33 798033c1 2 N5 g0.7 t ở phiên trước có gửi GDD về Ninja cho m đó, phân tích các pose blocking cho Skill 1 cho t
+11-04 08:34 798033c1 3 N0 g0.8 dùng Codex gen cho t ảnh minh hoạ các pose
+11-04 08:36 798033c1 4 N2 g0.7 thôi thế bảo nó stop đi
+11-04 08:39 798033c1 5 N2 g0.2 t fb ở phần k2: t mong muốn body chest xuay sang bên phải của nhân vật, tay cầm kunai thu lại để giố
+11-04 08:40 798033c1 6 N1 g0.2 giờ dùng Frolvy pose cho t các pose blocking t coi
+11-04 08:41 798033c1 7 N0 g0.2 ko lật nhé, tiếp tục làm t xem
+11-04 08:42 798033c1 8 N0 g0.1 kết nối Frolvy chưa
+11-04 08:42 798033c1 9 N1 g0.3 nạp lại
+11-04 08:44 798033c1 10 N0 g0.3 Thế kết nối lại Frolvy giúp t
+11-04 08:46 798033c1 11 N0 g0.4 kiểm tra tại sao k kết nối đc
+11-04 08:51 3a5c5160 1 N0 g0.1 kết nốt mcp với Frovly
+11-04 08:51 3a5c5160 2 N0 g0.2 kết nối Frolvy
+11-04 08:52 3a5c5160 3 N0 g0.2 kết nối lại
+11-04 08:54 3a5c5160 4 N0 g0.2 
+11-04 08:57 2d4078de 1 N0 g0.4 Kết nối MCP với frolvy
+11-04 08:58 2d4078de 2 N2 g3.4 phiên trước t có bảo phân tích GDD của nhân bật ninja và chốt pose blocking đó
+11-04 09:02 2d4078de 3 N0 g0.3 đây mà   <pasted_content id="cacf"> k1	F1	Ready (Idle F1) k2	F7	Ngực xoay sang phải, tay kunai co sá
+11-04 09:03 2d4078de 4 N2 g8.6 làm
+11-04 09:13 2d4078de 5 N2 g0.3 ê t đang ở chế độ nào mà mesh ninja của t nó k bình thường mà cứ bóng bóng ánh sáng thế
+11-04 09:27 2d4078de 6 N0 g1.3 từ f2 sang f3 cái grid bị giật zoom ra zoom vào á
+11-04 09:33 2d4078de 7 N1 g6.0 t vừa chỉnh 1 số chi tiết, giờ m tự nhận xét và chỉnh sửa đi
+11-04 09:40 2d4078de 8 N1 g0.5 phần chân để cố định hết đi
+11-04 09:45 2d4078de 9 N1 g0.7 tay phải của nhân vật từ f12 đến f15 đang bị co vào duỗi ra tạo ra cảm giác dư thừa, chỉnh có mượt m
+11-04 10:05 2d4078de 10 N0 g0.0 giờ tạo cho t 1 file copy nhưng tên là refine đi
+11-04 10:12 2d4078de 11 N0 g0.0 alo
+11-04 10:13 f847746a 1 N1 g1.1 có đang connect với frolvy k
+11-04 10:15 f847746a 2 N0 g4.2 sửa làm cho kunai ở tay từ f0 đến f10, f11 bắt đầu bay đi giúp t
+11-04 10:20 f847746a 3 N0 g0.7 Chỉnh tốc độ/hướng
+11-04 10:22 f847746a 4 N0 g0.5 giờ làm refine cho t đi. mỗi khi chỉnh sửa mình sẽ lưu ra 1 version
+11-04 10:26 f847746a 5 N0 g2.5 giờ làm đi
+11-04 10:30 f847746a 6 N0 g0.4 ê ấn ctrl trong frolvy ấn đâu
+11-04 10:39 f847746a 7 N0 g1.2 hiện tại bạn thao tác cho mình phần đường bay của kunai trong file đang mở đi
+11-04 10:42 f847746a 8 N1 g1.0 nó đang bị bay lung tung rồi kìa sửa hộ phát
+11-04 10:49 f847746a 9 N1 g2.1 ok giờ làm refine được rồi
+11-04 10:54 f847746a 10 N1 g2.3 sao phần body lại bị giật ở f12-15 thế, bị thừa cái đoạn khậc khậc đó, body cũng chưa thấy có overla
+11-04 10:58 f847746a 11 N2 g1.4 sửa cho kunai bay nhanh trông lực hơn, phần overlap của 2 tà khăn choàng cũng cần làm chuyển động nh
+11-04 11:06 f847746a 12 N1 g2.0 về lại bước blocking t đã chốt trước khi làm refine
+11-04 11:09 f847746a 13 N1 g0.8 chỉnh cho kunai bay nhanh hơn
+11-04 11:14 f847746a 14 N3 g3.0 hiện tại ở bản refine, m thêm cho t các pose trung gian để trông anim mềm mại hơn đi
+11-04 11:18 f847746a 15 N1 g0.5 về lại đi mình thấy  k ổn
+11-04 13:56 f847746a 16 N1 g7.5 Refine animation bằng cách thêm các pose breakdown (in-between) giữa các key pose hiện có. Không bak
+11-04 14:20 f847746a 17 N0 g0.0 bảng picker của t đâu r
+11-04 14:31 f847746a 18 N0 g1.4 t đang thấy lực ném hơi nhẹ co thể cho mạnh hơn lực hơn k
+11-04 14:38 f847746a 19 N0 g3.2 bạn có thể làm ovelap 2 cái sợi khăn quàng làm giống chất liệu vải k vậy
+11-04 14:44 f847746a 20 N0 g1.0 chưa đủ mềm
+11-04 14:58 f847746a 21 N2 g3.6 t lưu rồi ok rồi giờ xuất fbx cho t
+11-04 15:07 f847746a 22 N3 g3.0 Xuất thêm bản đó
+11-04 16:37 f847746a 23 N0 g2.1 được rồi chỉnh lại đường bay của kunai đi, kunai đang bị lệch
+11-04 16:39 f847746a 24 N2 g0.5 Xuất lại
+11-04 17:08 76c43222 1 N1 g3.2 kéo git mới về
+11-04 17:17 76c43222 2 N0 g2.1 đẩy dữ liệu lên
+11-04 17:32 76c43222 3 N0 g0.9 Thử lại
+11-05 08:06 0cc20a63 1 N0 g0.4 kết nối frolvy
+11-05 08:17 0cc20a63 2 N0 g0.4 kết nối frolvy
+11-05 08:22 0cc20a63 3 N0 g2.7 lập cho t bộ rig của fbx t đang mở, lưu ý chưa tới bước build
+11-05 08:26 0cc20a63 4 N0 g1.9 phần xương ở 2 vạt đằng sau thêm đi, gậy thì ở tay phải của nhân vật
+11-05 08:31 0cc20a63 5 N0 g0.3 gậy để ngang má ơi
+11-05 08:33 0cc20a63 6 N0 g4.5 build rig được rồi đó
+11-05 08:38 0cc20a63 7 N0 g4.9 chỉnh lại bộ control đi, chỗ to chỗ nhỏ đang k đồng đều. chỉnh cho fit hơn
+11-05 08:49 0cc20a63 8 N0 g2.8 tắt cái khung ở camera đi m
+11-05 08:52 0cc20a63 9 N0 g0.8 Hai đường dọc
+11-05 08:54 0cc20a63 10 N0 g3.1 ok tiếp, bíndskin đi
+11-05 08:57 0cc20a63 11 N0 g0.0 back lại rig
+11-05 09:00 0cc20a63 12 N0 g3.3 back lại rig
+11-05 09:04 0cc20a63 13 N0 g3.4 uh do rig thiếu áo choàng sau lưng á, thêm joint đi
+11-05 09:08 0cc20a63 14 N0 g0.1 Đúng, cố ý
+11-05 09:08 0cc20a63 15 N0 g0.4 giờ làm việc ở file windy rig đi
+11-05 09:11 0cc20a63 16 N0 g0.7 giờ thêm 1 trục joint như file kia đi
+11-05 09:13 0cc20a63 17 N0 g1.1 đã bảo là 1 thôi sao vẫn để 2 thế
+11-05 09:16 0cc20a63 18 N0 g0.7 bạn cho joint áo thêm 1 khúc nữa nhé để đảm bảo có thể bindskin được cả 2 cái kim cương của tà áo
+11-05 09:17 0cc20a63 19 N0 g1.4 uk bindskin đi bé
+11-05 09:21 0cc20a63 20 N0 g0.7 k tạo ctrl cho vũ khí à
+11-05 09:23 0cc20a63 21 N0 g2.2 sao control đi 1 đằng vũ khi đi 1 đằng vậy m
+11-05 09:32 0cc20a63 22 N0 g4.8 tạo bảng picker cho t, có thể thêm cho t nút back lại T pose k
+11-05 09:45 0cc20a63 23 N0 g4.3 https://docs.google.com/document/d/1cnYhJKdC9QA9R1I_KRN8q3xsfI3FFqNlv5KRwUN8xfY/edit?tab=t.0 phân tí
+11-05 09:53 0cc20a63 24 N0 g0.3 PA A: dựng chéo
+11-05 09:54 0cc20a63 25 N0 g0.5 loop 40f thôi nhé
+11-05 09:56 0cc20a63 26 N0 g3.5 ok giờ dựa vào mô tả dữ liệu, pose cho t pose đầu tiên ở f0 đi
+11-05 10:06 0cc20a63 27 N0 g4.4 tham khảo các ref này, pose lại đẹp hơn đi. xấu quá má
+11-05 10:11 0cc20a63 28 N0 g1.1 để chân như này rồi kết hợp với các ref trên đi
+11-05 10:19 0cc20a63 29 N0 g0.0 tham khảo như này đi xem nào
+11-05 10:23 a61cace9 1 N0 g0.3 có đang kết nối với frolvy k
+11-05 10:24 a61cace9 2 N0 g2.5 pose lại pose idle
+11-05 10:30 a61cace9 3 N0 g0.6 pose ra kiểu chân trước chân sau ấy b ơi, tay cũng để tay trước tay sau đi
+11-05 10:31 a61cace9 4 N0 g0.2 đổi chan
+11-05 10:51 a61cace9 5 N0 g3.5 tôi đã căn chỉnh 1 số chi tiết, kêu director ra nhận xét đi
+11-05 10:58 a61cace9 6 N0 g3.4 chỉnh sửa lại đi
+11-05 11:13 a61cace9 7 N0 g1.8 Giữ bay ngang
+11-05 11:17 a61cace9 8 N0 g2.1 giờ làm idle t coi coi
+11-05 11:20 a61cace9 9 N0 g3.5 key các key chính của idle
+11-05 11:24 a61cace9 10 N0 g1.3 ơ về lại pose idle t pose đi sao lại tự ý sửa tay cầm vũ khí vậy
+11-05 11:26 a61cace9 11 N0 g3.8 hiện tại tắt gió ở 2 vạt áo đi, gọi director ra và nhận xét
+11-05 11:32 a61cace9 12 N0 g0.8 bảo director nói ngôn ngữ người, nói dễ hiểu 1 chút
+11-05 11:39 a61cace9 13 N0 g5.2 cả vạt lẫn áo choàng đều lắc theo nhịp trái phải, trượng cầm cũng thở mạnh hơn. hiện tại idle đang b
+11-05 11:45 b85839b1 1 N0 g2.7 kéo git mới về
+11-05 11:49 b85839b1 2 N0 g12.0 hiện tại 2 tay và body chưa có độ trễ cho với nhịp thở, thở mạnh là tốt nhưng quá gượng ép, chưa đượ
+11-05 11:51 a61cace9 14 N0 g0.0 https://www.pinterest.com/pin/1089097122419081799/ tham khảo nhịp thở của ref này nè
+11-05 13:41 b85839b1 3 N0 g2.0 cái áo choàng lẫn 2 cái vạt cho bay đánh sang trái phải cùng nhau rồi gắn overlap
+11-05 13:44 b85839b1 4 N0 g0.6 bạn ơi gộp các layer anim lại đi
+11-05 13:45 b85839b1 5 N0 g0.2 Lưu lại
+11-05 13:49 b85839b1 6 N0 g2.1 t vừa chỉnh lại trục chính, m overlap lại đi
+11-05 13:52 b85839b1 7 N0 g1.0 bạn chỉnh cho nhịp nhún nhẹ hơn chút nhé, đầu gối chân trước đang hơi giật
+11-05 13:56 b85839b1 8 N0 g0.3 Ổn, gộp và lưu
+11-05 14:07 b85839b1 9 N0 g0.7 kéo git mới về
+11-05 14:11 b85839b1 10 N0 g1.2 đẩy git lên
+11-05 14:17 b85839b1 11 N0 g19.8 giờ phân tích cho t attack đi
+11-05 14:35 dc79fad9 1 N0 g3.2 Cài VS để dùng API claude
+11-05 14:42 dc79fad9 2 N0 g0.7 Đã dán key
+11-05 14:44 dc79fad9 3 N0 g2.1 Đã lưu, kiểm lại
+11-05 14:48 dc79fad9 4 N0 g0.2 là sao
+11-05 14:50 689ade06 1 N0 g0.1 open
+11-05 14:50 689ade06 2 N0 g3.0 open
+11-05 14:55 0b24ccb2 1 N0 g0.1 hi
+11-05 14:56 24b9fbf1 1 N0 g0.3 đọc dự án này
+11-05 14:58 0b24ccb2 2 N0 g0.5 Đọc trạng thái hiện tại của dự án
+11-05 15:04 0095c4af 1 N1 g1.3 commit trạng thái hiện tại của dự án lên
+11-05 15:06 0095c4af 2 N8 g0.7 check lại xem các file đã bao gồm ninja attack, các file tôi làm ở frolvy
+11-05 15:08 0095c4af 3 N0 g0.3 thế còn file Windy có commit chưa
+11-05 15:11 0b24ccb2 3 N1 g0.3 đọc trạng thái hiện tại của dự án
+11-05 15:14 1c8a027b 1 N0 g0.0 UnityProject:
+11-05 15:15 0b24ccb2 4 N0 g0.1 UnityProject
+11-05 15:15 0b24ccb2 5 N0 g0.1 UnityProject
+11-05 15:15 0b24ccb2 6 N0 g0.1 UnityProject:  Source:
+11-05 15:18 83529eeb 1 N0 g4.1 gdd: https://docs.google.com/document/d/1cnYhJKdC9QA9R1I_KRN8q3xsfI3FFqNlv5KRwUN8xfY/edit?tab=t.0 P
+11-05 15:48 83529eeb 2 N0 g0.1 sao nghĩ lâu thế
+11-05 15:49 83529eeb 3 N0 g0.0 đúng rồi, đọc tiếp đi nhanh lên
+11-05 16:21 83529eeb 4 N0 g0.4 bạn ơi bạn đọc 1 tiếng rồi đấy
+11-05 16:22 83529eeb 5 N0 g0.1 đọc cho t cái attack
+11-05 16:35 83529eeb 6 N0 g0.1 1 tay nhé
+11-05 16:35 83529eeb 7 N0 g0.1 bắn bằng tay cầm gậy nhé
+11-05 16:36 83529eeb 8 N0 g2.0 bạn pose thử pose blocking cho mình xem
+11-05 16:42 1b8b3f94 1 N4 g0.8 <command-message>skillreport</command-message> <command-name>/skillreport</command-name> <command-ar

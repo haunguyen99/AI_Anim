@@ -1,0 +1,50 @@
+{
+ "summary": {
+  "turns": 2,
+  "first": "2026-11-05 14:50:27",
+  "last": "2026-11-05 14:53:30",
+  "gen": "3:03",
+  "gen_min": 3.0,
+  "human": "0:01",
+  "human_min": 0.0,
+  "answer_wait": "0:00",
+  "present": "3:03",
+  "breaks": [],
+  "versions_ai": 0,
+  "versions_user": 0
+ },
+ "turns": [
+  {
+   "n": 1,
+   "start": "2026-11-05 14:50:27",
+   "end": "14:50:31",
+   "gen_s": 5,
+   "wait_s": 0,
+   "human_after_s": 1,
+   "break_after": false,
+   "images": 0,
+   "prompt": "open",
+   "ai_last": "No response requested.",
+   "tools": {},
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  },
+  {
+   "n": 2,
+   "start": "2026-11-05 14:50:32",
+   "end": "14:53:30",
+   "gen_s": 178,
+   "wait_s": 0,
+   "human_after_s": 0,
+   "break_after": false,
+   "images": 0,
+   "prompt": "open",
+   "ai_last": "Failed to authenticate. API Error: 401 {\"error\":\"Invalid API key\"}",
+   "tools": {},
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  }
+ ]
+}

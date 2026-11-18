@@ -1,0 +1,57 @@
+{
+ "summary": {
+  "turns": 2,
+  "first": "2026-11-03 15:18:58",
+  "last": "2026-11-03 15:23:20",
+  "gen": "3:49",
+  "gen_min": 3.8,
+  "human": "0:33",
+  "human_min": 0.6,
+  "answer_wait": "0:00",
+  "present": "4:22",
+  "breaks": [],
+  "versions_ai": 0,
+  "versions_user": 0
+ },
+ "turns": [
+  {
+   "n": 1,
+   "start": "2026-11-03 15:18:58",
+   "end": "15:19:48",
+   "gen_s": 49,
+   "wait_s": 0,
+   "human_after_s": 33,
+   "break_after": false,
+   "images": 0,
+   "prompt": "có đang kết nối với Frovly k",
+   "ai_last": "Có, đang kết nối với Frolvy.\n\n- Cổng: 9877 (pid 13464), là cửa sổ duy nhất đang mở và đang được dùng.\n- Scene: `C:\\Users\\Admin\\Documents\\Ngoc\\Hoctap\\Anim\\Ninja.fv`\n- Nội dung: 79 Joint, 58 Curve, 87 Group, 2 Object.\n\nBạn muốn làm gì tiếp với scene này?",
+   "tools": {
+    "mcp__frolvy__list_instances": 1
+   },
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  },
+  {
+   "n": 2,
+   "start": "2026-11-03 15:20:21",
+   "end": "15:23:20",
+   "gen_s": 180,
+   "wait_s": 0,
+   "human_after_s": 0,
+   "break_after": false,
+   "images": 2,
+   "prompt": "pose cái dáng này vô file t đang mở ở frolvy",
+   "ai_last": "",
+   "tools": {
+    "mcp__frolvy__get_scene_info": 1,
+    "mcp__frolvy__get_viewport_screenshot": 1,
+    "Skill": 1,
+    "mcp__frolvy__execute_code": 2
+   },
+   "files": [],
+   "versions_ai": [],
+   "versions_user": []
+  }
+ ]
+}
