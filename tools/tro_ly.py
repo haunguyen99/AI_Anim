@@ -20,7 +20,7 @@ Mọi lệnh ở đây luôn dùng danh tính haunv (không phụ thuộc tools/
 
 Cờ tắt: work/store/_sys/watch/tro_ly_off (có file = tắt; ensure / systemd cũng tôn trọng). Mốc + phòng: tro_ly.json cùng thư mục. Sổ việc: work/assistant/todo.json.
 """
-import json, os, signal, subprocess, sys, time
+import json, re, os, signal, subprocess, sys, time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
@@ -250,7 +250,9 @@ def agents():
     if rc != 0:
         return None
     try:
-        d = json.loads(o or "[]")
+        # Paseo AppImage 0.16 in dòng khởi động ("[desktop] app startup ...") trước JSON: bỏ phần trước dấu [ / { đầu dòng
+        m = re.search(r"^[\[{]", o or "", re.M)
+        d = json.JSONDecoder().raw_decode(o[m.start():])[0] if m else []   # raw_decode: bỏ cả dòng stderr nối ở cuối
     except ValueError:
         return None
     return d if isinstance(d, list) else d.get("agents", [])
@@ -316,6 +318,10 @@ def ensure_session():
     if live:
         paseo_cmd.run_paseo(["send", "--no-wait", live[0]["shortId"], NUDGE])
         return "đã đánh thức: " + live[0]["shortId"]
+    closed = [a for a in ag if a.get("name") == NAME and a.get("status") == "closed"]
+    if closed:   # phiên cũ đã đóng (Paseo mở lại): `paseo run` cùng tên không bật được, phải nhắn để đánh thức
+        paseo_cmd.run_paseo(["send", "--no-wait", closed[0]["shortId"], NUDGE])
+        return "đã đánh thức phiên đã đóng: " + closed[0]["shortId"]
     body = open(BRIEF, encoding="utf-8").read().replace("assistant.py", "tro_ly.py")
     body = body.replace("haunv", OWNER).replace("Hậu", OWNER_NAME)
     if os.name != "nt":

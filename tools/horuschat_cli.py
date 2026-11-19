@@ -10,7 +10,7 @@
   python -I tools/horuschat_cli.py say --room <phòng> --text "..." [--thread ..] [--mention ..] [--why ..]   # trả lời NGAY, chỉ cho tin tán gẫu không liên quan công việc
   python -I tools/horuschat_cli.py who <tên>   # tìm user_id để --mention
   python -I tools/horuschat_cli.py download --room <phòng> --event <event_id> --out <thư mục> [--url mxc://..]   # tải file đính kèm
-  python -I tools/horuschat_cli.py sendfile --room <phòng> --file <đường dẫn> [--text ..] [--thread ..] [--mention ..]   # gửi file (<=10 MiB), chỉ khi người dùng đã nói rõ
+  python -I tools/horuschat_cli.py sendfile --room <phòng> --file <đường dẫn> [--text ..] [--thread ..] [--mention ..] [--max-mib N]   # gửi file (mặc định <=10 MiB), chỉ khi người dùng đã nói rõ
   python -I tools/horuschat_cli.py reject <id nháp> [lý do]  # bỏ nháp
 
 Danh tính: theo tools/identity.py (--profile / AI_PROFILE / tools/.profile). Nháp: work/store/_sys/watch/horuschat_drafts[_<danh tính>].json
@@ -235,8 +235,9 @@ def cmd_sendfile(args):
     if not room or not fp or not Path(fp).is_file():
         sys.exit("Cần --room và --file (file phải tồn tại)")
     f = Path(fp)
-    if f.stat().st_size > 10 * 1024 * 1024:
-        sys.exit("File quá 10 MiB")
+    cap = float(opt(args, "--max-mib", "10"))   # mặc định 10 MiB; chỉ nâng khi người dùng đã nói rõ gửi file lớn (máy chủ vẫn có thể từ chối)
+    if f.stat().st_size > cap * 1024 * 1024:
+        sys.exit("File quá %g MiB (nâng bằng --max-mib khi người dùng đồng ý)" % cap)
     hc = HorusChat()
     hc.check()
     rid = hc.room_id(room)
