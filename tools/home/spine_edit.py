@@ -196,12 +196,28 @@ def _mesh_world(data, slot_name, att_name):
     return slot, skin, a, W, names, world
 
 
+def _anchor_zero(per, world, W, keep):
+    """xương "đã bind nhưng 0 %" (2026-11-18, người dùng: bind thêm xương thì chỉ thêm xương đó để tự sơn weight ở Fix
+    Weight): mesh weighted chỉ lưu xương có trong từng đỉnh, nên xương 0 % ở mọi đỉnh sẽ mất khỏi danh sách bind.
+    Giữ nó bằng một mục weight 0 ở đỉnh gần gốc xương nhất còn chỗ (< 4 xương). Trả lại per (đã sửa tại chỗ)."""
+    for n in keep:
+        if n not in W or any(wd.get(n, 0) > 0 for wd in per):
+            continue
+        x0, y0 = W[n][4], W[n][5]
+        order = sorted(range(len(world)), key=lambda i: (world[i][0] - x0) ** 2 + (world[i][1] - y0) ** 2)
+        i = next((i for i in order if len([k for k, v in per[i].items() if v > 0 or k in keep]) < 4), None)
+        if i is not None:
+            per[i] = dict(per[i]); per[i][n] = 0.0
+    return per
+
+
 def _write_weights(a, W, names, world, per_vertex):
-    """per_vertex: [{tên xương: w}] -> vertices JSON (weighted), toạ độ local tính lại từ vị trí thế giới ở setup."""
+    """per_vertex: [{tên xương: w}] -> vertices JSON (weighted), toạ độ local tính lại từ vị trí thế giới ở setup.
+    Mục weight đúng 0.0 (đặt bởi _anchor_zero) được giữ để xương 0 % vẫn nằm trong danh sách bind."""
     bidx = {n: i for i, n in enumerate(names)}
     verts = []
     for (wx, wy), wd in zip(world, per_vertex):
-        wd = {k: float(v) for k, v in wd.items() if k in bidx and float(v) >= 0.005}
+        wd = {k: float(v) for k, v in wd.items() if k in bidx and (float(v) >= 0.005 or (v == 0.0 and isinstance(v, float)))}
         if not wd:
             raise ValueError("có đỉnh không còn weight nào")
         tot = sum(wd.values())
@@ -238,6 +254,16 @@ def bind_auto(b, safe, backup, save):
         if not add:
             raise ValueError("các xương chọn đã bind sẵn")
         bones = list(dict.fromkeys([n for wd in old_w for n in wd] + add))
+        # 2026-11-18 (người dùng: "bind thêm sau khi đã bind thì chỉ thêm xương đó, để có thể tự chỉnh add thêm những vùng
+        # thủ công bên fix weight"): mặc định chỉ thêm xương (0 %), weight cũ giữ nguyên y hệt; "mix": true = cách cũ
+        # (xương mới tự nhận phần ở vùng gần nó). Tính lại toàn bộ = nút Auto weight (bind không có "add").
+        if not b.get("mix"):
+            per = _anchor_zero([dict(wd) for wd in old_w], world, W, add)
+            _write_weights(a, W, names, world, per)
+            backup(js)
+            save(js, data)
+            return {"vertices": len(world), "bones": bones, "added": add, "parent": slot["bone"], "reparented": False,
+                    "zero": True}
     bset = [n for n in bones if n in W]
     if not bset:
         raise ValueError("chọn ít nhất một xương để bind")
@@ -302,6 +328,9 @@ def set_weights(b, safe, backup, save):
     per = b.get("weights") or []
     if len(per) != len(world):
         raise ValueError(f"số đỉnh không khớp ({len(per)} / {len(world)}): file vừa đổi? nạp lại rồi sơn lại")
+    if len(a["vertices"]) != len(a["uvs"]):     # giữ xương đang bind mà vẫn 0 % (bind thêm chưa sơn) trong danh sách
+        had = {n for wd in old_mesh(a, slot["bone"], W, names)[2] for n in wd}
+        per = _anchor_zero([dict(wd) for wd in per], world, W, sorted(had))
     _write_weights(a, W, names, world, per)
     backup(js)
     save(js, data)
@@ -888,12 +917,16 @@ def apply_mesh(b, safe, backup, save):
     else:
         raise ValueError("chỉ sửa được region / mesh, không phải " + a.get("type"))
     uvs, verts = [], []
-    for p in pts:
+    per = None
+    if weighted:   # 2026-11-18: giữ xương đang bind mà 0 % (bind thêm chưa sơn) khi đổi lưới, trước đây rơi khỏi danh sách
+        per = [{k: v for k, v in interp_weights(p, opx, owt, otris).items() if v >= 0.01} for p in pts]
+        had = sorted({n for wd in owt for n in wd})
+        per = _anchor_zero(per, [to_world(*p) for p in pts], W, had)
+    for pi_, p in enumerate(pts):
         uvs += [round(p[0] / w, 6), round(p[1] / h, 6)]
         wx, wy = to_world(*p)
         if weighted:
-            wd = interp_weights(p, opx, owt, otris)
-            wd = {k: v for k, v in wd.items() if v >= 0.01}
+            wd = per[pi_]
             tot = sum(wd.values()) or 1
             verts.append(len(wd))
             for name, ww in sorted(wd.items(), key=lambda kv: -kv[1]):

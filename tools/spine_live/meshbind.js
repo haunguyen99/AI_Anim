@@ -36,9 +36,9 @@
       </details>
     </div>
     <div id="mbBind" class="mbPane">
-      <div class="mute">Bấm xương trên hình để thêm (bấm lại để bỏ), rồi <b>Bind</b>: bind thêm các xương mới, giữ weight đang có. <b>✕</b> sau tên xương = huỷ bind xương đó.</div>
+      <div class="mute">Bấm xương trên hình để thêm (bấm lại để bỏ), rồi <b>Bind</b>. Layer đã bind: Bind chỉ <b>thêm xương với weight 0 %</b> (weight cũ giữ nguyên) để tự sơn vùng của nó ở Fix Weight. <b>Auto weight</b> = tính lại tự động cả mesh cho mọi xương đang bind. <b>✕</b> sau tên xương = huỷ bind.</div>
       <div id="mbChips" class="row"></div>
-      <div class="row"><button id="mbBindGo" class="primary" title="Bind thêm các xương mới chọn (viền đứt): weight đang có giữ nguyên, xương mới nhận phần ở vùng gần nó">Bind</button><button id="mbRebind" title="Tính lại weight tự động từ đầu cho mọi xương trong danh sách (mất weight sửa tay)">Bind lại từ đầu</button>
+      <div class="row"><button id="mbBindGo" class="primary" title="Layer chưa bind: weight tự động cho các xương chọn. Layer đã bind: chỉ thêm các xương mới chọn với weight 0 % (weight cũ giữ nguyên), rồi sang Fix Weight sơn vùng của nó">Bind</button><button id="mbRebind" title="Auto weight: tính lại weight tự động cho TOÀN BỘ mesh theo mọi xương đang bind (+ xương mới chọn). Mất weight sửa tay (Hoàn tác được). Bấm 2 lần để chạy">Auto weight</button>
         <label title="Độ mềm khi trộn xương: cao = vùng chuyển giữa các xương rộng hơn">Mềm <input id="mbSoft" type="range" min="0.02" max="0.2" step="0.01" value="0.05"></label></div>
     </div>
     <div id="mbFix" class="mbPane">
@@ -299,9 +299,9 @@
       for (const k of others) d[k] = rest > 1e-6 ? d[k] / rest * (1 - v) : (1 - v) / others.length;
       for (const k of Object.keys(d)) if (d[k] < 0.0005 && k !== bone) delete d[k];
     }
-    B.dirty = true; applyRuntime(); renderVtx();
+    B.dirty = true; ed.dirty.add("__weights"); applyRuntime(); renderVtx();
   }
-  function removeBone(bone) { for (const i of B.sel) { const d = B.per[i]; if (Object.keys(d).length < 2) continue; delete d[bone]; const t = Object.values(d).reduce((a, b) => a + b, 0); for (const k in d) d[k] /= t } B.dirty = true; applyRuntime(); render() }
+  function removeBone(bone) { for (const i of B.sel) { const d = B.per[i]; if (Object.keys(d).length < 2) continue; delete d[bone]; const t = Object.values(d).reduce((a, b) => a + b, 0); for (const k in d) d[k] /= t } B.dirty = true; ed.dirty.add("__weights"); applyRuntime(); render() }
   // Auto smooth (2026-11-03): mỗi lần lặp, điểm đích = (1 - k) * weight của nó + k * trung bình weight các điểm kề trên lưới
   // (cạnh tam giác). Có điểm chọn: chỉ các điểm đó đổi, điểm khác làm mốc. Mỗi điểm giữ tối đa 4 xương, tổng = 1.
   function smoothW() {
@@ -324,19 +324,19 @@
       });
       ids.forEach((i, m) => { B.per[i] = next[m] });
     }
-    B.dirty = true; applyRuntime(); render();
+    B.dirty = true; ed.dirty.add("__weights"); applyRuntime(); render();
     setStatus(`đã làm mượt weight ${ids.length} điểm (${N} lần, mạnh ${k}) · chưa lưu: bấm Lưu weight, Bỏ để huỷ`, "ok");
   }
   $("mbSmooth").onclick = smoothW;
   $("mbSelAll").onclick = () => { if (B.per) { B.sel = [...B.per.keys()]; render() } };
   $("mbSelNone").onclick = () => { B.sel = []; render() };
-  function dropFix() { B.dirty = false; ed.dirty.delete("__weights"); stamp = null; build(snapshot()) }
+  function dropFix() { B.dirty = false; ed.dirty.delete("__weights"); if (!ed.dirty.size) ed.pending = false; stamp = null; build(snapshot()) }
   $("mbDrop").onclick = dropFix;
   $("mbSave").onclick = async () => {
     const s = slotObj(), a = att(); if (!s || !B.per) return;
     try {
       await edPost("/api/spine/weights", { json: cur.json, slot: s.data.name, attachment: a.name, weights: B.per });
-      B.dirty = false; ed.dirty.delete("__weights"); stamp = null; build(snapshot()); setTimeout(() => { loadPer(); render() }, 700);
+      B.dirty = false; ed.dirty.delete("__weights"); if (!ed.dirty.size) ed.pending = false; stamp = null; build(snapshot()); setTimeout(() => { loadPer(); render() }, 700);
       say("đã lưu weight " + s.data.name + " · " + hhmmss() + " (Ctrl+Z / Hoàn tác lùi)", "ok");
     } catch (e) { setStatus("lưu weight lỗi: " + e.message, "bad") }
   };
@@ -350,14 +350,16 @@
     const bound = a.bones ? boundNames() : [], add = B.pick.filter(n => !bound.includes(n));
     const bones = fresh ? [...new Set([...bound, ...B.pick])] : (bound.length ? add : B.pick);
     if (!bones.length) return setStatus(bound.length ? "bấm thêm xương mới trên hình rồi Bind (xương đang bind giữ nguyên)" : "bấm chọn ít nhất một xương trên hình", "bad");
-    if (fresh && !confirm(`Tính lại weight tự động từ đầu cho ${bones.length} xương? Weight sửa tay của ${s.data.name} sẽ mất (Hoàn tác được).`)) return;
+    // Auto weight (2026-11-18, người dùng: "cần có thêm 1 nút auto weight lại trong phần bind"): hỏi lại 2 bước ngay trên nút
+    // (không dùng confirm(): trình duyệt trong app có thể tự đóng hộp thoại)
+    if (fresh && !armDelete($("mbRebind"), null, `Auto weight ${bones.length} xương?`)) return setStatus(`bấm Auto weight lần nữa để tính lại weight toàn bộ ${s.data.name} theo ${bones.length} xương (mất weight sửa tay, Hoàn tác được)`);
     try {
       const body = { json: cur.json, slot: s.data.name, attachment: a.name, bones, soft: +$("mbSoft").value };
       if (!fresh && bound.length) body.add = add;
       const j = await edPost("/api/spine/bind", body);
       B.pick = []; B.chip = null;
       stamp = null; await build(snapshot()); setTimeout(render, 700);
-      const what = j.added?.length ? `bind thêm ${j.added.join(", ")} vào ${s.data.name} (giữ weight cũ, giờ ${j.bones.length} xương)` : `đã bind ${s.data.name} vào ${j.bones.length} xương`;
+      const what = j.added?.length ? `đã thêm ${j.added.join(", ")} vào ${s.data.name} với weight 0 % (weight cũ giữ nguyên, giờ ${j.bones.length} xương) · sang Fix Weight sơn vùng cho nó` : (fresh ? `Auto weight ${s.data.name}: tính lại toàn bộ theo ${j.bones.length} xương` : `đã bind ${s.data.name} vào ${j.bones.length} xương`);
       say(`${what} · ${j.vertices} điểm${j.reparented ? " · cha mới: " + j.parent : ""} · ${hhmmss()} · Fix Weight để chỉnh từng điểm`, "ok");
     } catch (e) { setStatus("bind lỗi: " + e.message, "bad") }
   }

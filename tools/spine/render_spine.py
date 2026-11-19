@@ -18,6 +18,7 @@ ap.add_argument("--size", nargs=2, type=int, default=[320, 320])
 ap.add_argument("--loops", type=int, default=1); ap.add_argument("--frames", default="0,4,8,10,13,16,19,25")
 ap.add_argument("--cross", action="store_true"); ap.add_argument("--ss", type=int, default=2)
 ap.add_argument("--fps", type=int, default=30)
+ap.add_argument("--skin", help="tên skin (gộp với skin default); mặc định: skin đầu tiên")
 ap.add_argument("--png_dir", help="also save every frame as PNG (f_0001.png...) for a playblast video")
 A = ap.parse_args()
 
@@ -25,7 +26,15 @@ data = json.loads(Path(A.skel).read_text(encoding="utf-8"))
 anim = data["animations"][A.anim]
 bones = data["bones"]
 bidx = {b["name"]: i for i, b in enumerate(bones)}
-skin = data["skins"][0]["attachments"]
+if A.skin:   # skin default + skin được chọn (skin chọn đè)
+    skin = {}
+    for sk in data["skins"]:
+        if sk["name"] in ("default", A.skin):
+            for sl, atts in sk.get("attachments", {}).items():
+                skin.setdefault(sl, {}).update(atts)
+    assert any(sk["name"] == A.skin for sk in data["skins"]), "không có skin " + A.skin
+else:
+    skin = data["skins"][0]["attachments"]
 if A.bg:
     BG = Image.open(A.bg).convert("RGBA")
 else:
@@ -184,13 +193,19 @@ def frame(t):
             continue
         alpha = int(slot.get("color", "ffffffff")[6:8], 16) / 255
         stl = anim.get("slots", {}).get(slot["name"], {})
+        if "attachment" in stl:   # đổi / ẩn attachment theo thời gian (key cuối có time <= t)
+            for k in stl["attachment"]:
+                if k.get("time", 0) <= t + 1e-6:
+                    name = k.get("name")
+            if not name:
+                continue
         if "alpha" in stl:
             (alpha,) = sample(stl["alpha"], t, ["value"], [1])
         if alpha <= 0.01:
             continue
         uvs, pts, tris = geometry(skin[slot["name"]][name], slot["bone"], W)
         layer = Image.new("RGBA", (canvas.width * SS, canvas.height * SS), (0, 0, 0, 0))
-        draw_attachment(layer, name, uvs, pts, tris, A.scale)
+        draw_attachment(layer, skin[slot["name"]][name].get("path", name), uvs, pts, tris, A.scale)
         layer = layer.resize(canvas.size, Image.LANCZOS)
         if alpha < 1:
             layer.putalpha(layer.getchannel("A").point(lambda v: int(v * alpha)))

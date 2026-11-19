@@ -14,6 +14,7 @@ Cầu nối lệnh (trang Spine Live phải đang mở; chạy bằng runtime Sp
   python tools/spine_live_cmd.py measure <json> --anim A [--from idle] [--attach arm_L2:basket_ctrl] [--slots eye_L] [--rot ear_L2,towel_L2] [--top 8]
         # loop (F0 vs Fcuối), nối với anim --from (vị trí + vận tốc đầu / cuối), xương giật nhất, vật bám trôi, ảnh slot theo frame, biên độ góc
   python tools/spine_live_cmd.py snap <json> --anim A --frames 0,10,20 [--out x.png] [--cell 360x420] [--cols 4] [--bones]
+        [--nolabel] [--box x0,y0,x1,y1]   # bỏ dải nhãn; khung cố định (video: tools/spine/live_video.py)
         # contact sheet vẽ bằng runtime thật (thay render_spine.py khi rig có inherit / IK / clipping); mặc định <thư mục anim>/_live/snap.png
         # [--trial tên]: ảnh thuộc lần thử tools/spine/trial.py (tự nhận nếu <json> là bản sao / file gốc của lần thử đang mở) -> xoá khi done
 
@@ -244,8 +245,10 @@ def bridge_cmd(cmd, args):
                     "rot": csv(opt(args, "--rot")), "top": int(opt(args, "--top", "8") or 8)})
     else:   # snap
         cell = opt(args, "--cell")
+        box = opt(args, "--box")   # khung cố định x0,y0,x1,y1 (2026-11-18, ghép nhiều lần chụp thành video không nhảy)
         a.update(frames=csv(opt(args, "--frames"), True), bones=flag(args, "--bones"), cols=int(opt(args, "--cols", "0") or 0) or None,
-                 cell=[int(x) for x in cell.lower().split("x")] if cell else None)
+                 cell=[int(x) for x in cell.lower().split("x")] if cell else None, nolabel=flag(args, "--nolabel"),
+                 box=[float(x) for x in box.split(",")] if box else None)
     r = bridge(cmd, a)
     if not r.get("ok"):
         print("lỗi:", r.get("error")); return 1
@@ -256,7 +259,8 @@ def bridge_cmd(cmd, args):
         os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
         with open(out, "wb") as fh:
             fh.write(base64.b64decode(res["png"].split(",", 1)[1]))
-        print(f"ảnh {res['w']}x{res['h']} ({len(res['frames'])} frame, {r.get('ms')} ms) -> {os.path.abspath(out)}")
+        print(f"ảnh {res['w']}x{res['h']} ({len(res['frames'])} frame, {r.get('ms')} ms) -> {os.path.abspath(out)}"
+              + (f" · khung {','.join(str(round(v, 2)) for v in res['box'])}" if res.get("box") else ""))
         # ảnh tự kiểm thuộc một lần thử (tools/spine/trial.py, 2026-11-05): đăng ký để xoá cùng lần thử khi `done`.
         # --trial <tên>, hoặc tự nhận lần thử đang mở có bản sao / file gốc là <json>
         try:

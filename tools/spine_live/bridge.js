@@ -161,8 +161,11 @@
     let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     const off = new spine.Vector2(), size = new spine.Vector2();
     for (const f of frames) { P.at(f).getBounds(off, size, []); x0 = Math.min(x0, off.x); y0 = Math.min(y0, off.y); x1 = Math.max(x1, off.x + size.x); y1 = Math.max(y1, off.y + size.y) }
+    // 2026-11-18: box = khung cố định [x0, y0, x1, y1] (nhiều lần chụp cùng khung -> ghép video không nhảy); nolabel = bỏ dải nhãn
+    if (a.box) [x0, y0, x1, y1] = a.box;
+    const LB = a.nolabel ? 0 : 18;
     const pad = 0.06, bw = (x1 - x0) * (1 + 2 * pad), bh = (y1 - y0) * (1 + 2 * pad);
-    const zoom = Math.max(bw / cw, bh / (ch - 18));
+    const zoom = Math.max(bw / cw, bh / (ch - LB));
     const rows = Math.ceil(frames.length / cols), sheet = document.createElement("canvas");
     sheet.width = cols * cw; sheet.height = rows * ch;
     const g2 = sheet.getContext("2d"); g2.fillStyle = a.bg || "#1c3a5c"; g2.fillRect(0, 0, sheet.width, sheet.height);
@@ -170,15 +173,17 @@
     for (let i = 0; i < frames.length; i++) {
       const sk = P.at(frames[i]);
       gl.viewport(0, 0, cw, ch); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-      cam.setViewport(cw, ch - 18); cam.zoom = zoom; cam.position.x = (x0 + x1) / 2; cam.position.y = (y0 + y1) / 2 - 9 * zoom; cam.update();
+      cam.setViewport(cw, ch - LB); cam.zoom = zoom; cam.position.x = (x0 + x1) / 2; cam.position.y = (y0 + y1) / 2 - (LB / 2) * zoom; cam.update();
       G.r.begin(); G.r.drawSkeleton(sk, false); if (a.bones) G.r.drawSkeletonDebug(sk, false); G.r.end();
       const cx = (i % cols) * cw, cy = Math.floor(i / cols) * ch;
       g2.drawImage(G.canvas, 0, 0, cw, ch, cx, cy, cw, ch);
-      g2.fillStyle = "#000a"; g2.fillRect(cx, cy, cw, 18); g2.fillStyle = "#fff"; g2.font = "12px ui-monospace,Consolas,monospace";
-      g2.fillText(`${anim?.name || "setup"} F${frames[i]}`, cx + 6, cy + 13);
-      g2.strokeStyle = "#0006"; g2.strokeRect(cx + 0.5, cy + 0.5, cw - 1, ch - 1);
+      if (!a.nolabel) {
+        g2.fillStyle = "#000a"; g2.fillRect(cx, cy, cw, 18); g2.fillStyle = "#fff"; g2.font = "12px ui-monospace,Consolas,monospace";
+        g2.fillText(`${anim?.name || "setup"} F${frames[i]}`, cx + 6, cy + 13);
+        g2.strokeStyle = "#0006"; g2.strokeRect(cx + 0.5, cy + 0.5, cw - 1, ch - 1);
+      }
     }
-    return { png: sheet.toDataURL("image/png"), w: sheet.width, h: sheet.height, frames, zoom: r2(zoom) };
+    return { png: sheet.toDataURL("image/png"), w: sheet.width, h: sheet.height, frames, zoom: r2(zoom), box: [x0, y0, x1, y1] };
   }
 
   async function loop() {
