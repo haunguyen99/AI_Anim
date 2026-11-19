@@ -1,0 +1,236 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><title>Báo cáo cập nhật 6 Pet sang model mới</title><style>body{font-family:'Be Vietnam Pro',system-ui,sans-serif;max-width:1180px;margin:24px auto;padding:0 20px;color:#1c2330;background:#F6F3EE;line-height:1.55}
+h1{font-size:30px}h2{margin-top:34px;border-bottom:2px solid #F0B13B;padding-bottom:4px}h3{margin-top:22px}
+table{border-collapse:collapse;margin:12px 0;width:100%;font-size:14px;background:#fff}th,td{border:1px solid #d9d3c8;padding:6px 9px;text-align:left;vertical-align:top}th{background:#13203A;color:#fff}
+code{background:#ece7dd;padding:1px 5px;border-radius:4px;font-size:13px}a{color:#8A5208}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:14px 0}.card{background:#fff;border:1px solid #d9d3c8;border-radius:8px;padding:10px}
+.card h4{margin:0 0 8px}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}video{width:100%;background:#13203A;border-radius:4px}figcaption{font-size:12px;color:#555;text-align:center}figure{margin:0}</style><body>
+<h1>Báo cáo: cập nhật 6 Pet sang model mới (Infinite Defense, 18/11/2026)</h1>
+<p>Phiên "New Pet" trên máy Linux. Số thời gian lấy từ log phiên Claude (cách tính như các báo cáo trước: AI làm = từ prompt tới tin cuối của AI; người làm = khoảng giữa hai lượt, chỉ tính khi ≤ 15′). Số đo mesh và FBX lấy từ chính file. Mọi chỗ chưa kiểm được đều ghi rõ.</p>
+<h2>1. Tóm tắt</h2>
+<ul>
+<li>Artist cập nhật model 5 Pet (Mecha Pup, Night Bat, Pebble Turtle, Tiny Chick, Wind Chameleon) ở thư mục mesh Pet_new của Unity. Tengu Swift (Pet 18) đổi mũi mặt nạ.</li>
+<li>Cả 6 Pet đã chuyển rig, skin, texture sang mesh mới, giữ nguyên key Idle / Attack đã chốt, rồi xuất lại 3 FBX (Base, Idle, Attack) và chép đè vào Unity (<code>Assets/3D_Art/3D_Animation/Pet_NEW</code>).</li>
+<li>Làm bằng 6 phiên con chạy song song trong Paseo, mỗi phiên một Pet và một cửa sổ Frolvy riêng. Phiên chính (tôi) so model, giao việc, kiểm FBX, chép sang Unity.</li>
+<li>Tổng AI làm <b>97,0′</b>; từ lúc mở phiên tới lúc chép xong vào Unity là 1 g 53′ (09:18 → 11:11 ngày 18/11), chưa kể việc WorkAI.</li>
+<li>Người làm <b>94,7′</b>: phiên chính 44,7′ (đo từ log) + 50′ ở các phiên con (bạn khai, chỉ thao tác tay trong Frolvy và feedback). Tổng AI + người: <b>191,7′ (3 g 12′)</b>.</li>
+</ul>
+<h2>2. Thời gian</h2>
+<table>
+<tr><th>Phần</th><th>Lượt</th><th>AI làm</th><th>Người làm</th><th>Chờ trả lời</th></tr>
+<tr><td>Phiên chính: so model, tạo / chỉnh phiên con, kiểm FBX, chép Unity</td><td>13</td><td>11,0′</td><td>44,7′</td><td>0,1′</td></tr>
+<tr><td>Phiên con Pet 11 Mecha Pup</td><td>7</td><td>18,5′</td><td><b>20′</b> (bạn khai)</td><td>–</td></tr>
+<tr><td>Phiên con Pet 12 Pebble Turtle</td><td>4</td><td>12,9′</td><td><b>5′</b> (bạn khai)</td><td>–</td></tr>
+<tr><td>Phiên con Pet 13 Tiny Chick</td><td>4</td><td>13,6′</td><td><b>5′</b> (bạn khai)</td><td>–</td></tr>
+<tr><td>Phiên con Pet 15 Night Bat</td><td>4</td><td>16,7′</td><td><b>5′</b> (bạn khai)</td><td>–</td></tr>
+<tr><td>Phiên con Pet 16 Wind Chameleon</td><td>4</td><td>16,8′</td><td><b>5′</b> (bạn khai)</td><td>–</td></tr>
+<tr><td>Phiên con Pet 18 Tengu Swift</td><td>4</td><td>7,5′</td><td><b>10′</b> (bạn khai)</td><td>–</td></tr>
+<tr><td><b>Tổng</b></td><td></td><td><b>97,0′ (1 g 37′)</b></td><td><b>94,7′</b> (44,7′ phiên chính + 50′ phiên con)</td><td></td></tr>
+</table>
+<ul>
+<li><b>Phiên chính (44,7′):</b> phần lớn là lúc người chờ và xem các phiên con chạy (tối đa 11′ mỗi lần), không phải toàn bộ là gõ hay sửa tay.</li>
+<li><b>Phiên con, phần người = bạn khai (ngày 19/11):</b> Pet 11: 20′; Pet 12, 13, 15, 16: 5′ mỗi Pet; Pet 18: 10′. Số này <b>chỉ gồm thao tác tay trong Frolvy và feedback</b>, tổng 50′. Đây là số bạn tự ước lượng, không đo từ log.</li>
+<li><b>Đối chiếu với log</b> (chỉ tính lúc bạn nghĩ / xem trước mỗi lượt bạn tự gõ trong Paseo, tối đa 15′): Mecha Pup 16,2′ (3 lượt), Tengu Swift 3,8′ (2 lượt), 4 Pet còn lại 0′ (bạn không gõ gì). Log không thấy được thao tác tay trong Frolvy nên số khai lớn hơn; dùng số khai làm số chính.</li>
+<li><b>Phần người ở phiên chính (44,7′)</b> là lúc bạn chờ và xem các phiên con chạy, chỉ đạo, ra lệnh. Số này đo từ log. Phần này và số khai ở trên là hai việc khác nhau nên tôi cộng lại (94,7′); nếu bạn vừa chờ ở phiên chính vừa sửa tay ở phiên con cùng lúc thì có thể trùng một phần.</li>
+<li><b>Người tự gõ trong phiên con (log, 5 lượt):</b> Mecha Pup 3 lượt ("mở control và xương lên cho tôi check", "rig của chó chưa về dáng gốc", "texture của chó đang bị lắp lộn"), Tengu Swift 2 lượt ("check file model FBX mới ở Unity", "không sửa, cập nhật model mới đi").</li>
+<li><b>Tổng thực theo từng Pet (AI + người khai):</b> Mecha Pup 38,5′; Pebble Turtle 17,9′; Tiny Chick 18,6′; Night Bat 21,7′; Wind Chameleon 21,8′; Tengu Swift 17,5′. Cộng 6 phiên con: 136,0′. Cộng cả phiên chính: AI 97,0′ + người 94,7′ = <b>191,7′ (3 g 12′)</b>.</li>
+<li>Việc không tính vào Pet: WorkAI (kiểm kết nối, chia lại giờ GEK-2273: AI 1,7′, người 0,8′).</li>
+<li>Khoảng nghỉ &gt; 15′ không tính: 09:52 → 10:49 (57′) và 11:11 → 11:51 (39′).</li>
+<li>Nguồn: <code>s_mesh_main/</code>, <code>s_mesh_pet11/</code> … <code>s_mesh_pet18/</code> (<code>timeline.md</code>, <code>stats.json</code>).</li>
+</ul>
+<h2>3. Model mới khác model cũ ra sao</h2>
+<table>
+<tr><th>Pet</th><th>Đỉnh cũ → mới</th><th>Mảnh rời</th><th>Khác biệt chính</th><th>Cần xử lý</th></tr>
+<tr><td>11 Mecha Pup</td><td>1628 → 1621</td><td>10 → 10</td><td>hình giống hệt, texture / material mới</td><td>xoay lại mặt +Z (file mới quay ngược 180°)</td></tr>
+<tr><td>12 Pebble Turtle</td><td>871 → 703</td><td>3 → 6 (4 mesh gộp thành 1)</td><td>gọn hơn, mai và đầu to hơn chút, lỗi non-manifold 8 → 0</td><td>skin lại</td></tr>
+<tr><td>13 Tiny Chick</td><td>788 → 517</td><td>2 → 2</td><td>gọn hơn 35%, cùng cỡ</td><td>skin lại</td></tr>
+<tr><td>15 Night Bat</td><td>1004 → 547</td><td>1 → 3</td><td>gọn hơn 45%, cánh hẹp hơn (0,98 → 0,93)</td><td>skin lại; 2 mảnh 80 đỉnh là <b>cánh</b>, không phải mắt</td></tr>
+<tr><td>16 Wind Chameleon</td><td>1271 → 749</td><td>4 → 4 (2 mesh gộp thành 1)</td><td>lưỡi dài hơn (tổng dài 0,97 → 1,20), thêm tấm đế phẳng dưới chân</td><td>xoay lại mặt +Z, skin lại, kiểm lưỡi</td></tr>
+<tr><td>18 Tengu Swift</td><td>906 → 912 (thân)</td><td>–</td><td>mũi mặt nạ dài thêm ~6 cm, 888 đỉnh còn lại trùng bản cũ</td><td>thay thân, giữ quạt cũ</td></tr>
+</table>
+<p>UV và lưới (đo từ file): không con nào có UV tràn ô 0–1 hay mặt UV bị xẹp; UV khớp texture khi đặt lên ảnh. Nửa trái và nửa phải dùng chung UV ở Night Bat, Pebble Turtle, Tiny Chick, Wind Chameleon (Mecha Pup 91%, như bản cũ). Độ nét texture đều hơn bản cũ ở Night Bat, Pebble Turtle, Wind Chameleon; <b>Tiny Chick lệch hơn bản cũ</b> (có mảng nét hơn mảng khác 4–5 lần). Ảnh so sánh: <code>mesh_check/&lt;Tên&gt;.png</code>.</p>
+<h2>4. Kết quả từng Pet</h2>
+<table>
+<tr><th>Pet</th><th>Idle</th><th>Attack (frame bắn)</th><th>So với bản chốt cũ</th></tr>
+<tr><td>Mecha Pup</td><td>48F, lặp</td><td>24F (F9)</td><td>đỉnh lệch &lt; 0,01 mm; control lệch tối đa 0,04°</td></tr>
+<tr><td>Pebble Turtle</td><td>48F, lặp</td><td>36F (rụt đầu F10, khạc sỏi F15)</td><td>key giữ nguyên; đầu rụt không xuyên mai (xem bằng mắt)</td></tr>
+<tr><td>Tiny Chick</td><td>48F, lặp</td><td>30F (F12)</td><td>key giữ nguyên</td></tr>
+<tr><td>Night Bat</td><td>48F, lặp</td><td>30F (F13)</td><td>key giữ nguyên</td></tr>
+<tr><td>Wind Chameleon</td><td>48F, lặp</td><td>30F (F13)</td><td>so từng kênh từng frame: lệch 0</td></tr>
+<tr><td>Tengu Swift</td><td>48F, lặp</td><td>30F (F12)</td><td>lệch 0,000 mm trên 888 đỉnh thân trùng + 141 đỉnh quạt; mũi mới cách quạt nhỏ nhất ~9 cm (Attack F12–F15)</td></tr>
+</table>
+<p>FBX xuất: 18 file (mỗi Pet Base + <code>_Idle</code> + <code>_Attack</code>). Kiểm cấu trúc trên file: Base có mesh, skin và BindPose, không có clip; Idle / Attack có đúng 1 clip, không mesh, số xương khớp Base; UnitScale 100. Đã so từng file với bản chép trong Unity: 18/18 khớp.</p>
+<h2>5. Quy trình đã làm</h2>
+<ol>
+<li>09:18 – 09:24: so model mới với mesh cũ và rig Base đã chốt; kiểm UV và lưới, vẽ ảnh lưới cũ / mới.</li>
+<li>09:27 – 09:33: tạo phiên con. Lần đầu dùng subagent (không gõ trực tiếp được) nên đổi sang phiên Paseo; tôi cho phiên bắt đầu làm khi người dùng mới chỉ bảo tạo, người dùng dừng lại.</li>
+<li>09:40: người dùng chỉ thư mục file Frolvy của team (<code>tvc_source</code>); các phiên con bắt đầu làm thật. Mesh mới thay mesh cũ trong chính rig, joint / control / key giữ nguyên, bind skin ở pose 0.</li>
+<li>09:52: lắp texture mới; 10:49 tạo thêm phiên Pet 18.</li>
+<li>11:01 – 11:11: lệnh gộp <code>_v2</code> thành file gốc, bỏ bản cũ, xuất FBX; kiểm cấu trúc FBX; chép đè vào Unity.</li>
+</ol>
+<h2>6. Điểm mạnh</h2>
+<ul>
+<li>Song song 6 Pet: 97′ AI làm gói trong khoảng 1 g 36′ đồng hồ (09:32 → 11:08).</li>
+<li>Key đã chốt giữ nguyên tuyệt đối (lệch 0 tới 0,04°), không phải làm lại anim.</li>
+<li>Có số đo thay vì chỉ nhìn: so đỉnh cũ / mới tới phần nghìn mm; tìm ra 2 con mesh mới quay ngược 180° trước khi skin.</li>
+<li>Chuẩn bị công cụ cho máy Linux (đổi <code>tools/frolvy_port.py</code> chạy được trên Linux), các phiên con ghi bẫy Frolvy vào <code>report_mesh_v2.md</code> cho lần sau.</li>
+<li><b>Rig nhanh</b> (nhận xét của bạn).</li>
+<li><b>Chỉnh sửa theo feedback nhanh với model lowpoly không yêu cầu quá cao</b> (nhận xét của bạn).</li>
+<li><b>Cải thiện quy trình làm việc</b> (nhận xét của bạn): một người làm 100% thực tế mất 4–5 ngày để hoàn thành bộ Pet, còn với AI chỉ cần 3 ngày, chạy cùng lúc 12 phiên con.</li>
+<li><b>Import FBX tốt, có thể fix bug file</b> (nhận xét của bạn).</li>
+</ul>
+<h2>7. Điểm yếu / sai sót (nói thẳng)</h2>
+<ul>
+<li><b>Làm quá lệnh:</b> người dùng chỉ bảo "tạo nhánh con", tôi cho các phiên bắt đầu làm ngay; người dùng phải ra lệnh dừng (lượt 7). Sau đó vẫn còn file nháp (<code>mecha_pup/v2/</code>, <code>tiny_chick/rig_v2/</code>, <code>pebble_turtle/v2/</code>…).</li>
+<li><b>Chọn sai loại phiên lần đầu:</b> subagent không cho người dùng gõ trực tiếp, mất một vòng (09:27 → 09:31) để đổi sang Paseo.</li>
+<li><b>Đoán sai khi viết brief:</b> tôi viết 2 mảnh 80 đỉnh của Night Bat "nhiều khả năng là mắt"; thực ra là cánh. Phiên con tự sửa, nhưng brief sai có thể dẫn phiên khác sai.</li>
+<li><b>Frolvy trên Linux còn bẫy:</b> script cũ trỏ đường dẫn Windows; lưu sang file đã có trả về False, mở scene chỉ chạy khi scene sạch; PNG hiện lật dọc nên phải dùng bản lật; xuất FBX bake nên cửa sổ không còn bản gốc chưa bake (phải lưu <code>.fv</code> trước).</li>
+<li><b>Chưa kiểm tới nơi:</b> chưa import vào Unity (chưa biết skin có vỡ, Copy Avatar có báo lỗi không), chưa playblast MP4, chưa gọi Director; skin chỉ xem bằng ảnh viewport ở các frame chính, chưa xoay mạnh từng khớp; Night Bat chưa đo xuyên giữa cánh gập và thân; Wind Chameleon chưa dò xuyên giữa đuôi cuộn và mào ở mọi frame.</li>
+<li><b>Chưa xử lý:</b> tấm đế phẳng dưới chân Wind Chameleon (chưa rõ chủ ý hay đồ thừa), độ nét UV lệch của Tiny Chick, rig Mecha Pup "về dáng gốc" mới áp cho file rig, chưa áp cho Idle / Attack (bản Idle / Attack bind cũ khớp tuyệt đối bản chốt; áp thử lệch tối đa 2,9 cm).</li>
+<li><b>Người phải bắt lỗi:</b> Mecha Pup bị phát hiện hai lỗi mà phiên con không tự thấy: rig chưa về dáng gốc (10:10) và texture bị lộn do Frolvy hiển thị PNG lật dọc (10:46, phiên con sửa bằng bản texture lật). Tengu Swift phải được người nhắc lại hướng làm (10:54).</li>
+<li><b>Số đo giờ của người trong phiên con là số bạn khai</b>, không phải số đo: Frolvy không ghi lại thao tác tay, log phiên chỉ thấy các lượt bạn gõ.</li>
+<li><b>Mecha Pup tốn người nhiều nhất</b> (20′, hơn cả AI 18,5′): phần lớn là bạn bắt lỗi rig và texture (xem trên).</li>
+<li><b>Feedback còn tốn nhiều thời gian</b> (nhận xét của bạn): nhiều khi AI vẫn tự động sửa cả những phần không được yêu cầu sửa.</li>
+<li><b>Làm anim lệch so với GDD</b> (nhận xét của bạn): đã có bước phân tích GDD và posing, nhưng qua bước pose và làm anim AI vẫn làm theo hướng khác, không giống GDD đã mô tả.</li>
+<li><b>Bind skin và đặt joint còn lẫn lộn, bị lệch ở các Pet 4 chân</b> (nhận xét của bạn).</li>
+<li><b>Còn nhiều hạn chế ở kỹ năng chỉnh mesh và chạy overlap</b> (nhận xét của bạn).</li>
+</ul>
+<h2>8. Người vẫn phải làm</h2>
+<table>
+<tr><th>Khi nào</th><th>Làm gì</th></tr>
+<tr><td>Đầu phiên</td><td>chỉ ra Pet nào đổi, chỉ đường dẫn mesh và thư mục file Frolvy</td></tr>
+<tr><td>Giữa chừng</td><td>quyết định cách chạy (subagent hay Paseo), ra lệnh dừng khi tôi làm quá, góp ý rig Mecha Pup</td></tr>
+<tr><td>Cuối</td><td>ra lệnh gộp / xuất FBX / chép Unity</td></tr>
+<tr><td>Còn lại</td><td>mở Unity xem 6 Pet; báo artist độ nét UV Tiny Chick và tấm đế Wind Chameleon; dọn file nháp; quyết định đóng 6 phiên Paseo và cửa sổ Frolvy</td></tr>
+</table>
+<p>Gợi ý lần sau: nói rõ "chỉ tạo, chưa làm" khi tạo phiên con; đưa luôn đường dẫn thư mục Frolvy ngay từ đầu.</p>
+<h2>9. Số liệu các Pet làm lần đầu (11–25, 11–17/11) để đối chiếu</h2>
+<p><b>Giới hạn:</b> log phiên Claude của Pet 11–23 nằm ở máy Windows (11–14/11), không còn trên máy này. Với 11 Pet đó <b>không có số phút AI / người</b>, chỉ có mốc lịch từ file và giờ ước lượng ghi trên WorkAI. Chỉ có phút thật cho Pet 25 (17/11) và Pet 16 (17/11, chỉ kiểm mesh). Nguồn: <code>../_review_pets_11_25/BAO_CAO.md</code>, <code>BAO_CAO.md</code> cùng thư mục.</p>
+<h3>9.1 Mốc lịch và giờ ước lượng (không phải giờ làm thật)</h3>
+<table>
+<tr><th>Pet</th><th>Issue</th><th>Bắt đầu</th><th>Chốt</th><th>Khoảng lịch</th><th>Ước lượng WorkAI lúc giao</th><th>Giờ ghi trên WorkAI sau khi chia lại 30 g</th></tr>
+<tr><td>11 Mecha Pup</td><td>GEK-2355</td><td>11/11 16:13</td><td>13/11 15:38*</td><td>~2 ngày</td><td>1,3 g</td><td>1,5 g</td></tr>
+<tr><td>12 Pebble Turtle</td><td>GEK-2356</td><td>11/11 16:24</td><td>13/11 15:38*</td><td>~2 ngày</td><td>1,3 g</td><td>1,5 g</td></tr>
+<tr><td>13 Tiny Chick</td><td>GEK-2357</td><td>12/11 08:43</td><td>13/11 15:38*</td><td>~1,5 ngày</td><td>1,3 g</td><td>1,5 g</td></tr>
+<tr><td>14 Lucky Neko</td><td>GEK-2358</td><td>14/11 10:59</td><td>14/11 16:03</td><td>5 g 04′</td><td>1,5 g</td><td>1,7 g</td></tr>
+<tr><td>15 Night Bat</td><td>GEK-2359</td><td>12/11 10:32</td><td>13/11 15:41</td><td>~1 ngày</td><td>1,7 g</td><td>1,9 g</td></tr>
+<tr><td>16 Wind Chameleon</td><td>GEK-2360</td><td>12/11 10:42</td><td>13/11 15:38*</td><td>~1 ngày</td><td>1,7 g</td><td>1,9 g</td></tr>
+<tr><td>17 Pinchy Balboa</td><td>GEK-2361</td><td>13/11 10:38</td><td>13/11 15:29</td><td>4 g 51′</td><td>1,7 g</td><td>1,9 g</td></tr>
+<tr><td>18 Tengu Swift</td><td>GEK-2362</td><td>13/11 10:38</td><td>13/11 16:50</td><td>6 g 12′</td><td>2,0 g</td><td>2,2 g</td></tr>
+<tr><td>19 Kabuto Striker</td><td>GEK-2363</td><td>13/11 10:40</td><td>13/11 16:50</td><td>6 g 10′</td><td>1,7 g</td><td>1,9 g</td></tr>
+<tr><td>22 Steam-Pug Turbo</td><td>GEK-2366</td><td>13/11 13:45</td><td>14/11 10:14</td><td>qua đêm, ~4 g giờ làm</td><td>1,7 g</td><td>1,9 g</td></tr>
+<tr><td>23 Kitsune Nine-Mist</td><td>GEK-2367</td><td>13/11 13:45</td><td>14/11 15:55</td><td>~1 ngày</td><td>2,5 g</td><td>2,8 g</td></tr>
+<tr><td>25 Chrono Ouroboros</td><td>GEK-2369</td><td>14/11 (idle v1)</td><td>17/11 14:46</td><td>14/11 + 17/11</td><td>2,3 g</td><td>2,6 g</td></tr>
+<tr><td>Xuất FBX 15 Pet vào Unity</td><td>GEK-2370</td><td></td><td></td><td></td><td>2,0 g</td><td>2,2 g</td></tr>
+<tr><td>Sửa 6 Pet do mesh mới (báo cáo này)</td><td>GEK-2527</td><td>18/11 09:18</td><td>18/11 11:11</td><td>1 g 53′</td><td>4,0 g</td><td>4,5 g</td></tr>
+<tr><td><b>Tổng subtask GEK-2273</b></td><td></td><td></td><td></td><td></td><td><b>26,7 g</b></td><td><b>30,0 g</b></td></tr>
+</table>
+<p>\* Bốn Pet cùng giờ chốt 15:38 ngày 13/11 là lúc chạy công cụ chốt hàng loạt, không phải giờ xong thật. Khoảng lịch tính cả lúc chờ, chạy song song và việc khác xen vào.</p>
+<h3>9.2 Số phút thật đo được từ log (Pet làm lần đầu)</h3>
+<table>
+<tr><th>Hạng mục</th><th>Lượt</th><th>AI làm</th><th>Người làm</th><th>Tổng thực</th></tr>
+<tr><td>Pet 25 Chrono Ouroboros v2 (17/11)</td><td>18</td><td>69,3′</td><td>51,3′</td><td>120,6′ (2 g 01′)</td></tr>
+<tr><td>Pet 16 Wind Chameleon (17/11, kiểm mesh mới, không làm anim mới)</td><td>7</td><td>6,2′</td><td>23,9′</td><td>30,2′</td></tr>
+<tr><td>Điều phối Pet qua WorkAI (tạo phiên con, kiểm FBX, chép FBX)</td><td>6</td><td>3,0′</td><td>0,9′</td><td>3,9′</td></tr>
+<tr><td>Tổng ba hạng mục trên</td><td>31</td><td>78,5′</td><td>76,1′</td><td>154,6′</td></tr>
+</table>
+<p>Pet 25 theo giai đoạn: rig v2 6,0′ AI; rig v3 5,3′ + 2,2′ người; pose idle 16,6′ + 23,2′; idle lơ lửng 12,2′ + 10,4′; attack 24,9′ + 12,7′; chốt + xuất 4,3′ + 2,7′. Phần Pet 25 làm trên máy Windows ngày 14/11 (idle v1–v6, attack v1) không có log nên <b>chưa gồm</b>.</p>
+<h3>9.3 Đối chiếu lần đầu với lần cập nhật mesh</h3>
+<table>
+<tr><th>Pet</th><th>Lần đầu: ước lượng WorkAI (giờ)</th><th>Lần đầu: số phút đo được</th><th>Lần cập nhật mesh: AI làm</th><th>Lần cập nhật mesh: người làm (khai)</th></tr>
+<tr><td>11 Mecha Pup</td><td>1,3</td><td>không đo được</td><td>18,5′</td><td>20′</td></tr>
+<tr><td>12 Pebble Turtle</td><td>1,3</td><td>không đo được</td><td>12,9′</td><td>5′</td></tr>
+<tr><td>13 Tiny Chick</td><td>1,3</td><td>không đo được</td><td>13,6′</td><td>5′</td></tr>
+<tr><td>15 Night Bat</td><td>1,7</td><td>không đo được</td><td>16,7′</td><td>5′</td></tr>
+<tr><td>16 Wind Chameleon</td><td>1,7</td><td>không đo được</td><td>16,8′</td><td>5′</td></tr>
+<tr><td>18 Tengu Swift</td><td>2,0</td><td>không đo được</td><td>7,5′</td><td>10′</td></tr>
+<tr><td>25 Chrono Ouroboros</td><td>2,3</td><td>120,6′ (AI 69,3′ + người 51,3′)</td><td>không đổi mesh</td><td>–</td></tr>
+<tr><td><b>6 Pet cập nhật</b></td><td><b>9,3 g</b></td><td></td><td><b>86,0′ (trung bình 14,3′ mỗi Pet)</b></td><td><b>50′ (trung bình 8,3′ mỗi Pet)</b></td></tr>
+</table>
+<ul>
+<li>Mười một Pet làm lần đầu (11–23) cộng ước lượng WorkAI lúc giao là 18,4 giờ. Đó là số <b>ước lượng</b>, không phải số đo; không cộng với số phút trong báo cáo này.</li>
+<li>Con số duy nhất so được: Pet 25 làm mới hoàn toàn tốn AI 69,3′; cập nhật mesh một Pet trung bình 14,3′ AI + 8,3′ người (khai), tức khoảng 22,7′ mỗi Pet, bằng khoảng một phần năm tổng 120,6′ của Pet 25. Lưu ý Pet 25 có thêm pose idle và attack, còn cập nhật mesh giữ nguyên key, nên không phải cùng loại việc.</li>
+<li>Muốn có số đo thật cho Pet 11–23: chép thư mục log phiên của dự án AI_animation từ máy Windows (<code>C:\Users\&lt;tên&gt;\.claude\projects\</code>) sang máy này rồi đo lại; hoặc bạn khai số giờ gần đúng mỗi Pet, ghi riêng một cột "bạn khai".</li>
+</ul>
+<h2>10. Video playblast (24 clip của 12 Pet)</h2>
+<p>Thư mục <code>playblast/</code> (mỗi clip có <code>.mp4</code> và ảnh bìa <code>.jpg</code>), render sáng 18/11 lúc 09:20 – 09:24 từ các file <code>.fv</code> đã chốt trước đó, camera 3/4 nhìn từ trên xuống, 1280×720, 30 fps, đã ẩn control. Trang <code>BAO_CAO_MESH_MOI.html</code> cùng thư mục đã nhúng sẵn 24 video để xem trực tiếp.</p>
+<p><b>Cập nhật 19/11:</b> video Idle của Pet 11 Mecha Pup bị lỗi nên đã render lại từ file <code>.fv</code> mới (model mới, có texture, 48F). 23 video còn lại giữ nguyên.</p>
+<p><b>Lưu ý quan trọng:</b> các video còn lại quay <b>trước khi cập nhật mesh</b>, nên hình dáng là model cũ, màu xám, chưa có texture. Với 6 Pet đã cập nhật (11, 12, 13, 15, 16, 18), chuyển động trong video vẫn là chuyển động hiện tại vì key không đổi (đã so số, mục 4), nhưng hình model sẽ khác. <b>Chưa có playblast cho model mới.</b></p>
+<table>
+<tr><th>Pet</th><th>Idle</th><th>Attack</th><th>Cập nhật mesh 18/11</th></tr>
+<tr><td>11 Mecha Pup</td><td><a href="playblast/Pet_11_Mecha_Pup_Idle.mp4">Idle 48F, render lại 19/11</a></td><td><a href="playblast/Pet_11_Mecha_Pup_Attack.mp4">Attack 24F</a></td><td>có</td></tr>
+<tr><td>12 Pebble Turtle</td><td><a href="playblast/Pet_12_Pebble_Turtle_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_12_Pebble_Turtle_Attack.mp4">Attack 36F</a></td><td>có</td></tr>
+<tr><td>13 Tiny Chick</td><td><a href="playblast/Pet_13_Tiny_Chick_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_13_Tiny_Chick_Attack.mp4">Attack 30F</a></td><td>có</td></tr>
+<tr><td>14 Lucky Neko</td><td><a href="playblast/Pet_14_Lucky_Neko_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_14_Lucky_Neko_Attack.mp4">Attack 30F</a></td><td>không</td></tr>
+<tr><td>15 Night Bat</td><td><a href="playblast/Pet_15_Night_Bat_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_15_Night_Bat_Attack.mp4">Attack 30F</a></td><td>có</td></tr>
+<tr><td>16 Wind Chameleon</td><td><a href="playblast/Pet_16_Wind_Chameleon_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_16_Wind_Chameleon_Attack.mp4">Attack 30F</a></td><td>có</td></tr>
+<tr><td>17 Pinchy Balboa</td><td><a href="playblast/Pet_17_Pinchy_Balboa_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_17_Pinchy_Balboa_Attack.mp4">Attack 30F</a></td><td>không</td></tr>
+<tr><td>18 Tengu Swift</td><td><a href="playblast/Pet_18_Tengu_Swift_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_18_Tengu_Swift_Attack.mp4">Attack 30F</a></td><td>có (mũi mặt nạ)</td></tr>
+<tr><td>19 Kabuto Striker</td><td><a href="playblast/Pet_19_Kabuto_Striker_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_19_Kabuto_Striker_Attack.mp4">Attack 30F</a></td><td>không</td></tr>
+<tr><td>22 Steam-Pug Turbo</td><td><a href="playblast/Pet_22_Steam_Pug_Turbo_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_22_Steam_Pug_Turbo_Attack.mp4">Attack 30F</a></td><td>không</td></tr>
+<tr><td>23 Kitsune Nine-Mist</td><td><a href="playblast/Pet_23_Kitsune_Nine_Mist_Idle.mp4">Idle 48F</a></td><td><a href="playblast/Pet_23_Kitsune_Nine_Mist_Attack.mp4">Attack 30F</a></td><td>không</td></tr>
+<tr><td>25 Chrono Ouroboros</td><td><a href="playblast/Pet_25_Chrono_Ouroboros_Idle.mp4">Idle 72F</a></td><td><a href="playblast/Pet_25_Chrono_Ouroboros_Attack.mp4">Attack 40F</a></td><td>không</td></tr>
+</table>
+<ul>
+<li>Còn sót vài ký hiệu IK nhỏ ở chân (Pet 11 thấy rõ nhất), vì Frolvy không cho ẩn tay cầm IK.</li>
+<li>Script dựng lại: <code>tools/pet_playblast.py</code> (Linux). Muốn có video cho model mới, render lại 6 Pet đã cập nhật từ các file <code>.fv</code> mới (khoảng vài phút mỗi Pet, cần mở Frolvy).</li>
+</ul>
+<div class="grid">
+<div class="card"><h4>11 Mecha Pup</h4><div class="two">
+<figure><video src="playblast/Pet_11_Mecha_Pup_Idle.mp4" poster="playblast/Pet_11_Mecha_Pup_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_11_Mecha_Pup_Attack.mp4" poster="playblast/Pet_11_Mecha_Pup_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 24F</figcaption></figure>
+</div></div>
+<div class="card"><h4>12 Pebble Turtle</h4><div class="two">
+<figure><video src="playblast/Pet_12_Pebble_Turtle_Idle.mp4" poster="playblast/Pet_12_Pebble_Turtle_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_12_Pebble_Turtle_Attack.mp4" poster="playblast/Pet_12_Pebble_Turtle_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 36F</figcaption></figure>
+</div></div>
+<div class="card"><h4>13 Tiny Chick</h4><div class="two">
+<figure><video src="playblast/Pet_13_Tiny_Chick_Idle.mp4" poster="playblast/Pet_13_Tiny_Chick_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_13_Tiny_Chick_Attack.mp4" poster="playblast/Pet_13_Tiny_Chick_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>14 Lucky Neko</h4><div class="two">
+<figure><video src="playblast/Pet_14_Lucky_Neko_Idle.mp4" poster="playblast/Pet_14_Lucky_Neko_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_14_Lucky_Neko_Attack.mp4" poster="playblast/Pet_14_Lucky_Neko_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>15 Night Bat</h4><div class="two">
+<figure><video src="playblast/Pet_15_Night_Bat_Idle.mp4" poster="playblast/Pet_15_Night_Bat_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_15_Night_Bat_Attack.mp4" poster="playblast/Pet_15_Night_Bat_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>16 Wind Chameleon</h4><div class="two">
+<figure><video src="playblast/Pet_16_Wind_Chameleon_Idle.mp4" poster="playblast/Pet_16_Wind_Chameleon_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_16_Wind_Chameleon_Attack.mp4" poster="playblast/Pet_16_Wind_Chameleon_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>17 Pinchy Balboa</h4><div class="two">
+<figure><video src="playblast/Pet_17_Pinchy_Balboa_Idle.mp4" poster="playblast/Pet_17_Pinchy_Balboa_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_17_Pinchy_Balboa_Attack.mp4" poster="playblast/Pet_17_Pinchy_Balboa_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>18 Tengu Swift</h4><div class="two">
+<figure><video src="playblast/Pet_18_Tengu_Swift_Idle.mp4" poster="playblast/Pet_18_Tengu_Swift_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_18_Tengu_Swift_Attack.mp4" poster="playblast/Pet_18_Tengu_Swift_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>19 Kabuto Striker</h4><div class="two">
+<figure><video src="playblast/Pet_19_Kabuto_Striker_Idle.mp4" poster="playblast/Pet_19_Kabuto_Striker_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_19_Kabuto_Striker_Attack.mp4" poster="playblast/Pet_19_Kabuto_Striker_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>22 Steam Pug Turbo</h4><div class="two">
+<figure><video src="playblast/Pet_22_Steam_Pug_Turbo_Idle.mp4" poster="playblast/Pet_22_Steam_Pug_Turbo_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_22_Steam_Pug_Turbo_Attack.mp4" poster="playblast/Pet_22_Steam_Pug_Turbo_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>23 Kitsune Nine Mist</h4><div class="two">
+<figure><video src="playblast/Pet_23_Kitsune_Nine_Mist_Idle.mp4" poster="playblast/Pet_23_Kitsune_Nine_Mist_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 48F</figcaption></figure>
+<figure><video src="playblast/Pet_23_Kitsune_Nine_Mist_Attack.mp4" poster="playblast/Pet_23_Kitsune_Nine_Mist_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 30F</figcaption></figure>
+</div></div>
+<div class="card"><h4>25 Chrono Ouroboros</h4><div class="two">
+<figure><video src="playblast/Pet_25_Chrono_Ouroboros_Idle.mp4" poster="playblast/Pet_25_Chrono_Ouroboros_Idle.jpg" controls loop muted playsinline preload="none"></video><figcaption>Idle 72F</figcaption></figure>
+<figure><video src="playblast/Pet_25_Chrono_Ouroboros_Attack.mp4" poster="playblast/Pet_25_Chrono_Ouroboros_Attack.jpg" controls loop muted playsinline preload="none"></video><figcaption>Attack 40F</figcaption></figure>
+</div></div>
+</div>
+<h2>11. File</h2>
+<table>
+<tr><th>File</th><th>Nội dung</th></tr>
+<tr><td><code>mesh_check/&lt;Tên&gt;.png</code></td><td>lưới cũ / mới, UV đặt lên texture (5 ảnh)</td></tr>
+<tr><td><code>s_mesh_main/</code>, <code>s_mesh_pet11/</code> … <code>s_mesh_pet18/</code></td><td>từng lượt của phiên chính và 6 phiên con</td></tr>
+<tr><td><code>work/infinite_defense/pets/&lt;tên&gt;/report_mesh_v2.md</code></td><td>báo cáo chi tiết từng Pet (6 file)</td></tr>
+<tr><td><code>Pet_&lt;ID&gt;_&lt;Tên&gt;/</code> trong <code>tvc_source/3D ANIM/EndlessKicker/</code></td><td><code>.fv</code> mới, 3 FBX, <code>tex/</code>, <code>CHOT.txt</code></td></tr>
+<tr><td>Unity <code>Assets/3D_Art/3D_Animation/Pet_NEW/Pet_&lt;Tên&gt;/</code></td><td>18 FBX đã chép đè</td></tr>
+</table>
+</body></html>
