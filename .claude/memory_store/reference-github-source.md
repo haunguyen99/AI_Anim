@@ -19,3 +19,5 @@ Push: build a commit on top of `origin/main` with a temp index (`GIT_INDEX_FILE`
 - Một file code (tro_ly.py) hai bên cùng sửa: bên local có thêm xử lý phiên Paseo `closed` → giữ, vì main không có chỗ tương đương. Kiểm cú pháp (`ast.parse`) + chạy `status` sau khi gộp.
 - Sau merge `master` đã chứa main; đẩy GitHub vẫn chỉ bằng `/push` (`push_source.py --yes`) → nhánh `main`, không bao giờ push `master`. GitHub Desktop đứng ở master báo hàng chục file đổi là bình thường (dữ liệu work/), đừng commit / push từ đó.
 - Đừng dùng `find` quét cả ổ (/home, DataHDD): treo phiên hơn 2 phút (2026-11-18).
+- **Cả team đẩy main liên tục** (19/11: haunv 14:47, Huong 14:56, tungtq 15:01 trong vòng 15 phút). `push_source.py --dry-run` mà thấy dòng `XOÁ` = GitHub đang có file local chưa có (người khác mới đẩy), KHÔNG phải ý muốn xoá: dừng, `git fetch` + `git merge origin/main`, dry-run lại. Chỉ `--yes` khi `XOÁ` = 0. Làm fetch → merge → dry-run → push trong một lượt để khỏi bị đua.
+- Xung đột skill/knowledge mà bên local không đổi nội dung (chỉ CRLF) → lấy `--theirs`.
