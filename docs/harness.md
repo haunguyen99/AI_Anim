@@ -35,5 +35,5 @@ Trong phiên Claude: gọi `mcp__harness__env`. Lần đầu mở repo, Claude C
 ## Ghi chú
 
 - Nhận biết môi trường theo biến môi trường: app desktop đặt `CLAUDE_CODE_ENTRYPOINT=claude-desktop`; Paseo nhận theo biến có chữ `PASEO` (chưa kiểm trên máy có Paseo, nếu báo nhầm "cli" thì vẫn dùng được, chỉ tên khác).
-- `.mcp.json` trỏ `.venv/Scripts/python.exe` (Windows). Máy Linux: đổi thành `.venv/bin/python`.
+- `.mcp.json` và hook trỏ `.venv/Scripts/python.exe`. Máy Linux / macOS không cần sửa: `bash tools/setup.sh` đã tạo lối tắt `.venv/Scripts/python.exe` → `.venv/bin/python`.
 - Thêm công cụ: viết hàm `tool_<tên>` và thêm một dòng vào `TOOLS` trong `mcp_server.py`, cập nhật bảng trên.
