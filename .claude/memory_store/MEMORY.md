@@ -120,6 +120,8 @@
 - [Pet: mở file Frolvy mới](feedback-pet-open-latest-frolvy.md) — tools/pet_frolvy_tidy.py: đóng bản cũ, mở .fv mới cho user, không đóng cửa sổ có * (user 2026-11-13)
 - [Tùng RateUs idle](project-tung-rateus-idle.md) — idle 2D RateUs_anim v2 (120F) duyệt + zip giao gửi Tùng 2026-11-13; bài học cắt chong chóng, ffmpeg, sendfile
 - [Tùng Back to School](project-tung-backtoschool.md) — idle+active 2D Spine cừu 6 bóng 2026-11-13 duyệt, zip giao; bài học chuyển active->idle giảm tốc (smooth_tail), bóng+dây physics
+- [Lễ tân phản hồi ngay](feedback_le_tan_phan_hoi_ngay.md) — wait một mình, đáp ngay, việc nặng giao subagent
+- [Đặt joint theo giải phẫu](feedback_dat_joint_giai_phau.md) — joint là điểm xoay, không phải tâm mặt cắt; số đo MeoTom Hậu chỉnh
 - [Claude log backup](reference-claude-log-backup.md) — log phiên Claude + Paseo sao lưu mỗi giờ sang DataHDD/claude_log_backup (2026-11-18); /skillreport tìm ở đây khi thiếu log
 - [Trợ lý ngocvb trên Linux](project-assistant-ngocvb-linux.md) — /assistant: chủ cấu hình qua tools/.tro_ly_owner, phòng You không tên cần room --set (2026-11-18)
 - [Paseo trên Linux](reference-paseo-linux-launcher.md) — chỉ dùng AppImage 0.16.x, lối tắt không có --gtk-version=3 (2026-11-19)

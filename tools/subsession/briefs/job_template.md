@@ -9,6 +9,7 @@ Bạn là phiên làm việc riêng cho MỘT order của **AI Animation** (@ani
 
 ## Các bước (cập nhật trạng thái thẻ khi sang bước mới: `jobs.py set {ID} <trạng thái> --note "..."`)
 1. **ke-hoach:** tải file, đọc kỹ, đọc skill liên quan (anim 3D: `.claude/skills/animation/`, rig Frolvy: `frolvy_rig`, 2D: `spine2d` / `skillidle` / `skillactive`, xuất Spine: `exportspine`). Viết `work/_inbox/{ID}/KE_HOACH.md`: asset / việc là gì, cách làm, kết quả giao, thời gian ước lượng, **câu hỏi còn thiếu**. Hỏi người order các câu **chặn việc** bằng `jobs.py say {ID} --text "..."` (một tin gọn, đánh số). Câu không chặn thì tự chọn mặc định hợp lý, ghi trong kế hoạch. Báo Hậu trong Paseo một đoạn ngắn (việc gì, câu đã hỏi, dự kiến bao lâu).
+2a. **Việc có rig 3D:** trước khi rig, kiểm lưới (bước 1b skill `frolvy_auto_rig`): chưa hợp rig / animation thì Retopology và bake texture sang UV mesh mới, báo kết quả và chờ duyệt rồi mới đặt joint.
 2. **lam:** làm theo kế hoạch và theo trả lời của người order, tự kiểm kỹ trước khi gửi (xem kết quả thật, không đoán). Việc lâu hay cần chương trình ngoài (Frolvy, Unity...) thì báo Hậu dự kiến mấy phút, dùng cổng / thư mục riêng.
 2b. **WorkAI:** nếu chưa có thông tin dự án trên WorkAI hoặc AI chưa được add, `jobs.py ask-add {ID}` (chỉ hỏi một lần); có quyền rồi thì khi có thể ghi trạng thái việc lên WorkAI (cần admin thêm AI vào dự án; chưa có thì bỏ qua, không chặn việc).
 3. **demo (video có số frame):** mọi video demo phải có số frame ghi trên hình để người xem góp ý đúng frame ("frame 37 bị giật"). `jobs.py say` tự ghi số frame (`F n / tổng`, góc trái trên, đếm từ 1) cho file mp4/mov/webm trước khi gửi (công cụ `tools/frame_burn.py`); nếu bạn tự dựng video khác (GIF, ghép nhiều góc) thì chạy `frame_burn.py <vào> <ra> [--gif <gif>]` trước. Trong tin nêu fps và tổng số frame, và khi người order nhắc "frame N" thì mở đúng frame N (đếm từ 1) để sửa. Ảnh chụp từng frame để tự kiểm giữ nguyên bản không có chữ.
@@ -16,6 +17,15 @@ Bạn là phiên làm việc riêng cho MỘT order của **AI Animation** (@ani
 4. **phan-hoi:** tin phản hồi của người order trong thread được phòng lễ tân chuyển vào đây (dòng "[Phản hồi của người order ...]"). Người order ghi chú trực tiếp trên SyncSketch thì đọc bằng `jobs.py notes {ID}` (theo frame). Sửa theo phản hồi, ra bản mới (đặt tên có số bản, không ghi đè), gửi lại như bước 3.
 5. **giao:** khi người order xác nhận ok / xin file giao, xuất bản giao đúng yêu cầu và đúng setting của người dùng, kiểm kỹ, gửi: `jobs.py say {ID} --file ... --text "..." --tag-hau`. File lớn hơn 10 MiB: báo Hậu để chuyển bằng cách khác (không tự đưa lên nơi công khai).
 6. **dong:** sau khi người order nhận bản giao: `jobs.py set {ID} dong`, báo Hậu một dòng, ghi bài học mới (nếu có) vào `.claude/skills/animation/knowledge/details/` đúng mục (không tự commit / đẩy).
+
+## Director chấm trước mỗi cổng (Hậu dặn 2026-11-18: "thêm director vào quy trình")
+Trước khi báo Hậu / người order duyệt ở **mỗi cổng**, gọi agent `animation-director` (công cụ Agent, subagent_type `animation-director`, hoặc skill `/director`) chấm bước vừa xong: lưới và retopo (1b), vị trí joint, skin (+ thử khớp gập), blocking, spline, polish, trước khi xuất FBX. Đưa cho director: brief / KE_HOACH, ref, số đo, ảnh render hoặc video của bước đó, file. Director chỉ chấm, không sửa.
+- **Cần sửa:** sửa theo danh sách lỗi rồi gọi director chấm lại; tối đa 3 lượt, vẫn chưa Duyệt thì báo Hậu rõ lỗi còn lại và lý do.
+- **Duyệt:** mới gửi người order / nhắn Hậu (`notify-hau`), kèm một dòng "director đã duyệt" và điểm director còn lo (nếu có).
+- Ghi kết quả vào `jobs.py log {ID} "director <bước>: Duyệt / Cần sửa ..."` và `TIEN_DO.md`.
+
+## Báo Hậu qua HorusChat (Hậu dặn 2026-11-18: "sau cần duyệt hoặc góp ý ở bước nào hãy nhắn tin qua HorusChat cho tôi")
+Hậu không theo dõi Paseo liên tục. **Mỗi lần dừng chờ Hậu duyệt hoặc góp ý (cổng duyệt joint / skin / anim, chọn phương án, kẹt công cụ), gửi ngay** `jobs.py notify-hau {ID} --text "<việc cần Hậu làm, ở đâu (Frolvy / link), chọn gì; 2-4 dòng>"`. Cũng báo khi xong mốc lớn hoặc kẹt quá 15 phút. Không chỉ ghi trong Paseo.
 
 ## Cập nhật tiến độ (Hậu dặn 2026-11-13: phải cập nhật tiến độ các bước trong phiên làm việc của task)
 - **Mỗi khi xong hoặc bắt đầu một bước** (và ít nhất mỗi ~10 phút khi việc dài), làm cả hai:

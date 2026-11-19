@@ -13,6 +13,7 @@ Mỗi order một thẻ trong work/jobs/index.json (+ nhật ký work/jobs/<id>.
   python -I tools/jobs.py access [--project <tên>]      # dự án WorkAI mà tài khoản AI đang thuộc (có --project: báo CÓ / CHƯA)
   python -I tools/jobs.py ask-add <id>                  # AI chưa thuộc dự án của order: nhắn người order / PM trong thread xin add (chỉ hỏi một lần)
   python -I tools/jobs.py say <id> --text "..." [--file <đường dẫn>] [--tag-hau] [--no-burn] [--sync]   # file video (mp4/mov/webm) tự được ghi số frame lên hình (tools/frame_burn.py) trước khi gửi; --no-burn để gửi nguyên bản   # --sync: tải video lên review SyncSketch của việc (mỗi việc một review, bản mới = phiên bản mới) và đưa link vào tin
+  python -I tools/jobs.py notify-hau <id> --text "..."   # nhắn Hậu trong chat riêng khi cần duyệt / góp ý (bắt buộc ở mỗi cổng duyệt)
   python -I tools/jobs.py notes <id>                    # đọc ghi chú / bình luận trên SyncSketch của việc   # gửi vào ĐÚNG thread của order (tag người order; --tag-hau tag thêm Hậu)
 
 `say` chỉ gửi được vào thread / phòng ghi trong thẻ (phiên làm việc không gửi lung tung được). Danh tính HorusChat theo tools/identity.py.
@@ -24,10 +25,11 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import identity  # noqa: E402
 JOBS = os.path.join(ROOT, "work", "jobs")
 INDEX = os.path.join(JOBS, "index.json")
-PY = os.path.join(ROOT, ".venv", "Scripts", "python.exe")
+PY = os.path.join(ROOT, ".venv", "Scripts", "python.exe") if os.name == "nt" else sys.executable
 STATUSES = ("nhan", "ke-hoach", "lam", "demo", "phan-hoi", "giao", "dong", "huy")
 OPEN = ("nhan", "ke-hoach", "lam", "demo", "phan-hoi", "giao")
 HAU = "@haunv:localhost"
+HAU_DM = "!ix3d4pF50OCLntvV:localhost"  # chat riêng Hậu - AI
 
 
 def load():
@@ -275,6 +277,21 @@ def main():
         print((p.stdout or "").strip() or (p.stderr or "").strip())
         if p.returncode == 0:
             log(jid, "Đã gửi vào thread" + (f" (file {os.path.basename(fp)})" if fp else "") + ": " + (text[:120] if text else ""))
+        else:
+            sys.exit(p.returncode)
+    elif cmd == "notify-hau":
+        # Nhắn Hậu trong chat riêng (Hậu dặn 2026-11-18): mỗi lần cần Hậu duyệt / góp ý. Chỉ gửi được cho Hậu.
+        jid = a.pop(0)
+        need(d, jid)
+        text = opt(a, "--text", "")
+        if not text:
+            sys.exit("Cần --text")
+        args = [PY, "-I", os.path.join(ROOT, "tools", "horuschat_cli.py"), "say", "--room", HAU_DM,
+                "--mention", HAU, "--text", f"[{jid}] " + text, "--why", f"việc {jid}: cần Hậu duyệt / góp ý"]
+        p = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=ROOT)
+        print((p.stdout or "").strip() or (p.stderr or "").strip())
+        if p.returncode == 0:
+            log(jid, "Đã nhắn Hậu: " + text[:120])
         else:
             sys.exit(p.returncode)
     else:

@@ -43,4 +43,7 @@ tools/subsession/titles_cache.json
 tools/workai/.env.*
 tools/.profile
 tools/syncsketch/.env
+
+# Windows-EFS encrypted, unreadable on Linux
+ComfyUIMCP/
 tools/.tro_ly_owner

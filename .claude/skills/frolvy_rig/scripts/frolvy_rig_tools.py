@@ -450,6 +450,8 @@ def fix_thumb_curl(api):
     """With custom thumb axes Rig Builder's thumb curl can open the thumb instead of closing it.
     Flip fng_c_DEF_ThumbFinger{1,2,3}_{L,R} when curl=1 moves the tip AWAY from MiddleFinger1."""
     flipped = []
+    if not any(j.startswith("DEF_ThumbFinger") for j in api.ls("Joint")):
+        return flipped   # no thumb (ball-hand rigs like MeoTom): nothing to flip
     hand = ("handPose", "curl", "spread", "thumbCurl")
     saved = {}
     for s in ("_L", "_R"):   # measure from an open hand: a fist left on the switch fakes the test

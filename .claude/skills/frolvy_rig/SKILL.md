@@ -34,6 +34,7 @@ import importlib, frolvy_rig_tools as R; importlib.reload(R)
 Nhân vật **mới** từ model trần: theo trình tự và công cụ của skill `frolvy_auto_rig` (`scripts/auto_rig.py`: đo theo shell, đặt lại joint con sau khi người dùng sửa, chuỗi joint vải, `build` gộp build + dọn + snug). Các mục dưới là luật cho từng bước.
 
 ### 1. Kiểm model (trước khi đặt joint)
+**Trước tiên kiểm lưới có hợp rig / animation không** (bước 1b của `frolvy_auto_rig`, luật `docs/retopology_cho_rig.md`); chưa đạt thì Retopology + bake texture sang UV mới rồi mới đo.
 `R.check_model(api)` rồi `R.sections(api, "Body", 1, [...])` / `sections(api,"Body",0,[...])` để lấy đường tâm chân, thân, tay; cắt qua cạnh mesh chính xác hơn lấy đỉnh trên model ít poly. Báo: cao, đơn vị (mét, Y lên, mặt nhìn +Z, phải là −X), đối xứng, từng mảnh rời và joint nó sẽ gắn vào, tay nào cầm đạo cụ, các mốc xương.
 
 ### 2. Đặt joint fit
@@ -168,3 +169,18 @@ Mở đầu bằng việc đã làm được gì. Ghi số đo cụ thể (vị 
 
 ## Lỗi của Frolvy
 Gặp lỗi Frolvy: thêm một dòng vào bảng `work/frolvy_feedback.md`, viết ngắn (Lỗi / Cách thấy / Mong muốn, mỗi ý một câu). Hỏi người dùng rồi mới gửi.
+
+## Đặt joint cho nhân vật thú / chibi: quy tắc rút ra từ MeoTom (Hậu chỉnh tay 2026-11-19, so số đo)
+Hậu dời 18/33 joint hơn 2 cm (TB 2,5 cm, lớn nhất 8,4 cm) sau khi tôi đặt bằng tâm mặt cắt. **Đặt joint = điểm xoay giải phẫu, không phải tâm hình khối.** Quy tắc, kèm số đo MeoTom (cao 1 m):
+- **Cổ chân**: ở chỗ chân gặp bàn chân, **thấp**, trên gót bàn chân (y 0,065), KHÔNG ở chỗ thắt mặt cắt (tôi đặt 0,115, lệch 5 cm). Đùi và ống chân gần bằng nhau (Hậu 12,2 / 11,5 cm; tôi 10,7 / 7,7).
+- **Gót (Heel)** nằm dưới cổ chân (z gần z cổ chân), không lùi ra sau bàn chân (tôi sai 4,3 cm ra sau, 2,6 cm ra ngoài).
+- **Hướng bàn chân = đường gót → mút ngón nhìn từ trên, xoè ra ngoài ~40°** (Hậu: Heel→ToesEnd 39°). Tôi đo bằng tâm đáy bàn chân + hộp nhỏ nhất được 5–9° vì bàn chân là cục tròn có 3 múi ngón xoè: **không dùng PCA / tâm đáy; nhìn ảnh nhìn từ trên, lấy đường tới mút các múi ngón rồi hỏi/kiểm bằng ảnh.** FootSideInner/Outer vuông góc trục đó.
+- **Hông** gần đường giữa hơn tâm bbox đùi (Hậu x ±0,068; tôi đẩy ra 0,093 theo bbox bị lệch vì mesh bất đối xứng): lấy **tâm đùi trung bình hai bên ở độ cao hông**.
+- **Cột sống chia đều**: Root 0,316 → Spine1 0,409 → Chest 0,500 (cách 9,2 cm), rồi Neck 0,614. Tôi đặt 0,31/0,385/0,50 (cách 7,5 / 11,5 cm) và Neck thấp 2,9 cm.
+- **Tay**: Scapula gần đường giữa (x ±0,016) và Shoulder trong thân (x ±0,091), không ở mép chỗ cánh tay mọc ra (tôi 0,05 / 0,115). Khuỷu, cổ tay, đầu bàn tay đặt theo tâm cánh tay là đúng.
+- **Tai**: gốc tai (Ear1) ở **chân tai sát đỉnh đầu, vào trong** (x ±0,11–0,114; tôi đặt 0,157–0,165 theo tâm mép ngoài, lệch ~5 cm); 2–3 đốt sau đi theo **sống tai**. Mesh bất đối xứng: đặt từng bên (side centre, không mirror).
+- **Hàm**: bản lề giữa đầu ngang miệng (Jaw y 0,70, z 0,11); **JawEnd ở mút môi dưới / cằm phía trước** (y 0,686, z 0,265), không ở đáy cằm (tôi 0,615 / 0,225).
+- **Đỉnh đầu** (HeadEnd) = đỉnh sọ không tính chỏm lông / tai (0,926; tôi 0,965).
+- **Đuôi**: theo đường tâm đuôi, **thêm đốt ở chỗ đuôi cuộn** (Hậu thêm 1 đốt, hạ Tail5/Tail6 3,4 / 8,3 cm); điểm cuối cùng nằm trong mesh đuôi, không cắt ngang chỗ cuộn.
+- **Hướng (orient)**: mọi chuỗi (đuôi, tai, hàm) có trục X chạy dọc xương về joint con, Y gần hướng lên thế giới; tay / chân do Rig Builder tự aim đã dọc xương. **Thân / cổ / đầu giữ trục thế giới** (aim X dọc xương làm Frolvy build sai: control to, joint bàn chân lệch cả chục cm). Cách làm: `make_fit_v11.py` (`work/_inbox/dong-meotom-rig/rig/`) ghi orient tương đối + translate theo khung cha, sau `load_fit_skeleton` đưa kênh xoay các joint về 0 (xem `pipeline.py`). `api.orient_joint` không đủ (chỉ bù kênh xoay, trục thế giới không đổi).
+- **Quy trình**: đặt theo hình mesh từng vùng, rồi **chụp nhìn trước + bên + trên, joint chồng mesh, gửi người duyệt từng bước** trước khi build; số đo tâm mặt cắt chỉ để tham khảo. Người dùng chỉnh joint trong scene thì đọc lại scene (vị trí thế giới), giữ nguyên, chỉ aim lại hướng chuỗi (đuôi/tai/hàm) và dựng lại.

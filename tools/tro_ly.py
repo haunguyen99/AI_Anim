@@ -6,6 +6,7 @@ Mọi lệnh ở đây luôn dùng danh tính haunv (không phụ thuộc tools/
   python -I tools/assistant.py on [--no-daemons] [--quiet]   # bật: xoá cờ tắt, bật bộ canh nền haunv, tạo / đánh thức phiên trợ lý, báo vào You
   python -I tools/assistant.py off [--daemons] [--quiet]     # tắt: đặt cờ tắt, dừng phiên trợ lý (--daemons: dừng luôn 2 bộ canh nền haunv)
   python -I tools/assistant.py status                        # đang bật / tắt, phiên, bộ canh, phòng You, thiếu khoá nào
+  python -I tools/assistant.py ensure                        # giữ sống (timer gọi mỗi 2 phút): tôn trọng cờ tắt, phiên idle thì nhắn tiếp tục, không nhắn You
 
   python -I tools/assistant.py room [--set <room_id>]        # phòng You (tự tìm + kiểm chỉ có một mình chủ; --set để chỉ tay)
   python -I tools/assistant.py wait [--timeout 60]           # chờ tin MỚI của chủ trong You, in mỗi tin một dòng JSON (tin có 🤖 đầu dòng là của trợ lý, bỏ qua)
@@ -430,8 +431,20 @@ def cmd_todo(args):
         sys.exit(__doc__)
 
 
+def cmd_ensure(args):
+    """Giữ trợ lý luôn sống: gọi theo lịch (systemd timer). Tắt (có cờ) thì thôi; phiên idle thì nhắn tiếp tục; không nhắn vào You."""
+    if os.path.exists(OFF):
+        out({"ensure": "tắt (có cờ tro_ly_off)"})
+        return
+    if keys_missing():
+        out({"ensure": "thiếu khoá " + OWNER})
+        return
+    start_daemons()
+    out({"ensure": ensure_session()})
+
+
 CMDS = {"on": cmd_on, "off": cmd_off, "status": cmd_status, "room": cmd_room, "wait": cmd_wait, "say": cmd_say,
-        "history": cmd_history, "todo": cmd_todo}
+        "history": cmd_history, "todo": cmd_todo, "ensure": cmd_ensure}
 
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")

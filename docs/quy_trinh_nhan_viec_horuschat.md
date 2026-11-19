@@ -23,6 +23,8 @@ AI Animation là nhân viên AI của team Anim: tài khoản `@animationa:local
 6. **Giao (`giao`):** người order ok / xin file → xuất bản giao theo setting của Hậu, kiểm, gửi thẳng (file tối đa 10 MiB; lớn hơn thì báo Hậu).
 7. **Đóng (`dong`):** người order nhận bản giao; ghi bài học vào kiến thức.
 
+**Director chấm trước mỗi cổng (Hậu dặn 2026-11-18):** phiên làm gọi `animation-director` chấm bước vừa xong (lưới / retopo, joint, skin, blocking, spline, polish, trước khi xuất FBX); Cần sửa thì sửa rồi chấm lại (tối đa 3 lượt), Duyệt mới gửi người order và nhắn Hậu qua HorusChat (`jobs.py notify-hau`). Mẫu: `tools/subsession/briefs/job_template.md`.
+
 **Tiến độ (Hậu dặn 2026-11-13):** phiên làm cập nhật tiến độ mỗi khi xong / bắt đầu một bước và ít nhất mỗi ~10 phút: một dòng ngay trong phiên (bước n/6, xong gì, đang làm gì, còn gì, dự kiến), `jobs.py progress <id> "..." --pct N --eta "..."` (hiện ở `jobs.py ls`), và file `work/_inbox/<id>/TIEN_DO.md` đánh dấu [x]. Hỏi tiến độ thì đọc `jobs.py ls` / `jobs.py get <id>` trước, không phải dò nhật ký phiên.
 
 **Không cần Hậu duyệt trước khi gửi cho người order** (Hậu chọn 2026-11-13): kế hoạch, câu hỏi, demo, bản giao đều gửi thẳng vào thread; kết quả tag Hậu. Phiên làm chỉ gửi được vào thread của chính order đó (`jobs.py say` bị khóa theo thẻ).
