@@ -1,0 +1,85 @@
+[
+ {
+  "id": 1,
+  "t": "2026-11-19 15:35:29",
+  "who": "",
+  "what": "bản đầu (lúc mở)",
+  "from": null,
+  "hash": "32c5d69415af17c9a97db36c7c9d7b41eeedd08e",
+  "pub": false,
+  "group": null
+ },
+ {
+  "id": 2,
+  "t": "2026-11-19 15:41:26",
+  "who": "claude",
+  "what": "Claude gen idle (Unlock)",
+  "from": null,
+  "hash": "08070d964b4205fa185940861910dbbd4de5689a",
+  "pub": false,
+  "group": "1795077356907247356",
+  "merged": 3
+ },
+ {
+  "id": 3,
+  "t": "2026-11-19 15:49:14",
+  "who": "claude",
+  "what": "Claude gen active (Unlock)",
+  "from": null,
+  "hash": "db75964bc4160d6d12ccba49fdf158a36d8b9f39",
+  "pub": false,
+  "group": "1795078154549475409"
+ },
+ {
+  "id": 4,
+  "t": "2026-11-19 15:52:07",
+  "who": "claude",
+  "what": "Claude gen active (Unlock)",
+  "from": null,
+  "hash": "24cf7bcef577faaa0a02b9866d04afd502a6202c",
+  "pub": false,
+  "group": "1795078310866680805",
+  "merged": 2
+ },
+ {
+  "id": 5,
+  "t": "2026-11-19 15:53:34",
+  "who": "claude",
+  "what": "Claude gen active (Unlock)",
+  "from": null,
+  "hash": "d832d07ccbff141a80ec8091a576edbd03a53a45",
+  "pub": false,
+  "group": "1795078413906043794"
+ },
+ {
+  "id": 6,
+  "t": "2026-11-19 15:55:02",
+  "who": "claude",
+  "what": "Claude gen active (Unlock)",
+  "from": null,
+  "hash": "d05649bddd2af9b082cef80759e6bb49c955fa23",
+  "pub": false,
+  "group": "1795078502362548460"
+ },
+ {
+  "id": 7,
+  "t": "2026-11-19 15:57:15",
+  "who": "claude",
+  "what": "Claude gen active (Unlock)",
+  "from": null,
+  "hash": "7b5955b5db8d348b9ccc6178af98d927bda67256",
+  "pub": false,
+  "group": "1795078624554382554",
+  "merged": 2
+ },
+ {
+  "id": 8,
+  "t": "2026-11-19 16:01:28",
+  "who": "claude",
+  "what": "Claude gen active (Unlock)",
+  "from": null,
+  "hash": "672a8b04c4bfa1edfb1cc72459cfdbdbf35c9bfa",
+  "pub": false,
+  "group": "1795078887906021858"
+ }
+]

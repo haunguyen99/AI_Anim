@@ -1,0 +1,5 @@
+1. Giải nén thư mục AI_Anim.
+2. Linux/macOS: cd AI_Anim && bash tools/setup.sh   (Ubuntu thiếu venv: sudo apt install python3-venv)
+3. Bật Spine Live: bash tools/spine_live/start.sh   -> http://127.0.0.1:8781/spine
+4. Nạp ký ức cho Claude: .venv/Scripts/python.exe -I tools/claude_memory.py restore
+5. Chép file Spine / PSD vào work/<game>/spine/<anim>/

@@ -1,0 +1,19 @@
+---
+name: reference-workai
+description: WorkAI task system (workai.horusjsc.com) - client tools/workai/workai.py with token in .env, watcher tools/workai_watch.py kept in background, Anim missions 622-631
+metadata:
+  type: reference
+---
+
+- WorkAI = company task/mission system (issues GSDR-…, IL-…, missions, workflows). UI workai.horusjsc.com, API https://workai-be.horusjsc.com (Laravel, Bearer token).
+- Token only in `tools/workai/.env.<profile>` (ai|haunv, tools/identity.py; git-ignored); never print it. Cloudflare bans the Python-urllib User-Agent, client sets its own.
+- `tools/workai/workai.py get api/...` (no leading slash under Git Bash). Known: api/auth/me, api/notifications, api/missions(?page, ?assignee_id), api/missions/{id}, POST api/missions (project_id, epic_id, assignee_id, summary, description, additional_instructions), api/mission-workflows/{id}, api/issues?assignee_id=51, api/projects/81/epics.
+- User = id 51, assignee of epic 2083 "Animation chuyển đổi AI" (project 81 G - QUANLY-DIEUHANH-GAME). Anim missions: see below; session "WorkAI" (local_2d6928b4) handles workflows.
+- Session WorkAI giữ bộ canh `tools/workai_watch.py` (chạy nền; mỗi lần thoát báo người dùng ngắn gọn rồi chạy lại; `--scan` liệt kê việc liên quan). Mọi việc WorkAI do session WorkAI làm (người dùng 2026-11-04).
+- Workflow endpoints (full list + bodies in the docstring of tools/workai/workai.py, read from the frontend bundle): POST api/missions/{id}/workflow/generate {} (async, ~2 min, status pending→generated); PATCH api/mission-workflow-tasks/{tid} {final_assignee_user_id, estimated_hours, depends_on_task_ids, summary}; PATCH .../{tid}/acceptance {requires_acceptance, acceptance_reviewer_user_id}; POST api/mission-workflows/{wid}/approve {deadline, preview_token}; PUT api/epics/{id} (current_status = Hiện trạng). Frontend pages accept cookie sessionToken=<token>.
+- 2026-11-04 user cut the 10 missions to 3: 636 'AI 3D Animation Workflow' (GĐ4), 637 'AI 2D Animation Workflow' (GĐ3), 638 'AI VFX Workflow' (GĐ2); workflows 648–650 generated, not approved (`work/workai/missions_anim_v2.json`, `workflows_anim.json`). Old 622–631 deleted 2026-11-04 (DELETE api/missions/{id} removes its workflow too; DELETE workflow alone gives 422 unless cancelled). Adding 'Người thực hiện: Nguyễn Văn Hậu làm cùng AI; không gán người ngoài team' in additional_instructions made the AI assign almost all tasks to the user; it still adds Sơn 226 (review), Thư 151 (Unity test), Cường 23 (nghiệm thu).
+- Ask the user before approving workflows, deadlines, assigning others, deleting.
+- Owners (user 2026-11-04): 2D mission → Trần Quang Tùng (id 402, added to project 81 by Thảo 2026-11-04; 2D work tasks 6385–6389 assigned to him); VFX mission → Đỗ Hồng Sơn (226). 3D stays with the user. VFX tasks reassigned to Sơn, review task 6397 → user.
+- 3D mission 636 = GĐ3 Thử nghiệm (user 2026-11-04): process built, 2 directions (AI + Frolvy via MCP; Claude + AI Anim Studio); testers Vũ Bích Ngọc (435) and Bùi Thị Xuân Hương (438), user tries it on real projects; next = feedback → improve. Tasks of wf 648 rewritten by hand (6377–6383). 2D content was right as generated; VFX content still to fix with the user.
+- 2026-11-04 approved wf 648 (3D → issues QLDH-1260..1266) and 649 (2D → QLDH-1267..1273), Sprint 2; acceptance on, reviewer Cường (23); deadline 18/11 set as due_date on the acceptance issues (1266, 1273). POST approve ignores `deadline` and approves immediately: never send it as a probe. VFX 638/wf 650 still waiting for Sơn's answer (DM sent).
+- Weekly-report subtasks "Báo cáo tuần 1/2" (due 11/11, 18/11, template in description) on all 14 issues of 3D+2D: QLDH-1317..1344 + 1345/1346 (`work/workai/weekly_reports.json`). Approval had silently moved 2D review task 6390 to the user; moved back to Sơn via the workflow-task PATCH. workai_watch.py now skips notifications whose actor is the user (own/AI actions).

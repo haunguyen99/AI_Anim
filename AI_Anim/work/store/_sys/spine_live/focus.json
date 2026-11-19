@@ -1,0 +1,65 @@
+{
+ "seq": 13,
+ "log": [
+  {
+   "t": "15:35:56",
+   "say": "Rig Unlock: ruy băng cắt đôi dưới nơ giữa, 3 nơ có đuôi, kéo quay quanh ốc"
+  },
+  {
+   "t": "15:40:52",
+   "say": "Anim active: kéo bay lên, lấy đà, cắt dưới nơ giữa"
+  },
+  {
+   "t": "15:42:07",
+   "say": "rig_demo: từng bộ phận lần lượt (ctrl, 3 nơ + đuôi, dải trái/phải từng đốt, kéo mở/khép)"
+  },
+  {
+   "t": "15:42:49",
+   "say": "Idle xong (loop 90F). Có 3 anim: rig_demo, idle, active"
+  },
+  {
+   "t": "15:49:14",
+   "say": "Active v2: kéo cắt rồi tiến lên mất hẳn, ruy băng + nơ biến mất"
+  },
+  {
+   "t": "15:51:51",
+   "say": "Active v3: kéo lao dứt khoát theo cung cong, mất chậm hơn"
+  },
+  {
+   "t": "15:52:08",
+   "say": "Active v3: kéo lao dứt khoát theo cung cong, mất chậm hơn"
+  },
+  {
+   "t": "15:53:34",
+   "say": "Active v4: kéo bay nhanh hơn"
+  },
+  {
+   "t": "15:55:02",
+   "say": "Active v5: kéo mờ dần F40-46"
+  },
+  {
+   "t": "15:57:15",
+   "say": "Active v6: F30-45 kéo bay theo một cung cong"
+  },
+  {
+   "t": "16:01:28",
+   "say": "Active v7: kéo lao nhanh, dứt khoát hơn"
+  },
+  {
+   "t": "16:14:24",
+   "say": "Giao diện: ban đêm"
+  },
+  {
+   "t": "16:30:19",
+   "say": "Unlock: active v7 (kéo lao cung cong, mờ F40-46)"
+  }
+ ],
+ "json": "work/unlock/spine/Unlock/unlock.json",
+ "anim": "active",
+ "frame": 0.0,
+ "view": {},
+ "say": "Unlock: active v7 (kéo lao cung cong, mờ F40-46)",
+ "what": "show",
+ "t": "16:30:19",
+ "theme": "dark"
+}
