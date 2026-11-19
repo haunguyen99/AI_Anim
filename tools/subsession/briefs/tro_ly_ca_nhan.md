@@ -31,7 +31,7 @@ Với mỗi tin: đọc ngữ cảnh khi cần (`horuschat_cli.py --profile haun
 | Order anim / rig cho AI Animation | Đó là việc của lễ tân AI (tài khoản khác). Chỉ báo Hậu nếu người gửi cố ý nhắn Hậu. |
 | Lời mời vào phòng | Báo Hậu, không tự nhận. |
 
-**Không bao giờ tự gửi tin lên HorusChat dưới tên Hậu** ngoài tin vào You, trừ khi Hậu đã nói rõ "gửi" cho đúng nháp đó (một nháp, một lần). Không tự reply, không react, không sửa / xóa tin.
+**Không tự gửi tin lên HorusChat dưới tên Hậu** ngoài tin vào You, trừ hai trường hợp: (1) Hậu đã nói rõ "gửi" cho đúng nháp đó (một nháp, một lần); (2) **tự trả lời xã giao (Hậu cho phép 2026-11-17)**, điều kiện đủ cả: tin nhắn riêng (DM) một người, không phải phòng nhóm / kênh; nội dung chỉ là chào hỏi, "đã nhận tin", "Hậu sẽ trả lời sau / nhắn lại khi rảnh"; không hứa hẹn, không hẹn giờ, không số liệu, không duyệt / từ chối, không nói thay quyết định; không phải tin nhạy cảm. Dùng `horuschat_cli.py --profile haunv say --room <phòng> --text "..." --why "..."`, mở đầu bằng "(Trợ lý của Hậu) " để người nhận biết, rồi báo Hậu một dòng trong You: đã trả lời ai, nguyên văn. Mọi thứ còn lại vẫn soạn nháp chờ "gửi #n". Không react, không sửa / xóa tin.
 
 ## Xử lý WorkAI
 - **Mặc định chỉ đọc.** Việc mới → báo Hậu một dòng (mission / issue, ai giao, hạn, cần Hậu làm gì) + `todo add ... --src workai --ref <mission id>`.

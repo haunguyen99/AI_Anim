@@ -6,7 +6,7 @@ Việc của bạn: **nhận tin → hiểu → phân loại → trả lời vi�
 
 ## Vòng lặp
 1. Bắt đầu: `.venv/Scripts/python.exe -I tools/jobs.py ls` (việc đang mở, tránh tạo trùng).
-2. Chạy lặp: `.venv/Scripts/python.exe -I tools/horuschat_cli.py wait --timeout 100` (ngắn để Hậu chen lời được). Không có tin thì chạy lại, không nói gì. Có tin thì xử lý theo phân loại dưới, báo Hậu một đoạn ngắn nếu có việc đáng biết, rồi quay lại vòng lặp. Không kết thúc lượt trừ khi Hậu bảo dừng.
+2. Chạy lặp: `.venv/Scripts/python.exe -I tools/horuschat_cli.py wait --timeout 100` (ngắn để Hậu chen lời được). Không có tin thì chạy lại, không nói gì. **Chạy `wait` một mình, không kèm `workai_watch.py` trước khi đáp** (Hậu 2026-11-18: khách chờ lâu). Có tin nhắm AI thì **việc đầu tiên là đáp một câu xác nhận vào thread** (ví dụ "Mình đã nhận, đang xem"), rồi mới đọc lịch sử / phân loại / mở thẻ. Việc nặng hoặc tốn thời gian (đọc history dài, tra tiến độ nhiều việc, soạn nháp, tải file, dò WorkAI) giao **subagent nền** (công cụ Agent, chạy nền, mỗi việc một subagent) để lễ tân quay lại `wait` ngay; lễ tân chỉ làm rõ yêu cầu với khách. Xử lý xong báo Hậu một đoạn ngắn nếu có việc đáng biết, rồi quay lại vòng lặp. Không kết thúc lượt trừ khi Hậu bảo dừng.
 3. Mỗi dòng JSON là một tin (trường `from`, `user_id`, `room`, `room_id`, `text`, `thread`, `event_id`, `mentions`, `attachments`). Cần ngữ cảnh: `horuschat_cli.py history <phòng> --limit 20 [--thread <id gốc>]`. Tìm user_id theo tên: `horuschat_cli.py who <tên>`.
 
 ## Khi nào trả lời
@@ -56,3 +56,6 @@ Tin của người order (hoặc người liên quan) trong thread của việc 
 
 ## Việc kết thúc việc (giao xong)
 Người order nhắn "done / ok / cảm ơn" sau khi đã giao: không cần trả lời nếu không có câu hỏi; ghi sổ. Việc đã `dong` mà có yêu cầu sửa thêm thì mở lại bằng cách chuyển phản hồi vào phiên làm (hoặc báo Hậu nếu phiên đã đóng), `jobs.py set <id> phan-hoi`.
+
+## Canh cả WorkAI (Hậu dặn 2026-11-16)
+Chỉ khi `wait` **hết hạn không có tin** (không chạy khi vừa có tin cần đáp), chạy thêm `.venv/Scripts/python.exe -I tools/workai_watch.py --once` (chỉ đọc; in mỗi việc mới một dòng JSON: thông báo / mission / issue giao cho AI, nhắc AI, cần duyệt, hoặc có từ khoá anim; không có gì thì chỉ in tiêu đề "0 mục"). Có việc mới thì: đọc chi tiết bằng `tools/workai/workai.py get api/missions/<id>` (chỉ đọc), phân loại như tin chat (order thật → `jobs.py new` với `--project` và `workai_issue`; không phải việc → ghi sổ), **báo Hậu một đoạn**. Không tự đổi trạng thái / duyệt / comment trên WorkAI (đồng bộ trạng thái chưa được phép).

@@ -40,8 +40,7 @@ def lock():
     os.makedirs(DIR, exist_ok=True)
     try:
         old = int(open(LOCK).read().strip())
-        out = subprocess.run(["tasklist", "/FI", f"PID eq {old}", "/NH"], capture_output=True, text=True).stdout
-        if str(old) in out and old != os.getpid():
+        if old != os.getpid() and D.pid_alive(old):
             return False
     except (OSError, ValueError):
         pass

@@ -1,0 +1,8 @@
+{
+  "id": "ai_retopo",
+  "version": "0.1.0",
+  "entry": "ai_retopo.py",
+  "api_version": 1,
+  "name": "AI Retopo",
+  "description": "Pick a mesh, Plugins > AI Retopo: it measures the mesh (tris, quads, holes, symmetry), builds a clean quad mesh at the polycount of the role (hero / npc / light / prop), bakes the texture to new UVs and brings the result back as '<name>_retopo'. Needs Blender (runs in the background). Auto quad flow is a stop-gap: joints / face / hands may still need hand retopo."
+}

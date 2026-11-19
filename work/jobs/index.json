@@ -31,5 +31,24 @@
   "progress_at": "2026-11-13 14:33",
   "pct": 95,
   "eta": "5"
+ },
+ "dong-meotom-rig": {
+  "id": "dong-meotom-rig",
+  "title": "Rig + anim cho file MeoTom_Fake.fbx",
+  "from": "@dongpv:localhost",
+  "room": "!HT3uhn4PK5IpLKAj:localhost",
+  "thread": "$8CpCaPlTIIfzyJnRokh2EODZJSlzXV0MzDz_aoinDRA",
+  "event": "$x6t5Hqbiyv1kUnxwSTUItdfJvf73I0V4ETfUGunNreg",
+  "file": "MeoTom_Fake.fbx",
+  "project": null,
+  "status": "lam",
+  "session": "9362e25",
+  "created": "2026-11-18 11:33",
+  "workai_issue": null,
+  "workai_asked": null,
+  "progress": "Xong: kiểm build không đối xứng (không có chế độ riêng, mirror R->L). Chờ: Hậu gật vị trí ria mép + quyết cách xử lý chân trái. Còn: build ria, skin, 5 anim",
+  "progress_at": "2026-11-19 13:41",
+  "pct": 40,
+  "eta": "chờ Hậu"
  }
 }

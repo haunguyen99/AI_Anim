@@ -42,6 +42,12 @@ def toast(title, body):
           "$n.Visible=$true;$n.BalloonTipTitle=$env:WA_T;$n.BalloonTipText=$env:WA_B;$n.ShowBalloonTip(10000);"
           "Start-Sleep -Seconds 12;$n.Dispose()")
     env = dict(os.environ, WA_T=title[:60], WA_B=body[:250])
+    if os.name != "nt":  # Linux: thông báo desktop nếu có notify-send
+        try:
+            subprocess.Popen(["notify-send", title[:60], body[:250]])
+        except OSError:
+            pass
+        return
     try:
         subprocess.Popen(["powershell", "-NoProfile", "-WindowStyle", "Hidden", "-Command", ps], env=env,
                          creationflags=0x08000000)  # CREATE_NO_WINDOW
@@ -49,12 +55,24 @@ def toast(title, body):
         log(f"toast lỗi: {e}")
 
 
+def pid_alive(pid):
+    if os.name == "nt":
+        out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True, text=True).stdout
+        return str(pid) in out
+    try:  # Linux / macOS
+        os.kill(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except OSError:
+        return True
+
+
 def lock():
     os.makedirs(D, exist_ok=True)
     try:
         old = int(open(LOCK).read().strip())
-        out = subprocess.run(["tasklist", "/FI", f"PID eq {old}", "/NH"], capture_output=True, text=True).stdout
-        if str(old) in out and old != os.getpid():
+        if old != os.getpid() and pid_alive(old):
             return False
     except (OSError, ValueError):
         pass
