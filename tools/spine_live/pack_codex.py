@@ -29,6 +29,7 @@ COPY = [
     "tools/spine_live_recent.py",
     "tools/spine_live_replay.py",
     "requirements.txt",
+    "tools/setup.sh",
 ]
 SKILLS = ["spine2d", "skillidle", "skillactive", "exportspine"]   # spinelive viết lại cho Codex bên dưới
 
@@ -62,7 +63,7 @@ Skill nằm ở `.agents/skills/` (mỗi thư mục một `SKILL.md`). Đọc sk
 Các skill viết cho Claude: thay công cụ trình duyệt của Claude bằng trình duyệt thường của người dùng (xem mục dưới); mọi lệnh Python giữ nguyên.
 
 ## Chạy
-- Lần đầu: `setup.bat` (tạo `.venv`, cài numpy / opencv / pillow). Python 3.10+ phải có sẵn trên máy.
+- Lần đầu: Windows `setup.bat`, Linux / macOS `bash tools/setup.sh` (tạo `.venv`, cài numpy / opencv / pillow / psd-tools / scipy; Linux có lối tắt `.venv/Scripts/python.exe`). Python 3.10+ phải có sẵn trên máy (Ubuntu: `sudo apt install python3-venv`).
 - Bật Spine Live: `.venv/Scripts/python.exe -I tools/spine_live/ensure_server.py` (chạy riêng, không cửa sổ, thoát ngay khi server sống). Kiểm: `curl http://127.0.0.1:8781/api/spine/ping`. Log: `work/store/_sys/spine_live/server.log`.
 - Người dùng tự bật + mở trang: `start_spine_live.bat`.
 - Codex không có khung trình duyệt riêng: chọn file bằng `tools/spine_live_recent.py [từ khoá]`, đưa link `url` nó in ra thành một dòng riêng để người dùng bấm mở; kiểm trang đã mở bằng `tools/spine_live_cmd.py status`.
