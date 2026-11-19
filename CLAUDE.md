@@ -18,6 +18,9 @@
 - Frolvy: mở đầu bằng `.venv/Scripts/python.exe -I tools/frolvy_port.py scene` (file đang mở, `*` = chưa lưu, layer, key). Người dùng có thể mở lại Frolvy giữa hai lượt, scene có thể đã khác (đừng giả định). Việc hay gặp có lệnh một bước: `keys <tên>`, `clear <tên>` (xóa key + về pose mặc định), `reset <tên>` (xem đầu `tools/frolvy_port.py`). Có công cụ `frolvy` trực tiếp thì gọi `anim_ops` qua `execute_code`. Không đụng cổng của phiên khác (9878…).
 - Việc nào làm lần thứ hai thì làm thành lệnh một bước. Không đọc lại tài liệu / memory đã đọc trong phiên; ghi kiến thức một lần ở cuối việc. Báo trước bước nào lâu.
 
+## Chạy ngoài app Claude desktop (Paseo, VS Code, terminal)
+- Không có công cụ riêng của app (danh sách việc, wrap_up, Artifact, trình duyệt trong app, start_session…). Dùng MCP `harness` của repo thay: `plan` / `wrap_up` (hiện ở Home `/harness/`), `publish_page` thay Artifact, `studio` / `studio_snap`, `session` (phiên con Paseo). Hook đầu phiên tự nạp bảng thay thế. Chi tiết: `docs/harness.md`.
+
 ## Bộ nhớ Claude (giữ qua đổi tài khoản / máy)
 - Bản sao bộ nhớ ở `.claude/memory_store/` (trong git). Nếu `MEMORY.md` trong bộ nhớ phiên đang trống hoặc thiếu, chạy `.venv/Scripts/python.exe -I tools/claude_memory.py restore` rồi đọc `.claude/memory_store/MEMORY.md`.
 - Sau khi ghi / sửa memory: chạy `tools/claude_memory.py backup` để bản sao luôn mới.

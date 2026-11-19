@@ -3,6 +3,10 @@
     "spine": {
       "command": "uv",
       "args": ["run", "--directory", "tools/spine_mcp", "spine-mcp"]
+    },
+    "harness": {
+      "command": ".venv/Scripts/python.exe",
+      "args": ["-I", "tools/harness/mcp_server.py"]
     }
   }
 }

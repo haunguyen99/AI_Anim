@@ -799,6 +799,21 @@ class H(SimpleHTTPRequestHandler):
             if body is None:
                 return self.send_json({"error": "chưa có trang " + m.group(1) + " cho " + m.group(2)}, 404)
             return self.send_bytes(body, "text/html; charset=utf-8", True)
+        if path in ("/harness", "/harness/") or path.startswith("/harness/"):   # trang do harness đăng (tools/harness/mcp_server.py): work/_harness/pages/
+            base = os.path.join(ROOT, "work", "_harness", "pages")
+            rel = path[len("/harness/"):] if path.startswith("/harness/") else ""
+            full = os.path.abspath(os.path.join(base, rel))
+            if os.path.isdir(full):
+                full = os.path.join(full, "index.html")
+            ext = os.path.splitext(full)[1].lower()
+            if full.startswith(base + os.sep) and os.path.isfile(full):
+                if ext == ".html":
+                    return self.send_file(full, "text/html; charset=utf-8")
+                if ext in MEDIA:
+                    return self.send_file(full, MEDIA[ext])
+                if ext in LAB_STATIC:
+                    return self.send_file(full, LAB_STATIC[ext])
+            return self.send_error(404)
         if path.startswith("/work/"):
             full = os.path.abspath(os.path.join(ROOT, path.lstrip("/")))
             ext = os.path.splitext(full)[1].lower()
