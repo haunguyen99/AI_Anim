@@ -1,0 +1,8 @@
+{
+  "id": "motion_trail",
+  "version": "0.1.0",
+  "entry": "motion_trail.py",
+  "api_version": 1,
+  "name": "Maya Motion Trail",
+  "description": "Motion trail kiểu Maya: đường cong liền màu sáng, ô vuông ở key, vạch nhỏ mỗi frame (nhìn được giãn cách). Plugins > Trail Selected / Refresh Trails / Clear Trails."
+}
