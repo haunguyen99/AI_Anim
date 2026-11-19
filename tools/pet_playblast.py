@@ -1,6 +1,6 @@
 """Playblast MP4 cac Pet (Linux): mo tung file .fv trong mot Frolvy rieng, dung camera1 goc 3/4, an control, xuat MP4 + poster.
 
-  python3 -I tools/pet_playblast.py [so_pet ...]      (khong doi so = ca 12 pet 11-23, 25)
+  python3 -I tools/pet_playblast.py [so_pet[:Idle|:Attack] ...]      (khong doi so = ca 12 pet 11-23, 25; vd "11:Idle")
 Ra: work/infinite_defense/_review_pet_new/playblast/Pet_<so>_<ten>_<Idle|Attack>.mp4 + .jpg
 Khong dung cong cua nguoi dung (9877...): moi file mot Frolvy rieng cong 9900+, xong thi tat.
 """
@@ -9,7 +9,7 @@ import glob, json, math, os, signal, subprocess, sys, time
 HOME = os.path.expanduser("~")
 APP = HOME + "/.local/share/frolvy/Frolvy.AppImage"
 MCP = HOME + "/.local/share/frolvy/Frolvy-mcp"
-SRC = HOME + "/Desktop/DataHDD/Horus/tvc_source/3D ANIM/EndlessKicker/"
+SRC = HOME + "/Projects/tvc_source/3D ANIM/EndlessKicker/"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "work", "infinite_defense", "_review_pet_new", "playblast")
 PETS = {  # so: (thu muc, idle, attack)
     11: ("Pet_11_Mecha_Pup", "mecha_pup_idle.fv", "mecha_pup_attack.fv"),
@@ -129,11 +129,13 @@ def one(num, clip, fv, port):
         subprocess.run("pid=$(ss -ltnp | grep ':%d ' | grep -o 'pid=[0-9]*' | head -1 | cut -d= -f2); [ -n \"$pid\" ] && kill $pid; true" % port, shell=True)
 
 if __name__ == "__main__":
-    nums = [int(x) for x in sys.argv[1:]] or sorted(PETS)
+    args = [a.split(":") for a in sys.argv[1:]] or [[str(k)] for k in sorted(PETS)]
     port = 9900
-    for n in nums:
+    for a in args:
+        n = int(a[0]); only = a[1].capitalize() if len(a) > 1 else None
         d, idle, atk = PETS[n]
         for clip, f in (("Idle", idle), ("Attack", atk)):
+            if only and clip != only: continue
             fv = SRC + d + "/" + f
             t0 = time.time()
             try: r = one(n, clip, fv, port)
