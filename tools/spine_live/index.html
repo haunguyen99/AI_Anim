@@ -635,7 +635,8 @@ async function poll() {
     if (stamp === null) { stamp = t; return }
     if (t !== stamp) {
       if (ed.dirty.size) {   // đang có chỉnh sửa chưa key: giữ lại, nạp sau khi Key / Bỏ sửa
-        if (!ed.pending) { ed.pending = true; setStatus("file vừa đổi trên đĩa: đang giữ chỉnh sửa của bạn (Key pose hoặc Bỏ sửa để nạp bản mới)", "bad") }
+        // 2026-11-18: weight đang sơn ở Fix Weight (ed.dirty "__weights") cũng được giữ (trước đây mất khi Claude ghi file)
+        if (!ed.pending) { ed.pending = true; setStatus(ed.dirty.has("__weights") ? "file vừa đổi trên đĩa: đang giữ weight bạn sơn chưa lưu (bấm Lưu weight: chỉ ghi weight, giữ phần mới của file)" : "file vừa đổi trên đĩa: đang giữ chỉnh sửa của bạn (Key pose hoặc Bỏ sửa để nạp bản mới)", "bad") }
         return;
       }
       stamp = t; build(snapshot());

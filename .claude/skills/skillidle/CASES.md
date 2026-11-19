@@ -53,6 +53,13 @@ Mỗi mục: một nhân vật đã duyệt. Đọc mục gần nhất trước 
 - **Idle 90F** (`idle_cfg.py`): ctrl ±1.5° + nhấp nhô 12 px, người treo trễ 18F (arm_R1 bù translate), chuỗi bóng = `Chain` physics mỗi bóng hz 0.68-0.95 + pha gió 0-5.5 rad, **amp 18** (200 và 30 làm bóng văng ±40-70°), chớp mắt F62. Hậu duyệt idle ngay lượt đầu.
 - **Lần sau**: bóng + dây = chain physics amp ≤ 20 (px/s²); quần / thân dưới dính hông bằng `fade`.
 
+## Char4 ông giáo sư 2 ống nghiệm (đứng, nửa người) — 2026-11-18 · `work/test/spine/Char4/`
+- **Rig từ PSD** (`build_char4.py`, 27 xương): thân hip → spine → chest → neck → head; 2 tay 2 mảng (bắp tay / cẳng tay layer riêng) + ống nghiệm; mắt mở + con ngươi clipping theo vùng hở mắt + ảnh mí nhắm; 3 xương miệng; tóc 2 bên + râu 2 đốt trong mesh đầu.
+- **Yêu cầu**: idle thở, mở mắt nhìn người chơi, chớp mắt, mỉm cười nhẹ, râu / tóc physics nhẹ, tay phải đung đưa.
+- **Lượt** (8 vòng, nhiều vòng là sửa rig): v1 lắc lư (đầu ±3°, ống ±8°) bị chê "thở chứ không phải lắc lư"; v3 thở = chỉ dời -> "kết hợp translate + scale spine và ngực"; mask con ngươi phải ôm vùng hở mắt (không chỉ trắng sáng); tay phải "đứng yên đi theo người" -> nhịp riêng lệch pha; "nhẹ nhàng hơn, xa mặt hơn" -> lệch cố định ra ngoài + một nhịp theo thở; tóc "chưa thấy chuyển động" -> weight tóc yếu (sửa rig) rồi ±3°; lúc nhắm tắt ảnh mắt mở + con ngươi.
+- **Cấu hình chốt**: `work/test/spine/Char4/idle_cfg.py` 90F; thở: spine dời 0,5 px + scale 0,5 % / 1 %, chest trễ 3F dời 1,5 px + scale 1 % / 1,2 % (cổ / vai noScale); góc thân < 0,5°; râu / tóc Chain 0,7 Hz / 0,45, gió râu 55, tóc 120; tay phải +3 / −5 / +2° + nhịp 0,3 / 0,5 / 0,7°; miệng mép +2,5 px + nhịp 1 px; chớp F60.
+- **Người dùng tự key**: vị trí con ngươi (2 lần, nướng vào setup `PUPIL_USER`); weight cẳng tay phải, bắp + cẳng tay trái (Spine Live, `KEEP`).
+
 ---
 Mẫu mục mới:
 ```

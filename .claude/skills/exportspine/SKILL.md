@@ -64,3 +64,4 @@ Spine Live đọc được atlas `.atlas.txt` cạnh file export (cầu nối `b
   - Setting người dùng: `.atlas.txt`, scale 1.18, không PMA, pot + square, max 2048, `cleanUp`, `nonessential`, `perskeleton`.
   - Kết quả: idle + active 90F, 1 trang 2048×2048, kiểm runtime đạt.
   - Spine Live trước đó chỉ tìm `.atlas` hoặc atlas tự sinh, nên bản export (`.atlas.txt`) báo 404; đã thêm `findAtlas`.
+- 2026-11-18 Char4 trên **máy Linux**: Spine cài ở `~/.local/opt/Spine/Spine.sh` (CLI `-u 4.2.43` chạy được); `~/.spine/settings/editor-3.json` có `export:{}` (chưa từng xuất trên máy này) -> `export_spine.py` dùng `export_settings.json` mới nhất trong `work/` (setting người dùng lần giao trước trên Windows, lần này Invester: scale 1.5). Báo người dùng scale lấy từ đâu. Xuất 13 s, kiểm runtime đạt.

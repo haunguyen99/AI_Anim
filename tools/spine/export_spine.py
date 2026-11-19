@@ -16,7 +16,8 @@ Làm gì:
 import argparse, glob, json, os, re, shutil, subprocess, sys
 
 sys.stdout.reconfigure(encoding="utf-8")
-SPINE_EXE = os.environ.get("SPINE_EXE", r"C:\Program Files\Spine\Spine.com")
+SPINE_EXE = os.environ.get("SPINE_EXE") or (r"C:\Program Files\Spine\Spine.com" if os.name == "nt"
+                                            else os.path.expanduser("~/.local/opt/Spine/Spine.sh"))   # Linux 2026-11-18
 SPINE_VER = os.environ.get("SPINE_VERSION", "4.2.43")
 SKIP = re.compile(r"^(setup|rig_test|test_.*|_.*)$")
 
@@ -97,13 +98,22 @@ def user_settings():
     home = os.path.expanduser("~")
     p = os.path.join(home, "Spine", "settings", "editor-2.json")
     if not os.path.exists(p):
-        cands = glob.glob(r"C:/Users/*/Spine/settings/editor-2.json")
-        if not cands:
-            raise SystemExit("Không tìm thấy setting Spine (editor-2.json)")
-        p = max(cands, key=os.path.getmtime)
-    d = parse_gdx(open(p, encoding="utf-8").read())
-    ej = d["export"]["json"]
-    return p, ej
+        cands = glob.glob(r"C:/Users/*/Spine/settings/editor-2.json") + glob.glob(os.path.join(home, ".spine", "settings", "editor-*.json"))
+        p = max(cands, key=os.path.getmtime) if cands else None
+    if p:
+        d = parse_gdx(open(p, encoding="utf-8").read())
+        ej = (d.get("export") or {}).get("json")
+        if ej:
+            return p, ej
+    # 2026-11-18 máy Linux: Spine chưa từng xuất (export:{}) -> setting người dùng ở lần giao gần nhất (export_settings.json
+    # trong work/, do script này ghi từ editor-2.json trên máy Windows)
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    cands = [f for f in glob.glob(os.path.join(root, "work", "**", "export_settings.json"), recursive=True)
+             if json.load(open(f, encoding="utf-8")).get("class") == "export-json"]
+    if not cands:
+        raise SystemExit("Không tìm thấy setting Spine (editor-2.json) hay export_settings.json cũ")
+    p = max(cands, key=os.path.getmtime)
+    return p, json.load(open(p, encoding="utf-8"))
 
 
 def cli_settings(ej, out_dir, scale=None):
@@ -150,6 +160,7 @@ def main():
     ap.add_argument("json")
     ap.add_argument("--name", required=True, help="tên asset giao (vd MascotBackToSchool) -> tên file export")
     ap.add_argument("--anims", help="danh sách anim giao, cách bằng dấu phẩy (mặc định: mọi anim trừ setup / rig_test / test_*)")
+    ap.add_argument("--rename", help="đổi tên anim khi giao: cũ:mới,cũ:mới (vd active_fast:active); anim không giao thì khỏi đụng tên")
     ap.add_argument("--scale", type=float, help="ghi đè scale atlas (mặc định: scale trong setting Spine của người dùng)")
     ap.add_argument("--out", help="thư mục export (mặc định <thư mục json>/export)")
     ap.add_argument("--dry", action="store_true", help="chỉ in setting + danh sách anim, không xuất")
@@ -164,6 +175,11 @@ def main():
     miss = [x for x in anims if x not in all_anims]
     if miss:
         raise SystemExit(f"Không có anim: {miss} (file có: {all_anims})")
+    ren = dict(p.strip().split(":", 1) for p in a.rename.split(",")) if a.rename else {}
+    bad = [x for x in ren if x not in anims]
+    if bad:
+        raise SystemExit(f"--rename: anim {bad} không nằm trong danh sách giao {anims}")
+    new = lambda x: ren.get(x, x)
     sp, ej = user_settings()
     st = cli_settings(ej, out_dir, a.scale)
     pa = st["packAtlas"]
@@ -172,7 +188,7 @@ def main():
           f"pot {pa.get('pot')} square {pa.get('square')} · max {pa.get('maxWidth')}x{pa.get('maxHeight')} · "
           f"cleanUp {st.get('cleanUp')} · nonessential {st.get('nonessential')} · {st.get('packTarget')}")
     src_len = {x: anim_len(skel["animations"][x]) for x in anims}
-    print("anim giao:", ", ".join(f"{x} {src_len[x]:.3f}s ({round(src_len[x] * 30)}F)" for x in anims))
+    print("anim giao:", ", ".join(f"{x}{' -> ' + new(x) if new(x) != x else ''} {src_len[x]:.3f}s ({round(src_len[x] * 30)}F)" for x in anims))
     print("bỏ:", ", ".join(x for x in all_anims if x not in anims) or "-")
     if a.dry:
         return
@@ -187,11 +203,11 @@ def main():
 
     def build_final(end_events):
         fin = json.loads(json.dumps(skel))
-        fin["animations"] = {x: skel["animations"][x] for x in anims}
+        fin["animations"] = {new(x): skel["animations"][x] for x in anims}
         if end_events:
             fin.setdefault("events", {}).setdefault("loop_end", {})
             for x in end_events:
-                an = fin["animations"][x] = json.loads(json.dumps(fin["animations"][x]))
+                an = fin["animations"][new(x)] = json.loads(json.dumps(fin["animations"][new(x)]))
                 ev = [e for e in an.get("events", []) if e.get("name") != "loop_end"]
                 ev.append({"time": src_len[x], "name": "loop_end"})
                 an["events"] = ev
@@ -215,7 +231,7 @@ def main():
     if not exp:
         raise SystemExit("Export không ra file JSON")
     ex = json.load(open(exp[0], encoding="utf-8"))
-    short = [x for x in anims if anim_len(ex["animations"].get(x, {})) < src_len[x] - 1e-3]
+    short = [x for x in anims if anim_len(ex["animations"].get(new(x), {})) < src_len[x] - 1e-3]
     if short:
         print(f"cleanUp làm ngắn {short}: thêm event loop_end ở cuối rồi xuất lại")
         build_final(short)
@@ -227,13 +243,13 @@ def main():
     ok = True
     print(f"\nbản giao: {final_spine}\nexport: {out_dir}")
     for x in anims:
-        if x not in ex.get("animations", {}):
-            print(f"  THIẾU anim {x}"); ok = False; continue
-        L = anim_len(ex["animations"][x])
+        if new(x) not in ex.get("animations", {}):
+            print(f"  THIẾU anim {new(x)}"); ok = False; continue
+        L = anim_len(ex["animations"][new(x)])
         flag = "OK" if abs(L - src_len[x]) < 1e-3 else "LỆCH"
         ok &= flag == "OK"
-        print(f"  {x}: {L:.3f}s ({round(L * 30)}F) / nguồn {src_len[x]:.3f}s  {flag}")
-    extra = [x for x in ex.get("animations", {}) if x not in anims]
+        print(f"  {new(x)}: {L:.3f}s ({round(L * 30)}F) / nguồn {src_len[x]:.3f}s  {flag}")
+    extra = [x for x in ex.get("animations", {}) if x not in {new(y) for y in anims}]
     if extra:
         print("  anim thừa:", extra); ok = False
     atl = [f for f in os.listdir(out_dir) if f.endswith(pa.get("atlasExtension", ".atlas"))]

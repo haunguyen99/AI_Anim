@@ -8,6 +8,19 @@ Quy ước: frame ở 30 fps; góc là độ, cộng thêm vào góc setup (giá
 import copy, json, math, os, sys
 
 FPS = 30
+
+
+def ktime(t, fps=30):
+    """thời gian key an toàn (2026-11-10, rà soát Spine Live): key nằm đúng frame -> ghi SỚM hơn mốc frame 0.00001 s,
+    không bao giờ muộn (round(2/30, 4) = 0.0667 > 0.066667 làm key stepped / đổi ảnh hiện trễ 1 frame khi lấy mẫu f/fps;
+    float32 của 0.1 cũng > 0.1). Key không nằm đúng frame: làm tròn 5 chữ số."""
+    t = float(t)
+    if t <= 0:
+        return 0.0
+    f = t * fps; r = round(f)
+    if abs(f - r) < 0.02:
+        return math.floor(r / fps * 1e5 - 0.5) / 1e5
+    return round(t, 5)
 try:
     sys.stdout.reconfigure(encoding="utf-8")   # chạy -I trên Windows: in tiếng Việt không lỗi
 except Exception:
@@ -136,7 +149,7 @@ def periodic_keys(f, fields, T, n_keys=12, end=None):
     ks = []
     for i, t in enumerate(times):
         v = f(t % T)
-        k = {"time": round(t, 4)} if t else {}
+        k = {"time": ktime(t, FPS)} if t else {}
         k.update({n: round(x, 3) for n, x in zip(fields, v)})
         if i < len(times) - 1:
             t2 = times[i + 1]; dt = (t2 - t) / 3
@@ -159,7 +172,7 @@ def sample_keys(v, step=4):
     fr = list(range(0, n, step)) + [n]
     ks = []
     for j, f in enumerate(fr):
-        k = {"time": round(f / FPS, 4)} if f else {}
+        k = {"time": ktime(f / FPS, FPS)} if f else {}
         k["value"] = round(v[f], 3)
         if j + 1 < len(fr):
             f1 = fr[j + 1]; h = (f1 - f) / FPS / 3
@@ -216,7 +229,7 @@ def curve_keys(chans, fields, tol):
         fr = [0]
     out = []
     for i, f in enumerate(fr):
-        k = {} if f == 0 else {"time": round(f / FPS, 4)}
+        k = {} if f == 0 else {"time": ktime(f / FPS, FPS)}
         for fld, g in zip(fields, gs):
             k[fld] = round(g(f), 4)
         if i + 1 < len(fr):

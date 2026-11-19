@@ -59,6 +59,11 @@
 - **Cấu hình chốt**: `work/_inbox/tung-backtoschool/spine/{build_rig.py, idle_cfg.py, active_cfg.py, smooth_tail.py}`; khác preset: bóng = chuỗi 3 xương, active 150 px, gió một thùy.
 - **Lần sau**: đo tốc độ cuối active trước khi gửi (mục 4b); đo chiều cao bay theo % nhân vật; lọc `animations` chỉ idle + active khi xuất.
 
+## Char4 ông giáo sư — active lắc ống nghiệm (đang làm, 2026-11-18) · `work/test/spine/Char4/build_active.py`
+- Không phải nhảy / cưỡi: cử chỉ tay. Script riêng: idle nền giãn đúng 1 vòng + lớp hành động 0 ở 2 đầu (WIN 8F, Hermite dốc 0 hai đầu, không ngoại suy); tay theo mốc GÓC (IK theo điểm cổ tay bắt bắp tay sau áo xoay 54°).
+- Góp ý: "nhịp lắc bắt đầu nửa đường đưa lên, lắc dần" · "con ngươi nhìn theo ống" · "ngả đầu + ngực ngước nhìn" · "đập vào mặt F56" = cả người lao từ ngả sau ra trước (mắt dời 100 px / 16F) cùng lúc ống lao vào -> ngả nhỏ, ngó chậm 38F, tư thế soi tìm bằng FK (khoảng cách ống - mắt đo bằng `pose`) · "mắt nhắm sớm hơn" (nhắm trước khi ống tới) · "chuyển hơi giật nhanh" -> 120F lên 168F.
+- Người dùng tự key nhiều (F27 mắt, F46 tay cao 50°, soi F55-87, F68 cổ tay -25°): lọc đúng xương đổi, lần đầu uốn đường cong qua key (`active_user_keys.json`), khi đổi timing thì chuyển thành mốc tư thế.
+
 ---
 Mẫu mục mới:
 ```
