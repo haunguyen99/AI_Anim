@@ -769,7 +769,10 @@ def remesh(b, safe):
     old = np.zeros((h, w), np.uint8)
     cv2.fillPoly(old, [np.round(hull0 * 4).astype(np.int32)], 1, shift=2)
     cut = int(((alpha > 8) & (fill == 0)).sum())
-    grow = float((fill.sum() - old.sum()) / max(1, old.sum()) * 100)
+    # 2026-11-20: .sum() của mảng uint8 trả số KHÔNG DẤU (uint64 trên Linux / numpy 2): hiệu âm (lưới mới nhỏ hơn cũ) tràn thành
+    # ~1e19 -> trang hiện "lưới phình 2e+17%". Ép int64 trước khi trừ; âm = lưới co lại.
+    n_new, n_old = int(fill.sum(dtype=np.int64)), int(old.sum(dtype=np.int64))
+    grow = float((n_new - n_old) / max(1, n_old) * 100)
     old_cut = int(((alpha > 8) & (old == 0)).sum())
     hull = [tuple(p) for p in hull]
     for _ in range(6):   # Delaunay sót cạnh viền ở chỗ lõm hẹp: chèn điểm giữa cạnh sót rồi chia lại (bài học GiftBox)

@@ -1,0 +1,303 @@
+{
+ "groups": {
+  "idle": {
+   "label": "Idle",
+   "anim": "idle",
+   "run": [
+    "idle_cfg.py"
+   ],
+   "defs": [
+    {
+     "key": "end",
+     "label": "Độ dài loop (frame, 90 = 3 s một nhịp thở)",
+     "default": 90,
+     "min": 60,
+     "max": 150,
+     "step": 6,
+     "unit": ""
+    },
+    {
+     "key": "breath",
+     "label": "Thở: ngực lên / xuống (x, 1 = 6 px)",
+     "default": 1.0,
+     "min": 0,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "head",
+     "label": "Đầu overlap: ngả theo độ trễ (x)",
+     "default": 1.0,
+     "min": 0,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "hands",
+     "label": "Tay + cờ overlap (x)",
+     "default": 1.0,
+     "min": 0,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "head_hz",
+     "label": "Đầu đuổi theo ngực: độ cứng (Hz, nhỏ = trễ nhiều)",
+     "default": 1.1,
+     "min": 0.5,
+     "max": 4,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "hand_hz",
+     "label": "Tay + cờ đuổi theo ngực: độ cứng (Hz, nhỏ = trễ nhiều)",
+     "default": 0.7,
+     "min": 0.4,
+     "max": 3,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "head_gain",
+     "label": "Đầu: biên độ so với ngực (<1 = trễ xuống ở đỉnh hít, trễ lên ở đáy thở ra)",
+     "default": 0.95,
+     "min": 0.5,
+     "max": 1.3,
+     "step": 0.01,
+     "unit": ""
+    },
+    {
+     "key": "hand_gain",
+     "label": "Cánh tay + cờ: biên độ lên xuống so với ngực (1 = bằng ngực, 1.4 = ~10 px)",
+     "default": 1.3,
+     "min": 0.5,
+     "max": 2.5,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "hand_amp",
+     "label": "Biên độ riêng của bàn tay (trễ thêm + cụp, x; 1 = bản cũ)",
+     "default": 0.3,
+     "min": 0,
+     "max": 2,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "wrist_hz",
+     "label": "Bàn tay đuổi theo cánh tay: độ cứng (Hz, nhỏ = bàn tay trễ nhiều sau cánh tay)",
+     "default": 0.8,
+     "min": 0.5,
+     "max": 4,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "flag_hz",
+     "label": "Cờ: độ cứng (Hz, nhỏ = mềm)",
+     "default": 1.0,
+     "min": 0.3,
+     "max": 3,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "flag_damp",
+     "label": "Cờ: giảm chấn",
+     "default": 0.35,
+     "min": 0.05,
+     "max": 1,
+     "step": 0.01,
+     "unit": ""
+    },
+    {
+     "key": "flag_wind",
+     "label": "Cờ: gió nhẹ",
+     "default": 70.0,
+     "min": 0,
+     "max": 400,
+     "step": 5,
+     "unit": ""
+    },
+    {
+     "key": "mouth",
+     "label": "Mỏ phồng theo nhịp thở (x, 1 = +2%)",
+     "default": 1.0,
+     "min": 0,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "mouth_bob",
+     "label": "Mỏ nhấp lên xuống (x, 1 = 2 px)",
+     "default": 1.0,
+     "min": 0,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "mouth_phase",
+     "label": "Mỏ bắt đầu phồng ở (phần nhịp thở, 0.40 = ngay sau đỉnh hít)",
+     "default": 0.4,
+     "min": 0,
+     "max": 1,
+     "step": 0.01,
+     "unit": ""
+    },
+    {
+     "key": "blink",
+     "label": "Chớp mắt bắt đầu (frame)",
+     "default": 58,
+     "min": 1,
+     "max": 160,
+     "step": 1,
+     "unit": ""
+    }
+   ],
+   "values": {}
+  },
+  "active": {
+   "label": "Active",
+   "anim": "active",
+   "run": [
+    "active_cfg.py"
+   ],
+   "defs": [
+    {
+     "key": "end",
+     "label": "Độ dài (frame)",
+     "default": 50,
+     "min": 36,
+     "max": 120,
+     "step": 2,
+     "unit": ""
+    },
+    {
+     "key": "raise",
+     "label": "Đưa tay + cờ lên lúc lấy đà (px)",
+     "default": 18.0,
+     "min": 0,
+     "max": 50,
+     "step": 1,
+     "unit": ""
+    },
+    {
+     "key": "dip",
+     "label": "Nhún: hạ tay + cờ xuống dưới idle (px)",
+     "default": 12.0,
+     "min": 0,
+     "max": 70,
+     "step": 1,
+     "unit": ""
+    },
+    {
+     "key": "kick",
+     "label": "Nảy lên: tay + cờ vọt qua idle (px)",
+     "default": 26.0,
+     "min": 0,
+     "max": 60,
+     "step": 1,
+     "unit": ""
+    },
+    {
+     "key": "squat",
+     "label": "Nhún thân xuống (x)",
+     "default": 1.0,
+     "min": 0,
+     "max": 2.5,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "bow",
+     "label": "Thân chúi (x)",
+     "default": 1.0,
+     "min": 0,
+     "max": 2.5,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "nod",
+     "label": "Đầu gật (x)",
+     "default": 1.0,
+     "min": 0,
+     "max": 2.5,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "hands",
+     "label": "Bàn tay overlap sau cánh tay: trễ + ngả (x)",
+     "default": 1.0,
+     "min": 0,
+     "max": 2.5,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "hand_lag",
+     "label": "Bàn tay trễ sau cánh tay (x; 1 = 4F / 6F)",
+     "default": 1.0,
+     "min": 0.3,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "blink",
+     "label": "Chớp mắt lúc nhún xuống (frame)",
+     "default": 14,
+     "min": 1,
+     "max": 48,
+     "step": 1,
+     "unit": ""
+    },
+    {
+     "key": "flag_hz",
+     "label": "Cờ: độ cứng lúc diễn (x, nhỏ = mềm, vung nhiều)",
+     "default": 1.6,
+     "min": 0.4,
+     "max": 2.5,
+     "step": 0.05,
+     "unit": ""
+    },
+    {
+     "key": "flag_damp_act",
+     "label": "Cờ: giảm chấn lúc diễn (nhỏ = nảy nhiều nhịp)",
+     "default": 0.22,
+     "min": 0.05,
+     "max": 1,
+     "step": 0.01,
+     "unit": ""
+    },
+    {
+     "key": "flag_drive",
+     "label": "Cờ: bị tay kéo theo nhịp (x; vọt lên = cờ ngả ra sau, hạ = cờ hất ra trước)",
+     "default": 1.8,
+     "min": 0,
+     "max": 3,
+     "step": 0.1,
+     "unit": ""
+    },
+    {
+     "key": "flag_max",
+     "label": "Cờ: góc vung tối đa (độ)",
+     "default": 55.0,
+     "min": 10,
+     "max": 80,
+     "step": 1,
+     "unit": ""
+    }
+   ],
+   "values": {}
+  }
+ }
+}

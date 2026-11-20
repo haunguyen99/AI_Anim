@@ -235,7 +235,7 @@
       else if (!E.rmBase) E.rmBase = base;
       E.hull = j.hull; E.inner = j.inner; E.preview = true; ed.dirty.add("__mesh"); retri(); meshInfo();
       const now = j.hull.length + j.inner.length;
-      $("mbRmInfo").textContent = `${tot} → ${now} điểm (viền ${j.hull.length}, trong ${j.inner.length}) · ${j.triangles} tam giác · lưới phình ${j.grow_pct}%`
+      $("mbRmInfo").textContent = `${tot} → ${now} điểm (viền ${j.hull.length}, trong ${j.inner.length}) · ${j.triangles} tam giác · lưới ${j.grow_pct < 0 ? "co " + (-j.grow_pct) : "phình " + j.grow_pct}%`
         + ` · điểm ảnh ngoài viền ${j.cut_px} px (lưới cũ ${j.old_cut_px})`;
       setStatus(`remesh ${E.slot}: ${tot} → ${now} điểm · ok thì bấm Áp dụng lưới`, "ok");
     } catch (e) { setStatus("remesh lỗi: " + e.message, "bad") }
