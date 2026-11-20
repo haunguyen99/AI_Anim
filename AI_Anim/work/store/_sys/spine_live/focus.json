@@ -1,30 +1,6 @@
 {
- "seq": 13,
+ "seq": 36,
  "log": [
-  {
-   "t": "15:35:56",
-   "say": "Rig Unlock: ruy băng cắt đôi dưới nơ giữa, 3 nơ có đuôi, kéo quay quanh ốc"
-  },
-  {
-   "t": "15:40:52",
-   "say": "Anim active: kéo bay lên, lấy đà, cắt dưới nơ giữa"
-  },
-  {
-   "t": "15:42:07",
-   "say": "rig_demo: từng bộ phận lần lượt (ctrl, 3 nơ + đuôi, dải trái/phải từng đốt, kéo mở/khép)"
-  },
-  {
-   "t": "15:42:49",
-   "say": "Idle xong (loop 90F). Có 3 anim: rig_demo, idle, active"
-  },
-  {
-   "t": "15:49:14",
-   "say": "Active v2: kéo cắt rồi tiến lên mất hẳn, ruy băng + nơ biến mất"
-  },
-  {
-   "t": "15:51:51",
-   "say": "Active v3: kéo lao dứt khoát theo cung cong, mất chậm hơn"
-  },
   {
    "t": "15:52:08",
    "say": "Active v3: kéo lao dứt khoát theo cung cong, mất chậm hơn"
@@ -52,14 +28,106 @@
   {
    "t": "16:30:19",
    "say": "Unlock: active v7 (kéo lao cung cong, mờ F40-46)"
+  },
+  {
+   "t": "09:29:55",
+   "say": "Rig xong: 13 xương, 2 IK tay (kéo grip = 2 tay + cờ đi cùng). Đang chạy rig_demo."
+  },
+  {
+   "t": "09:32:03",
+   "say": "Rig + idle (thở) + active (cúi nhẹ) xong. Xem anim idle, rồi chọn active trong ô anim."
+  },
+  {
+   "t": "09:41:25",
+   "say": "Idle mới: thở lên/xuống (ngực -> đầu trễ ~6F -> tay + cờ trễ ~8F), chớp mắt F58. Active có chớp mắt lúc cúi (F32)."
+  },
+  {
+   "t": "09:44:25",
+   "say": "Quạt: xương đặt đúng tâm quả cầu trắng. Chân: leg_F/foot_F (chân trước), leg_B/foot_B (chân sau) — demo đang chạy từng chân."
+  },
+  {
+   "t": "09:48:41",
+   "say": "Idle: tay + cờ trễ nhịp ngực — ở đỉnh hít tay còn thấp hơn ngực ~2 px, ở đáy thở ra tay còn cao hơn ngực ~1-2 px."
+  },
+  {
+   "t": "09:52:25",
+   "say": "Thêm xương mouth ở tâm mỏ: idle cho mỏ phồng nhẹ (+3,5%) ngay sau đỉnh hít rồi xẹp từ từ."
+  },
+  {
+   "t": "09:54:07",
+   "say": "Mỏ: phồng nhỏ lại (+2%), thêm nhấp lên xuống ~2 px theo nhịp thở."
+  },
+  {
+   "t": "09:57:07",
+   "say": "Tay: trễ nhiều hơn (~20F sau ngực), mỗi găng trễ thêm lệch nhau, găng ngả ±5-6°."
+  },
+  {
+   "t": "10:02:55",
+   "say": "Chuỗi trễ: ngực F38 -> cánh tay (grip, IK cẳng tay) F50 -> bàn tay F55; bàn tay cụp theo độ trễ so với cánh tay."
+  },
+  {
+   "t": "10:04:13",
+   "say": "Cánh tay + cờ lên xuống ~10 px (trước ~6,5 px), vẫn trễ sau ngực."
+  },
+  {
+   "t": "10:05:58",
+   "say": "Cánh tay: nhịp nhanh hơn (đỉnh F45, trễ ~7F sau ngực); bàn tay: biên độ riêng giảm một nửa."
+  },
+  {
+   "t": "10:06:08",
+   "say": "Bàn tay: biên độ riêng giảm còn ~30% bản trước."
+  },
+  {
+   "t": "10:21:46",
+   "say": "Đã sửa lỗi Remesh (hiển thị % lưới sai) và khôi phục rig sau lần thử."
+  },
+  {
+   "t": "11:27:33",
+   "say": "Active mới: đưa tay + cờ lên (F16) -> nhún xuống mạnh (F32-42) -> đưa cờ lên vọt (F54) -> lắng về idle."
+  },
+  {
+   "t": "11:39:33",
+   "say": "Active: nhún nhỏ (F27-31), nảy lên dứt khoát F31-41 (tay + cờ vọt ~26 px, ngực bật +7 px), bàn tay trễ overlap sau cánh tay."
+  },
+  {
+   "t": "11:41:20",
+   "say": "Lá cờ: overlap mạnh hơn — bị tay kéo theo nhịp (vọt lên cờ ngả ra sau, hạ cờ hất ra trước) và nảy thêm ~2 nhịp rồi lắng."
+  },
+  {
+   "t": "11:46:18",
+   "say": "Active 50F: lấy đà F0-8, nhún nhỏ, nảy lên F19-26, hồi về F26-50. Cán cờ (xương pole) dính tay; chỉ vải cờ overlap."
+  },
+  {
+   "t": "11:50:06",
+   "say": "Cờ bay mạnh hơn (vải vung ~±34°), đầu cúi thêm lúc nhún (-7°)."
+  },
+  {
+   "t": "11:53:42",
+   "say": "Cờ quanh F28 giảm ~10%."
+  },
+  {
+   "t": "14:18:44",
+   "say": "Cẳng tay arm_R / arm_L giờ có key xoay (IK đã nướng thành key, IK tắt): chọn xương trên hình -> Graph để thấy curve."
+  },
+  {
+   "t": "17:08:36",
+   "say": "Đã tách 22 layer của nhân vật mới (PeaceGirl), tất cả còn gắn xương root, chưa rig. Kiểm xem các layer ghép lại có khớp ảnh gốc không."
+  },
+  {
+   "t": "17:08:50",
+   "say": "Đã tách 22 layer của nhân vật mới (PeaceGirl), tất cả còn gắn xương root, chưa rig. Kiểm xem các layer ghép lại có khớp ảnh gốc không."
+  },
+  {
+   "t": "17:14:10",
+   "say": "Đã tách xong 22 layer (L/R theo màn hình), chưa rig. Layer nào nằm sau layer khác đã được tô phần bị che để rig không bị hở."
   }
  ],
- "json": "work/unlock/spine/Unlock/unlock.json",
- "anim": "active",
- "frame": 0.0,
+ "json": "work/peace_girl/spine/PeaceGirl/peacegirl.json",
+ "anim": "setup",
+ "frame": null,
  "view": {},
- "say": "Unlock: active v7 (kéo lao cung cong, mờ F40-46)",
+ "say": "Đã tách xong 22 layer (L/R theo màn hình), chưa rig. Layer nào nằm sau layer khác đã được tô phần bị che để rig không bị hở.",
  "what": "show",
- "t": "16:30:19",
+ "t": "17:14:10",
  "theme": "dark"
 }

@@ -1,0 +1,77 @@
+[
+ {
+  "id": 1,
+  "t": "2026-11-20 09:29:55",
+  "who": "",
+  "what": "bản đầu (lúc mở)",
+  "from": null,
+  "hash": "754e425fd6b3cd9b0a50fddcca62ce44c7031f0a",
+  "pub": false,
+  "group": null
+ },
+ {
+  "id": 2,
+  "t": "2026-11-20 09:31:35",
+  "who": "claude",
+  "what": "Claude gen active",
+  "from": null,
+  "hash": "6ae21fc4e4185920e5a74d4747c2a15eaa29d497",
+  "pub": false,
+  "group": "1795141747776982057",
+  "merged": 3
+ },
+ {
+  "id": 3,
+  "t": "2026-11-20 10:06:08",
+  "who": "claude",
+  "what": "Claude gen idle",
+  "from": null,
+  "hash": "220e93f74e3ab91512e66550a046674d02df0dab",
+  "pub": false,
+  "group": "1795141747776982057",
+  "merged": 24
+ },
+ {
+  "id": 4,
+  "t": "2026-11-20 10:20:48",
+  "who": "claude",
+  "what": "Claude dựng rig FlagChar",
+  "from": null,
+  "hash": "43a612310ad8604446e886d97efaa132c8dd4593",
+  "pub": false,
+  "group": null
+ },
+ {
+  "id": 5,
+  "t": "2026-11-20 11:27:11",
+  "who": "claude",
+  "what": "Claude gen active",
+  "from": null,
+  "hash": "887fa0a1681f1d430bbacc78d854175b27876a06",
+  "pub": false,
+  "group": null,
+  "merged": 2
+ },
+ {
+  "id": 6,
+  "t": "2026-11-20 11:53:42",
+  "who": "claude",
+  "what": "Claude gen active",
+  "from": null,
+  "hash": "0adc70f43f35a9cd5309c477202bcaef81af9aaa",
+  "pub": false,
+  "group": null,
+  "merged": 19
+ },
+ {
+  "id": 7,
+  "t": "2026-11-20 14:18:45",
+  "who": "claude",
+  "what": "Claude gen rig_demo (demo rig)",
+  "from": null,
+  "hash": "0d202b511776cb5daab18d5b4b507899564ce034",
+  "pub": false,
+  "group": null,
+  "merged": 5
+ }
+]

@@ -1,0 +1,207 @@
+{
+ "canvas": [
+  736,
+  1075
+ ],
+ "note": "x,y = góc trên-trái trong ảnh gốc (y xuống); z tăng dần = ra trước; L/R theo màn hình",
+ "layers": [
+  {
+   "name": "hair_back",
+   "file": "images/hair_back.png",
+   "x": 282,
+   "y": 47,
+   "w": 227,
+   "h": 295,
+   "z": 1
+  },
+  {
+   "name": "neck",
+   "file": "images/neck.png",
+   "x": 298,
+   "y": 254,
+   "w": 144,
+   "h": 133,
+   "z": 2
+  },
+  {
+   "name": "thigh_L",
+   "file": "images/thigh_L.png",
+   "x": 185,
+   "y": 879,
+   "w": 175,
+   "h": 171,
+   "z": 3
+  },
+  {
+   "name": "thigh_R",
+   "file": "images/thigh_R.png",
+   "x": 363,
+   "y": 879,
+   "w": 172,
+   "h": 171,
+   "z": 4
+  },
+  {
+   "name": "sock_L",
+   "file": "images/sock_L.png",
+   "x": 188,
+   "y": 1012,
+   "w": 159,
+   "h": 63,
+   "z": 5
+  },
+  {
+   "name": "sock_R",
+   "file": "images/sock_R.png",
+   "x": 364,
+   "y": 1014,
+   "w": 157,
+   "h": 61,
+   "z": 6
+  },
+  {
+   "name": "torso",
+   "file": "images/torso.png",
+   "x": 156,
+   "y": 319,
+   "w": 389,
+   "h": 636,
+   "z": 7
+  },
+  {
+   "name": "upper_arm_L",
+   "file": "images/upper_arm_L.png",
+   "x": 189,
+   "y": 479,
+   "w": 75,
+   "h": 163,
+   "z": 8
+  },
+  {
+   "name": "upper_arm_R",
+   "file": "images/upper_arm_R.png",
+   "x": 440,
+   "y": 479,
+   "w": 62,
+   "h": 171,
+   "z": 9
+  },
+  {
+   "name": "sleeve_L",
+   "file": "images/sleeve_L.png",
+   "x": 151,
+   "y": 327,
+   "w": 109,
+   "h": 228,
+   "z": 10
+  },
+  {
+   "name": "sleeve_R",
+   "file": "images/sleeve_R.png",
+   "x": 435,
+   "y": 316,
+   "w": 103,
+   "h": 245,
+   "z": 11
+  },
+  {
+   "name": "forearm_L",
+   "file": "images/forearm_L.png",
+   "x": 224,
+   "y": 394,
+   "w": 102,
+   "h": 248,
+   "z": 12
+  },
+  {
+   "name": "forearm_R",
+   "file": "images/forearm_R.png",
+   "x": 390,
+   "y": 394,
+   "w": 86,
+   "h": 257,
+   "z": 13
+  },
+  {
+   "name": "hand_L",
+   "file": "images/hand_L.png",
+   "x": 192,
+   "y": 266,
+   "w": 135,
+   "h": 162,
+   "z": 14
+  },
+  {
+   "name": "hand_R",
+   "file": "images/hand_R.png",
+   "x": 395,
+   "y": 292,
+   "w": 142,
+   "h": 136,
+   "z": 15
+  },
+  {
+   "name": "choker",
+   "file": "images/choker.png",
+   "x": 315,
+   "y": 289,
+   "w": 100,
+   "h": 36,
+   "z": 16
+  },
+  {
+   "name": "face",
+   "file": "images/face.png",
+   "x": 296,
+   "y": 84,
+   "w": 213,
+   "h": 219,
+   "z": 17
+  },
+  {
+   "name": "eye_L",
+   "file": "images/eye_L.png",
+   "x": 339,
+   "y": 159,
+   "w": 46,
+   "h": 34,
+   "z": 18
+  },
+  {
+   "name": "eye_R",
+   "file": "images/eye_R.png",
+   "x": 414,
+   "y": 193,
+   "w": 46,
+   "h": 37,
+   "z": 19
+  },
+  {
+   "name": "hair_side_L",
+   "file": "images/hair_side_L.png",
+   "x": 281,
+   "y": 109,
+   "w": 73,
+   "h": 155,
+   "z": 20
+  },
+  {
+   "name": "hair_side_R",
+   "file": "images/hair_side_R.png",
+   "x": 413,
+   "y": 119,
+   "w": 97,
+   "h": 206,
+   "z": 21
+  },
+  {
+   "name": "hair_front",
+   "file": "images/hair_front.png",
+   "x": 300,
+   "y": 46,
+   "w": 206,
+   "h": 281,
+   "z": 22
+  }
+ ]
+}
