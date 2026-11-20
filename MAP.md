@@ -26,6 +26,7 @@
 | `tools/sync_knowledge.py` | Đồng bộ kiến thức lên git (2026-11-10): commit phạm vi kiến thức lên `master`, chép sang `main`, push `main`. Chạy bởi hook `Stop` + Task Scheduler 17:30 + tay (`--dry-run`). Lên git. Xem `contexte/git-sync.md`. |
 | `tools/library_props.py` | Đo thuộc tính ảnh trong `Assets/Library` → `Docs/VFX/_Library/library_props.csv`; `--contact <nhóm>/<vai trò>` dựng contact sheet vào `Docs/VFX/_Library/_contact/` (2026-11-10, phục vụ "Luật chọn" của `LIBRARY.md`). Chỉ ở máy (`.py`). |
 | `tools/auto_commit.ps1` | Vỏ gọi `sync_knowledge.py` (Task Scheduler `VFX_LIb Auto Commit` 17:30 trỏ vào file này); log `tools/auto_commit.log` (không lên git). Lên git. |
+| `tools/fetch_library.py` | Tải thư viện texture `Assets/Library` từ Google Drive (`Library.tar.gz`) và giải nén vào `Assets/` (2026-11-20). `--force`, `--dry-run`; giải nén an toàn; đã có thì bỏ qua. Lên git. |
 | `tools/make_tree.py` | Tạo lại cây thư mục trên máy khác (2026-11-19): `python -I tools/make_tree.py` tạo thư mục còn thiếu theo bảng `Docs/VFX/_Library/folder_tree.csv`; `--export` quét lại cây hiện tại ghi bảng; `--dry-run`. Bỏ qua Library/Temp/obj/Logs/UserSettings/.vs/tmp_gen. Lên git. |
 | `.claude/skills/Sourcetree/` | Skill `/Sourcetree` (2026-11-19): bọc `tools/make_tree.py`, dựng lại / cập nhật cây thư mục. Lên git. |
 
