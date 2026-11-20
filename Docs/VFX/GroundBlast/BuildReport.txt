@@ -1,0 +1,13 @@
+Effect: GroundBlast   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 11:26:03
+Preview times (s): 0.05, 0.12, 0.25, 0.4, 0.6, 0.85, 1.1, 1.35
+
+Layers:
+  VFX_GroundBlast/CMP_GroundBlast_Shockwave  max=1  life=0.35  mode=Billboard  mat=M_GroundBlast_Ring_Add (Mobile/Particles/Additive)
+  VFX_GroundBlast/CMP_GroundBlast_Smoke  max=30  life=1.5  mode=Mesh  mat=M_GroundBlast_Smoke_Alpha (VFX/FX/Erode Sphere)
+  VFX_GroundBlast/CMP_GroundBlast_Fireball  max=1  life=0.45  mode=Billboard  mat=M_GroundBlast_Fireball_Add (Mobile/Particles/Additive)
+  VFX_GroundBlast/CMP_GroundBlast_Flash  max=1  life=0.15  mode=Billboard  mat=M_GroundBlast_Flash_Add (Mobile/Particles/Additive)
+  VFX_GroundBlast/CMP_GroundBlast_Sparks  max=16  life=0.6  mode=Stretch  mat=M_GroundBlast_Spark_Add (Mobile/Particles/Additive)
+Total maxParticles: 49
+
+Errors: none

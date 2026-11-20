@@ -1,0 +1,21 @@
+Mix: IceSpike_Impact   Recipe: Docs/VFX/_Recipes/IceSpike_Impact.json   Unity: 2022.3.62f3
+Built: 2026-11-04 09:10:42
+Preview times (s): 0.01, 0.171, 0.343, 0.514, 0.685, 0.856, 1.028, 1.199
+Palette: Core #F2FCFF · Mid #7FD6FF · Outer #2A6FD1 · Dust #C9D6DE
+
+Items:
+  00_IMP_Hit_Ground_01               delay 0  dur 0.45 (gốc 0.45, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  01_SPK_Ground_01                   delay 0.02  dur 1.25 (gốc 1.25, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  02_GLW_Ground_01                   delay 0  dur 0.55 (gốc 0.55, speed ×1)  size 0.7  int 0.7  rot 0  off (0.00, 0.00, 0.00)
+  03_RNG_Ground_01                   delay 0.03  dur 0.52 (gốc 0.52, speed ×1)  size 0.8  int 0.6  rot 0  off (0.00, 0.00, 0.00)
+
+Layers:
+  00_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  00_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+  01_SPK_Ground_01/Streaks  max=24  life=0.6  mode=Stretch  mat=M_SPK_Streak_Add (Mobile/Particles/Additive)
+  01_SPK_Ground_01/Ember  max=8  life=1.2  mode=Billboard  mat=M_SPK_Ember_Add (Mobile/Particles/Additive)
+  02_GLW_Ground_01/Pool  max=1  life=0.5  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  02_GLW_Ground_01/Halo  max=1  life=0.25  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  03_RNG_Ground_01/Ring  max=2  life=0.45  mode=Billboard  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+
+Errors: none

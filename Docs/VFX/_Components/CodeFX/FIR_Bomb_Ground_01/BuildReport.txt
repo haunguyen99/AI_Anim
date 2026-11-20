@@ -1,0 +1,10 @@
+Component: FIR_Bomb_Ground_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 09:27:25
+Preview times (s): 0.01, 0.163, 0.325, 0.488, 0.65, 0.813, 0.975, 1.138
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+
+Layers:
+  CMP_FIR_Bomb_Ground_01/Body  max=1  life=1.3  mode=Billboard/View  mat=M_CFX_BombFire_Body_Alpha (Mobile/Particles/Alpha Blended)
+  CMP_FIR_Bomb_Ground_01/Light  max=1  life=1.3  mode=Billboard/View  mat=M_CFX_BombFire_Light_Add (Mobile/Particles/Additive)
+
+Errors: none

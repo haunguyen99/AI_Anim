@@ -1,0 +1,51 @@
+{
+  "name": "ArcaneHit_Air",
+  "version": 1,
+  "palette": {
+    "Core": "#FBEFFF",
+    "Mid": "#C77DFF",
+    "Outer": "#6A1BB0",
+    "Dust": "#B9AFC6"
+  },
+  "items": [
+    {
+      "id": "IMP_Hit_Air_01",
+      "delay": 0.0,
+      "duration": 0.23,
+      "size": 0.8,
+      "intensity": 1.0,
+      "rotation": 0,
+      "offset": [
+        0,
+        1.1,
+        0
+      ]
+    },
+    {
+      "id": "SPK_Air_01",
+      "delay": 0.02,
+      "duration": 1.062,
+      "size": 0.8,
+      "intensity": 1.0,
+      "rotation": 0,
+      "offset": [
+        0,
+        1.1,
+        0
+      ]
+    },
+    {
+      "id": "GLW_Air_01",
+      "delay": 0.0,
+      "duration": 0.34,
+      "size": 0.8,
+      "intensity": 1.0,
+      "rotation": 0,
+      "offset": [
+        0,
+        1.1,
+        0
+      ]
+    }
+  ]
+}

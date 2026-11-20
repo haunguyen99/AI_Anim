@@ -1,0 +1,90 @@
+{
+  "name": "IceHit_Ground",
+  "version": 1,
+  "palette": {
+    "Core": "#F2FCFF",
+    "Mid": "#7FD6FF",
+    "Outer": "#2A6FD1",
+    "Dust": "#C9D6DE"
+  },
+  "items": [
+    {
+      "id": "IMP_Hit_Ground_01",
+      "delay": 0,
+      "duration": 0.45,
+      "size": 1,
+      "intensity": 1,
+      "rotation": 0,
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "SPK_Ground_01",
+      "delay": 0.03,
+      "duration": 1.25,
+      "size": 1,
+      "intensity": 1,
+      "rotation": 0,
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "GLW_Ground_01",
+      "delay": 0,
+      "duration": 0.55,
+      "size": 1,
+      "intensity": 1,
+      "rotation": 0,
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "DST_Ground_01",
+      "delay": 0.03,
+      "duration": 1.29,
+      "size": 1,
+      "intensity": 1,
+      "rotation": 0,
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "RNG_Ground_01",
+      "delay": 0.06,
+      "duration": 0.52,
+      "size": 1.2,
+      "intensity": 1,
+      "rotation": 0,
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "SCR_Ground_01",
+      "delay": 0.03,
+      "duration": 2.05,
+      "size": 1,
+      "intensity": 1,
+      "rotation": 0,
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

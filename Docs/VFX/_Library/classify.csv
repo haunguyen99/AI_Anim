@@ -1,0 +1,1126 @@
+﻿nguon,duong_dan,nhom,ly_do,hanh_dong,dich,ten_cu
+rpg,RPG_VFX\Duong\Material\Warboom_slash_ground (2).png,Slash,ten file,chep,Slash/Slash_038.png,Warboom_slash_ground (2).png
+rpg,RPG_VFX\Duong\Texture\GroundCracks_Radial.png,decals,ten file,chep,decals/decals_026.png,GroundCracks_Radial.png
+rpg,RPG_VFX\Duong\Texture\GroundCracks_Radial_02.png,decals,ten file,chep,decals/decals_027.png,GroundCracks_Radial_02.png
+rpg,RPG_VFX\Duong\Texture\GroundCracks_Radial_03.png,decals,ten file,chep,decals/decals_028.png,GroundCracks_Radial_03.png
+rpg,RPG_VFX\Duong\Texture\melee_fx2.png,impact,xem anh,chep,impact/impact_040.png,melee_fx2.png
+rpg,RPG_VFX\Duong\Texture\Meteor.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Meteor1.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Noise51_rounded.png,noise,ten file,chep,noise/noise_025.png,Noise51_rounded.png
+rpg,RPG_VFX\Duong\Texture\RockPlain_Pickbook.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Trail21.png,trail,ten file,chep,trail/trail_024.png,Trail21.png
+rpg,RPG_VFX\Duong\Texture\Trail25.png,trail,ten file,chep,trail/trail_025.png,Trail25.png
+rpg,RPG_VFX\Duong\Texture\Tx_Burst_directional_23 - Copy.png,impact,ten file,chep,impact/impact_073.png,Tx_Burst_directional_23 - Copy.png
+rpg,RPG_VFX\Duong\Texture\Tx_radial_burst_05.png,impact,ten file,chep,impact/impact_079.png,Tx_radial_burst_05.png
+rpg,RPG_VFX\Duong\Texture\T_Colorpalette 1.tga,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\T_Colorpalette.tga,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\T_Gradient_01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\wind 2.png,wave,ten file,chep,wave/wave_068.png,wind 2.png
+rpg,RPG_VFX\Duong\Texture\wind.png,wave,ten file,chep,wave/wave_069.png,wind.png
+rpg,RPG_VFX\Duong\Texture\Decals\Crack.png,decals,thu muc,chep,decals/decals_008.png,Crack.png
+rpg,RPG_VFX\Duong\Texture\Decals\Hexagon_Pattern.jpg,noise,xem anh,chep,noise/noise_016.jpg,Hexagon_Pattern.jpg
+rpg,RPG_VFX\Duong\Texture\Decals\magic_circle.png,decals,thu muc,chep,decals/decals_031.png,magic_circle.png
+rpg,RPG_VFX\Duong\Texture\Decals\triangle.png,decals,thu muc,chep,decals/decals_053.png,triangle.png
+rpg,RPG_VFX\Duong\Texture\Decals\triangle_m.png,decals,thu muc,chep,decals/decals_056.png,triangle_m.png
+rpg,RPG_VFX\Duong\Texture\Decals\triangle_Mask.png,decals,thu muc,chep,decals/decals_057.png,triangle_Mask.png
+rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals01.png,decals,thu muc,chep,decals/decals_058.png,TX_VFX_Decals01.png
+rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals02.png,decals,thu muc,chep,decals/decals_059.png,TX_VFX_Decals02.png
+rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals03.png,decals,thu muc,chep,decals/decals_060.png,TX_VFX_Decals03.png
+rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals04.png,decals,thu muc,chep,decals/decals_061.png,TX_VFX_Decals04.png
+rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals05.png,decals,thu muc,chep,decals/decals_062.png,TX_VFX_Decals05.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack.png,decals,thu muc,chep,decals/decals_040.png,T_VFX_Crack.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack_01.png,decals,thu muc,chep,decals/decals_041.png,T_VFX_Crack_01.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack_02.png,decals,thu muc,chep,decals/decals_042.png,T_VFX_Crack_02.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack_Curve_01.png,decals,thu muc,chep,decals/decals_043.png,T_VFX_Crack_Curve_01.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack.png,decals,thu muc,chep,decals/decals_044.png,T_VFX_Ground_Crack.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_02.png,decals,thu muc,chep,decals/decals_045.png,T_VFX_Ground_Crack_02.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_03.png,decals,thu muc,chep,decals/decals_046.png,T_VFX_Ground_Crack_03.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_04.png,decals,thu muc,chep,decals/decals_047.png,T_VFX_Ground_Crack_04.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_In.png,decals,thu muc,chep,decals/decals_048.png,T_VFX_Ground_Crack_In.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_In_01.png,decals,thu muc,chep,decals/decals_049.png,T_VFX_Ground_Crack_In_01.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Poison_Ground.png,decals,thu muc,chep,decals/decals_051.png,T_VFX_Poison_Ground.png
+rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Poison_Ground_01.png,decals,thu muc,chep,decals/decals_052.png,T_VFX_Poison_Ground_01.png
+rpg,RPG_VFX\Duong\Texture\Electric\TX_VFX_Electric01.png,Lightnings_Electrics,thu muc,chep,Lightnings_Electrics/Lightnings_Electrics_031.png,TX_VFX_Electric01.png
+rpg,RPG_VFX\Duong\Texture\Flame\TX_VFX_Flame01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flame\TX_VFX_Flame02.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flame\TX_VFX_Flame03.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_AroundSpline_01_5x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_DirectionalFlame_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_DirectionalFlame_02_3x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_DirectionalFlame_03_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireCylinder_01_2x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireImpact_01_3x4.psd,impact,ten file,chep,impact/impact_019.psd,FX_TX_Fire_FireImpact_01_3x4.psd
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireImpact_02_2x4.psd,impact,ten file,chep,impact/impact_020.psd,FX_TX_Fire_FireImpact_02_2x4.psd
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireLoop_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_Fireloop_02_8x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireLoop_03_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireLoop_04_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FirePilar_01_6x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireSlash_01_4x4.psd,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireSlash_02_6x2.psd,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FirewallLateral_01_5x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FirewallLateral_02_5x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FlameThrower_01_3x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_GroundFire_01_4x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_GroundFire_02_4x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_Groundfire_03_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_GroundTraveling_01_5x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_LateralFireLoop_5x6.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_RadialFire_01_3x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_RadialFire_02_2x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SimpleFlame_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SimpleFlame_02_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SimpleFlame_03_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_Simpleflame_04_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SimpleFlame_05_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SimpleImpact_01_3x4.psd,impact,ten file,chep,impact/impact_022.psd,FX_TX_Fire_SimpleImpact_01_3x4.psd
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SmallFire_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SmallFlame_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SmallFlame_02_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_TiledFireCircle_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_TiledFlames_01_4x6.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_TiledSpikes_01_2x3.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_TileGround_2x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_TorchlightLoop_01_5x5.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_Traveling_01_3x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_Traveling_02_2x8.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_Traveling_03_3x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_VerticalFlame_01_4x4.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\BubblePop.png,water,ten file,chep,water/water_002.png,BubblePop.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Explosion.png,smoke,xem anh,chep,smoke/smoke_013.png,Explosion.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\FireBall_01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\FireBall_01_C.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\FireBall_02.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\FireRing.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Katana.png,Slash,ten file,chep,Slash/Slash_003.png,Katana.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Magma.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Mud.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Poison.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Splash.png,water,ten file,chep,water/water_012.png,Splash.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_FireLoop_Alternative_01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_AroundSpline_01_5x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_DirectionalFlame_01_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_DirectionalFlame_03_4x4 1.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_DirectionalFlame_03_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_DirectionalFlame_03_4x4_VertexOffset.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FireCylinder_01_2x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_Fireloop_01_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_Fireloop_02_8x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FireLoop_03_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FireLoop_03_4x4_Grayscale.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FireLoop_04_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FirePilar_01_6x4_Blur.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FirePilar_01_6x4_NoBlur.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FireSlash_01_4x4.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FireSlash_02_6x2.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FirewallLateral_01_5x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FirewallLateral_01_5x5_Grayscale.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FirewallLateral_01_5x5_VertexOffset.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FirewallLateral_02_5x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_FlameThrower_01_3x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_GroundFire_02_4x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_GroundFire_02_4x5_Grayscale.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_Groundfire_03_4x4 1.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_GroundTraveling_01_5x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_GroundTraveling_01_5x4_Gray.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_GroundTraveling_01_5x4_VertexOffset.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_LateralFireLoop_5x6_NoBlur.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_RadialFire_01_3x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_RadialFire_01_3x4_C.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_RadialFire_02_2x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_RadialFire_02_2x4_C.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SimpleFlame_02_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SimpleFlame_02_4x4_C.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SimpleFlame_03_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SimpleFlame_03_4x4_Grayscale.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_Simpleflame_04_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SimpleFlame_05_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SimpleImpact_01_3x4.png,impact,ten file,chep,impact/impact_021.png,FX_TX_Fire_SimpleImpact_01_3x4.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SmallFire_01_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SmallFlame_01_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_SmallFlame_02_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_TiledFireCircle_01_4x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_TiledSpikes_01_2x3.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_TileGround_2x5.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_Traveling_01_3x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\FX_TX_Fire_Traveling_02_2x8.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Fire\T_VFX_Fire_Ground_2x4.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Impact\DirtDash.png,impact,thu muc,chep,impact/impact_008.png,DirtDash.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Impact\DirtFlash_2x2.png,impact,thu muc,chep,impact/impact_009.png,DirtFlash_2x2.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Impact\Impact_4x1x2.png,impact,thu muc,chep,impact/impact_033.png,Impact_4x1x2.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Impact\Impact_Cone_2x2.png,impact,thu muc,chep,impact/impact_036.png,Impact_Cone_2x2.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Lightning\T_VFX_Lightning4x2.png,Lightnings_Electrics,thu muc,chep,Lightnings_Electrics/Lightnings_Electrics_026.png,T_VFX_Lightning4x2.png
+rpg,RPG_VFX\Duong\Texture\Flipbooks\Lightning\T_VFX_SmallLightning2x2.png,Lightnings_Electrics,thu muc,chep,Lightnings_Electrics/Lightnings_Electrics_027.png,T_VFX_SmallLightning2x2.png
+rpg,RPG_VFX\Duong\Texture\Glow\TX_VFX_Glow01.png,smoke,xem anh,chep,smoke/smoke_049.png,TX_VFX_Glow01.png
+rpg,RPG_VFX\Duong\Texture\Glow\TX_VFX_Glow02.png,glow,thu muc,chep,glow/glow_083.png,TX_VFX_Glow02.png
+rpg,RPG_VFX\Duong\Texture\Glow\TX_VFX_Glow03.png,wave,xem anh,chep,wave/wave_033.png,TX_VFX_Glow03.png
+rpg,RPG_VFX\Duong\Texture\Glow\TX_VFX_Glow04.png,smoke,xem anh,chep,smoke/smoke_050.png,TX_VFX_Glow04.png
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientCosmic_01.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientFire_01 1.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientFire_01.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientFire_02.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientFire_03.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientNecronomic_01.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientSecondFire_02.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientVertical_01.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\FX_TX_GradientVertical_02.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Gradient\Long.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Biting.png,impact,thu muc,chep,impact/impact_080.png,TX_VFX_Biting.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact01.png,impact,thu muc,chep,impact/impact_081.png,TX_VFX_Impact01.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact02.png,impact,thu muc,chep,impact/impact_082.png,TX_VFX_Impact02.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact03.png,impact,thu muc,chep,impact/impact_083.png,TX_VFX_Impact03.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact04.png,impact,thu muc,chep,impact/impact_084.png,TX_VFX_Impact04.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact05.png,impact,thu muc,chep,impact/impact_085.png,TX_VFX_Impact05.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact06.png,impact,thu muc,chep,impact/impact_086.png,TX_VFX_Impact06.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact07.png,impact,thu muc,chep,impact/impact_087.png,TX_VFX_Impact07.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact08.png,impact,thu muc,chep,impact/impact_088.png,TX_VFX_Impact08.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact09.png,impact,thu muc,chep,impact/impact_089.png,TX_VFX_Impact09.png
+rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact10.png,impact,thu muc,chep,impact/impact_090.png,TX_VFX_Impact10.png
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_LightRay01.png,trail,xem anh,chep,trail/trail_032.png,TX_VFX_LightRay01.png
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask02.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask03.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask04.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask05.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask06.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask07.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask08.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask09.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask10.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask11.png,smoke,xem anh,trung,smoke/smoke_050.png,TX_VFX_Glow04.png
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask12.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask13.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask14.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask15.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask16.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask17.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask18.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Mask\T_VFX_Distortion.psd,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Misc\TX_VFX_Liquid01.png,water,ten file,chep,water/water_019.png,TX_VFX_Liquid01.png
+rpg,RPG_VFX\Duong\Texture\Misc\TX_VFX_Stone01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Noise\Caustic.jpg,water,xem anh,chep,water/water_005.jpg,Caustic.jpg
+rpg,RPG_VFX\Duong\Texture\Noise\FlameNoise.psd,noise,thu muc,chep,noise/noise_007.psd,FlameNoise.psd
+rpg,RPG_VFX\Duong\Texture\Noise\Noise_001.png,noise,thu muc,chep,noise/noise_027.png,Noise_001.png
+rpg,RPG_VFX\Duong\Texture\Noise\Noise_02.png,noise,thu muc,chep,noise/noise_031.png,Noise_02.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise01.png,noise,thu muc,chep,noise/noise_069.png,TX_VFX_Noise01.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise02.png,noise,thu muc,chep,noise/noise_070.png,TX_VFX_Noise02.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise03.png,noise,thu muc,chep,noise/noise_071.png,TX_VFX_Noise03.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise04.png,noise,thu muc,chep,noise/noise_072.png,TX_VFX_Noise04.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise05.png,noise,thu muc,chep,noise/noise_073.png,TX_VFX_Noise05.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise06.png,noise,thu muc,chep,noise/noise_074.png,TX_VFX_Noise06.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise07.png,noise,thu muc,chep,noise/noise_075.png,TX_VFX_Noise07.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise08.png,noise,thu muc,chep,noise/noise_076.png,TX_VFX_Noise08.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise09.png,noise,thu muc,chep,noise/noise_077.png,TX_VFX_Noise09.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise10.png,noise,thu muc,chep,noise/noise_078.png,TX_VFX_Noise10.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise11.png,noise,thu muc,chep,noise/noise_079.png,TX_VFX_Noise11.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise12.png,noise,thu muc,chep,noise/noise_080.png,TX_VFX_Noise12.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise13.png,noise,thu muc,chep,noise/noise_081.png,TX_VFX_Noise13.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise14.png,noise,thu muc,chep,noise/noise_082.png,TX_VFX_Noise14.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise15.png,water,xem anh,chep,water/water_020.png,TX_VFX_Noise15.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise16.png,noise,thu muc,chep,noise/noise_083.png,TX_VFX_Noise16.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise17.png,noise,thu muc,chep,noise/noise_084.png,TX_VFX_Noise17.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise18.png,noise,thu muc,chep,noise/noise_085.png,TX_VFX_Noise18.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise19.png,noise,thu muc,chep,noise/noise_086.png,TX_VFX_Noise19.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise20.png,noise,thu muc,chep,noise/noise_087.png,TX_VFX_Noise20.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise21.png,noise,thu muc,chep,noise/noise_088.png,TX_VFX_Noise21.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise22.png,noise,thu muc,chep,noise/noise_089.png,TX_VFX_Noise22.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise23.png,noise,thu muc,chep,noise/noise_090.png,TX_VFX_Noise23.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise24.png,noise,thu muc,chep,noise/noise_091.png,TX_VFX_Noise24.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise25.png,noise,thu muc,chep,noise/noise_092.png,TX_VFX_Noise25.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise26.png,noise,thu muc,chep,noise/noise_093.png,TX_VFX_Noise26.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise27.png,noise,thu muc,chep,noise/noise_094.png,TX_VFX_Noise27.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise28.png,noise,thu muc,chep,noise/noise_095.png,TX_VFX_Noise28.png
+rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise_Gradient.psd,noise,thu muc,chep,noise/noise_096.psd,TX_VFX_Noise_Gradient.psd
+rpg,RPG_VFX\Duong\Texture\Noise\T_Lu_Noise_05.png,noise,thu muc,chep,noise/noise_043.png,T_Lu_Noise_05.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_Lu_Noise_12.png,noise,thu muc,chep,noise/noise_044.png,T_Lu_Noise_12.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_Lu_Noise_29.png,noise,thu muc,chep,noise/noise_045.png,T_Lu_Noise_29.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_Lu_Noise_35.png,noise,thu muc,chep,noise/noise_046.png,T_Lu_Noise_35.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_Random_39.png,noise,thu muc,chep,noise/noise_054.png,T_Random_39.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_Random_45.png,noise,thu muc,chep,noise/noise_055.png,T_Random_45.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_Random_59.png,noise,thu muc,chep,noise/noise_056.png,T_Random_59.png
+rpg,RPG_VFX\Duong\Texture\Noise\T_VFX_Distortion.psd,noise,thu muc,chep,noise/noise_059.psd,T_VFX_Distortion_2.psd
+rpg,RPG_VFX\Duong\Texture\Radials\Circle.png,wave,xem anh,chep,wave/wave_003.png,Circle.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Circle.png,wave,xem anh,chep,wave/wave_032.png,TX_VFX_Circle.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials01.png,wave,xem anh,chep,wave/wave_034.png,TX_VFX_Radials01.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials02.png,wave,xem anh,chep,wave/wave_035.png,TX_VFX_Radials02.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials03.png,impact,ten file,chep,impact/impact_091.png,TX_VFX_Radials03.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials04 1.png,wave,xem anh,chep,wave/wave_036.png,TX_VFX_Radials04 1.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials04.png,wave,xem anh,trung,wave/wave_036.png,TX_VFX_Radials04 1.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials05.png,wave,xem anh,chep,wave/wave_037.png,TX_VFX_Radials05.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials06.png,glow,xem anh,chep,glow/glow_084.png,TX_VFX_Radials06.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials07.png,wave,xem anh,chep,wave/wave_038.png,TX_VFX_Radials07.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials08.png,wave,xem anh,chep,wave/wave_039.png,TX_VFX_Radials08.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials09.png,wave,xem anh,chep,wave/wave_040.png,TX_VFX_Radials09.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials10.png,glow,xem anh,chep,glow/glow_085.png,TX_VFX_Radials10.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials11.png,glow,xem anh,chep,glow/glow_086.png,TX_VFX_Radials11.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials12.png,glow,xem anh,chep,glow/glow_087.png,TX_VFX_Radials12.png
+rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials13.png,wave,xem anh,chep,wave/wave_041.png,TX_VFX_Radials13.png
+rpg,RPG_VFX\Duong\Texture\Radials\T_Crom_Flash_4.png,impact,ten file,chep,impact/impact_055.png,T_Crom_Flash_4.png
+rpg,RPG_VFX\Duong\Texture\Radials\T_VFX_Ground_Symbol.png,decals,ten file,chep,decals/decals_050.png,T_VFX_Ground_Symbol.png
+rpg,RPG_VFX\Duong\Texture\Radials\T_VFX_Line.psd,trail,ten file,chep,trail/trail_022.psd,T_VFX_Line.psd
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp02.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp03.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp04.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp05.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp06.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\TX_VFX_Ramp07.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\T_VFX_Ramp01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Ramps\T_VFX_Ramp02.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_MT_GlowAlpha_01.png,glow,ten file,chep,glow/glow_023.png,FX_MT_GlowAlpha_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_CausticNoise_01.psd,water,ten file,chep,water/water_008.psd,FX_TX_CausticNoise_01.psd
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Circle_01_Dissolve.png,glow,xem anh,chep,glow/glow_026.png,FX_TX_Circle_01_Dissolve.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Crackground_01.png,decals,ten file,chep,decals/decals_020.png,FX_TX_Crackground_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_DenseNoise_01.png,noise,ten file,chep,noise/noise_009.png,FX_TX_DenseNoise_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FireNoise_01.png,noise,ten file,chep,noise/noise_010.png,FX_TX_FireNoise_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FireNoise_01.psd,noise,ten file,chep,noise/noise_011.psd,FX_TX_FireNoise_01.psd
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FireSparks_01.png,glow,ten file,chep,glow/glow_027.png,FX_TX_FireSparks_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FlamesNoise_01.png,noise,ten file,chep,noise/noise_012.png,FX_TX_FlamesNoise_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FlamesNoise_02.png,noise,ten file,chep,noise/noise_013.png,FX_TX_FlamesNoise_02.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FlamesNoise_04.png,noise,ten file,trung,noise/noise_013.png,FX_TX_FlamesNoise_02.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FlamesTrail_01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Flash_Head.png,impact,ten file,chep,impact/impact_023.png,FX_TX_Flash_Head.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GlowADD_01.png,glow,ten file,chep,glow/glow_028.png,FX_TX_GlowADD_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GlowADD_01_Gradient.png,glow,ten file,chep,glow/glow_029.png,FX_TX_GlowADD_01_Gradient.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GlowADD_01_Inverted.png,glow,ten file,chep,glow/glow_030.png,FX_TX_GlowADD_01_Inverted.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GlowADD_02.png,glow,ten file,chep,glow/glow_031.png,FX_TX_GlowADD_02.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Gradient.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GradientRamp_01.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GradientRamp_01_Flip.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GradientRamp_02.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GradientRamp_03 1.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GradientRamp_03.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GradientRamp_04.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_ImpactShapes_Sharp_01.png,impact,ten file,chep,impact/impact_025.png,FX_TX_ImpactShapes_Sharp_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Impact_01.png,impact,ten file,chep,impact/impact_024.png,FX_TX_Impact_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LensFlare_01 1.png,glow,ten file,chep,glow/glow_032.png,FX_TX_LensFlare_01 1.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LensFlare_01.png,glow,ten file,chep,glow/glow_033.png,FX_TX_LensFlare_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LensFlare_01_Rook.png,glow,ten file,chep,glow/glow_034.png,FX_TX_LensFlare_01_Rook.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LightBurst.png,impact,ten file,chep,impact/impact_026.png,FX_TX_LightBurst.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_MuzzleFlash_01.png,impact,ten file,chep,impact/impact_028.png,FX_TX_MuzzleFlash_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_NoiseTexture_01.png,noise,ten file,chep,noise/noise_014.png,FX_TX_NoiseTexture_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_NoiseTexture_01_Dissolve.png,noise,ten file,chep,noise/noise_015.png,FX_TX_NoiseTexture_01_Dissolve.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_RadialBurst_01.psd,wave,xem anh,chep,wave/wave_012.psd,FX_TX_RadialBurst_01.psd
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_RadialBurst_03.psd,impact,ten file,chep,impact/impact_029.psd,FX_TX_RadialBurst_03.psd
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_SilkTrail_01.png,trail,ten file,chep,trail/trail_009.png,FX_TX_SilkTrail_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_SimpleSpark.png,glow,ten file,chep,glow/glow_035.png,FX_TX_SimpleSpark.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Smoke.png,smoke,ten file,chep,smoke/smoke_016.png,FX_TX_Smoke.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_SparksFire_01_Composition.png,glow,ten file,chep,glow/glow_036.png,FX_TX_SparksFire_01_Composition.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Spikes_01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Star_01.png,glow,ten file,chep,glow/glow_037.png,FX_TX_Star_01.png
+rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_TrailHead_Glow.png,trail,ten file,chep,trail/trail_010.png,FX_TX_TrailHead_Glow.png
+rpg,RPG_VFX\Duong\Texture\Shared\TX_VFX_Music_Sheet_2x2.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_FX_Fang.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_Heart.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Ghost.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Gradient_01.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Gradient_01.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Gradient_01_Invert.psd,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Gradient_02.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Music_Notes.png,,,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Music_Wave.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Music_Wave_Back.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Splash.png,water,ten file,chep,water/water_014.png,T_VFX_Splash.png
+rpg,RPG_VFX\Duong\Texture\Slash\Slash.png,Slash,thu muc,chep,Slash/Slash_004.png,Slash.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Blunt_Slash.png,Slash,thu muc,chep,Slash/Slash_022.png,T_VFX_Blunt_Slash.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B.png,Slash,thu muc,chep,Slash/Slash_023.png,T_VFX_Slash_B.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_01.png,Slash,thu muc,chep,Slash/Slash_024.png,T_VFX_Slash_B_01.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_02.png,Slash,thu muc,chep,Slash/Slash_025.png,T_VFX_Slash_B_02.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_03.png,Slash,thu muc,chep,Slash/Slash_026.png,T_VFX_Slash_B_03.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_04.png,Slash,thu muc,chep,Slash/Slash_027.png,T_VFX_Slash_B_04.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_05.png,Slash,thu muc,chep,Slash/Slash_028.png,T_VFX_Slash_B_05.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_M.png,Slash,thu muc,chep,Slash/Slash_029.png,T_VFX_Slash_M.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_M_1.png,Slash,thu muc,chep,Slash/Slash_030.png,T_VFX_Slash_M_1.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_S.png,Slash,thu muc,chep,Slash/Slash_031.png,T_VFX_Slash_S.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_Straight_01.png,Slash,thu muc,chep,Slash/Slash_035.png,T_VFX_Slash_Straight_01.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_Straight_02.png,Slash,thu muc,chep,Slash/Slash_036.png,T_VFX_Slash_Straight_02.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_S_01.png,Slash,thu muc,chep,Slash/Slash_032.png,T_VFX_Slash_S_01.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_S_02.png,Slash,thu muc,chep,Slash/Slash_033.png,T_VFX_Slash_S_02.png
+rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_S_03.png,Slash,thu muc,chep,Slash/Slash_034.png,T_VFX_Slash_S_03.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_01.png,smoke,thu muc,chep,smoke/smoke_024.png,smoke_01.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_02.png,smoke,thu muc,chep,smoke/smoke_025.png,smoke_02.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_03.png,smoke,thu muc,chep,smoke/smoke_026.png,smoke_03.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_04.png,smoke,thu muc,chep,smoke/smoke_027.png,smoke_04.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_05.png,smoke,thu muc,chep,smoke/smoke_028.png,smoke_05.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_06.png,smoke,thu muc,chep,smoke/smoke_029.png,smoke_06.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_07.png,smoke,thu muc,chep,smoke/smoke_030.png,smoke_07.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_08.png,smoke,thu muc,chep,smoke/smoke_031.png,smoke_08.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_09.png,smoke,thu muc,chep,smoke/smoke_032.png,smoke_09.png
+rpg,RPG_VFX\Duong\Texture\Smoke\smoke_10.png,smoke,thu muc,chep,smoke/smoke_033.png,smoke_10.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke01.png,smoke,thu muc,chep,smoke/smoke_051.png,TX_VFX_Smoke01.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke02.png,smoke,thu muc,chep,smoke/smoke_052.png,TX_VFX_Smoke02.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke03.png,smoke,thu muc,chep,smoke/smoke_053.png,TX_VFX_Smoke03.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke04.png,smoke,thu muc,chep,smoke/smoke_054.png,TX_VFX_Smoke04.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke05.png,smoke,thu muc,chep,smoke/smoke_055.png,TX_VFX_Smoke05.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke06.png,smoke,thu muc,chep,smoke/smoke_056.png,TX_VFX_Smoke06.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke07.png,smoke,thu muc,chep,smoke/smoke_057.png,TX_VFX_Smoke07.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke08.png,smoke,thu muc,chep,smoke/smoke_058.png,TX_VFX_Smoke08.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke09.png,smoke,thu muc,chep,smoke/smoke_059.png,TX_VFX_Smoke09.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke10.png,smoke,thu muc,chep,smoke/smoke_060.png,TX_VFX_Smoke10.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke11.png,smoke,thu muc,chep,smoke/smoke_061.png,TX_VFX_Smoke11.png
+rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke12.png,smoke,thu muc,chep,smoke/smoke_062.png,TX_VFX_Smoke12.png
+rpg,RPG_VFX\Duong\Texture\Spark\5.png,glow,thu muc,chep,glow/glow_001.png,5.png
+rpg,RPG_VFX\Duong\Texture\Spark\star_02.png,glow,thu muc,chep,glow/glow_064.png,star_02.png
+rpg,RPG_VFX\Duong\Texture\Spark\star_04.png,glow,thu muc,chep,glow/glow_065.png,star_04.png
+rpg,RPG_VFX\Duong\Texture\Spark\star_08 1.png,glow,thu muc,chep,glow/glow_066.png,star_08 1.png
+rpg,RPG_VFX\Duong\Texture\Spark\star_08.png,glow,thu muc,chep,glow/glow_067.png,star_08.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark01.png,glow,thu muc,chep,glow/glow_088.png,TX_VFX_Spark01.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark02.png,glow,thu muc,chep,glow/glow_089.png,TX_VFX_Spark02.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark03.png,glow,thu muc,chep,glow/glow_090.png,TX_VFX_Spark03.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark04.png,impact,xem anh,chep,impact/impact_092.png,TX_VFX_Spark04.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark05.png,glow,thu muc,chep,glow/glow_091.png,TX_VFX_Spark05.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark06.png,glow,thu muc,chep,glow/glow_092.png,TX_VFX_Spark06.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark07.png,glow,thu muc,chep,glow/glow_093.png,TX_VFX_Spark07.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark08.png,glow,thu muc,chep,glow/glow_094.png,TX_VFX_Spark08.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark09.png,glow,thu muc,chep,glow/glow_095.png,TX_VFX_Spark09.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark10.png,glow,thu muc,chep,glow/glow_096.png,TX_VFX_Spark10.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark11.png,glow,thu muc,chep,glow/glow_097.png,TX_VFX_Spark11.png
+rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark12.png,glow,thu muc,chep,glow/glow_098.png,TX_VFX_Spark12.png
+rpg,RPG_VFX\Duong\Texture\Spark\T_VFX_Plus_Sign.psd,glow,thu muc,chep,glow/glow_079.psd,T_VFX_Plus_Sign.psd
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails01.png,trail,thu muc,chep,trail/trail_033.png,TX_VFX_Trails01.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails02.png,trail,thu muc,chep,trail/trail_034.png,TX_VFX_Trails02.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails03.png,trail,thu muc,chep,trail/trail_035.png,TX_VFX_Trails03.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails04.png,trail,thu muc,chep,trail/trail_036.png,TX_VFX_Trails04.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails05.png,trail,thu muc,chep,trail/trail_037.png,TX_VFX_Trails05.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails06.png,trail,thu muc,chep,trail/trail_038.png,TX_VFX_Trails06.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails07.png,trail,thu muc,chep,trail/trail_039.png,TX_VFX_Trails07.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails08.png,trail,thu muc,trung,trail/trail_039.png,TX_VFX_Trails07.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails09.png,trail,thu muc,chep,trail/trail_040.png,TX_VFX_Trails09.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails10.png,trail,thu muc,chep,trail/trail_041.png,TX_VFX_Trails10.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails11.png,trail,thu muc,chep,trail/trail_042.png,TX_VFX_Trails11.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails12.png,trail,thu muc,chep,trail/trail_043.png,TX_VFX_Trails12.png
+rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails13.png,trail,thu muc,chep,trail/trail_044.png,TX_VFX_Trails13.png
+rpg,RPG_VFX\Duong\Texture\Trails\T_VFX_Dark_Trail.png,trail,thu muc,chep,trail/trail_021.png,T_VFX_Dark_Trail.png
+rpg,RPG_VFX\Duong\Texture\Water\Mud_Ground.png,decals,xem anh,chep,decals/decals_033.png,Mud_Ground.png
+rpg,RPG_VFX\Duong\Texture\Water\Poison_Splash.png,water,thu muc,chep,water/water_010.png,Poison_Splash.png
+rpg,RPG_VFX\Duong\Texture\Water\Poison_Splash_01.png,water,thu muc,chep,water/water_011.png,Poison_Splash_01.png
+rpg,RPG_VFX\Duong\Texture\Water\Water_Splash.jpg,water,thu muc,chep,water/water_023.jpg,Water_Splash.jpg
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave01.png,wave,thu muc,chep,wave/wave_042.png,TX_VFX_Wave01.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave02.png,wave,thu muc,chep,wave/wave_043.png,TX_VFX_Wave02.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave03.png,wave,thu muc,chep,wave/wave_044.png,TX_VFX_Wave03.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave04.png,wave,thu muc,chep,wave/wave_045.png,TX_VFX_Wave04.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave05.png,wave,thu muc,chep,wave/wave_046.png,TX_VFX_Wave05.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave06.png,wave,thu muc,chep,wave/wave_047.png,TX_VFX_Wave06.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave07.png,wave,thu muc,chep,wave/wave_048.png,TX_VFX_Wave07.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave08.png,wave,thu muc,chep,wave/wave_049.png,TX_VFX_Wave08.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave09.png,wave,thu muc,chep,wave/wave_050.png,TX_VFX_Wave09.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave10 1.png,wave,thu muc,chep,wave/wave_051.png,TX_VFX_Wave10 1.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave10.png,wave,thu muc,chep,wave/wave_052.png,TX_VFX_Wave10.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave11.png,wave,thu muc,chep,wave/wave_053.png,TX_VFX_Wave11.png
+rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave_Single.psd,wave,thu muc,chep,wave/wave_054.psd,TX_VFX_Wave_Single.psd
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Impact_Cone_01.png,wave,xem anh,chep,wave/wave_025.png,T_VFX_Impact_Cone_01.png
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Impact_Cone_02.png,wave,xem anh,chep,wave/wave_026.png,T_VFX_Impact_Cone_02.png
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Impact_Shockwave.png,wave,xem anh,chep,wave/wave_027.png,T_VFX_Impact_Shockwave.png
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Music_Wave.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Water_Circle_Line.psd,water,xem anh,chep,water/water_015.psd,T_VFX_Water_Circle_Line.psd
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Water_Circle_Thick_Line.psd,water,xem anh,chep,water/water_016.psd,T_VFX_Water_Circle_Thick_Line.psd
+rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Wind.png,wave,thu muc,chep,wave/wave_028.png,T_VFX_Wind.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Circle38.png,wave,xem anh,chep,wave/wave_006.png,Circle38.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flare10.png,glow,ten file,chep,glow/glow_014.png,Flare10.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flare3.png,glow,ten file,chep,glow/glow_015.png,Flare3.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash1.png,impact,ten file,chep,impact/impact_015.png,Flash1.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash18.png,impact,ten file,chep,impact/impact_016.png,Flash18.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash3.png,impact,ten file,chep,impact/impact_017.png,Flash3.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash7.png,glow,xem anh,chep,glow/glow_022.png,Flash7.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\HandPaintedLightning2.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_008.png,HandPaintedLightning2.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Mask23.png,,,chua_xep,,
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\MaskForShader.png,,,chua_xep,,
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\MuzzleFlash3.png,impact,ten file,chep,impact/impact_044.png,MuzzleFlash3.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Noise1.png,noise,ten file,chep,noise/noise_020.png,Noise1.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Noise13.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Noise34.png,noise,ten file,chep,noise/noise_022.png,Noise34.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Point12.png,glow,ten file,chep,glow/glow_056.png,Point12.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Point19.png,glow,ten file,chep,glow/glow_057.png,Point19.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Point5.png,glow,ten file,chep,glow/glow_059.png,Point5.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Romb3.png,,,chua_xep,,
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Semicircle6.png,wave,xem anh,chep,wave/wave_018.png,Semicircle6.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Semicircle7.png,wave,xem anh,chep,wave/wave_019.png,Semicircle7.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Smoke.png,smoke,ten file,chep,smoke/smoke_019.png,Smoke.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Smoke12.png,smoke,ten file,chep,smoke/smoke_020.png,Smoke12.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Smoke3.png,smoke,ten file,chep,smoke/smoke_021.png,Smoke3.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Smoke5.png,smoke,ten file,chep,smoke/smoke_023.png,Smoke5.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Snow4.png,,,chua_xep,,
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Trail21.png,trail,ten file,trung,trail/trail_024.png,Trail21.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Trail25.png,trail,ten file,trung,trail/trail_025.png,Trail25.png
+rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Trail39.png,trail,ten file,chep,trail/trail_027.png,Trail39.png
+rpg,RPG_VFX\Texture\Artillery Heavy Mortar_Smoke_Texture.png,smoke,ten file,chep,smoke/smoke_001.png,Artillery Heavy Mortar_Smoke_Texture.png
+rpg,RPG_VFX\Texture\axe_impact (1).png,impact,ten file,chep,impact/impact_001.png,axe_impact (1).png
+rpg,RPG_VFX\Texture\ball.png,wave,xem anh,chep,wave/wave_002.png,ball.png
+rpg,RPG_VFX\Texture\beam 1.png,Lightnings_Electrics,xem anh,chep,Lightnings_Electrics/Lightnings_Electrics_001.png,beam 1.png
+rpg,RPG_VFX\Texture\beam.png,trail,ten file,chep,trail/trail_001.png,beam.png
+rpg,RPG_VFX\Texture\Beam_Upwards.png,trail,ten file,chep,trail/trail_002.png,Beam_Upwards.png
+rpg,RPG_VFX\Texture\bite.png,impact,ten file,chep,impact/impact_002.png,bite.png
+rpg,RPG_VFX\Texture\blink.png,glow,ten file,chep,glow/glow_002.png,blink.png
+rpg,RPG_VFX\Texture\break_ground.png,decals,ten file,chep,decals/decals_005.png,break_ground.png
+rpg,RPG_VFX\Texture\break_ground_2.psd,decals,ten file,chep,decals/decals_006.psd,break_ground_2.psd
+rpg,RPG_VFX\Texture\cfxr bubble 2.png,water,ten file,chep,water/water_006.png,cfxr bubble 2.png
+rpg,RPG_VFX\Texture\cfxr electric arcs fade x4.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_002.png,cfxr electric arcs fade x4.png
+rpg,RPG_VFX\Texture\cfxr electric spark.png,glow,xem anh,chep,glow/glow_003.png,cfxr electric spark.png
+rpg,RPG_VFX\Texture\cfxr explosion second color map.png,smoke,xem anh,chep,smoke/smoke_002.png,cfxr explosion second color map.png
+rpg,RPG_VFX\Texture\cfxr explosion smoke alpha.png,smoke,ten file,chep,smoke/smoke_003.png,cfxr explosion smoke alpha.png
+rpg,RPG_VFX\Texture\cfxr explosion smoke dissolve.png,smoke,ten file,chep,smoke/smoke_004.png,cfxr explosion smoke dissolve.png
+rpg,RPG_VFX\Texture\cfxr noise clouds big.png,smoke,ten file,chep,smoke/smoke_005.png,cfxr noise clouds big.png
+rpg,RPG_VFX\Texture\cfxr perlin mid.png,noise,ten file,chep,noise/noise_002.png,cfxr perlin mid.png
+rpg,RPG_VFX\Texture\cfxr smoke cloud x4 dissolve.png,smoke,ten file,chep,smoke/smoke_006.png,cfxr smoke cloud x4 dissolve.png
+rpg,RPG_VFX\Texture\cfxr stretch ray blur.png,trail,ten file,chep,trail/trail_003.png,cfxr stretch ray blur.png
+rpg,RPG_VFX\Texture\cfxr stretch trait.png,trail,ten file,chep,trail/trail_004.png,cfxr stretch trait.png
+rpg,RPG_VFX\Texture\cfxr sword trail mask light.png,Slash,ten file,chep,Slash/Slash_001.png,cfxr sword trail mask light.png
+rpg,RPG_VFX\Texture\Circle_Generic.png,wave,xem anh,chep,wave/wave_008.png,Circle_Generic.png
+rpg,RPG_VFX\Texture\cir_upgrate_02.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\crack_punch.png,decals,ten file,chep,decals/decals_012.png,crack_punch.png
+rpg,RPG_VFX\Texture\decals.psd,decals,ten file,chep,decals/decals_013.psd,decals.psd
+rpg,RPG_VFX\Texture\decals7.png,decals,ten file,chep,decals/decals_014.png,decals7.png
+rpg,RPG_VFX\Texture\decals_11.png,decals,ten file,chep,decals/decals_015.png,decals_11.png
+rpg,RPG_VFX\Texture\decals_6.png,decals,ten file,chep,decals/decals_016.png,decals_6.png
+rpg,RPG_VFX\Texture\default_retag - Copy.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\default_retag.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Diagonal_RedFlare.png,glow,ten file,chep,glow/glow_010.png,Diagonal_RedFlare.png
+rpg,RPG_VFX\Texture\Disolve_Twirly.png,noise,ten file,chep,noise/noise_004.png,Disolve_Twirly.png
+rpg,RPG_VFX\Texture\dot.png,glow,ten file,chep,glow/glow_011.png,dot.png
+rpg,RPG_VFX\Texture\dragon_head.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\dust_Glacier_UV_tt.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,RPG_VFX\Texture\Elite_01_Crack.png,decals,ten file,chep,decals/decals_017.png,Elite_01_Crack.png
+rpg,RPG_VFX\Texture\Elite_02_Redzone.png,decals,ten file,chep,decals/decals_018.png,Elite_02_Redzone.png
+rpg,RPG_VFX\Texture\Elite_02_Slash.png,Slash,ten file,chep,Slash/Elite_02_Slash.png,
+rpg,RPG_VFX\Texture\fire_atlas.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\fire_loop_atlas.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\flare.png,glow,ten file,chep,glow/glow_012.png,flare.png
+rpg,RPG_VFX\Texture\Flare_Cross.png,glow,ten file,chep,glow/glow_018.png,Flare_Cross.png
+rpg,RPG_VFX\Texture\Flare_FatDot.png,glow,ten file,chep,glow/glow_019.png,Flare_FatDot.png
+rpg,RPG_VFX\Texture\Flare_Glowdot.png,glow,ten file,chep,glow/glow_020.png,Flare_Glowdot.png
+rpg,RPG_VFX\Texture\Flare_SoftCross.png,glow,ten file,chep,glow/glow_021.png,Flare_SoftCross.png
+rpg,RPG_VFX\Texture\FX_TX_MuzzleFlash_01 1.png,impact,ten file,chep,impact/impact_027.png,FX_TX_MuzzleFlash_01 1.png
+rpg,RPG_VFX\Texture\fx_t_smoke_02 1.png,smoke,ten file,chep,smoke/smoke_014.png,fx_t_smoke_02 1.png
+rpg,RPG_VFX\Texture\fx_t_smoke_02.png,smoke,ten file,chep,smoke/smoke_015.png,fx_t_smoke_02.png
+rpg,RPG_VFX\Texture\gauntlet_break2.png,decals,ten file,chep,decals/decals_021.png,gauntlet_break2.png
+rpg,RPG_VFX\Texture\Glacier_SKill2_Explose.png,impact,ten file,chep,impact/impact_030.png,Glacier_SKill2_Explose.png
+rpg,RPG_VFX\Texture\Glowdots_Speckles.png,glow,ten file,chep,glow/glow_045.png,Glowdots_Speckles.png
+rpg,RPG_VFX\Texture\Glow_SharpElip.png,glow,ten file,chep,glow/glow_042.png,Glow_SharpElip.png
+rpg,RPG_VFX\Texture\Glow_Standard.png,glow,ten file,chep,glow/glow_044.png,Glow_Standard.png
+rpg,RPG_VFX\Texture\gradient map.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\GroundCracks_Radial.png,decals,ten file,trung,decals/decals_026.png,GroundCracks_Radial.png
+rpg,RPG_VFX\Texture\hammer.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Ice_Glacier_UV_tt.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Ice_Glacier_UV_tt_v02.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Ice_Glacier_UV_tt_v02_ds.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\ice_peace_texture.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Icn_Fan_Effect.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\impact.png,impact,ten file,chep,impact/impact_031.png,impact.png
+rpg,RPG_VFX\Texture\impact_Bomba (1).png,impact,ten file,chep,impact/impact_034.png,impact_Bomba (1).png
+rpg,RPG_VFX\Texture\impact_bomba.png,impact,ten file,chep,impact/impact_035.png,impact_bomba.png
+rpg,RPG_VFX\Texture\impact_texture13.png,impact,ten file,chep,impact/impact_037.png,impact_texture13.png
+rpg,RPG_VFX\Texture\indicator.png,decals,ten file,chep,decals/decals_029.png,indicator.png
+rpg,RPG_VFX\Texture\Javelin_thrust (4).png,trail,ten file,chep,trail/trail_012.png,Javelin_thrust (4).png
+rpg,RPG_VFX\Texture\Javelin_thrust (5).png,trail,ten file,chep,trail/trail_013.png,Javelin_thrust (5).png
+rpg,RPG_VFX\Texture\leave.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\lightning 1.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_010.png,lightning 1.png
+rpg,RPG_VFX\Texture\lightning.png,Lightnings_Electrics,ten file,trung,Lightnings_Electrics/Lightnings_Electrics_010.png,lightning 1.png
+rpg,RPG_VFX\Texture\Lightning_light.png,glow,xem anh,chep,glow/glow_050.png,Lightning_light.png
+rpg,RPG_VFX\Texture\lightning_noise.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_012.png,lightning_noise.png
+rpg,RPG_VFX\Texture\lightning_noise_tex.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_013.png,lightning_noise_tex.png
+rpg,RPG_VFX\Texture\lightning_texture_sheet.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_015.png,lightning_texture_sheet.png
+rpg,RPG_VFX\Texture\lightning_texture_sheet1.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_016.png,lightning_texture_sheet1.png
+rpg,RPG_VFX\Texture\Light_01.png,impact,xem anh,chep,impact/impact_038.png,Light_01.png
+rpg,RPG_VFX\Texture\light_noise.png,Lightnings_Electrics,xem anh,chep,Lightnings_Electrics/Lightnings_Electrics_009.png,light_noise.png
+rpg,RPG_VFX\Texture\ln.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_018.png,ln.png
+rpg,RPG_VFX\Texture\lze.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\magic_circle.png,decals,ten file,chep,decals/decals_032.png,magic_circle_2.png
+rpg,RPG_VFX\Texture\maintex_thrust.png,glow,xem anh,chep,glow/glow_052.png,maintex_thrust.png
+rpg,RPG_VFX\Texture\melee_fx1.png,wave,xem anh,chep,wave/wave_014.png,melee_fx1.png
+rpg,RPG_VFX\Texture\melee_fx2.png,impact,xem anh,chep,impact/impact_041.png,melee_fx2_2.png
+rpg,RPG_VFX\Texture\melee_fx3.png,glow,xem anh,chep,glow/glow_053.png,melee_fx3.png
+rpg,RPG_VFX\Texture\mid_ball.png,glow,ten file,chep,glow/glow_054.png,mid_ball.png
+rpg,RPG_VFX\Texture\noise 1.png,noise,ten file,chep,noise/noise_018.png,noise 1.png
+rpg,RPG_VFX\Texture\Noise_004.png,noise,ten file,chep,noise/noise_028.png,Noise_004.png
+rpg,RPG_VFX\Texture\Noise_011.png,noise,ten file,chep,noise/noise_029.png,Noise_011.png
+rpg,RPG_VFX\Texture\Noise_012.png,noise,ten file,chep,noise/noise_030.png,Noise_012.png
+rpg,RPG_VFX\Texture\plane_hammer.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\RainbowColors.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Rectangle 1 - Copy.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Rectangle 1.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\RockPlain_Pickbook.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\ruin.png,decals,ten file,chep,decals/decals_034.png,ruin.png
+rpg,RPG_VFX\Texture\SmokeHarsh.png,smoke,ten file,chep,smoke/smoke_035.png,SmokeHarsh.png
+rpg,RPG_VFX\Texture\suriken (1).png,,,chua_xep,,
+rpg,RPG_VFX\Texture\suriken (2).png,,,chua_xep,,
+rpg,RPG_VFX\Texture\texture.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\TEX_Lava_Wall_BaseColor.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\TEX_rockwall_BaseColor.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\TEX_RockWall_Extra_White_BaseColor.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\TEX_RockWall_Nature_BaseColor.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\TEX_rockwall_Normal.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\TEX_rockwall_OcclusionRoughnessMetallic.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\thunder_tex.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_028.png,thunder_tex.png
+rpg,RPG_VFX\Texture\tt_sheet.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\tusk_tex.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Tx_Burst_directional_03.png,impact,ten file,chep,impact/impact_072.png,Tx_Burst_directional_03.png
+rpg,RPG_VFX\Texture\Tx_Burst_directional_23 - Copy.png,impact,ten file,chep,impact/impact_074.png,Tx_Burst_directional_23 - Copy_2.png
+rpg,RPG_VFX\Texture\Tx_Burst_directional_23.png,impact,ten file,trung,impact/impact_074.png,Tx_Burst_directional_23 - Copy_2.png
+rpg,RPG_VFX\Texture\Tx_Burst_directional_23_w.png,impact,ten file,chep,impact/impact_075.png,Tx_Burst_directional_23_w.png
+rpg,RPG_VFX\Texture\Tx_electricity_08_rot.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_029.png,Tx_electricity_08_rot.png
+rpg,RPG_VFX\Texture\Tx_electricity_09.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_030.png,Tx_electricity_09.png
+rpg,RPG_VFX\Texture\Tx_impact_03.png,wave,xem anh,chep,wave/wave_029.png,Tx_impact_03.png
+rpg,RPG_VFX\Texture\Tx_Impact_radial_01.png,wave,xem anh,chep,wave/wave_030.png,Tx_Impact_radial_01.png
+rpg,RPG_VFX\Texture\Tx_Impact_radial_03.png,wave,xem anh,chep,wave/wave_031.png,Tx_Impact_radial_03.png
+rpg,RPG_VFX\Texture\Tx_Mask_02_2.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Tx_Noise_08.png,noise,ten file,chep,noise/noise_060.png,Tx_Noise_08.png
+rpg,RPG_VFX\Texture\Tx_Noise_19.png,noise,ten file,chep,noise/noise_061.png,Tx_Noise_19.png
+rpg,RPG_VFX\Texture\Tx_Noise_36.png,noise,ten file,chep,noise/noise_062.png,Tx_Noise_36.png
+rpg,RPG_VFX\Texture\Tx_Noise_42.png,noise,ten file,chep,noise/noise_063.png,Tx_Noise_42.png
+rpg,RPG_VFX\Texture\Tx_Noise_45.png,noise,ten file,chep,noise/noise_064.png,Tx_Noise_45.png
+rpg,RPG_VFX\Texture\Tx_Noise_53.png,noise,ten file,chep,noise/noise_065.png,Tx_Noise_53.png
+rpg,RPG_VFX\Texture\Tx_Noise_55.png,noise,ten file,chep,noise/noise_066.png,Tx_Noise_55.png
+rpg,RPG_VFX\Texture\Tx_Noise_56.png,noise,ten file,chep,noise/noise_067.png,Tx_Noise_56.png
+rpg,RPG_VFX\Texture\Tx_Noise_60.png,noise,ten file,chep,noise/noise_068.png,Tx_Noise_60.png
+rpg,RPG_VFX\Texture\Tx_radial_burst_04 1.png,impact,ten file,chep,impact/impact_078.png,Tx_radial_burst_04 1.png
+rpg,RPG_VFX\Texture\Tx_radial_burst_04.png,impact,ten file,trung,impact/impact_078.png,Tx_radial_burst_04 1.png
+rpg,RPG_VFX\Texture\Tx_radial_burst_05.png,impact,ten file,trung,impact/impact_079.png,Tx_radial_burst_05.png
+rpg,RPG_VFX\Texture\Tx_Smoke_09.png,smoke,ten file,chep,smoke/smoke_048.png,Tx_Smoke_09.png
+rpg,RPG_VFX\Texture\Tx_Water_02.png,water,ten file,chep,water/water_021.png,Tx_Water_02.png
+rpg,RPG_VFX\Texture\Tx_Water_05.png,water,ten file,chep,water/water_022.png,Tx_Water_05.png
+rpg,RPG_VFX\Texture\Tx_White.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\Tx_Wind_Noise_01_2.png,noise,xem anh,chep,noise/noise_097.png,Tx_Wind_Noise_01_2.png
+rpg,RPG_VFX\Texture\T_Impact_Hit.psd,impact,ten file,chep,impact/impact_068.psd,T_Impact_Hit.psd
+rpg,RPG_VFX\Texture\T_Smokes.png,smoke,ten file,chep,smoke/smoke_045.png,T_Smokes.png
+rpg,RPG_VFX\Texture\T_Spark.png,Lightnings_Electrics,xem anh,chep,Lightnings_Electrics/Lightnings_Electrics_025.png,T_Spark.png
+rpg,RPG_VFX\Texture\T_Splash.png,water,ten file,chep,water/water_013.png,T_Splash.png
+rpg,RPG_VFX\Texture\VFX_Zypher_Skill1_Impact.png,wave,xem anh,chep,wave/wave_055.png,VFX_Zypher_Skill1_Impact.png
+rpg,RPG_VFX\Texture\Warboom_slash_ground (1).png,Slash,ten file,chep,Slash/Slash_037.png,Warboom_slash_ground (1).png
+rpg,RPG_VFX\Texture\wave 1.png,wave,ten file,chep,wave/wave_061.png,wave 1.png
+rpg,RPG_VFX\Texture\wave 2.png,wave,ten file,chep,wave/wave_062.png,wave 2.png
+rpg,RPG_VFX\Texture\wave 3.png,wave,ten file,chep,wave/wave_063.png,wave 3.png
+rpg,RPG_VFX\Texture\wave.png,wave,ten file,chep,wave/wave_064.png,wave.png
+rpg,RPG_VFX\Texture\wave2.png,wave,ten file,chep,wave/wave_066.png,wave2.png
+rpg,RPG_VFX\Texture\web.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\web_spder.png,,,chua_xep,,
+rpg,RPG_VFX\Texture\WindBlades_Animated.png,Slash,ten file,chep,Slash/Slash_039.png,WindBlades_Animated.png
+rpg,RPG_VFX\Texture\X_ground 1.png,decals,ten file,chep,decals/decals_064.png,X_ground 1.png
+rpg,RPG_VFX\Texture\X_highlight.png,impact,xem anh,chep,impact/impact_093.png,X_highlight.png
+rpg,RPG_VFX\Texture\X_impact.png,impact,ten file,chep,impact/impact_095.png,X_impact.png
+rpg,RPG_VFX\Texture\X_LIGHT 1.png,glow,ten file,chep,glow/glow_100.png,X_LIGHT 1.png
+rpg,RPG_VFX\VFX\Arrow2.png,,,chua_xep,,
+rpg,RPG_VFX\VFX\SparkExolosion2.png,impact,xem anh,chep,impact/impact_045.png,SparkExolosion2.png
+rpg,RPG_VFX\VFX\Trail6.png,trail,ten file,chep,trail/trail_028.png,Trail6.png
+rpg,RPG_VFX\VFX\Waves17.png,Lightnings_Electrics,xem anh,chep,Lightnings_Electrics/Lightnings_Electrics_033.png,Waves17.png
+rpg,RPG_VFX\VFX_Base\ant\slash\cfxr perlin big.png,noise,xem anh,chep,noise/noise_001.png,cfxr perlin big.png
+rpg,RPG_VFX\VFX_Base\ant\slash\cfxr perlin mid.png,Slash,thu muc,trung,noise/noise_002.png,cfxr perlin mid.png
+rpg,RPG_VFX\VFX_Base\ant\slash\cfxr stretch ray blur.png,Slash,thu muc,trung,trail/trail_003.png,cfxr stretch ray blur.png
+rpg,RPG_VFX\VFX_Base\ant\slash\cfxr sword trail mask plain.png,trail,xem anh,chep,trail/trail_005.png,cfxr sword trail mask plain.png
+rpg,2D_Art\Vfx\cir_upgrate_02.png,,,chua_xep,,
+rpg,2D_Art\Vfx\dot.png,glow,ten file,trung,glow/glow_011.png,dot.png
+rpg,2D_Art\Vfx\Fire.png,,,chua_xep,,
+rpg,2D_Art\Vfx\Glow.png,glow,ten file,chep,glow/glow_038.png,Glow.png
+rpg,2D_Art\Vfx\Point.png,glow,ten file,chep,glow/glow_055.png,Point.png
+rpg,2D_Art\Vfx\Point2.png,glow,ten file,chep,glow/glow_058.png,Point2.png
+rpg,2D_Art\Vfx\star.png,glow,ten file,chep,glow/glow_062.png,star.png
+rpg,2D_Art\Vfx\Vortex 1.png,wave,ten file,chep,wave/wave_056.png,Vortex 1.png
+rpg,2D_Art\Vfx\Vortex 2.png,wave,ten file,chep,wave/wave_057.png,Vortex 2.png
+rpg,2D_Art\Vfx\Vortex 3.png,wave,ten file,chep,wave/wave_058.png,Vortex 3.png
+rpg,2D_Art\Vfx\Vortex 4.png,wave,ten file,chep,wave/wave_059.png,Vortex 4.png
+rpg,2D_Art\Vfx\Vortex.png,wave,ten file,chep,wave/wave_060.png,Vortex.png
+rpg,2D_Art\Vfx\Bless\Textures\Tex_fx_HCFX_Circle_01.tga,glow,ten file,chep,glow/glow_080.tga,Tex_fx_HCFX_Circle_01.tga
+rpg,2D_Art\Vfx\Bless\Textures\Tex_fx_HCFX_Glow_Long_01.tga,glow,ten file,chep,glow/glow_081.tga,Tex_fx_HCFX_Glow_Long_01.tga
+rpg,2D_Art\Vfx\Bless\Textures\Tex_fx_HCFX_Twinkle_01.tga,glow,ten file,chep,glow/glow_082.tga,Tex_fx_HCFX_Twinkle_01.tga
+rpg,2D_Art\Vfx\Textures\Arrowup.png,,,chua_xep,,
+rpg,2D_Art\Vfx\Textures\Cash.png,,,chua_xep,,
+rpg,2D_Art\Vfx\Textures\circle.png,glow,ten file,chep,glow/glow_007.png,circle_2.png
+rpg,2D_Art\Vfx\Textures\cloud_2x2_hardshadow.png,smoke,ten file,chep,smoke/smoke_008.png,cloud_2x2_hardshadow.png
+rpg,2D_Art\Vfx\Textures\Flare.png,glow,ten file,chep,glow/glow_017.png,Flare_2.png
+rpg,2D_Art\Vfx\Textures\fx_special_particle_yellow.png,,,chua_xep,,
+rpg,2D_Art\Vfx\Textures\fx_star.png,glow,ten file,chep,glow/glow_024.png,fx_star.png
+rpg,2D_Art\Vfx\Textures\fx_star_yellow.png,glow,ten file,chep,glow/glow_025.png,fx_star_yellow.png
+rpg,2D_Art\Vfx\Textures\glow1.png,glow,ten file,chep,glow/glow_039.png,glow1.png
+rpg,2D_Art\Vfx\Textures\star3.png,glow,ten file,chep,glow/glow_063.png,star3.png
+rpg,EffectCore\textures\decals\explodeDecal.psd,decals,thu muc,chep,decals/decals_019.psd,explodeDecal.psd
+rpg,EffectCore\textures\generic\flarespark.psd,impact,xem anh,chep,impact/impact_013.psd,flarespark.psd
+rpg,EffectCore\textures\slashes\SlashSmall.psd,Slash,thu muc,chep,Slash/Slash_014.psd,SlashSmall.psd
+rpg,EffectCore\textures\slashes\Slash_Medium_Glow.psd,Slash,thu muc,chep,Slash/Slash_010.psd,Slash_Medium_Glow.psd
+rpg,EffectCore\textures\slashes\Slash_Small_Glow.psd,Slash,thu muc,chep,Slash/Slash_011.psd,Slash_Small_Glow.psd
+rpg,EffectCore\textures\slashes\Spin.psd,Slash,thu muc,chep,Slash/Slash_015.psd,Spin.psd
+rpg,EffectCore\textures\slashes\Stab.psd,Slash,thu muc,chep,Slash/Slash_016.psd,Stab.psd
+rpg,EffectCore\textures\sparks\glowSparksOffset.psd,glow,thu muc,chep,glow/glow_046.psd,glowSparksOffset.psd
+rpg,_Game\Resources_moved\Textures\arrow 1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Arrow 1.psd,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Arrow.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Arrow.psd,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\arrow_tex.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\background.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Blood03.png,impact,ten file,chep,impact/impact_003.png,Blood03.png
+rpg,_Game\Resources_moved\Textures\BloodCone4.png,impact,ten file,chep,impact/impact_004.png,BloodCone4.png
+rpg,_Game\Resources_moved\Textures\BloodRing.png,impact,ten file,chep,impact/impact_005.png,BloodRing.png
+rpg,_Game\Resources_moved\Textures\blur_bar.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\break (2).png,decals,ten file,chep,decals/decals_001.png,break (2).png
+rpg,_Game\Resources_moved\Textures\break (3).png,decals,ten file,chep,decals/decals_002.png,break (3).png
+rpg,_Game\Resources_moved\Textures\break.png,decals,ten file,chep,decals/decals_003.png,break.png
+rpg,_Game\Resources_moved\Textures\break_dust 1.png,decals,ten file,chep,decals/decals_004.png,break_dust 1.png
+rpg,_Game\Resources_moved\Textures\BubbleRainbow01.png,water,ten file,chep,water/water_003.png,BubbleRainbow01.png
+rpg,_Game\Resources_moved\Textures\BubbleWhite01.png,water,ten file,chep,water/water_004.png,BubbleWhite01.png
+rpg,_Game\Resources_moved\Textures\Bubble_half.png,water,ten file,chep,water/water_001.png,Bubble_half.png
+rpg,_Game\Resources_moved\Textures\BurstCone2.png,impact,ten file,chep,impact/impact_006.png,BurstCone2.png
+rpg,_Game\Resources_moved\Textures\Butterflie_blue.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_ellow.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_green.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_pink.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_purple.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_red.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_turquoise.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Butterflie_white.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\cfxr smoke cloud x4 dissolve.png,smoke,ten file,trung,smoke/smoke_006.png,cfxr smoke cloud x4 dissolve.png
+rpg,_Game\Resources_moved\Textures\cfxr smoke cloud x4.png,smoke,ten file,chep,smoke/smoke_007.png,cfxr smoke cloud x4.png
+rpg,_Game\Resources_moved\Textures\cfxr sword trail mask light.png,Slash,ten file,trung,Slash/Slash_001.png,cfxr sword trail mask light.png
+rpg,_Game\Resources_moved\Textures\cfxr sword trail mask lines.png,Slash,ten file,chep,Slash/Slash_002.png,cfxr sword trail mask lines.png
+rpg,_Game\Resources_moved\Textures\cfxr sword trail mask plain.png,trail,xem anh,trung,trail/trail_005.png,cfxr sword trail mask plain.png
+rpg,_Game\Resources_moved\Textures\ChargePath 1.png,trail,ten file,chep,trail/trail_006.png,ChargePath 1.png
+rpg,_Game\Resources_moved\Textures\ChargePath 2.png,trail,ten file,chep,trail/trail_007.png,ChargePath 2.png
+rpg,_Game\Resources_moved\Textures\ChargePath.png,trail,ten file,chep,trail/trail_008.png,ChargePath.png
+rpg,_Game\Resources_moved\Textures\circle 1.png,glow,ten file,trung,glow/glow_007.png,circle_2.png
+rpg,_Game\Resources_moved\Textures\Circle.png,glow,ten file,chep,glow/glow_008.png,Circle_3.png
+rpg,_Game\Resources_moved\Textures\Circle01.png,glow,ten file,chep,glow/glow_004.png,Circle01.png
+rpg,_Game\Resources_moved\Textures\Circle02.png,glow,ten file,chep,glow/glow_005.png,Circle02.png
+rpg,_Game\Resources_moved\Textures\Circle03.png,wave,xem anh,chep,wave/wave_004.png,Circle03.png
+rpg,_Game\Resources_moved\Textures\Circle04.png,glow,ten file,chep,glow/glow_006.png,Circle04.png
+rpg,_Game\Resources_moved\Textures\Circle116.png,wave,xem anh,chep,wave/wave_005.png,Circle116.png
+rpg,_Game\Resources_moved\Textures\Circle_1.png,wave,xem anh,chep,wave/wave_007.png,Circle_1.png
+rpg,_Game\Resources_moved\Textures\cloudNoise.jpg,noise,xem anh,chep,noise/noise_003.jpg,cloudNoise.jpg
+rpg,_Game\Resources_moved\Textures\CommonBloodSplash.png,impact,ten file,chep,impact/impact_007.png,CommonBloodSplash.png
+rpg,_Game\Resources_moved\Textures\CoreGlow.png,decals,xem anh,chep,decals/decals_007.png,CoreGlow.png
+rpg,_Game\Resources_moved\Textures\CoreSpike.psd,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\CoreSpikeLarge2.psd,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\CoreSpikeSmall.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\crack_alpha 1.png,decals,ten file,chep,decals/decals_009.png,crack_alpha 1.png
+rpg,_Game\Resources_moved\Textures\crack_alpha.png,decals,ten file,chep,decals/decals_010.png,crack_alpha.png
+rpg,_Game\Resources_moved\Textures\crack_highlight.png,decals,ten file,chep,decals/decals_011.png,crack_highlight.png
+rpg,_Game\Resources_moved\Textures\Crows.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Diss2.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\DragonSlayer_Dragon_slayer_BaseColor.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Dust.png,smoke,ten file,chep,smoke/smoke_009.png,Dust.png
+rpg,_Game\Resources_moved\Textures\Dust01.png,smoke,ten file,chep,smoke/smoke_010.png,Dust01.png
+rpg,_Game\Resources_moved\Textures\Dust02.png,smoke,ten file,chep,smoke/smoke_011.png,Dust02.png
+rpg,_Game\Resources_moved\Textures\Dust03.png,smoke,ten file,chep,smoke/smoke_012.png,Dust03.png
+rpg,_Game\Resources_moved\Textures\Embers.png,impact,xem anh,chep,impact/impact_010.png,Embers.png
+rpg,_Game\Resources_moved\Textures\EnemyMarkDown.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Explosion.psd,wave,xem anh,chep,wave/wave_010.psd,Explosion.psd
+rpg,_Game\Resources_moved\Textures\ExplosionNormal1.png,impact,ten file,chep,impact/impact_012.png,ExplosionNormal1.png
+rpg,_Game\Resources_moved\Textures\Explosion_rp.png,impact,ten file,chep,impact/impact_011.png,Explosion_rp.png
+rpg,_Game\Resources_moved\Textures\flame_noise.png,noise,ten file,chep,noise/noise_006.png,flame_noise.png
+rpg,_Game\Resources_moved\Textures\Flare01.png,glow,ten file,chep,glow/glow_013.png,Flare01.png
+rpg,_Game\Resources_moved\Textures\Flare6.png,glow,ten file,chep,glow/glow_016.png,Flare6.png
+rpg,_Game\Resources_moved\Textures\Flash.png,impact,ten file,chep,impact/impact_014.png,Flash.png
+rpg,_Game\Resources_moved\Textures\flashLarge.psd,impact,ten file,chep,impact/impact_018.psd,flashLarge.psd
+rpg,_Game\Resources_moved\Textures\Foam 4.png,noise,xem anh,chep,noise/noise_008.png,Foam 4.png
+rpg,_Game\Resources_moved\Textures\Foam 5.png,water,ten file,chep,water/water_007.png,Foam 5.png
+rpg,_Game\Resources_moved\Textures\fullCircleFaded.psd,wave,xem anh,chep,wave/wave_011.psd,fullCircleFaded.psd
+rpg,_Game\Resources_moved\Textures\glow1.png,glow,ten file,trung,glow/glow_039.png,glow1.png
+rpg,_Game\Resources_moved\Textures\glowSquare.png,glow,ten file,chep,glow/glow_047.png,glowSquare.png
+rpg,_Game\Resources_moved\Textures\Glow_1.png,glow,ten file,chep,glow/glow_040.png,Glow_1.png
+rpg,_Game\Resources_moved\Textures\glow_sq.png,glow,ten file,chep,glow/glow_043.png,glow_sq.png
+rpg,_Game\Resources_moved\Textures\gr.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\GradientCenter01.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Gradient_lightning.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,_Game\Resources_moved\Textures\gradient_vertical_spiky.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\GrainySand.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\groundCrack 1.jpg,decals,ten file,chep,decals/decals_023.jpg,groundCrack 1.jpg
+rpg,_Game\Resources_moved\Textures\groundCrack.jpg,decals,ten file,trung,decals/decals_023.jpg,groundCrack 1.jpg
+rpg,_Game\Resources_moved\Textures\ground_1.png,decals,ten file,chep,decals/decals_022.png,ground_1.png
+rpg,_Game\Resources_moved\Textures\Guardian_core.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Guardian_Gradient.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Guardian_Lightning2.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_006.png,Guardian_Lightning2.png
+rpg,_Game\Resources_moved\Textures\Guardian_Lightning3.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_007.png,Guardian_Lightning3.png
+rpg,_Game\Resources_moved\Textures\Guardian_ring.png,wave,ten file,chep,wave/wave_013.png,Guardian_ring.png
+rpg,_Game\Resources_moved\Textures\hand_paint_fire.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\hand_paint_smoke_2.png,smoke,ten file,chep,smoke/smoke_017.png,hand_paint_smoke_2.png
+rpg,_Game\Resources_moved\Textures\healing.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\hit.png,glow,xem anh,chep,glow/glow_048.png,hit.png
+rpg,_Game\Resources_moved\Textures\hit2.png,glow,xem anh,chep,glow/glow_049.png,hit2.png
+rpg,_Game\Resources_moved\Textures\IceBulletTrails.png,trail,ten file,chep,trail/trail_011.png,IceBulletTrails.png
+rpg,_Game\Resources_moved\Textures\IceTexture.jpg,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture1_normal.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_1.jpg,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_7_max_2_transparent.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_7_max_2_transparent_normal.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_7_max_blue.jpg,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_9.jpg,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_normal_1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_normal_7_max_1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IceTexture2_normal_9.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\IMG_20230716_102200_926.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Impact_1.jpg,impact,ten file,chep,impact/impact_032.jpg,Impact_1.jpg
+rpg,_Game\Resources_moved\Textures\Indicator2.png,decals,ten file,chep,decals/decals_030.png,Indicator2.png
+rpg,_Game\Resources_moved\Textures\Laser.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Leafs.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Leaf_01.tif,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Lightning01.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_011.png,Lightning01.png
+rpg,_Game\Resources_moved\Textures\lightning_impact (1).png,impact,xem anh,chep,impact/impact_039.png,lightning_impact (1).png
+rpg,_Game\Resources_moved\Textures\magic_line 1.png,trail,ten file,chep,trail/trail_014.png,magic_line 1.png
+rpg,_Game\Resources_moved\Textures\magic_line.png,trail,ten file,chep,trail/trail_015.png,magic_line.png
+rpg,_Game\Resources_moved\Textures\maintex_thrust 1.png,glow,xem anh,chep,glow/glow_051.png,maintex_thrust 1.png
+rpg,_Game\Resources_moved\Textures\Manifold_01-512x512 1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask2_sand.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_101.psd,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_108.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_11.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_115.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_12.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_13.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_2.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_3.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_4.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_5.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_8.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_9_1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_orb.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\mask_sand.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Megatexture.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\MinimapRendererIcon.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Muzzle.png,impact,ten file,chep,impact/impact_042.png,Muzzle.png
+rpg,_Game\Resources_moved\Textures\Muzzle2.png,impact,ten file,chep,impact/impact_043.png,Muzzle2.png
+rpg,_Game\Resources_moved\Textures\MyCustomSmokeTex.png,smoke,ten file,chep,smoke/smoke_018.png,MyCustomSmokeTex.png
+rpg,_Game\Resources_moved\Textures\noise 1.png,Lightnings_Electrics,xem anh,chep,Lightnings_Electrics/Lightnings_Electrics_019.png,noise 1_2.png
+rpg,_Game\Resources_moved\Textures\Noise.png,noise,ten file,chep,noise/noise_019.png,Noise.png
+rpg,_Game\Resources_moved\Textures\Noise28.png,noise,ten file,chep,noise/noise_021.png,Noise28.png
+rpg,_Game\Resources_moved\Textures\Noise50.png,noise,ten file,chep,noise/noise_023.png,Noise50.png
+rpg,_Game\Resources_moved\Textures\Noise51 1.png,noise,ten file,chep,noise/noise_024.png,Noise51 1.png
+rpg,_Game\Resources_moved\Textures\Noise51.png,noise,ten file,trung,noise/noise_024.png,Noise51 1.png
+rpg,_Game\Resources_moved\Textures\Noise51_rounded.png,noise,ten file,trung,noise/noise_025.png,Noise51_rounded.png
+rpg,_Game\Resources_moved\Textures\Noise69.png,noise,ten file,chep,noise/noise_026.png,Noise69.png
+rpg,_Game\Resources_moved\Textures\noise_1.png,noise,ten file,chep,noise/noise_032.png,noise_1.png
+rpg,_Game\Resources_moved\Textures\noise_2.png,noise,ten file,chep,noise/noise_033.png,noise_2.png
+rpg,_Game\Resources_moved\Textures\noise_3.png,noise,ten file,chep,noise/noise_034.png,noise_3.png
+rpg,_Game\Resources_moved\Textures\noise_5.png,noise,ten file,chep,noise/noise_035.png,noise_5.png
+rpg,_Game\Resources_moved\Textures\noise_6.png,noise,ten file,chep,noise/noise_036.png,noise_6.png
+rpg,_Game\Resources_moved\Textures\noise_7.png,noise,ten file,chep,noise/noise_037.png,noise_7.png
+rpg,_Game\Resources_moved\Textures\noise_71.png,noise,ten file,chep,noise/noise_038.png,noise_71.png
+rpg,_Game\Resources_moved\Textures\Noise_RP.png,noise,ten file,trung,noise/noise_019.png,Noise.png
+rpg,_Game\Resources_moved\Textures\Normals 1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\North0.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\pointer.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\punch 1.png,trail,xem anh,chep,trail/trail_016.png,punch 1.png
+rpg,_Game\Resources_moved\Textures\Rectangle 1.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Rectangle 2.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Ring.png,trail,xem anh,chep,trail/trail_017.png,Ring.png
+rpg,_Game\Resources_moved\Textures\RingPack.tga,wave,ten file,chep,wave/wave_017.tga,RingPack.tga
+rpg,_Game\Resources_moved\Textures\ring_shockwave.png,wave,ten file,chep,wave/wave_016.png,ring_shockwave.png
+rpg,_Game\Resources_moved\Textures\rocks.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\ShardLightning.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_020.png,ShardLightning.png
+rpg,_Game\Resources_moved\Textures\ShurikenTrail.png,trail,ten file,chep,trail/trail_018.png,ShurikenTrail.png
+rpg,_Game\Resources_moved\Textures\Slash1 1.png,Slash,ten file,chep,Slash/Slash_005.png,Slash1 1.png
+rpg,_Game\Resources_moved\Textures\Slash1.png,Slash,ten file,chep,Slash/Slash_006.png,Slash1.png
+rpg,_Game\Resources_moved\Textures\Slash1.psd,Slash,ten file,chep,Slash/Slash_007.psd,Slash1.psd
+rpg,_Game\Resources_moved\Textures\SlashLine.png,Slash,ten file,chep,Slash/Slash_013.png,SlashLine.png
+rpg,_Game\Resources_moved\Textures\Slash_Heavy.psd,Slash,ten file,chep,Slash/Slash_008.psd,Slash_Heavy.psd
+rpg,_Game\Resources_moved\Textures\Slash_Heavy_glow.psd,Slash,ten file,chep,Slash/Slash_009.psd,Slash_Heavy_glow.psd
+rpg,_Game\Resources_moved\Textures\sleep_z.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\sleep_z_outlined.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\slime.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Smoke.png,smoke,ten file,chep,smoke/smoke_034.png,Smoke_2.png
+rpg,_Game\Resources_moved\Textures\Smoke3.png,smoke,ten file,chep,smoke/smoke_022.png,Smoke3_2.png
+rpg,_Game\Resources_moved\Textures\SmokeMask.png,smoke,ten file,chep,smoke/smoke_036.png,SmokeMask.png
+rpg,_Game\Resources_moved\Textures\SmokeMeow.png,smoke,ten file,chep,smoke/smoke_037.png,SmokeMeow.png
+rpg,_Game\Resources_moved\Textures\Snow01.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Snow02.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Snow03.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\softCircle.png,glow,ten file,chep,glow/glow_060.png,softCircle.png
+rpg,_Game\Resources_moved\Textures\Spark_White.png,glow,ten file,chep,glow/glow_061.png,Spark_White.png
+rpg,_Game\Resources_moved\Textures\Spawn.tga,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\spikes01.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\splat02_flat_3x3.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\SPR_Apocalypse_Greeble_BarEnd05.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\SS2.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\StaticTrail.png,trail,ten file,chep,trail/trail_019.png,StaticTrail.png
+rpg,_Game\Resources_moved\Textures\Stones01.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Sunset_Cloudy.png,,xem anh: khong hop nhom,chua_xep,,
+rpg,_Game\Resources_moved\Textures\SwordBeamDark.png,Slash,ten file,chep,Slash/Slash_017.png,SwordBeamDark.png
+rpg,_Game\Resources_moved\Textures\symbol.png,decals,ten file,chep,decals/decals_035.png,symbol.png
+rpg,_Game\Resources_moved\Textures\symbol2 (2).png,decals,ten file,chep,decals/decals_036.png,symbol2 (2).png
+rpg,_Game\Resources_moved\Textures\Tex_fx_elements_set_01.tga,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Tex_fx_splash_set.tga,impact,xem anh,chep,impact/impact_071.tga,Tex_fx_splash_set.tga
+rpg,_Game\Resources_moved\Textures\trail.png,trail,ten file,chep,trail/trail_023.png,trail.png
+rpg,_Game\Resources_moved\Textures\Trail3 (2).png,trail,ten file,chep,trail/trail_026.png,Trail3 (2).png
+rpg,_Game\Resources_moved\Textures\Trails_1_16_v3.png,trail,ten file,chep,trail/trail_030.png,Trails_1_16_v3.png
+rpg,_Game\Resources_moved\Textures\Trails_output.png,trail,ten file,chep,trail/trail_031.png,Trails_output.png
+rpg,_Game\Resources_moved\Textures\trail_2.png,trail,ten file,chep,trail/trail_029.png,trail_2.png
+rpg,_Game\Resources_moved\Textures\transparency.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\triangle_curve.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\triangle_indicator.png,decals,ten file,chep,decals/decals_054.png,triangle_indicator.png
+rpg,_Game\Resources_moved\Textures\triangle_indicator_border.png,decals,ten file,chep,decals/decals_055.png,triangle_indicator_border.png
+rpg,_Game\Resources_moved\Textures\Tx_Ember_01.png,impact,xem anh,chep,impact/impact_076.png,Tx_Ember_01.png
+rpg,_Game\Resources_moved\Textures\Tx_Ember_02.png,impact,xem anh,chep,impact/impact_077.png,Tx_Ember_02.png
+rpg,_Game\Resources_moved\Textures\Tx_Fire_ground_01.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Tx_Impact_radial_01.png,wave,xem anh,trung,wave/wave_030.png,Tx_Impact_radial_01.png
+rpg,_Game\Resources_moved\Textures\T_Char_Main_T1.tga,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\t_fx_cellular_inv.png,noise,ten file,chep,noise/noise_040.png,t_fx_cellular_inv.png
+rpg,_Game\Resources_moved\Textures\t_fx_distorsion.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_FX_sprite_fire_dungeon_BC.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_ky_aura.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_ky_deco_doom.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_ky_noise5.png,noise,ten file,chep,noise/noise_042.png,T_ky_noise5.png
+rpg,_Game\Resources_moved\Textures\T_SandFx.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\t_vfx_waterfallTexture_DF.png,water,ten file,chep,water/water_017.png,t_vfx_waterfallTexture_DF.png
+rpg,_Game\Resources_moved\Textures\t_vfx_waterTexture_DF.png,water,ten file,chep,water/water_018.png,t_vfx_waterTexture_DF.png
+rpg,_Game\Resources_moved\Textures\T_wool_ao.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_wool_base.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_Wool_N_Old.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\T_wool_rougness.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\UnitFrame_HP_Fill_Grayscale.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\UnitFrame_Party_MP_Fill_Blue.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\VerticalLightning.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_032.png,VerticalLightning.png
+rpg,_Game\Resources_moved\Textures\vuong_glow.png,glow,ten file,chep,glow/glow_099.png,vuong_glow.png
+rpg,_Game\Resources_moved\Textures\Wave01.png,trail,xem anh,chep,trail/trail_045.png,Wave01.png
+rpg,_Game\Resources_moved\Textures\wave02.png,wave,ten file,chep,wave/wave_065.png,wave02.png
+rpg,_Game\Resources_moved\Textures\wave2.png,wave,ten file,trung,wave/wave_066.png,wave2.png
+rpg,_Game\Resources_moved\Textures\wave_cir.png,wave,ten file,chep,wave/wave_067.png,wave_cir.png
+rpg,_Game\Resources_moved\Textures\web_tex (2).png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\white.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\wind.png,wave,ten file,trung,wave/wave_069.png,wind.png
+rpg,_Game\Resources_moved\Textures\Wind01.png,wave,ten file,chep,wave/wave_070.png,Wind01.png
+rpg,_Game\Resources_moved\Textures\WindAlpha_02.tif,wave,ten file,chep,wave/wave_071.tif,WindAlpha_02.tif
+rpg,_Game\Resources_moved\Textures\wind_tex (1).png,noise,xem anh,chep,noise/noise_098.png,wind_tex (1).png
+rpg,_Game\Resources_moved\Textures\XP hero.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\x_break.png,decals,ten file,chep,decals/decals_063.png,x_break.png
+rpg,_Game\Resources_moved\Textures\X_impact (3).png,impact,ten file,chep,impact/impact_094.png,X_impact (3).png
+rpg,_Game\Resources_moved\Textures\Guardian\Arthur_Boom_Texture.png,wave,xem anh,chep,wave/wave_001.png,Arthur_Boom_Texture.png
+rpg,_Game\Resources_moved\Textures\Guardian\Arthur_Ulti_BlowOut.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Guardian\Artillery Heavy Mortar_Smoke_Texture.png,smoke,ten file,trung,smoke/smoke_001.png,Artillery Heavy Mortar_Smoke_Texture.png
+rpg,_Game\Resources_moved\Textures\Guardian\Circle_Glow.png,wave,xem anh,chep,wave/wave_009.png,Circle_Glow.png
+rpg,_Game\Resources_moved\Textures\Guardian\DrTesla_LightningShield.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_003.png,DrTesla_LightningShield.png
+rpg,_Game\Resources_moved\Textures\Guardian\DrTesla_TeslaCore_Lightning_idle_tts.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_004.png,DrTesla_TeslaCore_Lightning_idle_tts.png
+rpg,_Game\Resources_moved\Textures\Guardian\Glow_Dot_02.png,glow,ten file,chep,glow/glow_041.png,Glow_Dot_02.png
+rpg,_Game\Resources_moved\Textures\Guardian\Glow_Standard.png,glow,ten file,trung,glow/glow_044.png,Glow_Standard.png
+rpg,_Game\Resources_moved\Textures\Guardian\Griffin_Building_Lv2_Shadow_D.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Guardian\Griffin_Lightning.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_005.png,Griffin_Lightning.png
+rpg,_Game\Resources_moved\Textures\Guardian\GroundCrack_SkeletonKing.png,decals,ten file,chep,decals/decals_024.png,GroundCrack_SkeletonKing.png
+rpg,_Game\Resources_moved\Textures\Guardian\GroundCrack_SkeletonKing_Bricks.png,decals,ten file,chep,decals/decals_025.png,GroundCrack_SkeletonKing_Bricks.png
+rpg,_Game\Resources_moved\Textures\Guardian\LightningChain_tts.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_017.png,LightningChain_tts.png
+rpg,_Game\Resources_moved\Textures\Guardian\Lightning_Tesla_Field.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_014.png,Lightning_Tesla_Field.png
+rpg,_Game\Resources_moved\Textures\Guardian\Light_01.png,impact,xem anh,trung,impact/impact_038.png,Light_01.png
+rpg,_Game\Resources_moved\Textures\Guardian\Noise_Cloud02.png,noise,xem anh,chep,noise/noise_039.png,Noise_Cloud02.png
+rpg,_Game\Resources_moved\Textures\Guardian\VFX_Zypher_Skill1_Impact.png,wave,xem anh,trung,wave/wave_055.png,VFX_Zypher_Skill1_Impact.png
+rpg,_Game\Resources_moved\Textures\Paladin\baodian2.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Paladin\Circle.png,glow,ten file,chep,glow/glow_009.png,Circle_4.png
+rpg,_Game\Resources_moved\Textures\Paladin\Clamp.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Paladin\eeeeeqqq.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Paladin\mask.png,,,chua_xep,,
+rpg,_Game\Resources_moved\Textures\Paladin\Ring_150_c.png,wave,ten file,chep,wave/wave_015.png,Ring_150_c.png
+rpg,_Game\Resources_moved\Textures\Paladin\slash_texture (1).png,Slash,ten file,chep,Slash/Slash_012.png,slash_texture (1).png
+prj,shader_water\Foam 4.png,noise,xem anh,trung,noise/noise_008.png,Foam 4.png
+prj,shader_water\Normals 1.png,water,thu muc,chep,water/water_009.png,Normals 1.png
+prj,shader_water\t_vfx_waterTexture_DF.png,water,thu muc,trung,water/water_018.png,t_vfx_waterTexture_DF.png
+prj,StrongExplosion_v1\Textures\T_CenterFlash.png,smoke,xem anh,chep,smoke/smoke_038.png,T_CenterFlash.png
+prj,StrongExplosion_v1\Textures\T_CrackBranch.png,decals,ten file,chep,decals/decals_037.png,T_CrackBranch.png
+prj,StrongExplosion_v1\Textures\T_ImpactBody_2Variants.png,impact,ten file,chep,impact/impact_069.png,T_ImpactBody_2Variants.png
+prj,StrongExplosion_v1\Textures\T_ImpactTip_2Variants.png,impact,ten file,chep,impact/impact_070.png,T_ImpactTip_2Variants.png
+prj,StrongExplosion_v1\Textures\T_SmokePuff.png,smoke,ten file,chep,smoke/smoke_044.png,T_SmokePuff.png
+prj,VFX\fx_t_smoke_02.png,smoke,ten file,trung,smoke/smoke_014.png,fx_t_smoke_02 1.png
+prj,VFX\CodeShockwaveGround\Textures\T_CFX_Shockwave_Ground_4x4.png,wave,ten file,chep,wave/wave_020.png,T_CFX_Shockwave_Ground_4x4.png
+prj,VFX\CodeSparkBurst\Textures\T_CFX_Spark_Burst_4x4.png,impact,ten file,chep,impact/impact_054.png,T_CFX_Spark_Burst_4x4.png
+prj,VFX\Explosion\Textures\T_Dot_Scorch.png,glow,xem anh,chep,glow/glow_068.png,T_Dot_Scorch.png
+prj,VFX\Explosion\Textures\T_Ember.png,glow,ten file,chep,glow/glow_069.png,T_Ember.png
+prj,VFX\Explosion\Textures\T_Explosion_CoreFire_4x4.png,impact,ten file,chep,impact/impact_056.png,T_Explosion_CoreFire_4x4.png
+prj,VFX\Explosion\Textures\T_Explosion_FireTongue_4x2.png,impact,ten file,chep,impact/impact_057.png,T_Explosion_FireTongue_4x2.png
+prj,VFX\Explosion\Textures\T_Explosion_Slash_4x2.png,impact,xem anh,chep,impact/impact_058.png,T_Explosion_Slash_4x2.png
+prj,VFX\Explosion\Textures\T_Explosion_Smoke_4x2.png,smoke,ten file,chep,smoke/smoke_041.png,T_Explosion_Smoke_4x2.png
+prj,VFX\Explosion\Textures\T_Glow_Soft.png,glow,ten file,chep,glow/glow_070.png,T_Glow_Soft.png
+prj,VFX\Explosion\Textures\T_Ring_Shock.png,wave,ten file,chep,wave/wave_022.png,T_Ring_Shock.png
+prj,VFX\Explosion\Textures\T_SmokeShape_OneShot_4x2.png,smoke,ten file,chep,smoke/smoke_046.png,T_SmokeShape_OneShot_4x2.png
+prj,VFX\Explosion\Textures\T_Spark_Comet.png,glow,ten file,chep,glow/glow_075.png,T_Spark_Comet.png
+prj,VFX\FireballLoop\Textures\T_Ember_Chunk.png,glow,ten file,trung,glow/glow_069.png,T_Ember.png
+prj,VFX\FireballLoop\Textures\T_Fire_Blob_2x2.png,,,chua_xep,,
+prj,VFX\FireballLoop\Textures\T_Fire_Flipbook_4x4.png,,,chua_xep,,
+prj,VFX\FireballLoop\Textures\T_Fire_Tongue_2x2.png,,,chua_xep,,
+prj,VFX\FireballLoop\Textures\T_Glow_Soft.png,glow,ten file,trung,glow/glow_070.png,T_Glow_Soft.png
+prj,VFX\FireballProjectile\Textures\T_Ember_Chunk_2x2.png,impact,xem anh,trung,impact/impact_076.png,Tx_Ember_01.png
+prj,VFX\FireballProjectile\Textures\T_Fire_Blob_3x3.png,,,chua_xep,,
+prj,VFX\FireballProjectile\Textures\T_Fire_Tongue_2x4.png,,,chua_xep,,
+prj,VFX\FireballProjectile\Textures\T_Glow_FatDot.png,glow,ten file,trung,glow/glow_019.png,Flare_FatDot.png
+prj,VFX\FireStylized\Textures\T_FireStylized3D_Loop_4x2.png,,,chua_xep,,
+prj,VFX\FireStylized\Textures\T_FireStylized3D_Loop_4x4.png,,,chua_xep,,
+prj,VFX\FireStylized\Textures\T_FireStylized_Loop_4x4.png,,,chua_xep,,
+prj,VFX\FireStylized\Textures\T_Noise_Fire.png,noise,ten file,chep,noise/noise_051.png,T_Noise_Fire.png
+prj,VFX\GroundBlast\Textures\T_GroundBlast_FireGlow.png,,,chua_xep,,
+prj,VFX\GroundBlast\Textures\T_GroundBlast_Glow.png,glow,ten file,trung,glow/glow_070.png,T_Glow_Soft.png
+prj,VFX\GroundBlast\Textures\T_GroundBlast_Ring.png,wave,ten file,chep,wave/wave_021.png,T_GroundBlast_Ring.png
+prj,VFX\GroundBlast\Textures\T_GroundBlast_SmokeErode.png,smoke,ten file,chep,smoke/smoke_042.png,T_GroundBlast_SmokeErode.png
+prj,VFX\GroundBlast\Textures\T_GroundBlast_SmokeErode_TEMP.png,smoke,ten file,chep,smoke/smoke_043.png,T_GroundBlast_SmokeErode_TEMP.png
+prj,VFX\GroundBlast\Textures\T_GroundBlast_SmokeRamp.png,,xem anh: khong hop nhom,chua_xep,,
+prj,VFX\GroundBlast\Textures\T_GroundBlast_Spark.png,glow,ten file,chep,glow/glow_072.png,T_GroundBlast_Spark.png
+prj,VFX\HealCircle\Textures\T_HealCircle_Beam.png,trail,ten file,chep,trail/trail_020.png,T_HealCircle_Beam.png
+prj,VFX\HealCircle\Textures\T_HealCircle_Glow.png,glow,ten file,trung,glow/glow_070.png,T_Glow_Soft.png
+prj,VFX\HealCircle\Textures\T_HealCircle_Mote.png,glow,ten file,chep,glow/glow_073.png,T_HealCircle_Mote.png
+prj,VFX\HealCircle\Textures\T_HealCircle_RuneInner.png,decals,xem anh,chep,decals/decals_038.png,T_HealCircle_RuneInner.png
+prj,VFX\HealCircle\Textures\T_HealCircle_RuneOuter.png,decals,xem anh,chep,decals/decals_039.png,T_HealCircle_RuneOuter.png
+prj,VFX\HealCircle\Textures\T_HealCircle_Sparkle.png,glow,ten file,chep,glow/glow_074.png,T_HealCircle_Sparkle.png
+prj,VFX\IceSpike\Textures\T_IceSpike_Cracks.png,decals,ten file,trung,decals/decals_026.png,GroundCracks_Radial.png
+prj,VFX\IceSpike\Textures\T_IceSpike_Glow.png,glow,ten file,trung,glow/glow_070.png,T_Glow_Soft.png
+prj,VFX\IceSpike\Textures\T_IceSpike_MatCap.png,,,chua_xep,,
+prj,VFX\IceSpike\Textures\T_IceSpike_Palette.tga,,,chua_xep,,
+prj,VFX\IceSpike\Textures\T_IceSpike_PaletteCrystal.tga,,,chua_xep,,
+prj,VFX\IceSpike\Textures\T_IceSpike_RockPalette.png,,,chua_xep,,
+prj,VFX\Lightning_Impact\Textures\T_CFX_Lightning_Impact_4x4.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_021.png,T_CFX_Lightning_Impact_4x4.png
+prj,VFX\Lightning_Strike\Textures\T_CFX_Lightning_Strike_4x4.png,Lightnings_Electrics,ten file,chep,Lightnings_Electrics/Lightnings_Electrics_022.png,T_CFX_Lightning_Strike_4x4.png
+prj,VFX\Mixes\_Palettes\CFX_Scorch_dc36d91c\T_CFX_Scorch_Body_4x4.png,impact,xem anh,chep,impact/impact_050.png,T_CFX_Scorch_Body_4x4.png
+prj,VFX\Mixes\_Palettes\CFX_Scorch_dc36d91c\T_CFX_Scorch_Light_4x4.png,impact,xem anh,chep,impact/impact_052.png,T_CFX_Scorch_Light_4x4.png
+prj,VFX\Slash360\Textures\T_Slash360_Body_Earth.png,Slash,ten file,trung,Slash/Slash_022.png,T_VFX_Blunt_Slash.png
+prj,VFX\Slash360\Textures\T_Slash360_Crescent_Earth.png,Slash,ten file,chep,Slash/Slash_018.png,T_Slash360_Crescent_Earth.png
+prj,VFX\Slash360\Textures\T_Slash360_Detail_Earth.png,noise,xem anh,chep,noise/noise_057.png,T_Slash360_Detail_Earth.png
+prj,VFX\Slash360\Textures\T_Slash360_Detail_Trail.png,noise,xem anh,chep,noise/noise_058.png,T_Slash360_Detail_Trail.png
+prj,VFX\Slash360\Textures\T_Slash360_Edge.png,Slash,ten file,trung,Slash/Slash_032.png,T_VFX_Slash_S_01.png
+prj,VFX\Slash360\Textures\T_Slash360_EdgeCrescent_Earth.png,Slash,ten file,chep,Slash/Slash_019.png,T_Slash360_EdgeCrescent_Earth.png
+prj,VFX\Slash360\Textures\T_Slash360_Glow.png,Slash,ten file,trung,glow/glow_070.png,T_Glow_Soft.png
+prj,VFX\Slash360\Textures\T_Slash360_Ramp_Earth.png,,xem anh: khong hop nhom,chua_xep,,
+prj,VFX\Slash360\Textures\T_Slash360_White.png,,xem anh: khong hop nhom,chua_xep,,
+prj,VFX\Slash360\Textures\T_VFX_Gradient_01.png,,,chua_xep,,
+prj,VFX\SmokeStylized\Textures\T_Noise_Dissolve_Cells.png,noise,ten file,chep,noise/noise_048.png,T_Noise_Dissolve_Cells.png
+prj,VFX\SmokeStylized\Textures\T_Noise_Dissolve_Chunks.png,noise,ten file,chep,noise/noise_049.png,T_Noise_Dissolve_Chunks.png
+prj,VFX\SmokeStylized\Textures\T_Noise_Dissolve_Streaks.png,noise,ten file,chep,noise/noise_050.png,T_Noise_Dissolve_Streaks.png
+prj,VFX\SmokeStylized\Textures\T_Noise_Smoke.png,smoke,ten file,trung,noise/noise_051.png,T_Noise_Fire.png
+prj,VFX\SmokeStylized\Textures\T_SmokeStylized3D_Puff_4x4.png,smoke,ten file,chep,smoke/smoke_047.png,T_SmokeStylized3D_Puff_4x4.png
+prj,VFX\StylizedSlash\T_Slash_Body.png,Slash,ten file,chep,Slash/Slash_020.png,T_Slash_Body.png
+prj,VFX\StylizedSlash\T_Slash_Edge.png,Slash,ten file,chep,Slash/Slash_021.png,T_Slash_Edge.png
+prj,VFX\_Components\CodeFX\Textures\T_CFX_BombFire_Body_4x4.png,impact,ten file,chep,impact/impact_046.png,T_CFX_BombFire_Body_4x4.png
+prj,VFX\_Components\CodeFX\Textures\T_CFX_BombFire_Light_4x4.png,impact,ten file,chep,impact/impact_047.png,T_CFX_BombFire_Light_4x4.png
+prj,VFX\_Components\CodeFX\Textures\T_CFX_HitStar_4x4.png,impact,ten file,chep,impact/impact_048.png,T_CFX_HitStar_4x4.png
+prj,VFX\_Components\CodeFX\Textures\T_CFX_PuffBurst_Body_4x4.png,smoke,xem anh,chep,smoke/smoke_039.png,T_CFX_PuffBurst_Body_4x4.png
+prj,VFX\_Components\CodeFX\Textures\T_CFX_PuffBurst_Light_4x4.png,impact,ten file,chep,impact/impact_049.png,T_CFX_PuffBurst_Light_4x4.png
+prj,VFX\_Components\Dust\Textures\T_DST_ToonPuff_4x4.png,smoke,thu muc,chep,smoke/smoke_040.png,T_DST_ToonPuff_4x4.png
+prj,VFX\_Components\Glow\Textures\T_GLW_Soft.png,glow,thu muc,chep,glow/glow_071.png,T_GLW_Soft.png
+prj,VFX\_Components\Impact\Textures\T_IMP_CoreStar4.png,impact,thu muc,chep,impact/impact_059.png,T_IMP_CoreStar4.png
+prj,VFX\_Components\Impact\Textures\T_IMP_GroundBurst.png,impact,thu muc,chep,impact/impact_060.png,T_IMP_GroundBurst.png
+prj,VFX\_Components\Impact\Textures\T_IMP_GroundRing.png,impact,thu muc,chep,impact/impact_061.png,T_IMP_GroundRing.png
+prj,VFX\_Components\Impact\Textures\T_IMP_GroundSplash_2x4.png,impact,thu muc,chep,impact/impact_062.png,T_IMP_GroundSplash_2x4.png
+prj,VFX\_Components\Impact\Textures\T_IMP_HitDirSpike.png,impact,thu muc,chep,impact/impact_064.png,T_IMP_HitDirSpike.png
+prj,VFX\_Components\Impact\Textures\T_IMP_HitDir_2x2.png,impact,thu muc,chep,impact/impact_063.png,T_IMP_HitDir_2x2.png
+prj,VFX\_Components\Impact\Textures\T_IMP_HitStar_2x2.png,impact,thu muc,chep,impact/impact_065.png,T_IMP_HitStar_2x2.png
+prj,VFX\_Components\Impact\Textures\T_IMP_Line.png,impact,thu muc,chep,impact/impact_066.png,T_IMP_Line.png
+prj,VFX\_Components\Impact\Textures\T_IMP_Star7.png,impact,thu muc,chep,impact/impact_067.png,T_IMP_Star7.png
+prj,VFX\_Components\Lightning\Textures\T_LTN_Arcs_2x2.png,Lightnings_Electrics,thu muc,chep,Lightnings_Electrics/Lightnings_Electrics_023.png,T_LTN_Arcs_2x2.png
+prj,VFX\_Components\Lightning\Textures\T_LTN_Bolt.png,Lightnings_Electrics,thu muc,chep,Lightnings_Electrics/Lightnings_Electrics_024.png,T_LTN_Bolt.png
+prj,VFX\_Components\Ring\Textures\T_RNG_ShockThick_4x2.png,wave,thu muc,chep,wave/wave_024.png,T_RNG_ShockThick_4x2.png
+prj,VFX\_Components\Ring\Textures\T_RNG_Shock_4x2.png,wave,thu muc,chep,wave/wave_023.png,T_RNG_Shock_4x2.png
+prj,VFX\_Components\Scorch\Textures\T_CFX_Scorch_Body_4x4.png,impact,xem anh,chep,impact/impact_051.png,T_CFX_Scorch_Body_4x4_2.png
+prj,VFX\_Components\Scorch\Textures\T_CFX_Scorch_Light_4x4.png,impact,xem anh,chep,impact/impact_053.png,T_CFX_Scorch_Light_4x4_2.png
+prj,VFX\_Components\Sparks\Textures\T_SPK_Ember.png,glow,thu muc,chep,glow/glow_076.png,T_SPK_Ember.png
+prj,VFX\_Components\Sparks\Textures\T_SPK_Streak.png,glow,thu muc,chep,glow/glow_077.png,T_SPK_Streak.png
+prj,VFX\_Components\Sparks\Textures\T_SPK_Toon.png,glow,thu muc,chep,glow/glow_078.png,T_SPK_Toon.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\cfxr electric arcs fade x4.png,Lightnings_Electrics,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_002.png,cfxr electric arcs fade x4.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\Gradient_lightning.png,,xem anh: khong hop nhom,chua_xep,,
+prj,VFX\_Imported\RpgGame\Lightning\Textures\Guardian_Lightning3.png,Lightnings_Electrics,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_007.png,Guardian_Lightning3.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\HandPaintedLightning2.png,Lightnings_Electrics,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_008.png,HandPaintedLightning2.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\Lightning_light.png,glow,xem anh,trung,glow/glow_050.png,Lightning_light.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\lightning_texture_sheet1.png,Lightnings_Electrics,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_016.png,lightning_texture_sheet1.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\Tx_electricity_08_rot.png,Lightnings_Electrics,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_029.png,Tx_electricity_08_rot.png
+prj,VFX\_Imported\RpgGame\Lightning\Textures\T_VFX_Ground_Crack.png,Lightnings_Electrics,thu muc,trung,decals/decals_044.png,T_VFX_Ground_Crack.png
+prj,VFX\_Imported\RpgThunder\RPG_VFX\Duong\Texture\Mask\TX_VFX_Mask16.png,,,chua_xep,,
+prj,VFX\_Imported\RpgThunder\RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise24.png,noise,thu muc,trung,noise/noise_091.png,TX_VFX_Noise24.png
+prj,VFX\_Imported\RpgThunder\RPG_VFX\Texture\Tx_White.png,,,chua_xep,,
+prj,VFX\_Imported\RpgThunder\RPG_VFX\Texture\wave 1.png,wave,ten file,trung,wave/wave_061.png,wave 1.png
+prj,VFX\_Imported\RpgThunder\_Game\Resources_moved\Textures\flashLarge.psd,impact,ten file,trung,impact/impact_018.psd,flashLarge.psd
+prj,VFX\_Shared\Textures\Noise\T_Noise_Cells.png,noise,thu muc,chep,noise/noise_047.png,T_Noise_Cells.png
+prj,VFX\_Shared\Textures\Noise\T_Noise_Smooth.png,noise,thu muc,chep,noise/noise_052.png,T_Noise_Smooth.png
+prj,VFX\_Shared\Textures\Noise\T_Noise_Streaks.png,noise,thu muc,chep,noise/noise_053.png,T_Noise_Streaks.png
+prj,VFX\_Shared\Textures\RpgLib\Gradient\blur_bar.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\BubbleRainbow01.png,water,ten file,trung,water/water_003.png,BubbleRainbow01.png
+prj,VFX\_Shared\Textures\RpgLib\Gradient\BubbleWhite01.png,water,ten file,trung,water/water_004.png,BubbleWhite01.png
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GlowADD_01_Gradient.png,glow,ten file,trung,glow/glow_029.png,FX_TX_GlowADD_01_Gradient.png
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_Gradient.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientCosmic_01.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientFire_01.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientFire_02.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientFire_03.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientNecronomic_01.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientRamp_01.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientRamp_04.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientSecondFire_02.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientVertical_01.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GradientVertical_02.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\gradient map.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\GradientCenter01.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\gradient_vertical_spiky.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\Long.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\Spark_White.png,glow,ten file,trung,glow/glow_061.png,Spark_White.png
+prj,VFX\_Shared\Textures\RpgLib\Gradient\transparency.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp01.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp02.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp03.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp04.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp05.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp06.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\TX_VFX_Ramp07.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\T_VFX_Gradient_01.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\T_VFX_Gradient_01_Invert.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\T_VFX_Ramp01.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\T_VFX_Ramp02.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Gradient\—Pngtree—white smoke transparent clouds_5433156.png,smoke,ten file,chep,smoke/smoke_063.png,—Pngtree—white smoke transparent clouds_5433156.png
+prj,VFX\_Shared\Textures\RpgLib\Mask\GrainySand.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\IceTexture.jpg,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\IceTexture2_1.jpg,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\IceTexture2_7_max_blue.jpg,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\IceTexture2_9.jpg,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_101.psd,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_108.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_11.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_115.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_12.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_13.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_2.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_3.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_4.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_5.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_8.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_9_1.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\mask_sand.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask01.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask04.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask05.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask07.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask08.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask10.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask12.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask13.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\TX_VFX_Mask15.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Mask\T_SandFx.png,,,chua_xep,,
+prj,VFX\_Shared\Textures\RpgLib\Noise\Caustic.jpg,water,xem anh,trung,water/water_005.jpg,Caustic.jpg
+prj,VFX\_Shared\Textures\RpgLib\Noise\Diss2.png,noise,thu muc,chep,noise/noise_005.png,Diss2.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\FlameNoise.psd,noise,thu muc,trung,noise/noise_007.psd,FlameNoise.psd
+prj,VFX\_Shared\Textures\RpgLib\Noise\flame_noise.png,noise,thu muc,trung,noise/noise_006.png,flame_noise.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_CausticNoise_01.psd,noise,thu muc,trung,water/water_008.psd,FX_TX_CausticNoise_01.psd
+prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_Circle_01_Dissolve.png,glow,xem anh,trung,glow/glow_026.png,FX_TX_Circle_01_Dissolve.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_DenseNoise_01.png,noise,thu muc,trung,noise/noise_009.png,FX_TX_DenseNoise_01.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_FireNoise_01.png,noise,thu muc,trung,noise/noise_010.png,FX_TX_FireNoise_01.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_NoiseTexture_01.png,noise,thu muc,trung,noise/noise_014.png,FX_TX_NoiseTexture_01.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\lightning_noise.png,noise,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_012.png,lightning_noise.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\lightning_noise_tex.png,noise,thu muc,trung,Lightnings_Electrics/Lightnings_Electrics_013.png,lightning_noise_tex.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\light_noise.png,Lightnings_Electrics,xem anh,trung,Lightnings_Electrics/Lightnings_Electrics_009.png,light_noise.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\Manifold_01-512x512 1.png,noise,thu muc,chep,noise/noise_017.png,Manifold_01-512x512 1.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\Noise.png,noise,thu muc,trung,noise/noise_019.png,Noise.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\Noise28.png,noise,thu muc,trung,noise/noise_021.png,Noise28.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_1.png,noise,thu muc,trung,noise/noise_032.png,noise_1.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_2.png,noise,thu muc,trung,noise/noise_033.png,noise_2.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_3.png,noise,thu muc,trung,noise/noise_034.png,noise_3.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_5.png,noise,thu muc,trung,noise/noise_035.png,noise_5.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_6.png,noise,thu muc,trung,noise/noise_036.png,noise_6.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_7.png,noise,thu muc,trung,noise/noise_037.png,noise_7.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\noise_71.png,noise,thu muc,trung,noise/noise_038.png,noise_71.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise02.png,noise,thu muc,trung,noise/noise_070.png,TX_VFX_Noise02.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise03.png,noise,thu muc,trung,noise/noise_071.png,TX_VFX_Noise03.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise04.png,noise,thu muc,trung,noise/noise_072.png,TX_VFX_Noise04.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise06.png,noise,thu muc,trung,noise/noise_074.png,TX_VFX_Noise06.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise08.png,noise,thu muc,trung,noise/noise_076.png,TX_VFX_Noise08.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise10.png,noise,thu muc,trung,noise/noise_078.png,TX_VFX_Noise10.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise11.png,noise,thu muc,trung,noise/noise_079.png,TX_VFX_Noise11.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise12.png,noise,thu muc,trung,noise/noise_080.png,TX_VFX_Noise12.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise13.png,noise,thu muc,trung,noise/noise_081.png,TX_VFX_Noise13.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise15.png,water,xem anh,trung,water/water_020.png,TX_VFX_Noise15.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise16.png,noise,thu muc,trung,noise/noise_083.png,TX_VFX_Noise16.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise17.png,noise,thu muc,trung,noise/noise_084.png,TX_VFX_Noise17.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise18.png,noise,thu muc,trung,noise/noise_085.png,TX_VFX_Noise18.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise19.png,noise,thu muc,trung,noise/noise_086.png,TX_VFX_Noise19.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise26.png,noise,thu muc,trung,noise/noise_093.png,TX_VFX_Noise26.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise28.png,noise,thu muc,trung,noise/noise_095.png,TX_VFX_Noise28.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise_Gradient.psd,noise,thu muc,trung,noise/noise_096.psd,TX_VFX_Noise_Gradient.psd
+prj,VFX\_Shared\Textures\RpgLib\Noise\t_fx_cellular_inv.png,noise,thu muc,trung,noise/noise_040.png,t_fx_cellular_inv.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\t_fx_distorsion.png,noise,thu muc,chep,noise/noise_041.png,t_fx_distorsion.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\T_Lu_Noise_12.png,noise,thu muc,trung,noise/noise_044.png,T_Lu_Noise_12.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\T_Lu_Noise_29.png,noise,thu muc,trung,noise/noise_045.png,T_Lu_Noise_29.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\T_Lu_Noise_35.png,noise,thu muc,trung,noise/noise_046.png,T_Lu_Noise_35.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\T_Random_39.png,noise,thu muc,trung,noise/noise_054.png,T_Random_39.png
+prj,VFX\_Shared\Textures\RpgLib\Noise\T_Random_45.png,noise,thu muc,trung,noise/noise_055.png,T_Random_45.png

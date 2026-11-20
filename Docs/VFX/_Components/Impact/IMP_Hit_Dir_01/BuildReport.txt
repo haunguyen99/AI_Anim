@@ -1,0 +1,9 @@
+Component: IMP_Hit_Dir_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 08:29:17
+Preview times (s): 0.01, 0.03, 0.05, 0.08, 0.11, 0.14, 0.17, 0.2
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+
+Layers:
+  CMP_IMP_Hit_Dir_01/Spike  max=3  life=0.2  mode=Billboard/View  mat=M_IMP_HitDir_Add (Mobile/Particles/Additive)
+
+Errors: none

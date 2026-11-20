@@ -1,0 +1,7 @@
+Built: 2026-11-03 16:33 (vfx-code, code render — chưa dựng trong Unity)
+Source: D:/Game_prj/VFX_LIb/Docs/VFX/Lightning_Strike/code/lightning_impact.py
+Preview times (s): 0.000, 0.025, 0.050, 0.075, 0.100, 0.125, 0.150, 0.175, 0.200, 0.225, 0.250, 0.275, 0.300, 0.325, 0.350, 0.375
+Blend: add · duration 0.400s · loop False · 16 frame 4x4 · 256x256/ô
+Space: ground · ground · camera 3/4 40 · 4.0 m · neo world point (ground) · nền dark
+Sheets: T_CFX_Lightning_Impact_4x4.png
+Check: sạch

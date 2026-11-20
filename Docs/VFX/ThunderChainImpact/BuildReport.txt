@@ -1,0 +1,6 @@
+Unity 2022.3.62f3 Built-in
+Shader errors: 0
+Residual at 1.8s: False
+Targets: 3; links: 3; endpoint-following scene controller.
+Primary prefab: 5 native systems; receiver prefab: 4.
+Preview: Unity sampled at 30 fps. Mobile not profiled.

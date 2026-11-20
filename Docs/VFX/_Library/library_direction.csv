@@ -1,0 +1,541 @@
+﻿file,direction,sheet,note
+Slash/Blue Energy Effects Collection.png,dir,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_001.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_002.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_003.psd,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_004.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_005.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_006.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_007.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_008.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_009.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_010.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_011.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_012.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_013.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_014.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_015.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_016.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_017.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_018.png,na,0,chạy UV / noise / mask
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_019.png,na,0,chạy UV / noise / mask
+Slash/Onhit/Slash_Onhit_001.png,dir,0,
+Slash/Onhit/Slash_Onhit_002.png,dir,0,
+Slash/Onhit/Slash_Onhit_003.png,dir,0,
+Slash/Onhit/Slash_Onhit_004.png,dir,0,
+Slash/Onhit/Slash_Onhit_005.png,dir,0,
+Slash/Onhit/Slash_Onhit_006.png,dir,0,
+Slash/Onhit/Slash_Onhit_007.png,dir,0,
+Slash/Onhit/Slash_Onhit_008.png,dir,0,
+Slash/Onhit/Slash_Onhit_009.psd,dir,0,
+Slash/Onhit/Slash_Onhit_010.psd,dir,0,
+Slash/Onhit/Slash_Onhit_011.png,dir,0,
+Slash/Onhit/Slash_Onhit_012.png,dir,0,
+Slash/Onhit/Slash_Onhit_013.png,dir,0,
+Slash/Onhit/Slash_Onhit_014.png,dir,0,
+Slash/Onhit/Slash_Onhit_015.png,dir,0,
+Slash/Onhit/Slash_Onhit_016.png,dir,0,
+beam/beam_001.png,dir,0,
+glow/flare/glow_flare_001.png,omni,0,
+glow/flare/glow_flare_002.png,omni,0,
+glow/flare/glow_flare_003.png,omni,0,
+glow/flare/glow_flare_004.png,omni,0,
+glow/flare/glow_flare_005.png,omni,0,
+glow/flare/glow_flare_006.png,omni,0,
+glow/flare/glow_flare_007.png,omni,0,
+glow/flare/glow_flare_008.png,omni,0,
+glow/flare/glow_flare_009.png,omni,0,
+glow/flare/glow_flare_010.png,omni,0,
+glow/halo/glow_halo_001.png,omni,0,
+glow/halo/glow_halo_002.png,omni,0,
+glow/halo/glow_halo_003.png,omni,0,
+glow/soft_oval/glow_soft_oval_001.png,omni,0,
+glow/soft_oval/glow_soft_oval_002.png,omni,0,
+glow/soft_round/glow_soft_round_001.png,omni,0,
+glow/soft_round/glow_soft_round_002.png,omni,0,
+glow/soft_round/glow_soft_round_003.png,omni,0,
+glow/soft_round/glow_soft_round_004.png,omni,0,
+glow/soft_round/glow_soft_round_005.png,omni,0,
+glow/soft_round/glow_soft_round_006.png,omni,0,
+glow/soft_round/glow_soft_round_007.png,omni,0,
+glow/soft_round/glow_soft_round_008.png,omni,0,
+glow/soft_round/glow_soft_round_009.png,omni,0,
+glow/soft_round/glow_soft_round_010.png,omni,0,
+glow/soft_round/glow_soft_round_011.png,omni,0,
+glow/soft_round/glow_soft_round_012.png,omni,0,
+glow/soft_round/glow_soft_round_013.png,omni,0,
+glow/soft_round/glow_soft_round_014.png,omni,0,
+glow/soft_round/glow_soft_round_015.png,omni,0,
+glow/soft_round/glow_soft_round_016.png,omni,0,
+glow/soft_round/glow_soft_round_017.png,omni,0,
+glow/soft_round/glow_soft_round_018.png,omni,0,
+glow/soft_round/glow_soft_round_019.png,omni,0,
+glow/soft_round/glow_soft_round_020.png,omni,0,
+glow/soft_round/glow_soft_round_021.png,omni,0,
+glow/soft_round/glow_soft_round_022.png,omni,0,
+glow/soft_round/glow_soft_round_023.png,omni,0,
+glow/soft_round/glow_soft_round_024.png,omni,0,
+glow/soft_round/glow_soft_round_025.png,omni,0,
+glow/soft_round/glow_soft_round_026.png,omni,0,
+glow/soft_round/glow_soft_round_027.tga,omni,0,
+glow/soft_round/glow_soft_round_028.png,omni,0,
+glow/soft_round/glow_soft_round_029.png,omni,0,
+glow/soft_round/glow_soft_round_030.png,omni,0,
+glow/soft_round/glow_soft_round_031.png,omni,0,
+glow/soft_round/glow_soft_round_032.png,omni,0,
+glow/soft_round/glow_soft_round_033.png,omni,0,
+glow/soft_round/glow_soft_round_034.png,omni,0,
+glow/soft_round/glow_soft_round_035.png,omni,0,
+glow/soft_shape/glow_soft_shape_001.png,omni,0,
+glow/soft_shape/glow_soft_shape_002.png,omni,0,
+glow/soft_shape/glow_soft_shape_003.png,omni,0,
+ground/crack_line/ground_crack_line_001.png,dir,0,
+ground/crack_line/ground_crack_line_002.png,dir,0,
+ground/crack_line/ground_crack_line_003.png,dir,0,
+ground/crack_line/ground_crack_line_004.png,dir,0,
+ground/crack_line/ground_crack_line_005.psd,dir,0,
+ground/crack_line/ground_crack_line_006.png,dir,0,
+ground/crack_line/ground_crack_line_007.png,dir,0,
+ground/crack_line/ground_crack_line_008.png,dir,0,
+ground/crack_line/ground_crack_line_009.png,dir,0,
+ground/crack_line/ground_crack_line_010.png,dir,0,
+ground/crack_line/ground_crack_line_011.png,dir,0,
+ground/crack_line/ground_crack_line_012.png,dir,0,
+ground/crack_line/ground_crack_line_013.png,dir,0,
+ground/crack_line/ground_crack_line_014.png,dir,0,
+ground/crack_line/ground_crack_line_015.png,dir,0,
+ground/crack_line/ground_crack_line_016.png,dir,0,
+ground/crack_radial/ground_crack_radial_001.png,omni,0,
+ground/crack_radial/ground_crack_radial_002.png,omni,0,
+ground/crack_radial/ground_crack_radial_003.psd,omni,0,
+ground/crack_radial/ground_crack_radial_004.png,omni,0,
+ground/crack_radial/ground_crack_radial_005.png,omni,0,"lưới nứt dạng ô, gần tile"
+ground/crack_radial/ground_crack_radial_006.png,omni,0,
+ground/crack_radial/ground_crack_radial_007.png,omni,0,
+ground/crack_radial/ground_crack_radial_008.png,omni,0,
+ground/crack_radial/ground_crack_radial_009.png,omni,0,
+ground/crack_radial/ground_crack_radial_010.png,omni,0,
+ground/crack_radial/ground_crack_radial_011.png,omni,0,
+ground/crack_radial/ground_crack_radial_012.png,omni,0,
+ground/crack_radial/ground_crack_radial_013.png,omni,0,
+ground/crack_radial/ground_crack_radial_014.png,omni,0,
+ground/crack_x/ground_crack_x_001.png,omni,0,
+ground/crack_x/ground_crack_x_002.png,omni,0,
+ground/crack_x/ground_crack_x_003.png,omni,0,
+ground/indicator/ground_indicator_001.png,dir,0,
+ground/indicator/ground_indicator_002.png,dir,0,
+ground/indicator/ground_indicator_003.png,dir,0,
+ground/indicator/ground_indicator_004.png,dir,0,
+ground/scorch/ground_scorch_001.png,omni,0,
+ground/scorch/ground_scorch_002.png,dir,0,dải loang có chiều trên-dưới
+ground/scorch/ground_scorch_003.png,omni,0,
+ground/splat/ground_splat_001.psd,omni,0,
+ground/splat/ground_splat_002.png,omni,0,
+ground/splat/ground_splat_003.jpg,omni,0,
+ground/splat/ground_splat_004.png,omni,0,
+ground/splat/ground_splat_005.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_001.psd,omni,0,
+impact/flash_spiky/impact_flash_spiky_002.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_003.jpg,omni,0,
+impact/flash_spiky/impact_flash_spiky_004.png,dir,0,gai dài một phía / hàng gai
+impact/flash_spiky/impact_flash_spiky_005.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_006.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_007.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_008.png,dir,0,gai dài một phía / hàng gai
+impact/flash_spiky/impact_flash_spiky_009.png,dir,0,gai dài một phía / hàng gai
+impact/flash_spiky/impact_flash_spiky_010.png,dir,0,gai dài một phía / hàng gai
+impact/flash_spiky/impact_flash_spiky_011.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_012.png,omni,0,
+impact/flash_spiky/impact_flash_spiky_013.png,dir,0,gai dài một phía / hàng gai
+impact/flash_spiky/impact_flash_spiky_014.png,omni,0,
+impact/flipbook/impact_flipbook_001.psd,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_002.psd,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_003.psd,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_004.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_005.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_006.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_007.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_008.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_009.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_010.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_011.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_012.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_013.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_014.tga,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_015.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_016.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_017.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_018.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_019.png,omni,1,burst toả tròn
+impact/flipbook/impact_flipbook_020.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_021.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/flipbook/impact_flipbook_022.png,dir,1,mảnh / lưỡi / gai có hướng
+impact/radial_ring/impact_radial_ring_001.psd,omni,0,
+impact/radial_ring/impact_radial_ring_002.png,omni,0,
+impact/radial_ring/impact_radial_ring_003.png,omni,0,
+impact/radial_ring/impact_radial_ring_004.png,omni,0,
+impact/radial_ring/impact_radial_ring_005.png,omni,0,
+impact/radial_ring/impact_radial_ring_006.png,omni,0,
+impact/shard/impact_shard_001.png,dir,0,
+impact/shard/impact_shard_002.png,dir,0,
+lightning/arc_sheet/lightning_arc_sheet_001.png,dir,1,
+lightning/arc_sheet/lightning_arc_sheet_002.png,dir,1,
+lightning/arc_sheet/lightning_arc_sheet_003.png,dir,1,
+lightning/arc_sheet/lightning_arc_sheet_004.png,dir,1,
+lightning/arc_sheet/lightning_arc_sheet_005.png,dir,1,
+lightning/arc_sheet/lightning_arc_sheet_006.png,dir,1,
+lightning/arc_sheet/lightning_arc_sheet_007.png,dir,1,
+lightning/arc_single/lightning_arc_single_001.png,dir,0,
+lightning/bolt_sheet/lightning_bolt_sheet_001.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_002.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_003.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_004.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_005.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_006.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_007.png,dir,1,
+lightning/bolt_sheet/lightning_bolt_sheet_008.png,dir,1,
+lightning/psd.psd,dir,0,
+mask/gradient/mask_gradient_001.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_002.psd,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_003.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_004.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_005.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_006.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_007.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_008.png,na,0,chạy UV / noise / mask
+mask/gradient/mask_gradient_009.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_001.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_002.psd,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_003.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_004.jpg,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_005.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_006.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_007.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_008.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_009.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_010.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_011.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_012.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_013.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_014.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_015.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_016.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_017.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_018.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_019.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_020.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_021.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_022.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_023.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_024.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_025.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_026.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_027.png,na,0,chạy UV / noise / mask
+noise/cell/noise_cell_028.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_001.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_002.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_003.jpg,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_004.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_005.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_006.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_007.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_008.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_009.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_010.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_011.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_012.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_013.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_014.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_015.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_016.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_017.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_018.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_019.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_020.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_021.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_022.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_023.png,na,0,chạy UV / noise / mask
+noise/cloud/noise_cloud_024.png,na,0,chạy UV / noise / mask
+noise/dash/noise_dash_001.png,na,0,chạy UV / noise / mask
+noise/dash/noise_dash_002.png,na,0,chạy UV / noise / mask
+noise/dash/noise_dash_003.png,na,0,chạy UV / noise / mask
+noise/electric_web/noise_electric_web_001.png,na,0,chạy UV / noise / mask
+noise/electric_web/noise_electric_web_002.png,na,0,chạy UV / noise / mask
+noise/electric_web/noise_electric_web_003.png,na,0,chạy UV / noise / mask
+noise/electric_web/noise_electric_web_004.png,na,0,chạy UV / noise / mask
+noise/electric_web/noise_electric_web_005.png,na,0,chạy UV / noise / mask
+noise/electric_web/noise_electric_web_006.png,na,0,chạy UV / noise / mask
+noise/hard_edge/noise_hard_edge_001.png,na,0,chạy UV / noise / mask
+noise/hard_edge/noise_hard_edge_002.png,na,0,chạy UV / noise / mask
+noise/hard_edge/noise_hard_edge_003.png,na,0,chạy UV / noise / mask
+noise/hard_edge/noise_hard_edge_004.png,na,0,chạy UV / noise / mask
+noise/hard_edge/noise_hard_edge_005.png,na,0,chạy UV / noise / mask
+noise/hard_edge/noise_hard_edge_006.png,na,0,chạy UV / noise / mask
+noise/packed_rgb/noise_packed_rgb_001.png,na,0,chạy UV / noise / mask
+noise/packed_rgb/noise_packed_rgb_002.png,na,0,chạy UV / noise / mask
+noise/packed_rgb/noise_packed_rgb_003.png,na,0,chạy UV / noise / mask
+noise/packed_rgb/noise_packed_rgb_004.png,na,0,chạy UV / noise / mask
+noise/packed_rgb/noise_packed_rgb_005.png,na,0,chạy UV / noise / mask
+noise/packed_rgb/noise_packed_rgb_006.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_001.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_002.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_003.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_004.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_005.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_006.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_007.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_008.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_009.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_010.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_011.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_012.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_013.psd,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_014.png,na,0,chạy UV / noise / mask
+noise/streak/noise_streak_015.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_001.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_002.psd,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_003.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_004.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_005.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_006.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_007.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_008.png,na,0,chạy UV / noise / mask
+noise/swirl/noise_swirl_009.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_001.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_002.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_003.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_004.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_005.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_006.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_007.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_008.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_009.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_010.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_011.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_012.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_013.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_014.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_015.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_016.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_017.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_018.png,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_019.psd,na,0,chạy UV / noise / mask
+ring/Uv_mesh/ring_Uv_mesh_020.png,na,0,chạy UV / noise / mask
+ring/flipbook/ring_flipbook_001.png,omni,1,vòng
+ring/flipbook/ring_flipbook_002.png,omni,1,vòng
+ring/flipbook/ring_flipbook_003.png,omni,1,vòng
+ring/ragged/ring_ragged_001.psd,dir,0,cung hở / vệt ngang
+ring/ragged/ring_ragged_002.png,omni,0,
+ring/ragged/ring_ragged_003.tga,omni,0,
+ring/ragged/ring_ragged_004.png,dir,0,cung hở / vệt ngang
+ring/ragged/ring_ragged_005.png,dir,0,cung hở / vệt ngang
+ring/ragged/ring_ragged_006.png,omni,0,
+ring/ragged/ring_ragged_007.png,omni,0,
+ring/ragged/ring_ragged_008.png,omni,0,
+ring/ragged/ring_ragged_009.png,omni,0,
+ring/ragged/ring_ragged_010.png,omni,0,
+ring/soft/ring_soft_001.png,omni,0,
+ring/soft/ring_soft_002.png,omni,0,
+ring/soft/ring_soft_003.png,omni,0,
+ring/soft/ring_soft_004.png,omni,0,
+ring/soft/ring_soft_005.psd,omni,0,
+ring/soft/ring_soft_006.png,omni,0,
+ring/soft/ring_soft_007.png,omni,0,
+ring/soft/ring_soft_008.png,omni,0,
+ring/soft/ring_soft_009.png,dir,0,lưỡi liềm / sáng lệch một phía
+ring/soft/ring_soft_010.png,dir,0,lưỡi liềm / sáng lệch một phía
+ring/soft/ring_soft_011.png,omni,0,
+ring/soft/ring_soft_012.png,omni,0,
+ring/soft/ring_soft_013.png,omni,0,
+ring/soft/ring_soft_014.png,omni,0,
+ring/soft/ring_soft_015.png,dir,0,lưỡi liềm / sáng lệch một phía
+ring/soft/ring_soft_016.png,omni,0,
+ring/soft/ring_soft_017.png,omni,0,
+ring/soft/ring_soft_018.png,omni,0,
+ring/swirl/ring_swirl_001.png,omni,0,
+ring/swirl/ring_swirl_002.png,omni,0,
+ring/swirl/ring_swirl_003.png,dir,0,lưỡi liềm xoáy
+ring/thin/ring_thin_001.png,omni,0,
+ring/thin/ring_thin_002.png,omni,0,
+ring/thin/ring_thin_003.png,omni,0,
+ring/thin/ring_thin_004.png,omni,0,
+ring/thin/ring_thin_005.png,omni,0,
+ring/thin/ring_thin_006.psd,omni,0,
+ring/thin/ring_thin_007.png,omni,0,
+ring/thin/ring_thin_008.png,omni,0,
+ring/thin/ring_thin_009.png,omni,0,
+ring/thin/ring_thin_010.png,omni,0,
+ring/thin/ring_thin_011.png,omni,0,
+ring/thin/ring_thin_012.png,omni,0,
+ring/thin/ring_thin_013.png,omni,0,
+ring/thin/ring_thin_014.png,omni,0,
+rune/circle/rune_circle_001.png,omni,0,
+rune/circle/rune_circle_002.png,omni,0,
+rune/circle/rune_circle_003.png,omni,0,
+rune/circle/rune_circle_004.png,omni,0,
+rune/circle/rune_circle_005.png,omni,0,
+rune/circle/rune_circle_006.png,omni,0,
+rune/circle/rune_circle_007.png,omni,0,
+rune/circle/rune_circle_008.png,omni,0,
+rune/circle/rune_circle_009.png,omni,0,
+smoke/cartoon/smoke_cartoon_001.png,omni,0,
+smoke/cartoon/smoke_cartoon_002.png,omni,0,
+smoke/cartoon/smoke_cartoon_003.png,omni,0,
+smoke/cartoon/smoke_cartoon_004.png,omni,0,
+smoke/cartoon/smoke_cartoon_005.png,omni,0,
+smoke/cartoon/smoke_cartoon_006.png,omni,0,
+smoke/cartoon/smoke_cartoon_007.png,omni,0,
+smoke/sheet/smoke_sheet_001.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_002.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_003.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_004.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_005.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_006.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_007.png,dir,1,vệt cuộn / gai có hướng
+smoke/sheet/smoke_sheet_008.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_010.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_013.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_014.png,dir,1,vệt cuộn / gai có hướng
+smoke/sheet/smoke_sheet_015.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_016.png,dir,1,vệt cuộn / gai có hướng
+smoke/sheet/smoke_sheet_017.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_018.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_019.png,omni,1,cụm mây / khói / puff
+smoke/sheet/smoke_sheet_020.png,omni,1,cụm mây / khói / puff
+smoke/soft/smoke_soft_001.png,omni,0,
+smoke/soft/smoke_soft_002.png,omni,0,
+smoke/soft/smoke_soft_003.png,omni,0,
+smoke/soft/smoke_soft_004.png,omni,0,
+smoke/soft/smoke_soft_005.png,omni,0,
+smoke/soft/smoke_soft_006.png,omni,0,
+spark/dot_sheet/spark_dot_sheet_001.png,omni,1,chấm sáng tròn
+spark/dot_sheet/spark_dot_sheet_002.psd,dir,1,mảnh nhỏ nhọn có hướng
+spark/dot_sheet/spark_dot_sheet_003.png,dir,1,mảnh nhỏ nhọn có hướng
+spark/shard/spark_shard_001.png,dir,0,
+spark/shard/spark_shard_002.png,dir,0,
+spark/star/spark_star_001.png,omni,0,
+spark/star/spark_star_002.png,omni,0,
+spark/star/spark_star_003.png,omni,0,
+spark/star/spark_star_004.png,omni,0,
+spark/star/spark_star_005.png,omni,0,
+spark/star/spark_star_006.png,omni,0,
+spark/star/spark_star_007.png,omni,0,
+spark/star/spark_star_008.png,omni,0,
+spark/star/spark_star_009.png,omni,0,
+spark/star/spark_star_010.png,omni,0,
+spark/star/spark_star_011.png,omni,0,
+spark/star/spark_star_012.png,omni,0,
+spark/star/spark_star_013.png,omni,0,
+spark/star/spark_star_014.psd,omni,0,
+spark/star/spark_star_015.tga,omni,0,
+spark/star/spark_star_016.png,omni,0,
+spark/star/spark_star_017.png,omni,0,
+spark/star/spark_star_018.png,omni,0,
+spark/star/spark_star_019.png,omni,0,
+spark/star/spark_star_020.png,omni,0,
+spark/streak/spark_streak_001.png,dir,0,
+spark/streak/spark_streak_002.png,dir,0,
+spark/streak/spark_streak_003.png,dir,0,
+spark/streak/spark_streak_004.png,dir,0,
+spark/streak/spark_streak_005.tga,dir,0,
+spark/streak/spark_streak_006.png,dir,0,
+trail/band/trail_band_001.png,dir,0,
+trail/ribbon/trail_ribbon_001.png,dir,0,
+trail/ribbon/trail_ribbon_002.png,dir,0,
+trail/ribbon/trail_ribbon_003.png,dir,0,
+trail/ribbon/trail_ribbon_004.png,dir,0,
+trail/ribbon/trail_ribbon_005.png,dir,0,
+trail/ribbon/trail_ribbon_006.png,dir,0,
+trail/ribbon/trail_ribbon_007.png,dir,0,
+trail/ribbon/trail_ribbon_008.png,dir,0,
+trail/ribbon/trail_ribbon_009.png,dir,0,
+trail/ribbon/trail_ribbon_010.png,dir,0,
+trail/ribbon/trail_ribbon_011.png,dir,0,
+trail/ribbon/trail_ribbon_012.png,dir,0,
+trail/ribbon/trail_ribbon_013.png,dir,0,
+trail/ribbon/trail_ribbon_014.png,dir,0,
+trail/ribbon/trail_ribbon_015.png,dir,0,
+trail/streak/trail_streak_001.png,dir,0,
+trail/streak/trail_streak_002.png,dir,0,
+trail/streak/trail_streak_003.png,dir,0,vệt đầu-đuôi / trục ngang
+trail/streak/trail_streak_004.png,dir,0,vệt đầu-đuôi / trục ngang
+trail/streak/trail_streak_005.png,dir,0,vệt đầu-đuôi / trục ngang
+trail/streak/trail_streak_006.png,dir,0,vệt đầu-đuôi / trục ngang
+trail/streak/trail_streak_007.png,dir,0,
+trail/streak/trail_streak_008.png,dir,0,
+trail/streak/trail_streak_009.png,dir,0,
+trail/streak/trail_streak_010.png,dir,0,
+trail/streak/trail_streak_011.png,dir,0,
+trail/streak/trail_streak_012.png,dir,0,
+water/bubble/water_bubble_001.png,dir,0,nửa bong bóng
+water/bubble/water_bubble_002.png,omni,0,
+water/bubble/water_bubble_003.png,omni,0,
+water/bubble/water_bubble_004.png,omni,0,
+water/splash/water_splash_001.png,dir,0,bắn / gai hướng lên
+water/splash/water_splash_002.png,dir,0,bắn / gai hướng lên
+water/splash/water_splash_003.png,dir,0,bắn / gai hướng lên
+water/splash/water_splash_004.png,dir,0,bắn / gai hướng lên
+water/splash/water_splash_005.png,omni,0,văng nhìn từ trên / đốm
+water/splash/water_splash_006.png,omni,0,văng nhìn từ trên / đốm
+water/splash/water_splash_007.png,omni,0,văng nhìn từ trên / đốm
+water/splash/water_splash_008.png,omni,0,văng nhìn từ trên / đốm
+water/splash/water_splash_009.png,dir,0,bắn / gai hướng lên
+water/splash/water_splash_010.jpg,omni,0,văng nhìn từ trên / đốm
+water/streak/water_streak_001.psd,dir,0,
+water/streak/water_streak_002.psd,dir,0,
+water/tile/water_tile_001.jpg,na,0,chạy UV / noise / mask
+water/tile/water_tile_002.png,na,0,chạy UV / noise / mask
+water/tile/water_tile_003.psd,na,0,chạy UV / noise / mask
+water/tile/water_tile_004.png,na,0,chạy UV / noise / mask
+water/tile/water_tile_005.png,na,0,chạy UV / noise / mask
+water/tile/water_tile_006.png,na,0,chạy UV / noise / mask
+water/tile/water_tile_007.png,na,0,chạy UV / noise / mask
+lightning/bolt_sheet/lightning_bolt_sheet_009.png,dir,1,4x2 khung dọc; ảnh đứng 1024x2048, alpha thật
+lightning/bolt_sheet/lightning_bolt_sheet_010.png,dir,1,4x2 khung dọc; ảnh đứng 1024x2048, alpha thật
+lightning/bolt_sheet/lightning_bolt_sheet_011.png,dir,1,4x2 khung dọc; ảnh đứng 1024x2048, alpha thật
+lightning/bolt_sheet/lightning_bolt_sheet_012.png,dir,1,4x2 khung dọc; ảnh đứng 1024x2048, alpha thật
+lightning/bolt_sheet/lightning_bolt_sheet_013.png,dir,0,2x1 tia đơn to; ảnh đứng 1024x2048, alpha thật
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_020.png,na,0,Anim.psd layer 2 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_021.png,na,0,Slash_Tex.psd layer 5 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_022.png,na,0,Slash_Tex.psd layer 7 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_023.png,na,0,Slash_Tex.psd layer 9 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_024.png,na,0,Slash_Tex.psd layer 13 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_025.png,na,0,Slash_Tex.psd layer 16 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_026.png,na,0,Slash_Tex.psd layer 20 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_027.png,na,0,Slash_Tex.psd layer 23 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_028.png,na,0,Slash_Tex.psd layer 32 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_029.png,na,0,Slash_Tex.psd layer 33 (2026-11-19)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_030.png,na,0,Slash_Tex.psd layer 34 (2026-11-19)
+impact/flipbook/impact_flipbook_023.png,dir,1,"2x2 4 khung muzzle flash, alpha thật (Gun.psd, 2026-11-19)"
+impact/radial_ring/impact_radial_ring_007.png,omni,0,Shockwave.psd layer 2 (2026-11-19)
+impact/radial_ring/impact_radial_ring_008.png,omni,0,Shockwave.psd layer 6 (2026-11-19)
+impact/radial_ring/impact_radial_ring_009.png,omni,0,Shockwave.psd layer 7 (2026-11-19)
+impact/radial_ring/impact_radial_ring_010.png,omni,0,Shockwave.psd layer 19 (2026-11-19)
+impact/radial_ring/impact_radial_ring_011.png,omni,0,Shockwave.psd layer 23 (2026-11-19)
+mask/gradient/mask_gradient_010.png,na,0,Slash_Tex.psd layer 22 (2026-11-19)
+mask/gradient/mask_gradient_011.png,na,0,Slash_Tex.psd layer 36 (2026-11-19)
+ring/Uv_mesh/ring_Uv_mesh_021.png,na,0,Shockwave_512x1024.psd layer 2 (2026-11-19)
+ring/Uv_mesh/ring_Uv_mesh_022.png,na,0,Shockwave_512x1024.psd layer 4 (2026-11-19)
+ring/Uv_mesh/ring_Uv_mesh_023.png,na,0,Shockwave_512x1024.psd layer 5 (2026-11-19)
+ring/ragged/ring_ragged_011.png,omni,0,Shockwave.psd layer 8 (2026-11-19)
+ring/ragged/ring_ragged_012.png,omni,0,Shockwave.psd layer 10 (2026-11-19)
+ring/ragged/ring_ragged_013.png,omni,0,Shockwave.psd layer 20 (2026-11-19)
+ring/ragged/ring_ragged_014.png,omni,0,Shockwave.psd layer 22 (2026-11-19)
+shield/crack/shield_crack_001.png,omni,0,Shield.psd layer 4 (2026-11-19)
+shield/crack/shield_crack_002.png,omni,0,Shield.psd layer 6 (2026-11-19)
+shield/crack/shield_crack_003.png,omni,0,Shield.psd layer 8 (2026-11-19)
+shield/crack/shield_crack_004.png,omni,0,Shield.psd layer 10 (2026-11-19)
+shield/fill/shield_fill_001.png,omni,0,Shield.psd layer 2 (2026-11-19)
+shield/fill/shield_fill_002.png,omni,0,Shield.psd layer 12 (2026-11-19)
+smoke/cartoon/smoke_cartoon_008.png,dir,0,Untitled-1.psd layer 2 (2026-11-19)
+spark/shard/spark_shard_003.png,dir,0,Trail.psd layer 18 (2026-11-19)
+trail/ribbon/trail_ribbon_016.png,dir,0,Trail.psd layer 3 (2026-11-19)
+trail/ribbon/trail_ribbon_017.png,dir,0,Trail.psd layer 4 (2026-11-19)
+trail/ribbon/trail_ribbon_018.png,dir,0,Trail.psd layer 5 (2026-11-19)
+trail/ribbon/trail_ribbon_019.png,dir,0,Trail.psd layer 6 (2026-11-19)
+trail/ribbon/trail_ribbon_020.png,dir,0,Trail.psd layer 8 (2026-11-19)
+trail/ribbon/trail_ribbon_021.png,dir,0,Trail.psd layer 9 (2026-11-19)
+trail/ribbon/trail_ribbon_022.png,dir,0,Trail.psd layer 17 (2026-11-19)
+trail/ribbon/trail_ribbon_023.png,dir,0,Trail.psd layer 21 (2026-11-19)
+trail/ribbon/trail_ribbon_024.png,dir,0,Trail.psd layer 22 (2026-11-19)
+trail/streak/trail_streak_013.png,dir,0,Trail.psd layer 10 (2026-11-19)

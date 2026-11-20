@@ -1,0 +1,14 @@
+Effect: BombBlast_Shader   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 09:30:32
+Preview times (s): 0.05, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.45
+
+Layers:
+  VFX_BombBlast_Shader/L1_Blast  max=50  life=0.9  mode=Billboard  mat=M_BombBlast_Shader_Blast_Add (VFX/FX/Blast)
+  VFX_BombBlast_Shader/L2_Ring  max=50  life=0.55  mode=Billboard  mat=M_BombBlast_Shader_Ring_Add (VFX/FX/Blast)
+  VFX_BombBlast_Shader/L3_Smoke  max=4  life=0.9  mode=Billboard  mat=M_BombBlast_Shader_Smoke_Alpha (VFX/FX/Smoke)
+  VFX_BombBlast_Shader/L4_Sparks  max=18  life=0.8  mode=Stretch  mat=M_BombBlast_Shader_Spark_Add (VFX/FX/Spark)
+  VFX_BombBlast_Shader/L5_Dust  max=5  life=1  mode=Billboard  mat=M_BombBlast_Shader_Dust_Alpha (VFX/FX/Smoke)
+  VFX_BombBlast_Shader/L6_Scorch  max=50  life=1.4  mode=Billboard  mat=M_BombBlast_Shader_Scorch_Alpha (VFX/FX/Smoke)
+Total maxParticles: 177
+
+Errors: none

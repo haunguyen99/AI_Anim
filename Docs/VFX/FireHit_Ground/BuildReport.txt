@@ -1,0 +1,29 @@
+Mix: FireHit_Ground   Recipe: Docs/VFX/_Recipes/FireHit_Ground.json   Unity: 2022.3.62f3
+Built: 2026-11-03 08:29:55
+Preview times (s): 0.01, 0.273, 0.545, 0.818, 1.09, 1.363, 1.635, 1.908
+Palette: Core #FFF3C4 · Mid #FF9A3C · Outer #C8281E · Dust #CDBBA6
+
+Items:
+  00_IMP_Hit_Ground_01               delay 0  dur 0.45 (gốc 0.45, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  01_SPK_Ground_01                   delay 0.03  dur 1.25 (gốc 1.25, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  02_GLW_Ground_01                   delay 0  dur 0.55 (gốc 0.55, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  03_DST_FireSmoke_Ground_01         delay 0.03  dur 1.34 (gốc 1.34, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  04_RNG_Ground_01                   delay 0.03  dur 0.52 (gốc 0.52, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  05_SCR_Ground_01                   delay 0.03  dur 2.05 (gốc 2.05, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+
+Layers:
+  00_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  00_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+  01_SPK_Ground_01/Streaks  max=24  life=0.6  mode=Stretch  mat=M_SPK_Streak_Add (Mobile/Particles/Additive)
+  01_SPK_Ground_01/Ember  max=8  life=1.2  mode=Billboard  mat=M_SPK_Ember_Add (Mobile/Particles/Additive)
+  02_GLW_Ground_01/Pool  max=1  life=0.5  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  02_GLW_Ground_01/Halo  max=1  life=0.25  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  03_DST_FireSmoke_Ground_01/Puffs  max=12  life=1.2  mode=Billboard  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  03_DST_FireSmoke_Ground_01/Puffs_Glow  max=12  life=1.2  mode=Billboard  mat=M_DST_ToonPuff_Add (Mobile/Particles/Additive)
+  03_DST_FireSmoke_Ground_01/Core  max=2  life=1.1  mode=Billboard  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  03_DST_FireSmoke_Ground_01/Core_Glow  max=2  life=1.1  mode=Billboard  mat=M_DST_ToonPuff_Add (Mobile/Particles/Additive)
+  04_RNG_Ground_01/Ring  max=2  life=0.45  mode=Billboard  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+  05_SCR_Ground_01/Body  max=1  life=2  mode=Billboard  mat=M_CFX_Scorch_Body_Alpha (Mobile/Particles/Alpha Blended)
+  05_SCR_Ground_01/Light  max=1  life=2  mode=Billboard  mat=M_CFX_Scorch_Light_Add (Mobile/Particles/Additive)
+
+Errors: none

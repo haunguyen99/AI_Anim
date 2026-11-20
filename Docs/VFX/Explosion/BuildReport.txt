@@ -1,0 +1,17 @@
+Effect: Explosion   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-10-28 14:51:57
+Preview times (s): 0.04, 0.12, 0.25, 0.45, 0.8, 1.3, 2
+
+Layers:
+  VFX_Explosion/GroundScorch  max=50  life=2.2  mode=HorizontalBillboard  mat=M_Explosion_Scorch_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_Explosion/Smoke  max=12  life=2.1  mode=Billboard  mat=M_Explosion_Smoke_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_Explosion/ShockwaveRing  max=50  life=0.6  mode=HorizontalBillboard  mat=M_Explosion_Shockwave_Add (Mobile/Particles/Additive)
+  VFX_Explosion/CoreFireball  max=10  life=1.15  mode=Billboard  mat=M_Explosion_Fireball_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_Explosion/FireTongues  max=16  life=0.75  mode=Stretch  mat=M_Explosion_Tongues_Add (Mobile/Particles/Additive)
+  VFX_Explosion/Flash_Slash  max=7  life=0.3  mode=Billboard  mat=M_Explosion_Slash_Add (Mobile/Particles/Additive)
+  VFX_Explosion/Flash_Glow  max=50  life=0.16  mode=Billboard  mat=M_Explosion_Flash_Add (Mobile/Particles/Additive)
+  VFX_Explosion/Sparks  max=30  life=1  mode=Stretch  mat=M_Explosion_Sparks_Add (Mobile/Particles/Additive)
+  VFX_Explosion/Embers  max=16  life=2  mode=Billboard  mat=M_Explosion_Embers_Add (Mobile/Particles/Additive)
+Total maxParticles: 241
+
+Errors: none
