@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VFX Review Lab</title>
+<style>
+:root{--bg:#14161a;--panel:#1c1f25;--panel2:#242830;--line:#2f343e;--text:#e6e8ec;--dim:#9097a3;--acc:#ff9a3c;--ok:#4cc38a;--bad:#ef5b5b;--pin:#ffd23c}
+@media (prefers-color-scheme:light){:root[data-ui=auto]{--bg:#f2f3f5;--panel:#fff;--panel2:#eceef2;--line:#d6d9df;--text:#1b1e24;--dim:#667}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,sans-serif}
+button,select,input,textarea{font:inherit;color:inherit}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:var(--acc)}button.on{background:var(--acc);color:#111;border-color:var(--acc)}
+select,input[type=text],textarea{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+textarea{width:100%;resize:vertical}
+#app{display:grid;grid-template-columns:210px 1fr 310px;grid-template-rows:auto 1fr;height:100vh}
+header{grid-column:1/4;display:flex;gap:10px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+header h1{font-size:15px;margin:0 8px 0 0}header h1 small{color:var(--dim);font-weight:400}
+.sp{flex:1}
+nav,aside{background:var(--panel);overflow:auto;padding:10px}
+nav{border-right:1px solid var(--line)}aside{border-left:1px solid var(--line)}
+main{overflow:auto;padding:14px;min-width:0}
+.grp{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--acc);padding:10px 8px 4px;white-space:nowrap;align-self:center}
+.eff{white-space:nowrap;display:flex;gap:8px;align-items:center;padding:7px 8px;border-radius:6px;cursor:pointer}
+.eff:hover{background:var(--panel2)}.eff.sel{background:var(--panel2);outline:1px solid var(--acc)}
+.dot{width:10px;height:10px;border-radius:50%;background:#555;flex:none}.dot.ok{background:var(--ok)}.dot.fix{background:var(--bad)}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button.on{font-weight:600}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.dim{color:var(--dim)}h3{margin:14px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+.stagewrap{display:flex;justify-content:center}
+.box{position:relative;width:min(100%,560px);aspect-ratio:1/1;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.box canvas,.box .tl{position:absolute;inset:0;width:100%;height:100%}
+.tl{background-repeat:no-repeat}
+.pins{position:absolute;inset:0}.pins.mode{cursor:crosshair}
+.pin{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:var(--pin);color:#111;font-weight:700;font-size:12px;display:grid;place-items:center;border:2px solid #111;box-shadow:0 1px 6px #0009;cursor:pointer}
+.pin.done{background:var(--ok)}.pin.hl{outline:3px solid #fff}
+.thumbs{display:flex;gap:4px;overflow:auto;padding:6px 0}
+.thumbs div{flex:none;width:64px;height:64px;border:2px solid transparent;border-radius:4px;cursor:pointer;background-repeat:no-repeat}
+.thumbs div.sel{border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer}
+.card:hover{border-color:var(--acc)}
+.card .im{height:130px;display:grid;place-items:center}.card img{max-width:100%;max-height:100%;image-rendering:auto}
+.card p{margin:0;padding:5px 8px;font-size:12px;word-break:break-all;border-top:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border:1px solid var(--line);padding:4px 8px;text-align:left}th{background:var(--panel2)}
+pre{background:var(--panel2);padding:10px;border-radius:6px;overflow:auto;font-size:12px;white-space:pre-wrap}
+.plan h1,.plan h2,.plan h3{font-size:15px;text-transform:none;letter-spacing:0;color:var(--text)}
+.status button{flex:1}.status .ok.on{background:var(--ok)}.status .fix.on{background:var(--bad);color:#fff}
+.pinitem{border:1px solid var(--line);border-radius:6px;padding:6px;margin:6px 0;background:var(--panel2)}
+.pinitem.hl{border-color:var(--pin)}.pinitem .h{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--dim)}
+.pinitem textarea{margin-top:4px;min-height:44px}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:12px}
+#lb{position:fixed;inset:0;background:#000d;display:none;z-index:9;flex-direction:column}
+#lb.open{display:flex}#lbbar{display:flex;gap:8px;padding:8px;align-items:center;background:var(--panel)}
+#lbview{flex:1;overflow:hidden;position:relative;touch-action:none}
+#lbinner{position:absolute;left:0;top:0;transform-origin:0 0}#lbinner img{display:block;max-width:none;user-select:none;-webkit-user-drag:none}
+.cmp{position:relative;display:inline-block;max-width:100%;border:1px solid var(--line)}.cmp img{display:block;max-width:100%;max-height:70vh}
+.cmp .top{position:absolute;inset:0}.cmp .top img{width:100%;height:100%;object-fit:fill}
+.drop{border:2px dashed var(--line);border-radius:8px;padding:6px}.drop.over{border-color:var(--acc)}
+.bgs button{padding:3px 8px}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--acc);color:#111;padding:8px 14px;border-radius:8px;display:none;z-index:20}
+@media (max-width:980px){#app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr auto;height:auto}header{grid-column:1}nav{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}aside{border-left:0;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div id="app">
+ <header>
+  <h1>VFX Review Lab <small id="meta"></small></h1>
+  <span class="dim">Nền:</span><span class="bgs" id="bgs"></span>
+  <span class="sp"></span>
+  <button id="pinmode" title="Bật rồi click lên ảnh để ghim góp ý">📌 Ghim góp ý</button>
+  <button id="exp">Xuất phản hồi</button>
+  <button id="restore" style="display:none" title="Hiện lại các effect đã xóa khỏi review">↩ Khôi phục effect đã xóa</button>
+  <button id="clrall" title="Xóa toàn bộ review (trạng thái, nhận xét, ghim) của mọi effect">🗑 Xóa tất cả review</button>
+ </header>
+ <nav id="nav"></nav>
+ <main id="main"></main>
+ <aside id="side"></aside>
+</div>
+<div id="lb"><div id="lbbar"><b id="lbname"></b><span class="sp"></span><span class="dim">cuộn = zoom · kéo = di chuyển · bật 📌 rồi click = ghim</span><button id="lbfit">Vừa khung</button><button id="lbclose">Đóng (Esc)</button></div><div id="lbview"><div id="lbinner"><img id="lbimg"><div class="pins" id="lbpins"></div></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA=/*__DATA__*/null;
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='vfxReview.v1.'+(DATA?DATA.project:'x');
+let ST={};try{ST=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}};
+const HID=()=>ST.__hidden||(ST.__hidden=[]);
+DATA.effects=DATA.effects.filter(e=>!HID().includes(e.name));
+const rv=n=>ST[n]||(ST[n]={status:'none',note:'',pins:[]});
+const BG={dark:['Tối','#0d0e11'],game:['Game','#3a4a3a'],gray:['Xám','#808080'],light:['Sáng','#e8e8e8'],check:['Ô caro','chk'],black:['Đen','#000']};
+let U={eff:0,tab:'preview',bg:'dark',pinMode:false,hl:null,frame:0,tex:0,fps:12,play:false,loop:true,add:false,tint:'#ffffff',showSheet:false,cmpA:'',cmpB:'',cmpMode:'wipe',wipe:50,drops:{}};
+const E=()=>DATA.effects[U.eff];
+function bgCss(){const b=BG[U.bg][1];return b==='chk'?'background:conic-gradient(#999 25%,#bbb 0 50%,#999 0 75%,#bbb 0) 0 0/20px 20px':'background:'+b}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',1800)}
+
+/* ---------- media registry (mọi ảnh có thể so sánh / ghim) ---------- */
+function allMedia(e){const L=[];if(e.timeline)L.push({id:'timeline',name:'Preview_sheet (timeline)',src:e.timeline.src});
+ e.media.forEach((m,i)=>L.push({id:'m'+i,name:m.name,src:m.src}));e.textures.forEach((t,i)=>L.push({id:'t'+i,name:t.name,src:t.src}));
+ Object.entries(U.drops).forEach(([k,v])=>L.push({id:k,name:'📎 '+v.name,src:v.src}));return L}
+
+/* ---------- pins ---------- */
+function pinsFor(target){return rv(E().name).pins.filter(p=>p.target===target)}
+function renderPins(host,target){
+ host.innerHTML=pinsFor(target).map(p=>{const n=rv(E().name).pins.indexOf(p)+1;return `<div class="pin ${p.done?'done':''} ${U.hl===p.id?'hl':''}" data-id="${p.id}" style="left:${p.x*100}%;top:${p.y*100}%">${n}</div>`}).join('');
+ host.classList.toggle('mode',U.pinMode);
+ host.onclick=ev=>{const pe=ev.target.closest('.pin');if(pe){U.hl=+pe.dataset.id;renderSide(true);renderPins(host,target);return}
+  if(!U.pinMode)return;const r=host.getBoundingClientRect();
+  const p={id:Date.now(),target,label:targetLabel(target),x:Math.min(1,Math.max(0,(ev.clientX-r.left)/r.width)),y:Math.min(1,Math.max(0,(ev.clientY-r.top)/r.height)),text:'',done:false};
+  rv(E().name).pins.push(p);save();U.hl=p.id;renderPins(host,target);renderSide(true)}
+}
+function targetLabel(t){const e=E();const [k,v]=t.split('::');if(k==='tl')return 'Timeline '+(e.times[+v]??v)+'s';if(k==='fb')return 'Flipbook '+(e.textures[+v>>8]?.name||'')+' f'+((+v)&255);
+ const m=allMedia(e).find(x=>x.id===v);return 'Ảnh '+(m?m.name:v)}
+
+/* ---------- header / nav ---------- */
+function renderHead(){$('#meta').textContent=DATA.project+' · build '+DATA.generated;
+ $('#bgs').innerHTML=Object.entries(BG).map(([k,v])=>`<button data-bg="${k}" class="${U.bg===k?'on':''}">${v[0]}</button>`).join('');
+ $('#pinmode').classList.toggle('on',U.pinMode);
+ $('#restore').style.display=HID().length?'':'none';$('#restore').textContent='↩ Khôi phục effect đã xóa ('+HID().length+')'}
+function renderNav(){$('#nav').innerHTML=DATA.effects.map((e,i)=>{const s=rv(e.name);const c=s.pins.filter(p=>!p.done).length;
+ const head=e.group&&(i===0||DATA.effects[i-1].group!==e.group)?`<div class="grp">${esc(e.group)}${i===0&&e.group!=='Effect'?' <span class="chip">mới</span>':''}</div>`:'';
+ return head+`<div class="eff ${i===U.eff?'sel':''}" data-i="${i}"><span class="dot ${s.status==='ok'?'ok':s.status==='fix'?'fix':''}"></span><span style="flex:1">${esc(e.name)}</span>${c?`<span class="chip">📌${c}</span>`:''}</div>`}).join('')||'<p class="dim">Chưa có effect nào trong Docs/VFX.</p>'}
+
+/* ---------- main tabs ---------- */
+const TABS=[['preview','Preview'],['flip','Flipbook'],['gallery','Ảnh / GIF'],['cmp','So sánh'],['plan','Kế hoạch & Build']];
+function renderMain(){stop();const e=E();if(!e){$('#main').innerHTML='<p class="dim">Không có dữ liệu.</p>';return}
+ const tabs=`<div class="tabs">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${U.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+ $('#main').innerHTML=`<h2 style="margin:0 0 8px">${esc(e.name)} ${e.prefabs.map(p=>`<span class="chip">${esc(p)}</span>`).join(' ')}</h2>`+tabs+`<div id="tab"></div>`;
+ ({preview:tPreview,flip:tFlip,gallery:tGallery,cmp:tCmp,plan:tPlan})[U.tab](e)}
+
+/* Preview: timeline sheet */
+function tPreview(e){const t=e.timeline;if(!t){$('#tab').innerHTML='<p class="dim">Chưa có Preview_sheet.png — build effect trong Unity rồi chạy lại build_review.py.</p>'+layersTable(e);return}
+ const n=t.frames;U.frame=Math.min(U.frame,n-1);
+ $('#tab').innerHTML=`<div class="stagewrap"><div class="box" id="tlbox" style="${bgCss()}"><div class="tl" id="tl"></div><div class="pins" id="tlpins"></div></div></div>
+ <div class="row" style="justify-content:center"><button id="pp">▶ Phát</button><span class="dim">Tốc độ</span><select id="tls">${[[0.5,'0.5×'],[1,'1×'],[2,'2×'],[4,'4×']].map(([v,l])=>`<option value="${v}" ${(U.tls||1)===v?'selected':''}>${l}</option>`).join('')}</select><input type="range" id="sl" min="0" max="${n-1}" value="${U.frame}" style="width:280px"><b id="tlt"></b></div>
+ <div class="thumbs" id="th">${Array.from({length:n},(_,i)=>`<div data-f="${i}" style="background-image:url('${t.src}');background-size:${n*100}% 100%;background-position:${n>1?i/(n-1)*100:0}% 0" title="${e.times[i]??i}s"></div>`).join('')}</div>
+ <p class="dim" style="text-align:center">←/→ đổi mốc thời gian · bật 📌 rồi click lên ảnh để ghim góp ý đúng vị trí và mốc.</p>`+layersTable(e);
+ const set=i=>{U.frame=i;$('#tl').style.cssText=`background-image:url('${t.src}');background-size:${n*100}% 100%;background-position:${n>1?i/(n-1)*100:0}% 0`;
+  $('#sl').value=i;$('#tlt').textContent=(e.times[i]??i)+' s  ('+(i+1)+'/'+n+')';[...$('#th').children].forEach((c,j)=>c.classList.toggle('sel',j===i));renderPins($('#tlpins'),'tl::'+i)};
+ set(U.frame);window._set=set;
+ $('#sl').oninput=ev=>set(+ev.target.value);$('#th').onclick=ev=>{const d=ev.target.closest('[data-f]');if(d)set(+d.dataset.f)};
+ $('#pp').onclick=()=>{if(U.play){stop();return}U.play=true;$('#pp').textContent='⏸ Dừng';const go=()=>{U.timer=setInterval(()=>set((U.frame+1)%n),700/(U.tls||1))};go();$('#tls').onchange=ev=>{U.tls=+ev.target.value;if(U.play){clearInterval(U.timer);go()}}};$('#tls').onchange=ev=>{U.tls=+ev.target.value}}
+function layersTable(e){if(!e.layers.length)return '';return `<h3>Layer (${e.layers.length}) · tổng ${e.layers.reduce((a,l)=>a+l.max,0)} particle · ${e.materials} material</h3><table><tr><th>Layer</th><th>Max</th><th>Life</th><th>Mode</th><th>Material</th><th>Shader</th></tr>${e.layers.map(l=>`<tr><td>${esc(l.name)}</td><td>${l.max}</td><td>${l.life}s</td><td>${esc(l.mode)}</td><td>${esc(l.mat)}</td><td class="dim">${esc(l.shader)}</td></tr>`).join('')}</table>`}
+function stop(){U.play=false;clearInterval(U.timer);cancelAnimationFrame(U.raf)}
+
+/* Flipbook player (canvas: nền, tint, additive) */
+const IMGS={};function loadImg(src){return IMGS[src]||(IMGS[src]=new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=src}))}
+function tFlip(e){if(!e.textures.length){$('#tab').innerHTML='<p class="dim">Effect này không có texture trong Assets/VFX/'+esc(e.name)+'/Textures.</p>';return}
+ U.tex=Math.min(U.tex,e.textures.length-1);const t=e.textures[U.tex];const nf=t.cols*t.rows;
+ $('#tab').innerHTML=`<div class="row"><select id="texsel">${e.textures.map((x,i)=>`<option value="${i}" ${i===U.tex?'selected':''}>${esc(x.name)}${x.cols*x.rows>1?` (${x.cols}×${x.rows})`:''}</option>`).join('')}</select>
+  <span class="dim">Lưới</span><input type="text" id="gc" value="${t.cols}" size="2"> × <input type="text" id="gr" value="${t.rows}" size="2">
+  <span class="dim">FPS</span><span class="bgs" id="fpsp">${[6,8,12,15,24,30,60].map(v=>`<button data-fps="${v}" class="${U.fps===v?'on':''}">${v}</button>`).join('')}</span><input type="number" id="fpsn" min="1" max="120" value="${U.fps}" style="width:56px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px"><input type="range" id="fps" min="1" max="60" value="${U.fps}" style="width:90px">
+  <label><input type="checkbox" id="lp" ${U.loop?'checked':''}> Lặp</label><label><input type="checkbox" id="ad" ${U.add?'checked':''}> Additive</label>
+  <span class="dim">Tint</span><input type="color" id="tint" value="${U.tint}"></div>
+  <div class="stagewrap"><div class="box" id="fbbox" style="${bgCss()}"><canvas id="cv" width="512" height="512"></canvas><div class="pins" id="fbpins"></div></div></div>
+  <div class="row" style="justify-content:center"><button id="fp">⏸</button><button id="fprev">◀</button><button id="fnext">▶</button><input type="range" id="fsl" min="0" max="${nf-1}" value="0" style="width:240px"><b id="fn"></b></div>
+  <div class="row"><label><input type="checkbox" id="ss" ${U.showSheet?'checked':''}> Xem cả sheet</label></div><div id="sheetv"></div>`;
+ let f=0,paused=false,last=0;const cv=$('#cv'),cx=cv.getContext('2d');const tmp=document.createElement('canvas');tmp.width=tmp.height=512;const tx=tmp.getContext('2d');
+ const dims=()=>({c:Math.max(1,+$('#gc').value||1),r:Math.max(1,+$('#gr').value||1)});
+ loadImg(t.src).then(img=>{
+  const draw=()=>{const {c,r}=dims(),n=c*r;f=((f%n)+n)%n;const fw=img.width/c,fh=img.height/r,sx=(f%c)*fw,sy=Math.floor(f/c)*fh;
+   cx.clearRect(0,0,512,512);tx.globalCompositeOperation='source-over';tx.clearRect(0,0,512,512);
+   const k=Math.min(512/fw,512/fh);const dw=fw*k,dh=fh*k,ox=(512-dw)/2,oy=(512-dh)/2;tx.drawImage(img,sx,sy,fw,fh,ox,oy,dw,dh);
+   if(U.tint.toLowerCase()!=='#ffffff'){tx.globalCompositeOperation='multiply';tx.fillStyle=U.tint;tx.fillRect(0,0,512,512);tx.globalCompositeOperation='destination-in';tx.drawImage(img,sx,sy,fw,fh,ox,oy,dw,dh)}
+   cx.globalCompositeOperation=U.add?'lighter':'source-over';cx.drawImage(tmp,0,0);
+   $('#fsl').max=n-1;$('#fsl').value=f;$('#fn').textContent=(f+1)+'/'+n;renderPins($('#fbpins'),'fb::'+((U.tex<<8)|f))};
+  const loop=ts=>{U.raf=requestAnimationFrame(loop);if(paused)return;if(ts-last>1000/U.fps){last=ts;const n=dims().c*dims().r;if(!U.loop&&f>=n-1){}else f++;draw()}};
+  draw();U.raf=requestAnimationFrame(loop);
+  const step=d=>{paused=true;$('#fp').textContent='▶';f+=d;draw()};
+  $('#fp').onclick=()=>{paused=!paused;$('#fp').textContent=paused?'▶':'⏸'};$('#fprev').onclick=()=>step(-1);$('#fnext').onclick=()=>step(1);
+  $('#fsl').oninput=ev=>{paused=true;$('#fp').textContent='▶';f=+ev.target.value;draw()};
+  $('#gc').oninput=$('#gr').oninput=()=>{f=0;draw()};
+  const setFps=v=>{U.fps=Math.min(120,Math.max(1,Math.round(+v)||12));$('#fps').value=Math.min(60,U.fps);$('#fpsn').value=U.fps;document.querySelectorAll('#fpsp button').forEach(b=>b.classList.toggle('on',+b.dataset.fps===U.fps))};
+  $('#fps').oninput=ev=>setFps(ev.target.value);$('#fpsn').oninput=ev=>{if(ev.target.value)setFps(ev.target.value)};$('#fpsp').onclick=ev=>{const b=ev.target.closest('[data-fps]');if(b)setFps(b.dataset.fps)};
+  $('#lp').onchange=ev=>{U.loop=ev.target.checked;if(U.loop&&!paused)f=0};$('#ad').onchange=ev=>{U.add=ev.target.checked;draw()};$('#tint').oninput=ev=>{U.tint=ev.target.value;draw()};
+  window._fstep=step;
+ });
+ $('#texsel').onchange=ev=>{U.tex=+ev.target.value;renderMain()};
+ $('#ss').onchange=ev=>{U.showSheet=ev.target.checked;sheet()};
+ const sheet=()=>{$('#sheetv').innerHTML=U.showSheet?`<div style="${bgCss()};display:inline-block;max-width:100%"><img src="${t.src}" style="max-width:100%;display:block"></div>`:''};sheet()}
+
+/* Gallery + lightbox */
+function tGallery(e){const L=e.media;$('#tab').innerHTML=(L.length?`<div class="grid">${L.map((m,i)=>`<div class="card" data-m="m${i}"><div class="im" style="${bgCss()}"><img loading="lazy" src="${m.src}"></div><p>${esc(m.name)}${m.gif?' <span class="chip">GIF</span>':''}${pinsFor('im::m'+i).length?' 📌'+pinsFor('im::m'+i).length:''}</p></div>`).join('')}</div>`:'<p class="dim">Không có ảnh/GIF phụ trong Docs/VFX/'+esc(e.name)+'.</p>')
+ +(e.textures.length?`<h3>Texture (${e.textures.length})</h3><div class="grid">${e.textures.map((m,i)=>`<div class="card" data-m="t${i}"><div class="im" style="${bgCss()}"><img loading="lazy" src="${m.src}"></div><p>${esc(m.name)} ${m.size?`<span class="chip">${m.size[0]}×${m.size[1]}</span>`:''}</p></div>`).join('')}</div>`:'');
+ $('#tab').onclick=ev=>{const c=ev.target.closest('[data-m]');if(c)openLb(c.dataset.m)}}
+const LB={s:1,x:0,y:0,id:null};
+function openLb(id){const m=allMedia(E()).find(x=>x.id===id);if(!m)return;LB.id=id;$('#lbname').textContent=m.name;$('#lb').classList.add('open');$('#lbimg').src=m.src;
+ $('#lbimg').onload=()=>{fitLb();renderPins($('#lbpins'),'im::'+id)}}
+function fitLb(){const i=$('#lbimg'),v=$('#lbview');LB.s=Math.min(v.clientWidth/i.naturalWidth,v.clientHeight/i.naturalHeight,4);LB.x=(v.clientWidth-i.naturalWidth*LB.s)/2;LB.y=(v.clientHeight-i.naturalHeight*LB.s)/2;applyLb()}
+function applyLb(){const n=$('#lbinner');n.style.transform=`translate(${LB.x}px,${LB.y}px) scale(${LB.s})`;const i=$('#lbimg');n.style.width=i.naturalWidth+'px';n.style.height=i.naturalHeight+'px';$('#lbview').style.cssText=bgCss()}
+$('#lbview').addEventListener('wheel',ev=>{ev.preventDefault();const r=$('#lbview').getBoundingClientRect(),mx=ev.clientX-r.left,my=ev.clientY-r.top,k=ev.deltaY<0?1.15:1/1.15,ns=Math.min(32,Math.max(.1,LB.s*k));
+ LB.x=mx-(mx-LB.x)*ns/LB.s;LB.y=my-(my-LB.y)*ns/LB.s;LB.s=ns;applyLb()},{passive:false});
+let drag=null;$('#lbview').addEventListener('pointerdown',ev=>{if(U.pinMode)return;drag={x:ev.clientX-LB.x,y:ev.clientY-LB.y};$('#lbview').setPointerCapture(ev.pointerId)});
+$('#lbview').addEventListener('pointermove',ev=>{if(!drag)return;LB.x=ev.clientX-drag.x;LB.y=ev.clientY-drag.y;applyLb()});
+$('#lbview').addEventListener('pointerup',()=>drag=null);
+$('#lbfit').onclick=fitLb;$('#lbclose').onclick=closeLb;function closeLb(){$('#lb').classList.remove('open');if(U.tab==='gallery')renderMain();renderNav()}
+
+/* So sánh A/B */
+function tCmp(e){const L=allMedia(e);if(L.length<1){$('#tab').innerHTML='<p class="dim">Chưa có ảnh để so sánh.</p>';return}
+ if(!L.find(x=>x.id===U.cmpA))U.cmpA=L[0].id;if(!L.find(x=>x.id===U.cmpB))U.cmpB=(L[1]||L[0]).id;
+ const opt=v=>L.map(m=>`<option value="${m.id}" ${m.id===v?'selected':''}>${esc(m.name)}</option>`).join('');
+ const A=L.find(x=>x.id===U.cmpA),B=L.find(x=>x.id===U.cmpB);
+ $('#tab').innerHTML=`<div class="row"><b>A</b><select id="ca">${opt(U.cmpA)}</select><b>B</b><select id="cb">${opt(U.cmpB)}</select>
+  <span class="tabs" style="margin:0">${[['wipe','Kéo ngang'],['side','Cạnh nhau'],['blink','Nháy A/B']].map(([k,l])=>`<button data-cm="${k}" class="${U.cmpMode===k?'on':''}">${l}</button>`).join('')}</span></div>
+  <div class="drop" id="drop"><p class="dim" style="margin:2px">Kéo thả ảnh tham chiếu/concept từ máy vào đây (chỉ giữ trong phiên, không lưu) — rồi chọn nó ở A hoặc B.</p>
+  <div id="cmpv" style="${bgCss()};padding:8px;text-align:center"></div></div>`;
+ const v=$('#cmpv');
+ if(U.cmpMode==='side')v.innerHTML=`<div class="row" style="justify-content:center;align-items:flex-start"><div><div class="dim">A · ${esc(A.name)}</div><img src="${A.src}" style="max-width:100%;max-height:70vh"></div><div><div class="dim">B · ${esc(B.name)}</div><img src="${B.src}" style="max-width:100%;max-height:70vh"></div></div>`;
+ else if(U.cmpMode==='blink'){v.innerHTML=`<div class="cmp"><img id="bi" src="${A.src}"></div><div class="row" style="justify-content:center"><button id="bt">Đang xem A — bấm để đổi</button></div>`;let s=0;$('#bt').onclick=()=>{s^=1;$('#bi').src=s?B.src:A.src;$('#bt').textContent='Đang xem '+(s?'B':'A')+' — bấm để đổi'}}
+ else{v.innerHTML=`<div class="cmp" id="cw"><img src="${B.src}"><div class="top" id="ct"><img src="${A.src}"></div></div><div class="row" style="justify-content:center"><span>A</span><input type="range" id="wp" min="0" max="100" value="${U.wipe}" style="width:300px"><span>B</span></div>`;
+  const ap=()=>$('#ct').style.clipPath=`inset(0 ${100-U.wipe}% 0 0)`;ap();$('#wp').oninput=ev=>{U.wipe=+ev.target.value;ap()}}
+ $('#ca').onchange=ev=>{U.cmpA=ev.target.value;tCmp(e)};$('#cb').onchange=ev=>{U.cmpB=ev.target.value;tCmp(e)};
+ const dp=$('#drop');dp.ondragover=ev=>{ev.preventDefault();dp.classList.add('over')};dp.ondragleave=()=>dp.classList.remove('over');
+ dp.ondrop=ev=>{ev.preventDefault();dp.classList.remove('over');[...ev.dataTransfer.files].filter(f=>f.type.startsWith('image/')).forEach(f=>{const r=new FileReader();r.onload=()=>{const id='d'+Date.now()+Math.random().toString(36).slice(2,5);U.drops[id]={name:f.name,src:r.result};U.cmpA=id;tCmp(e)};r.readAsDataURL(f)})}}
+
+/* Kế hoạch & Build */
+function md(s){if(!s)return '<p class="dim">(trống)</p>';const L=s.replace(/\r/g,'').split('\n');let o='',tb=[];const fl=()=>{if(!tb.length)return;const rows=tb.filter(r=>!/^\s*\|?[\s:|-]+\|?\s*$/.test(r)).map(r=>r.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));o+='<table>'+rows.map((r,i)=>'<tr>'+r.map(c=>`<${i?'td':'th'}>${inl(c)}</${i?'td':'th'}>`).join('')+'</tr>').join('')+'</table>';tb=[]};
+ const inl=t=>esc(t).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+ for(const l of L){if(/^\s*\|/.test(l)){tb.push(l);continue}fl();let m;if(m=l.match(/^(#{1,4})\s+(.*)/))o+=`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`;else if(m=l.match(/^\s*[-*]\s+(.*)/))o+=`<div>• ${inl(m[1])}</div>`;else if(l.trim())o+=`<p style="margin:4px 0">${inl(l)}</p>`}fl();return o}
+function tPlan(e){$('#tab').innerHTML=`<div class="plan">${md(e.plan)}</div><h3>BuildReport</h3><pre>${esc(e.report||'(không có BuildReport.txt)')}</pre>`}
+
+/* ---------- right panel ---------- */
+function renderSide(keepFocus){const e=E();if(!e){$('#side').innerHTML='';return}const s=rv(e.name);const ae=document.activeElement;const fid=ae&&ae.dataset&&ae.dataset.pt?ae.dataset.pt:null;
+ $('#side').innerHTML=`<h3 style="margin-top:0">Đánh giá · ${esc(e.name)}</h3>
+ <div class="row status"><button class="ok ${s.status==='ok'?'on':''}" data-st="ok">✔ Duyệt</button><button class="fix ${s.status==='fix'?'on':''}" data-st="fix">✎ Cần sửa</button><button data-st="none" class="${s.status==='none'?'on':''}">?</button></div>
+ <textarea id="note" placeholder="Nhận xét chung (hình khối, màu, timing, cách kết thúc...)">${esc(s.note)}</textarea>
+ <div class="row" style="margin-top:8px"><button data-clr="del" class="${U.arm==='del'?'on':''}" title="Bỏ effect này khỏi danh sách review (không xóa file)">${U.arm==='del'?'Bấm lại để xóa':'✕ Xóa effect khỏi review'}</button><button data-clr="eff" class="${U.arm==='eff'?'on':''}">${U.arm==='eff'?'Bấm lại để xóa':'🗑 Xóa review effect này'}</button>${s.pins.length?`<button data-clr="pins" class="${U.arm==='pins'?'on':''}">${U.arm==='pins'?'Bấm lại để xóa':'Xóa hết ghim'}</button>`:''}</div>
+ <h3>Ghim góp ý (${s.pins.length})</h3>${s.pins.map((p,i)=>`<div class="pinitem ${U.hl===p.id?'hl':''}" data-id="${p.id}"><div class="h"><b style="color:var(--pin)">#${i+1}</b><a href="#" data-go="${p.id}" style="color:var(--acc)">${esc(p.label)}</a><span class="sp"></span><label><input type="checkbox" data-done="${p.id}" ${p.done?'checked':''}> xong</label><button data-del="${p.id}" style="padding:0 6px">✕</button></div><textarea data-pt="${p.id}" placeholder="Góp ý tại điểm này...">${esc(p.text)}</textarea></div>`).join('')||'<p class="dim">Bật 📌 Ghim góp ý (trên thanh trên) rồi click vào ảnh/frame để đánh dấu điểm cần sửa.</p>'}`;
+ if(fid){const t=$(`[data-pt="${fid}"]`);if(t){t.focus();t.selectionStart=t.selectionEnd=t.value.length}}
+ else if(keepFocus&&U.hl){const t=$(`[data-pt="${U.hl}"]`);if(t)t.focus()}}
+
+/* ---------- export ---------- */
+function mdOut(names){const out=['# Phản hồi review VFX — '+DATA.project+' ('+new Date().toLocaleString('vi-VN')+')',''];
+ for(const n of names){const s=rv(n);if(s.status==='none'&&!s.note&&!s.pins.length)continue;
+  out.push(`## ${n} — ${s.status==='ok'?'DUYỆT':s.status==='fix'?'CẦN SỬA':'chưa kết luận'}`);if(s.note)out.push(s.note);
+  s.pins.forEach((p,i)=>out.push(`- [${p.done?'x':' '}] #${i+1} **${p.label}** (x ${Math.round(p.x*100)}%, y ${Math.round(p.y*100)}%): ${p.text||'(chưa ghi)'}`));out.push('')}
+ return out.join('\n')}
+$('#exp').onclick=()=>{const t=mdOut(DATA.effects.map(e=>e.name));navigator.clipboard?.writeText(t).then(()=>toast('Đã copy phản hồi — dán vào chat'),()=>dl(t));if(!navigator.clipboard)dl(t)};
+function dl(t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/markdown'}));a.download='vfx_review_feedback.md';a.click();toast('Đã tải vfx_review_feedback.md')}
+
+/* ---------- xóa review (bấm 2 lần để xác nhận, không dùng confirm() vì iframe có thể chặn) ---------- */
+function clearReview(kind){
+ if(U.arm!==kind){U.arm=kind;clearTimeout(clearReview.t);clearReview.t=setTimeout(()=>{U.arm=null;renderSide();renderHead()},3000);
+  if(kind==='all'){$('#clrall').textContent='Bấm lại để xóa TẤT CẢ';$('#clrall').classList.add('on')}else renderSide();return}
+ clearTimeout(clearReview.t);U.arm=null;
+ if(kind==='all'){for(const k of Object.keys(ST))if(k!=='__hidden')delete ST[k];toast('Đã xóa toàn bộ review');$('#clrall').textContent='🗑 Xóa tất cả review';$('#clrall').classList.remove('on')}
+ else if(kind==='eff'){delete ST[E().name];toast('Đã xóa review của '+E().name)}
+ else if(kind==='del'){const n=E().name;delete ST[n];HID().push(n);DATA.effects=DATA.effects.filter(e=>e.name!==n);U.eff=Math.max(0,Math.min(U.eff,DATA.effects.length-1));U.frame=0;U.tex=0;toast('Đã xóa '+n+' khỏi review');save();renderHead();renderNav();renderMain();renderSide();return}
+ else if(kind==='pins'){rv(E().name).pins=[];toast('Đã xóa hết ghim')}
+ U.hl=null;save();renderNav();renderSide();refreshPins()}
+
+/* ---------- events ---------- */
+document.addEventListener('click',ev=>{const t=ev.target;let d;
+ if(d=t.closest('.eff')){U.eff=+d.dataset.i;U.frame=0;U.tex=0;renderNav();renderMain();renderSide()}
+ else if(d=t.closest('[data-tab]')){U.tab=d.dataset.tab;renderMain()}
+ else if(d=t.closest('[data-bg]')){U.bg=d.dataset.bg;renderHead();renderMain()}
+ else if(d=t.closest('[data-cm]')){U.cmpMode=d.dataset.cm;renderMain()}
+ else if(d=t.closest('[data-st]')){rv(E().name).status=d.dataset.st;save();renderNav();renderSide()}
+ else if(d=t.closest('[data-del]')){const s=rv(E().name);s.pins=s.pins.filter(p=>p.id!==+d.dataset.del);save();renderSide();refreshPins();renderNav()}
+ else if(d=t.closest('[data-clr]')){clearReview(d.dataset.clr)}
+ else if(t.closest('#restore')){ST.__hidden=[];save();location.reload()}
+ else if(t.closest('#clrall')){clearReview('all')}
+ else if(d=t.closest('[data-go]')){ev.preventDefault();gotoPin(+d.dataset.go)}
+ else if(t.closest('#pinmode')){U.pinMode=!U.pinMode;renderHead();document.querySelectorAll('.pins').forEach(p=>p.classList.toggle('mode',U.pinMode))}
+ else if(d=t.closest('.pinitem')){U.hl=+d.dataset.id;document.querySelectorAll('.pinitem').forEach(x=>x.classList.toggle('hl',+x.dataset.id===U.hl));refreshPins()}});
+document.addEventListener('input',ev=>{const t=ev.target;if(t.id==='note'){rv(E().name).note=t.value;save()}
+ else if(t.dataset.pt){const p=rv(E().name).pins.find(p=>p.id===+t.dataset.pt);if(p){p.text=t.value;save()}}});
+document.addEventListener('change',ev=>{const t=ev.target;if(t.dataset.done){const p=rv(E().name).pins.find(p=>p.id===+t.dataset.done);if(p){p.done=t.checked;save();refreshPins();renderNav()}}});
+function refreshPins(){const e=E();if(U.tab==='preview'&&e.timeline&&$('#tlpins'))renderPins($('#tlpins'),'tl::'+U.frame);
+ if(U.tab==='flip'&&$('#fbpins')&&window._fstep){/* vẽ lại ở frame kế */}
+ if($('#lb').classList.contains('open'))renderPins($('#lbpins'),'im::'+LB.id)}
+function gotoPin(id){const p=rv(E().name).pins.find(p=>p.id===id);if(!p)return;U.hl=id;const [k,v]=p.target.split('::');
+ if(k==='tl'){U.tab='preview';U.frame=+v;renderMain()}else if(k==='im'){if(v[0]==='t'||v[0]==='m'){U.tab='gallery';renderMain();openLb(v)}else{U.tab='cmp';renderMain()}}
+ else if(k==='fb'){U.tab='flip';U.tex=(+v)>>8;renderMain()}renderSide()}
+document.addEventListener('keydown',ev=>{if(/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName))return;
+ if(ev.key==='Escape')closeLb();
+ if(U.tab==='preview'&&window._set&&E().timeline){const n=E().timeline.frames;if(ev.key==='ArrowRight')_set(Math.min(n-1,U.frame+1));if(ev.key==='ArrowLeft')_set(Math.max(0,U.frame-1))}
+ if(U.tab==='flip'&&window._fstep){if(ev.key==='ArrowRight')_fstep(1);if(ev.key==='ArrowLeft')_fstep(-1)}
+ if(ev.key==='p'||ev.key==='P'){U.pinMode=!U.pinMode;renderHead();document.querySelectorAll('.pins').forEach(p=>p.classList.toggle('mode',U.pinMode))}});
+
+if(!DATA){document.body.innerHTML='<p style="padding:20px">Mở file này sau khi chạy build_review.py (chưa có dữ liệu).</p>'}
+else{document.documentElement.dataset.ui='dark';renderHead();renderNav();renderMain();renderSide()}
+</script>
+</body>
+</html>
