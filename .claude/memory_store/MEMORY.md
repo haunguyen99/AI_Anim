@@ -133,3 +133,6 @@
 - [Paseo trên Linux](reference-paseo-linux-launcher.md) — chỉ dùng AppImage 0.16.x, lối tắt không có --gtk-version=3 (2026-11-19)
 - [Pet mesh v2 bài học](project-pet-mesh-v2-lessons.md) — thay mesh 6 Pet 18/11: so số mesh, tạo phiên "chưa làm", rig dáng gốc + texture lật, bẫy Frolvy Linux (2026-11-19)
 - [Pirate-wars](project-pirate-wars.md) — Unity /home/haunv/Documents/Project/pirate-wars, có AGENTS.md + CONTEXT.md (2026-11-20)
+- [Skin check: full ROM + wireframe](skin-check-full-rom-wireframe.md) — sweep every joint over full angle range, judge by even wireframe stretch
+- [Pose: no CTL curves](pose-no-ctl-curves.md) — animate by picking joint dots; user removed FK/IK curve controls
+- [Rig step owns physics setup](rig-step-owns-physics-setup.md) — control joints, joint limits, colliders, mass belong in Rig, read by Pose
