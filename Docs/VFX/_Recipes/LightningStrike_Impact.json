@@ -1,0 +1,8 @@
+{
+  "name": "LightningStrike_Impact",
+  "version": 1,
+  "palette": { "Core": "#FFFBE0", "Mid": "#FFD84A", "Outer": "#E8801A", "Dust": "#B89A70" },
+  "items": [
+    { "id": "IMP_Hit_Ground_01", "delay": 0.0, "duration": 0.35, "size": 0.8, "intensity": 0.9, "rotation": 0, "offset": [0, 0, 0] }
+  ]
+}

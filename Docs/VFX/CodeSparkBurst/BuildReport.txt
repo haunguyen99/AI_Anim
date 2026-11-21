@@ -1,0 +1,7 @@
+Built: 2026-11-03 15:30 (vfx-code, code render — chưa dựng trong Unity)
+Source: D:/Game_prj/VFX_LIb/.claude/skills/vfx-code/examples/spark_burst.py
+Preview times (s): 0.000, 0.034, 0.069, 0.103, 0.138, 0.172, 0.206, 0.241, 0.275, 0.309, 0.344, 0.378, 0.413, 0.447, 0.481, 0.516
+Blend: add · duration 0.550s · loop False · 16 frame 4x4 · 256x256/ô
+Space: air · billboard · camera 3/4 40 · 1.5 m · neo world point (điểm trúng) · nền dark
+Sheets: T_CFX_Spark_Burst_4x4.png
+Check: sạch

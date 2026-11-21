@@ -1,0 +1,14 @@
+Effect: HealCircle   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 19:38:19
+Preview times (s): 0.05, 0.15, 0.35, 0.7, 1.2, 1.8, 2.3, 2.6, 2.85
+
+Layers:
+  VFX_HealCircle/GroundGlow  max=1  life=2.8  mode=Billboard  mat=M_HealCircle_Glow_Add (Mobile/Particles/Additive)
+  VFX_HealCircle/RuneOuter  max=1  life=2.8  mode=Billboard  mat=M_HealCircle_RuneOuter_Add (Mobile/Particles/Additive)
+  VFX_HealCircle/RuneInner  max=1  life=2.7  mode=Billboard  mat=M_HealCircle_RuneInner_Add (Mobile/Particles/Additive)
+  VFX_HealCircle/Beam  max=1  life=2.2  mode=Stretch  mat=M_HealCircle_Beam_Add (Mobile/Particles/Additive)
+  VFX_HealCircle/Motes  max=40  life=1.2  mode=Billboard  mat=M_HealCircle_Mote_Add (Mobile/Particles/Additive)
+  VFX_HealCircle/Sparkles  max=14  life=0.6  mode=Billboard  mat=M_HealCircle_Sparkle_Add (Mobile/Particles/Additive)
+Total maxParticles: 58
+
+Errors: none

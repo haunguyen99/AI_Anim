@@ -1,0 +1,14 @@
+Effect: FireballImpact   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-10-28 17:15:12
+Preview times (s): 0.45, 0.7, 0.9, 1, 1.15, 1.35, 1.6, 1.8
+
+Layers:
+  VFX_FireballImpact/L1_Fireball  max=50  life=0.9  mode=Billboard  mat=M_FireballImpact_Ball_Add (VFX/FX/Meteor)
+  VFX_FireballImpact/L2_Blast  max=50  life=0.7  mode=Billboard  mat=M_FireballImpact_Blast_Add (VFX/FX/Blast)
+  VFX_FireballImpact/L3_Ring  max=50  life=0.6  mode=HorizontalBillboard  mat=M_FireballImpact_Ring_Add (VFX/FX/Blast)
+  VFX_FireballImpact/L6_Scorch  max=50  life=0.85  mode=HorizontalBillboard  mat=M_FireballImpact_Scorch_Alpha (VFX/FX/Smoke)
+  VFX_FireballImpact/L4_Smoke  max=3  life=0.6  mode=Billboard  mat=M_FireballImpact_Smoke_Alpha (VFX/FX/Smoke)
+  VFX_FireballImpact/L5_Sparks  max=14  life=0.7  mode=Stretch  mat=M_FireballImpact_Spark_Add (VFX/FX/Spark)
+Total maxParticles: 217
+
+Errors: none

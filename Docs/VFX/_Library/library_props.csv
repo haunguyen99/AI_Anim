@@ -1,0 +1,497 @@
+﻿file,direction,direction_nhap,sheet,w,h,aspect,kind,color,mean_lum,coverage,rot_corr,edge_touch,warn
+beam/beam_001.png,dir,dir,0,256,256,1.0,alpha,gray,0.17,0.197,0.34,0,
+glow/flare/glow_flare_001.png,omni,omni,0,1024,1024,1.0,black_bg,color,0.061,0.034,0.93,0,
+glow/flare/glow_flare_002.png,omni,omni,0,512,512,1.0,black_bg,gray,0.085,0.086,1.0,0,
+glow/flare/glow_flare_003.png,omni,omni,0,256,256,1.0,alpha,gray,0.107,0.154,0.98,0,
+glow/flare/glow_flare_004.png,omni,omni,0,256,256,1.0,black_bg,gray,0.098,0.11,1.0,0,
+glow/flare/glow_flare_005.png,omni,omni,0,256,256,1.0,black_bg,gray,0.107,0.109,1.0,0,
+glow/flare/glow_flare_006.png,omni,omni,0,512,512,1.0,black_bg,gray,0.079,0.09,1.0,0,
+glow/flare/glow_flare_007.png,omni,omni,0,512,512,1.0,alpha,gray,0.021,0.036,1.0,0,
+glow/flare/glow_flare_008.png,omni,omni,0,512,512,1.0,black_bg,gray,0.076,0.081,1.0,0,
+glow/flare/glow_flare_009.png,omni,omni,0,512,512,1.0,black_bg,gray,0.035,0.033,0.99,0,
+glow/flare/glow_flare_010.png,omni,omni,0,512,512,1.0,alpha,gray,0.036,0.044,1.0,0,
+glow/halo/glow_halo_001.png,omni,omni,0,256,256,1.0,black_bg,gray,0.117,0.053,0.99,0,
+glow/halo/glow_halo_002.png,omni,omni,0,128,128,1.0,alpha,color,0.124,0.168,1.0,0,
+glow/halo/glow_halo_003.png,omni,omni,0,128,128,1.0,alpha,color,0.159,0.177,1.0,0,
+glow/soft_oval/glow_soft_oval_001.png,omni,omni,0,512,512,1.0,black_bg,gray,0.043,0.057,0.81,0,
+glow/soft_oval/glow_soft_oval_002.png,omni,omni,0,512,512,1.0,black_bg,gray,0.153,0.198,0.93,0,
+glow/soft_round/glow_soft_round_001.png,omni,omni,0,256,256,1.0,alpha,gray,0.296,0.41,1.0,0,
+glow/soft_round/glow_soft_round_002.png,omni,omni,0,128,128,1.0,alpha,gray,0.082,0.095,0.99,0,
+glow/soft_round/glow_soft_round_003.png,omni,omni,0,128,128,1.0,alpha,gray,0.151,0.207,1.0,0,
+glow/soft_round/glow_soft_round_004.png,omni,omni,0,512,512,1.0,alpha,gray,0.108,0.139,0.99,0,
+glow/soft_round/glow_soft_round_005.png,omni,omni,0,329,329,1.0,alpha,gray,0.141,0.173,1.0,0,không POT
+glow/soft_round/glow_soft_round_006.png,omni,omni,0,256,256,1.0,black_bg,gray,0.127,0.136,1.0,0,
+glow/soft_round/glow_soft_round_007.png,omni,omni,0,500,500,1.0,black_bg,gray,0.194,0.205,1.0,0,không POT
+glow/soft_round/glow_soft_round_008.png,omni,omni,0,128,128,1.0,black_bg,gray,0.261,0.33,1.0,0,
+glow/soft_round/glow_soft_round_009.png,omni,omni,0,512,512,1.0,black_bg,gray,0.229,0.3,1.0,0,
+glow/soft_round/glow_soft_round_010.png,omni,omni,0,512,512,1.0,opaque,color,0.435,0.686,1.0,0,"không alpha, không nền đen"
+glow/soft_round/glow_soft_round_011.png,omni,omni,0,256,256,1.0,alpha,gray,0.122,0.148,1.0,0,
+glow/soft_round/glow_soft_round_012.png,omni,omni,0,512,512,1.0,alpha,gray,0.124,0.15,1.0,0,
+glow/soft_round/glow_soft_round_013.png,omni,omni,0,512,512,1.0,alpha,gray,0.405,0.468,1.0,0,
+glow/soft_round/glow_soft_round_014.png,omni,omni,0,512,512,1.0,alpha,gray,0.364,0.41,1.0,0,
+glow/soft_round/glow_soft_round_015.png,omni,omni,0,512,512,1.0,alpha,gray,0.125,0.152,1.0,0,
+glow/soft_round/glow_soft_round_016.png,omni,omni,0,512,512,1.0,alpha,gray,0.159,0.417,0.98,0,
+glow/soft_round/glow_soft_round_017.png,omni,omni,0,512,512,1.0,black_bg,gray,0.298,0.417,0.98,0,
+glow/soft_round/glow_soft_round_018.png,omni,omni,0,1024,1024,1.0,black_bg,gray,0.161,0.206,1.0,0,
+glow/soft_round/glow_soft_round_019.png,omni,omni,0,512,512,1.0,black_bg,gray,0.317,0.364,1.0,0,
+glow/soft_round/glow_soft_round_020.png,omni,omni,0,256,256,1.0,black_bg,gray,0.124,0.117,1.0,0,
+glow/soft_round/glow_soft_round_021.png,omni,omni,0,512,512,1.0,alpha,gray,0.049,0.026,1.0,0,
+glow/soft_round/glow_soft_round_022.png,omni,omni,0,256,256,1.0,alpha,gray,0.078,0.057,1.0,0,
+glow/soft_round/glow_soft_round_023.png,omni,omni,0,512,512,1.0,black_bg,gray,0.138,0.17,1.0,0,
+glow/soft_round/glow_soft_round_024.png,omni,omni,0,256,256,1.0,alpha,gray,0.07,0.169,1.0,0,
+glow/soft_round/glow_soft_round_025.png,omni,omni,0,512,512,1.0,black_bg,gray,0.327,0.381,1.0,0,
+glow/soft_round/glow_soft_round_026.png,omni,omni,0,64,64,1.0,alpha,gray,0.076,0.059,1.0,0,nhỏ <128
+glow/soft_round/glow_soft_round_027.tga,omni,dir,0,256,128,2.0,alpha,color,0.212,0.431,0.11,0,
+glow/soft_round/glow_soft_round_028.png,omni,omni,0,128,128,1.0,alpha,gray,0.531,0.552,1.0,0,
+glow/soft_round/glow_soft_round_029.png,omni,omni,0,128,128,1.0,black_bg,gray,0.318,0.413,1.0,0,
+glow/soft_round/glow_soft_round_030.png,omni,omni,0,128,128,1.0,black_bg,gray,0.456,0.547,1.0,0,
+glow/soft_round/glow_soft_round_031.png,omni,omni,0,256,256,1.0,black_bg,gray,0.249,0.346,1.0,0,
+glow/soft_round/glow_soft_round_032.png,omni,omni,0,256,256,1.0,alpha,gray,0.148,0.252,1.0,0,
+glow/soft_round/glow_soft_round_033.png,omni,omni,0,128,128,1.0,alpha,gray,0.051,0.158,1.0,0,
+glow/soft_round/glow_soft_round_034.png,omni,omni,0,512,512,1.0,alpha,gray,0.405,0.468,1.0,0,
+glow/soft_round/glow_soft_round_035.png,omni,omni,0,512,512,1.0,black_bg,gray,0.024,0.017,0.97,0,
+glow/soft_shape/glow_soft_shape_001.png,omni,omni,0,512,512,1.0,alpha,gray,0.215,0.255,1.0,0,
+glow/soft_shape/glow_soft_shape_002.png,omni,omni,0,512,512,1.0,black_bg,gray,0.149,0.11,1.0,0,
+glow/soft_shape/glow_soft_shape_003.png,omni,omni,0,512,512,1.0,black_bg,gray,0.144,0.111,0.84,0,
+ground/crack_line/ground_crack_line_001.png,dir,dir,0,128,512,0.25,alpha,gray,0.017,0.026,-0.02,0,
+ground/crack_line/ground_crack_line_002.png,dir,dir,0,1024,512,2.0,alpha,gray,0.073,0.081,0.06,0,
+ground/crack_line/ground_crack_line_003.png,dir,dir,0,1024,512,2.0,alpha,gray,0.093,0.1,0.08,0,
+ground/crack_line/ground_crack_line_004.png,dir,dir,0,1024,512,2.0,alpha,gray,0.058,0.065,0.04,0,
+ground/crack_line/ground_crack_line_005.psd,dir,dir,0,1024,512,2.0,alpha,gray,0.034,0.065,0.06,0,
+ground/crack_line/ground_crack_line_006.png,dir,dir,0,1024,512,2.0,alpha,gray,0.033,0.065,0.06,0,
+ground/crack_line/ground_crack_line_007.png,dir,dir,0,512,512,1.0,alpha,gray,0.028,0.111,0.11,0,
+ground/crack_line/ground_crack_line_008.png,dir,dir,0,512,512,1.0,alpha,gray,0.025,0.046,0.03,0,
+ground/crack_line/ground_crack_line_009.png,dir,dir,0,1774,887,2.0,alpha,gray,0.036,0.045,0.03,0,không POT
+ground/crack_line/ground_crack_line_010.png,dir,dir,0,512,1024,0.5,alpha,gray,0.114,0.117,0.19,0,
+ground/crack_line/ground_crack_line_011.png,dir,dir,0,512,1024,0.5,alpha,gray,0.078,0.117,0.19,0,
+ground/crack_line/ground_crack_line_012.png,dir,dir,0,512,985,0.52,alpha,gray,0.022,0.034,0.03,0,không POT
+ground/crack_line/ground_crack_line_013.png,dir,dir,0,1024,512,2.0,alpha,gray,0.044,0.077,0.1,0,
+ground/crack_line/ground_crack_line_014.png,dir,dir,0,448,454,0.99,alpha,gray,0.081,0.106,0.09,0,không POT
+ground/crack_line/ground_crack_line_015.png,dir,dir,0,512,1024,0.5,alpha,gray,0.03,0.029,0.13,0,
+ground/crack_line/ground_crack_line_016.png,dir,dir,0,512,1024,0.5,black_bg,gray,0.034,0.054,0.2,0,
+ground/crack_radial/ground_crack_radial_001.png,omni,xem,0,512,512,1.0,black_bg,gray,0.238,0.254,0.61,1,chạm mép (có thể cắt vuông)
+ground/crack_radial/ground_crack_radial_002.png,omni,xem,0,512,512,1.0,alpha,gray,0.063,0.098,0.48,0,
+ground/crack_radial/ground_crack_radial_003.psd,omni,omni,0,512,512,1.0,alpha,gray,0.182,0.408,0.94,0,
+ground/crack_radial/ground_crack_radial_004.png,omni,dir,0,512,512,1.0,black_bg,gray,0.044,0.049,0.08,1,chạm mép (có thể cắt vuông)
+ground/crack_radial/ground_crack_radial_005.png,omni,dir,0,512,512,1.0,black_bg,gray,0.094,0.105,0.04,1,chạm mép (có thể cắt vuông)
+ground/crack_radial/ground_crack_radial_006.png,omni,dir,0,1254,1254,1.0,black_bg,gray,0.167,0.171,0.17,1,chạm mép (có thể cắt vuông); không POT
+ground/crack_radial/ground_crack_radial_007.png,omni,dir,0,1024,1024,1.0,black_bg,gray,0.033,0.039,0.24,0,
+ground/crack_radial/ground_crack_radial_008.png,omni,xem,0,1024,1024,1.0,alpha,gray,0.037,0.093,0.71,0,
+ground/crack_radial/ground_crack_radial_009.png,omni,xem,0,512,512,1.0,black_bg,gray,0.158,0.171,0.56,0,
+ground/crack_radial/ground_crack_radial_010.png,omni,xem,0,512,512,1.0,black_bg,gray,0.144,0.155,0.45,0,
+ground/crack_radial/ground_crack_radial_011.png,omni,xem,0,512,512,1.0,black_bg,gray,0.277,0.343,0.5,0,
+ground/crack_radial/ground_crack_radial_012.png,omni,dir,0,2048,2048,1.0,alpha,gray,0.043,0.044,0.12,0,
+ground/crack_radial/ground_crack_radial_013.png,omni,xem,0,1024,1024,1.0,black_bg,gray,0.068,0.081,0.46,0,
+ground/crack_radial/ground_crack_radial_014.png,omni,dir,0,1024,1024,1.0,alpha,gray,0.058,0.084,0.41,0,
+ground/crack_x/ground_crack_x_001.png,omni,omni,0,512,512,1.0,alpha,gray,0.206,0.208,0.82,0,
+ground/crack_x/ground_crack_x_002.png,omni,xem,0,1254,1254,1.0,black_bg,gray,0.105,0.106,0.5,0,không POT
+ground/crack_x/ground_crack_x_003.png,omni,omni,0,512,512,1.0,alpha,gray,0.085,0.146,0.78,1,chạm mép (có thể cắt vuông)
+ground/indicator/ground_indicator_001.png,dir,dir,0,512,512,1.0,alpha,gray,0.591,0.593,0.26,0,
+ground/indicator/ground_indicator_002.png,dir,dir,0,512,512,1.0,alpha,gray,0.37,0.593,0.13,0,
+ground/indicator/ground_indicator_003.png,dir,xem,0,512,512,1.0,alpha,gray,0.254,0.255,0.51,0,
+ground/indicator/ground_indicator_004.png,dir,xem,0,1024,1024,1.0,alpha,gray,0.282,0.313,0.49,0,
+ground/scorch/ground_scorch_001.png,omni,omni,0,1024,1024,1.0,black_bg,gray,0.148,0.243,0.8,0,
+ground/scorch/ground_scorch_002.png,dir,dir,0,1024,1024,1.0,black_bg,gray,0.285,0.478,-0.01,1,chạm mép (có thể cắt vuông)
+ground/scorch/ground_scorch_003.png,omni,omni,0,256,256,1.0,alpha,gray,0.016,0.087,0.79,0,
+ground/splat/ground_splat_001.psd,omni,xem,0,128,128,1.0,alpha,gray,0.351,0.367,0.7,0,
+ground/splat/ground_splat_002.png,omni,xem,0,256,255,1.0,alpha,gray,0.083,0.123,0.59,0,không POT
+ground/splat/ground_splat_003.jpg,omni,xem,0,600,600,1.0,black_bg,gray,0.289,0.32,0.7,0,không POT
+ground/splat/ground_splat_004.png,omni,xem,0,512,512,1.0,alpha,gray,0.046,0.1,0.45,0,
+ground/splat/ground_splat_005.png,omni,xem,0,256,256,1.0,black_bg,gray,0.083,0.1,0.66,0,
+impact/flash_spiky/impact_flash_spiky_001.psd,omni,xem,0,256,256,1.0,alpha,gray,0.119,0.123,0.73,0,
+impact/flash_spiky/impact_flash_spiky_002.png,omni,omni,0,512,512,1.0,black_bg,gray,0.063,0.06,0.82,0,
+impact/flash_spiky/impact_flash_spiky_003.jpg,omni,dir,0,553,555,1.0,black_bg,gray,0.114,0.123,0.19,0,không POT
+impact/flash_spiky/impact_flash_spiky_004.png,dir,xem,0,512,512,1.0,black_bg,tinted,0.055,0.053,0.72,0,
+impact/flash_spiky/impact_flash_spiky_005.png,omni,omni,0,256,256,1.0,black_bg,gray,0.209,0.253,0.9,0,
+impact/flash_spiky/impact_flash_spiky_006.png,omni,xem,0,256,256,1.0,alpha,gray,0.118,0.127,0.6,0,
+impact/flash_spiky/impact_flash_spiky_007.png,omni,omni,0,512,512,1.0,alpha,gray,0.083,0.091,0.86,0,
+impact/flash_spiky/impact_flash_spiky_008.png,dir,dir,0,512,512,1.0,alpha,gray,0.081,0.125,0.41,0,
+impact/flash_spiky/impact_flash_spiky_009.png,dir,xem,0,512,512,1.0,alpha,gray,0.034,0.095,0.45,0,
+impact/flash_spiky/impact_flash_spiky_010.png,dir,dir,0,512,512,1.0,alpha,gray,0.1,0.104,0.41,0,
+impact/flash_spiky/impact_flash_spiky_011.png,omni,dir,0,256,256,1.0,black_bg,gray,0.037,0.042,0.42,0,
+impact/flash_spiky/impact_flash_spiky_012.png,omni,xem,0,256,256,1.0,alpha,gray,0.152,0.155,0.74,0,
+impact/flash_spiky/impact_flash_spiky_013.png,dir,dir,0,512,512,1.0,alpha,gray,0.301,0.332,0.0,1,chạm mép (có thể cắt vuông)
+impact/flash_spiky/impact_flash_spiky_014.png,omni,xem,0,512,512,1.0,alpha,gray,0.122,0.14,0.72,0,
+impact/flipbook/impact_flipbook_001.psd,omni,dir,1,3072,4096,0.75,alpha,color,0.028,0.06,-0.06,0,không POT
+impact/flipbook/impact_flipbook_002.psd,omni,dir,1,2048,1024,2.0,alpha,color,0.014,0.027,0.02,0,
+impact/flipbook/impact_flipbook_003.psd,dir,dir,1,1536,1024,1.5,alpha,color,0.04,0.071,-0.03,0,không POT
+impact/flipbook/impact_flipbook_004.png,dir,xem,1,512,512,1.0,black_bg,color,0.09,0.108,0.5,0,
+impact/flipbook/impact_flipbook_005.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.078,0.078,0.02,0,
+impact/flipbook/impact_flipbook_006.png,omni,dir,1,1024,1024,1.0,alpha,tinted,0.036,0.035,0.22,0,
+impact/flipbook/impact_flipbook_007.png,omni,dir,1,984,716,1.37,alpha,color,0.001,0.0,-0.0,0,không POT
+impact/flipbook/impact_flipbook_008.png,omni,xem,1,1024,1024,1.0,alpha,tinted,0.019,0.149,0.67,0,
+impact/flipbook/impact_flipbook_009.png,omni,xem,1,1024,1024,1.0,alpha,tinted,0.018,0.149,0.67,0,
+impact/flipbook/impact_flipbook_010.png,omni,dir,1,1024,1024,1.0,alpha,tinted,0.007,0.008,0.08,0,
+impact/flipbook/impact_flipbook_011.png,omni,dir,1,1024,1024,1.0,alpha,color,0.007,0.008,0.08,0,
+impact/flipbook/impact_flipbook_012.png,omni,dir,1,1024,1024,1.0,alpha,color,0.012,0.014,0.16,0,
+impact/flipbook/impact_flipbook_013.png,dir,dir,1,512,512,1.0,alpha,gray,0.049,0.065,0.12,0,
+impact/flipbook/impact_flipbook_014.tga,omni,dir,1,2048,2048,1.0,alpha,color,0.149,0.3,0.17,0,
+impact/flipbook/impact_flipbook_015.png,dir,dir,1,3630,4096,0.89,alpha,gray,0.038,0.057,-0.08,0,không POT
+impact/flipbook/impact_flipbook_016.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.117,0.128,0.27,0,
+impact/flipbook/impact_flipbook_017.png,omni,xem,1,512,512,1.0,black_bg,gray,0.046,0.035,0.72,0,
+impact/flipbook/impact_flipbook_018.png,dir,dir,1,512,512,1.0,black_bg,gray,0.06,0.061,0.42,0,
+impact/flipbook/impact_flipbook_019.png,omni,xem,1,4096,4096,1.0,alpha,gray,0.068,0.104,0.64,1,chạm mép (có thể cắt vuông)
+impact/flipbook/impact_flipbook_020.png,dir,dir,1,512,512,1.0,alpha,gray,0.156,0.178,0.32,0,
+impact/flipbook/impact_flipbook_021.png,dir,dir,1,512,512,1.0,alpha,gray,0.142,0.157,0.34,0,
+impact/flipbook/impact_flipbook_022.png,dir,dir,1,512,512,1.0,black_bg,gray,0.077,0.088,-0.01,0,
+impact/radial_ring/impact_radial_ring_001.psd,omni,xem,0,512,512,1.0,black_bg,gray,0.077,0.073,0.52,0,
+impact/radial_ring/impact_radial_ring_002.png,omni,xem,0,512,512,1.0,alpha,gray,0.056,0.092,0.61,0,
+impact/radial_ring/impact_radial_ring_003.png,omni,xem,0,1024,1024,1.0,black_bg,gray,0.146,0.193,0.48,0,
+impact/radial_ring/impact_radial_ring_004.png,omni,xem,0,1024,1024,1.0,black_bg,gray,0.1,0.136,0.58,0,
+impact/radial_ring/impact_radial_ring_005.png,omni,xem,0,256,256,1.0,alpha,gray,0.124,0.158,0.46,0,
+impact/radial_ring/impact_radial_ring_006.png,omni,xem,0,256,256,1.0,black_bg,gray,0.132,0.151,0.62,0,
+impact/shard/impact_shard_001.png,dir,dir,0,512,512,1.0,black_bg,gray,0.19,0.194,-0.03,0,
+impact/shard/impact_shard_002.png,dir,dir,0,256,256,1.0,alpha,gray,0.079,0.092,0.01,0,
+lightning/psd.psd,dir,dir,0,512,512,1.0,black_bg,gray,0.004,0.0,0.04,0,
+lightning/arc_sheet/lightning_arc_sheet_001.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.014,0.011,0.22,0,
+lightning/arc_sheet/lightning_arc_sheet_002.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.019,0.019,0.15,0,
+lightning/arc_sheet/lightning_arc_sheet_003.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.017,0.019,-0.0,0,
+lightning/arc_sheet/lightning_arc_sheet_004.png,dir,dir,1,512,512,1.0,alpha,color,0.054,0.056,0.13,0,
+lightning/arc_sheet/lightning_arc_sheet_005.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.022,0.016,0.1,0,
+lightning/arc_sheet/lightning_arc_sheet_006.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.053,0.056,0.08,0,
+lightning/arc_sheet/lightning_arc_sheet_007.png,dir,dir,1,2048,1536,1.33,black_bg,color,0.025,0.03,0.02,0,không POT
+lightning/arc_single/lightning_arc_single_001.png,dir,dir,0,512,256,2.0,black_bg,gray,0.18,0.309,0.06,1,chạm mép (có thể cắt vuông)
+lightning/bolt_sheet/lightning_bolt_sheet_001.png,dir,dir,1,512,512,1.0,black_bg,gray,0.048,0.046,0.0,0,
+lightning/bolt_sheet/lightning_bolt_sheet_002.png,dir,dir,1,1024,1024,1.0,alpha,color,0.024,0.044,0.01,0,
+lightning/bolt_sheet/lightning_bolt_sheet_003.png,dir,dir,1,2570,514,5.0,alpha,gray,0.013,0.014,-0.01,0,không POT
+lightning/bolt_sheet/lightning_bolt_sheet_004.png,dir,dir,1,1024,2048,0.5,black_bg,gray,0.08,0.076,-0.03,1,chạm mép (có thể cắt vuông)
+lightning/bolt_sheet/lightning_bolt_sheet_005.png,dir,dir,1,2048,2048,1.0,alpha,gray,0.06,0.061,0.02,0,
+lightning/bolt_sheet/lightning_bolt_sheet_006.png,dir,dir,1,1024,2048,0.5,alpha,gray,0.035,0.035,0.07,0,
+lightning/bolt_sheet/lightning_bolt_sheet_007.png,dir,dir,1,512,1024,0.5,black_bg,color,0.033,0.044,0.0,0,
+lightning/bolt_sheet/lightning_bolt_sheet_008.png,dir,dir,1,2048,1024,2.0,alpha,gray,0.049,0.059,0.0,0,
+lightning/bolt_sheet/lightning_bolt_sheet_009.png,dir,dir,1,1024,2048,0.5,alpha,gray,0.082,0.081,-0.0,0,
+lightning/bolt_sheet/lightning_bolt_sheet_010.png,dir,dir,1,1024,2048,0.5,alpha,gray,0.112,0.113,0.08,0,
+lightning/bolt_sheet/lightning_bolt_sheet_011.png,dir,dir,1,1024,2048,0.5,alpha,gray,0.062,0.058,0.06,0,
+lightning/bolt_sheet/lightning_bolt_sheet_012.png,dir,dir,1,1024,2048,0.5,alpha,gray,0.069,0.067,-0.01,0,
+lightning/bolt_sheet/lightning_bolt_sheet_013.png,dir,dir,0,1024,2048,0.5,alpha,gray,0.21,0.217,0.03,0,
+mask/gradient/mask_gradient_001.png,na,dir,0,512,512,1.0,alpha,gray,0.183,0.237,0.17,0,
+mask/gradient/mask_gradient_002.psd,na,dir,0,512,512,1.0,black_bg,gray,0.395,0.446,-0.05,1,chạm mép (có thể cắt vuông)
+mask/gradient/mask_gradient_003.png,na,dir,0,2048,512,4.0,black_bg,gray,0.604,0.605,0.41,0,
+mask/gradient/mask_gradient_004.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.506,0.554,0.29,0,
+mask/gradient/mask_gradient_005.png,na,dir,0,256,256,1.0,black_bg,gray,0.242,0.32,-0.08,0,
+mask/gradient/mask_gradient_006.png,na,dir,0,1021,256,3.99,black_bg,gray,0.296,0.373,0.28,0,không POT
+mask/gradient/mask_gradient_007.png,na,dir,0,512,512,1.0,alpha,gray,0.498,0.677,-0.0,1,chạm mép (có thể cắt vuông)
+mask/gradient/mask_gradient_008.png,na,dir,0,512,512,1.0,opaque,gray,0.538,0.688,-0.0,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+mask/gradient/mask_gradient_009.png,na,dir,0,512,512,1.0,alpha,gray,0.498,0.677,0.0,1,chạm mép (có thể cắt vuông)
+noise/cell/noise_cell_001.png,na,dir,0,1024,1024,1.0,opaque,gray,0.543,0.917,-0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_002.psd,na,dir,0,1024,1024,1.0,opaque,gray,0.543,0.917,-0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_003.png,na,dir,0,512,512,1.0,opaque,gray,0.441,0.773,0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_004.jpg,na,dir,0,350,350,1.0,opaque,gray,0.844,0.86,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen; không POT"
+noise/cell/noise_cell_005.png,na,dir,0,1024,1024,1.0,opaque,gray,0.42,0.801,-0.16,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_006.png,na,dir,0,512,512,1.0,opaque,gray,0.301,0.418,-0.16,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_007.png,na,dir,0,512,512,1.0,opaque,gray,0.323,0.487,-0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_008.png,na,dir,0,256,256,1.0,opaque,gray,0.408,0.725,-0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_009.png,na,dir,0,1024,1024,1.0,opaque,gray,0.536,0.89,0.04,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_010.png,na,dir,0,256,256,1.0,opaque,gray,0.826,0.793,0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_011.png,na,dir,0,1024,1024,1.0,opaque,gray,0.301,0.425,0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_012.png,na,dir,0,512,512,1.0,opaque,gray,0.559,0.815,0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_013.png,na,dir,0,512,512,1.0,opaque,gray,0.31,0.464,0.15,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_014.png,na,dir,0,1024,1024,1.0,opaque,gray,0.674,0.932,0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_015.png,na,dir,0,256,256,1.0,opaque,gray,0.423,0.643,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_016.png,na,dir,0,256,256,1.0,opaque,gray,0.359,0.558,0.1,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_017.png,na,dir,0,256,256,1.0,alpha,gray,0.263,0.643,0.0,1,chạm mép (có thể cắt vuông)
+noise/cell/noise_cell_018.png,na,dir,0,256,256,1.0,opaque,gray,0.53,0.79,0.15,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_019.png,na,dir,0,256,256,1.0,opaque,gray,0.609,0.815,0.2,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_020.png,na,dir,0,512,512,1.0,opaque,gray,0.404,0.656,0.36,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_021.png,na,dir,0,512,512,1.0,black_bg,gray,0.279,0.373,-0.12,1,chạm mép (có thể cắt vuông)
+noise/cell/noise_cell_022.png,na,dir,0,256,256,1.0,opaque,gray,0.455,0.713,0.1,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_023.png,na,dir,0,256,256,1.0,opaque,gray,0.554,0.886,-0.02,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_024.png,na,dir,0,512,512,1.0,opaque,gray,0.526,0.772,-0.16,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_025.png,na,dir,0,256,256,1.0,opaque,gray,0.446,0.708,0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_026.png,na,dir,0,256,256,1.0,opaque,gray,0.446,0.749,-0.02,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_027.png,na,dir,0,256,256,1.0,opaque,gray,0.534,0.854,-0.04,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cell/noise_cell_028.png,na,dir,0,512,512,1.0,opaque,gray,0.585,0.913,-0.35,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_001.png,na,dir,0,1024,1024,1.0,opaque,gray,0.5,0.895,0.31,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_002.png,na,dir,0,1024,1024,1.0,opaque,gray,0.514,0.86,0.21,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_003.jpg,na,dir,0,512,512,1.0,opaque,gray,0.503,0.998,-0.04,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_004.png,na,dir,0,128,128,1.0,opaque,gray,0.923,1.0,0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_005.png,na,dir,0,270,270,1.0,opaque,gray,0.457,0.817,0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen; không POT"
+noise/cloud/noise_cloud_006.png,na,dir,0,512,512,1.0,opaque,gray,0.637,0.983,0.11,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_007.png,na,dir,0,512,512,1.0,opaque,gray,0.653,1.0,0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_008.png,na,dir,0,500,500,1.0,opaque,gray,0.519,0.929,0.19,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen; không POT"
+noise/cloud/noise_cloud_009.png,na,dir,0,1024,1024,1.0,opaque,gray,0.638,1.0,-0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_010.png,na,dir,0,1024,1024,1.0,opaque,gray,0.534,0.953,0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_011.png,na,dir,0,1024,1024,1.0,opaque,gray,0.579,0.833,-0.12,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_012.png,na,dir,0,512,512,1.0,opaque,gray,0.441,0.88,0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_013.png,na,dir,0,512,512,1.0,opaque,gray,0.449,0.852,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_014.png,na,dir,0,512,512,1.0,opaque,gray,0.471,0.906,-0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_015.png,na,dir,0,1024,1024,1.0,opaque,gray,0.744,1.0,0.21,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_016.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.343,0.439,-0.07,1,chạm mép (có thể cắt vuông)
+noise/cloud/noise_cloud_017.png,na,dir,0,256,256,1.0,opaque,gray,0.321,0.446,-0.15,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_018.png,na,dir,0,256,256,1.0,opaque,gray,0.496,0.762,0.02,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_019.png,na,dir,0,512,512,1.0,opaque,gray,0.497,0.868,-0.44,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_020.png,na,dir,0,512,512,1.0,opaque,gray,0.414,0.77,-0.11,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_021.png,na,dir,0,512,512,1.0,opaque,gray,0.655,0.994,0.27,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_022.png,na,dir,0,256,256,1.0,opaque,gray,0.537,0.949,0.12,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_023.png,na,dir,0,256,256,1.0,opaque,gray,0.46,0.774,0.2,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/cloud/noise_cloud_024.png,na,xem,0,2000,2000,1.0,alpha,gray,0.585,1.0,0.5,1,chạm mép (có thể cắt vuông); không POT
+noise/dash/noise_dash_001.png,na,dir,0,256,256,1.0,alpha,gray,0.054,0.072,0.01,1,chạm mép (có thể cắt vuông)
+noise/dash/noise_dash_002.png,na,dir,0,256,256,1.0,black_bg,gray,0.096,0.127,-0.0,1,chạm mép (có thể cắt vuông)
+noise/dash/noise_dash_003.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.008,0.01,-0.01,1,chạm mép (có thể cắt vuông)
+noise/electric_web/noise_electric_web_001.png,na,dir,0,2048,2048,1.0,black_bg,gray,0.226,0.325,-0.01,1,chạm mép (có thể cắt vuông)
+noise/electric_web/noise_electric_web_002.png,na,dir,0,2048,2048,1.0,black_bg,gray,0.262,0.382,-0.01,1,chạm mép (có thể cắt vuông)
+noise/electric_web/noise_electric_web_003.png,na,dir,0,512,512,1.0,opaque,gray,0.499,0.965,0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/electric_web/noise_electric_web_004.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.361,0.478,0.11,1,chạm mép (có thể cắt vuông)
+noise/electric_web/noise_electric_web_005.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.245,0.314,0.05,1,chạm mép (có thể cắt vuông)
+noise/electric_web/noise_electric_web_006.png,na,dir,0,1024,1024,1.0,opaque,gray,0.266,0.321,0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/hard_edge/noise_hard_edge_001.png,na,dir,0,1024,1024,1.0,alpha,gray,0.285,0.312,-0.04,1,chạm mép (có thể cắt vuông)
+noise/hard_edge/noise_hard_edge_002.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.285,0.329,-0.05,1,chạm mép (có thể cắt vuông)
+noise/hard_edge/noise_hard_edge_003.png,na,dir,0,512,512,1.0,opaque,gray,0.418,0.528,-0.08,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/hard_edge/noise_hard_edge_004.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.184,0.189,0.05,1,chạm mép (có thể cắt vuông)
+noise/hard_edge/noise_hard_edge_005.png,na,dir,0,1024,1024,1.0,alpha,gray,0.374,0.538,-0.02,1,chạm mép (có thể cắt vuông)
+noise/hard_edge/noise_hard_edge_006.png,na,dir,0,256,256,1.0,alpha,gray,0.218,0.349,-0.12,1,chạm mép (có thể cắt vuông)
+noise/packed_rgb/noise_packed_rgb_001.png,na,dir,0,256,256,1.0,opaque,color,0.402,0.777,-0.08,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/packed_rgb/noise_packed_rgb_002.png,na,dir,0,512,512,1.0,opaque,color,0.664,1.0,0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/packed_rgb/noise_packed_rgb_003.png,na,dir,0,1024,1024,1.0,opaque,tinted,0.209,0.135,-0.02,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/packed_rgb/noise_packed_rgb_004.png,na,dir,0,256,256,1.0,opaque,color,0.528,0.916,-0.13,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/packed_rgb/noise_packed_rgb_005.png,na,dir,0,256,256,1.0,opaque,tinted,0.505,0.894,0.15,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/packed_rgb/noise_packed_rgb_006.png,na,dir,0,256,256,1.0,opaque,tinted,0.555,0.985,0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_001.png,na,dir,0,512,512,1.0,opaque,gray,0.524,0.893,-0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_002.png,na,dir,0,512,512,1.0,opaque,gray,0.417,0.779,-0.04,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_003.png,na,dir,0,512,512,1.0,opaque,gray,0.365,0.544,0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_004.png,na,dir,0,512,512,1.0,opaque,gray,0.296,0.456,-0.09,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_005.png,na,dir,0,256,256,1.0,opaque,gray,0.525,0.93,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_006.png,na,dir,0,512,512,1.0,opaque,gray,0.634,0.948,0.09,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_007.png,na,dir,0,256,256,1.0,opaque,gray,0.668,1.0,0.04,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_008.png,na,dir,0,512,512,1.0,opaque,gray,0.388,0.629,-0.05,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_009.png,na,dir,0,512,512,1.0,opaque,gray,0.33,0.499,0.02,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_010.png,na,dir,0,128,128,1.0,opaque,gray,0.428,0.511,0.07,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_011.png,na,dir,0,128,128,1.0,alpha,gray,0.1,0.249,-0.2,1,chạm mép (có thể cắt vuông)
+noise/streak/noise_streak_012.png,na,dir,0,512,512,1.0,opaque,gray,0.378,0.65,-0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_013.psd,na,dir,0,512,512,1.0,opaque,gray,0.528,0.636,0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/streak/noise_streak_014.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.238,0.31,-0.19,1,chạm mép (có thể cắt vuông)
+noise/streak/noise_streak_015.png,na,dir,0,512,512,1.0,alpha,gray,0.481,0.893,-0.03,1,chạm mép (có thể cắt vuông)
+noise/swirl/noise_swirl_001.png,na,dir,0,256,256,1.0,opaque,gray,0.483,0.886,0.16,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_002.psd,na,dir,0,1024,1024,1.0,opaque,gray,0.624,1.0,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_003.png,na,dir,0,512,512,1.0,opaque,gray,0.494,0.936,-0.09,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_004.png,na,dir,0,512,512,1.0,opaque,gray,0.538,0.826,-0.17,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_005.png,na,dir,0,1024,1024,1.0,opaque,gray,0.645,0.848,-0.04,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_006.png,na,dir,0,256,256,1.0,alpha,gray,0.137,0.361,0.18,1,chạm mép (có thể cắt vuông)
+noise/swirl/noise_swirl_007.png,na,dir,0,256,256,1.0,opaque,gray,0.227,0.258,-0.15,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_008.png,na,xem,0,256,256,1.0,opaque,gray,0.594,0.756,0.74,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+noise/swirl/noise_swirl_009.png,na,xem,0,256,256,1.0,opaque,gray,0.385,0.531,0.56,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+ring/flipbook/ring_flipbook_001.png,omni,dir,1,1024,1024,1.0,alpha,color,0.071,0.123,0.2,0,
+ring/flipbook/ring_flipbook_002.png,omni,dir,1,1024,512,2.0,alpha,gray,0.096,0.126,-0.03,0,
+ring/flipbook/ring_flipbook_003.png,omni,dir,1,1024,512,2.0,alpha,gray,0.11,0.138,-0.03,0,
+ring/ragged/ring_ragged_001.psd,dir,xem,0,738,738,1.0,black_bg,gray,0.136,0.201,0.62,0,không POT
+ring/ragged/ring_ragged_002.png,omni,omni,0,256,256,1.0,black_bg,gray,0.118,0.141,0.9,0,
+ring/ragged/ring_ragged_003.tga,omni,omni,0,2048,2048,1.0,alpha,color,0.089,0.262,0.9,0,
+ring/ragged/ring_ragged_004.png,dir,dir,0,512,512,1.0,black_bg,gray,0.199,0.251,0.42,0,
+ring/ragged/ring_ragged_005.png,dir,dir,0,256,256,1.0,alpha,color,0.03,0.031,-0.08,0,
+ring/ragged/ring_ragged_006.png,omni,omni,0,512,512,1.0,black_bg,color,0.16,0.22,0.85,0,
+ring/ragged/ring_ragged_007.png,omni,omni,0,512,512,1.0,black_bg,color,0.16,0.22,0.85,0,
+ring/ragged/ring_ragged_008.png,omni,omni,0,512,512,1.0,alpha,gray,0.042,0.0,0.79,0,
+ring/ragged/ring_ragged_009.png,omni,omni,0,512,512,1.0,black_bg,gray,0.027,0.003,0.75,0,
+ring/ragged/ring_ragged_010.png,omni,omni,0,512,512,1.0,alpha,gray,0.057,0.009,0.9,0,
+ring/soft/ring_soft_001.png,omni,omni,0,1024,1024,1.0,alpha,gray,0.099,0.151,1.0,0,
+ring/soft/ring_soft_002.png,omni,omni,0,2048,2048,1.0,black_bg,gray,0.156,0.206,1.0,0,
+ring/soft/ring_soft_003.png,omni,omni,0,512,512,1.0,alpha,gray,0.267,0.352,1.0,0,
+ring/soft/ring_soft_004.png,omni,omni,0,512,512,1.0,alpha,gray,0.158,0.236,0.95,0,
+ring/soft/ring_soft_005.psd,omni,omni,0,512,512,1.0,black_bg,gray,0.34,0.437,1.0,0,
+ring/soft/ring_soft_006.png,omni,omni,0,256,256,1.0,alpha,gray,0.091,0.096,1.0,0,
+ring/soft/ring_soft_007.png,omni,omni,0,512,512,1.0,alpha,color,0.06,0.145,1.0,0,
+ring/soft/ring_soft_008.png,omni,xem,0,512,512,1.0,alpha,gray,0.051,0.048,0.58,0,
+ring/soft/ring_soft_009.png,dir,dir,0,1024,1024,1.0,black_bg,gray,0.088,0.107,0.33,0,
+ring/soft/ring_soft_010.png,dir,dir,0,1024,1024,1.0,alpha,gray,0.036,0.117,0.39,0,
+ring/soft/ring_soft_011.png,omni,omni,0,512,512,1.0,black_bg,gray,0.105,0.133,1.0,0,
+ring/soft/ring_soft_012.png,omni,omni,0,256,256,1.0,black_bg,gray,0.202,0.265,0.99,0,
+ring/soft/ring_soft_013.png,omni,omni,0,256,256,1.0,alpha,gray,0.088,0.0,1.0,0,
+ring/soft/ring_soft_014.png,omni,omni,0,256,256,1.0,black_bg,gray,0.25,0.365,0.83,0,
+ring/soft/ring_soft_015.png,dir,xem,0,256,256,1.0,black_bg,gray,0.084,0.11,0.51,0,
+ring/soft/ring_soft_016.png,omni,omni,0,512,512,1.0,alpha,gray,0.286,0.496,0.86,0,
+ring/soft/ring_soft_017.png,omni,omni,0,281,281,1.0,alpha,gray,0.19,0.251,1.0,1,chạm mép (có thể cắt vuông); không POT
+ring/soft/ring_soft_018.png,omni,omni,0,180,180,1.0,alpha,gray,0.085,0.146,1.0,1,chạm mép (có thể cắt vuông); không POT
+ring/swirl/ring_swirl_001.png,omni,omni,0,512,512,1.0,alpha,gray,0.183,0.221,1.0,0,
+ring/swirl/ring_swirl_002.png,omni,omni,0,512,512,1.0,alpha,gray,0.194,0.244,0.99,0,
+ring/swirl/ring_swirl_003.png,dir,dir,0,512,512,1.0,alpha,gray,0.101,0.126,-0.05,0,
+ring/thin/ring_thin_001.png,omni,xem,0,2048,2048,1.0,alpha,gray,0.047,0.048,0.71,0,
+ring/thin/ring_thin_002.png,omni,omni,0,1024,1024,1.0,alpha,gray,0.075,0.102,1.0,0,
+ring/thin/ring_thin_003.png,omni,omni,0,128,128,1.0,alpha,gray,0.118,0.109,1.0,0,
+ring/thin/ring_thin_004.png,omni,omni,0,512,512,1.0,black_bg,gray,0.032,0.025,0.99,0,
+ring/thin/ring_thin_005.png,omni,omni,0,512,512,1.0,alpha,gray,0.134,0.191,1.0,0,
+ring/thin/ring_thin_006.psd,omni,omni,0,256,256,1.0,alpha,gray,0.02,0.028,0.76,1,chạm mép (có thể cắt vuông)
+ring/thin/ring_thin_007.png,omni,omni,0,512,512,1.0,black_bg,gray,0.084,0.124,1.0,0,
+ring/thin/ring_thin_008.png,omni,omni,0,512,512,1.0,black_bg,gray,0.079,0.118,1.0,0,
+ring/thin/ring_thin_009.png,omni,omni,0,512,512,1.0,alpha,gray,0.015,0.017,0.97,0,
+ring/thin/ring_thin_010.png,omni,omni,0,256,256,1.0,alpha,gray,0.111,0.238,1.0,0,
+ring/thin/ring_thin_011.png,omni,omni,0,1024,1024,1.0,alpha,gray,0.086,0.1,1.0,0,
+ring/thin/ring_thin_012.png,omni,omni,0,512,512,1.0,alpha,tinted,0.019,0.132,1.0,0,
+ring/thin/ring_thin_013.png,omni,omni,0,512,512,1.0,alpha,color,0.109,0.18,1.0,0,
+ring/thin/ring_thin_014.png,omni,omni,0,512,512,1.0,alpha,gray,0.048,0.039,0.99,0,
+ring/Uv_mesh/ring_Uv_mesh_001.png,na,dir,0,512,512,1.0,black_bg,gray,0.188,0.286,-0.14,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_002.png,na,dir,0,512,256,2.0,alpha,gray,0.447,0.469,0.02,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_003.png,na,dir,0,512,256,2.0,alpha,gray,0.39,0.419,0.0,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_004.png,na,dir,0,1024,512,2.0,alpha,gray,0.366,0.423,0.0,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_005.png,na,dir,0,512,512,1.0,black_bg,gray,0.121,0.186,0.31,0,
+ring/Uv_mesh/ring_Uv_mesh_006.png,na,dir,0,2048,512,4.0,black_bg,gray,0.3,0.452,0.04,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_007.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.226,0.361,-0.03,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_008.png,na,dir,0,1024,1024,1.0,alpha,gray,0.23,0.294,0.06,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_009.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.476,0.477,0.4,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_010.png,na,dir,0,1024,1024,1.0,alpha,gray,0.698,0.702,0.04,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_011.png,na,dir,0,256,256,1.0,black_bg,gray,0.248,0.368,-0.02,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_012.png,na,dir,0,256,128,2.0,alpha,gray,0.298,0.312,-0.03,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_013.png,na,dir,0,1024,1024,1.0,black_bg,gray,0.256,0.32,0.2,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_014.png,na,dir,0,512,512,1.0,black_bg,gray,0.469,0.571,0.14,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_015.png,na,dir,0,1024,1024,1.0,alpha,gray,0.109,0.239,-0.01,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_016.png,na,dir,0,256,256,1.0,black_bg,gray,0.315,0.409,-0.06,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_017.png,na,dir,0,256,256,1.0,black_bg,gray,0.348,0.439,-0.06,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_018.png,na,dir,0,512,256,2.0,black_bg,gray,0.418,0.536,0.18,1,chạm mép (có thể cắt vuông)
+ring/Uv_mesh/ring_Uv_mesh_019.psd,na,dir,0,256,256,1.0,alpha,gray,0.313,0.346,0.24,0,
+ring/Uv_mesh/ring_Uv_mesh_020.png,na,dir,0,512,256,2.0,alpha,gray,0.18,0.208,-0.02,1,chạm mép (có thể cắt vuông)
+rune/circle/rune_circle_001.png,omni,omni,0,512,512,1.0,alpha,gray,0.254,0.288,0.83,0,
+rune/circle/rune_circle_002.png,omni,omni,0,2048,2048,1.0,black_bg,gray,0.214,0.17,1.0,0,
+rune/circle/rune_circle_003.png,omni,omni,0,1024,1024,1.0,alpha,gray,0.053,0.059,0.91,0,
+rune/circle/rune_circle_004.png,omni,omni,0,1024,1024,1.0,alpha,tinted,0.25,0.638,1.0,0,
+rune/circle/rune_circle_005.png,omni,dir,0,512,512,1.0,black_bg,gray,0.182,0.152,0.3,0,
+rune/circle/rune_circle_006.png,omni,omni,0,512,512,1.0,black_bg,gray,0.105,0.089,0.92,0,
+rune/circle/rune_circle_007.png,omni,dir,0,1024,1024,1.0,black_bg,gray,0.063,0.063,0.06,0,
+rune/circle/rune_circle_008.png,omni,dir,0,256,256,1.0,alpha,gray,0.101,0.116,0.14,0,
+rune/circle/rune_circle_009.png,omni,xem,0,256,256,1.0,alpha,gray,0.055,0.135,0.56,0,
+Slash/Blue Energy Effects Collection.png,dir,dir,0,2048,2048,1.0,alpha,gray,0.013,0.018,0.09,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_001.png,na,dir,0,128,432,0.3,alpha,gray,0.383,0.568,0.23,1,chạm mép (có thể cắt vuông); không POT
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_002.png,na,dir,0,1024,512,2.0,black_bg,gray,0.371,0.41,0.08,1,chạm mép (có thể cắt vuông)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_003.psd,na,dir,0,256,256,1.0,alpha,gray,0.071,0.081,0.34,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_004.png,na,dir,0,512,512,1.0,black_bg,gray,0.404,0.45,0.35,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_005.png,na,dir,0,256,256,1.0,black_bg,gray,0.438,0.491,-0.01,1,chạm mép (có thể cắt vuông)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_006.png,na,xem,0,512,256,2.0,alpha,gray,0.291,0.359,0.52,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_007.png,na,dir,0,1254,1254,1.0,black_bg,gray,0.059,0.077,0.17,0,không POT
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_008.png,na,dir,0,512,256,2.0,black_bg,gray,0.37,0.422,0.35,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_009.png,na,omni,0,1024,512,2.0,black_bg,gray,0.546,0.594,0.9,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_010.png,na,xem,0,512,512,1.0,alpha,gray,0.221,0.414,0.51,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_011.png,na,xem,0,512,512,1.0,alpha,gray,0.235,0.435,0.47,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_012.png,na,omni,0,1024,512,2.0,black_bg,gray,0.244,0.268,0.86,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_013.png,na,xem,0,1024,512,2.0,black_bg,gray,0.361,0.403,0.55,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_014.png,na,xem,0,1024,512,2.0,black_bg,gray,0.095,0.106,0.56,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_015.png,na,dir,0,512,512,1.0,black_bg,gray,0.139,0.176,0.1,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_016.png,na,xem,0,256,256,1.0,black_bg,gray,0.37,0.455,0.59,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_017.png,na,dir,0,256,256,1.0,alpha,gray,0.247,0.285,0.38,1,chạm mép (có thể cắt vuông)
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_018.png,na,dir,0,256,256,1.0,alpha,gray,0.291,0.357,0.24,0,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_019.png,na,omni,0,1024,512,2.0,alpha,gray,0.419,0.495,0.89,0,
+Slash/Onhit/Slash_Onhit_001.png,dir,omni,0,128,512,0.25,alpha,gray,0.221,0.342,0.88,0,
+Slash/Onhit/Slash_Onhit_002.png,dir,xem,0,128,512,0.25,black_bg,gray,0.135,0.124,0.49,0,
+Slash/Onhit/Slash_Onhit_003.png,dir,xem,0,512,128,4.0,alpha,gray,0.185,0.196,0.71,0,
+Slash/Onhit/Slash_Onhit_004.png,dir,dir,0,512,512,1.0,alpha,color,0.012,0.016,0.36,0,
+Slash/Onhit/Slash_Onhit_005.png,dir,dir,0,512,256,2.0,alpha,gray,0.037,0.045,0.29,0,
+Slash/Onhit/Slash_Onhit_006.png,dir,dir,0,512,512,1.0,alpha,gray,0.013,0.019,0.17,0,
+Slash/Onhit/Slash_Onhit_007.png,dir,xem,0,512,128,4.0,alpha,gray,0.117,0.133,0.5,0,
+Slash/Onhit/Slash_Onhit_008.png,dir,dir,0,256,256,1.0,alpha,gray,0.07,0.075,0.18,0,
+Slash/Onhit/Slash_Onhit_009.psd,dir,dir,0,256,256,1.0,alpha,gray,0.058,0.061,0.04,0,
+Slash/Onhit/Slash_Onhit_010.psd,dir,dir,0,512,512,1.0,alpha,gray,0.074,0.081,0.19,0,
+Slash/Onhit/Slash_Onhit_011.png,dir,dir,0,512,256,2.0,alpha,gray,0.05,0.068,0.07,0,
+Slash/Onhit/Slash_Onhit_012.png,dir,dir,0,512,128,4.0,black_bg,gray,0.024,0.032,0.07,0,
+Slash/Onhit/Slash_Onhit_013.png,dir,dir,0,1024,512,2.0,black_bg,gray,0.06,0.072,0.06,0,
+Slash/Onhit/Slash_Onhit_014.png,dir,xem,0,64,512,0.12,alpha,gray,0.101,0.296,0.71,0,
+Slash/Onhit/Slash_Onhit_015.png,dir,dir,0,128,512,0.25,alpha,gray,0.112,0.128,0.22,0,
+Slash/Onhit/Slash_Onhit_016.png,dir,dir,0,1024,1024,1.0,alpha,gray,0.017,0.026,0.27,0,
+smoke/cartoon/smoke_cartoon_001.png,omni,omni,0,512,512,1.0,alpha,gray,0.54,0.567,0.84,0,
+smoke/cartoon/smoke_cartoon_002.png,omni,omni,0,1024,1024,1.0,alpha,gray,0.267,0.282,0.89,0,
+smoke/cartoon/smoke_cartoon_003.png,omni,omni,0,256,256,1.0,alpha,gray,0.294,0.359,0.93,0,
+smoke/cartoon/smoke_cartoon_004.png,omni,omni,0,256,256,1.0,alpha,gray,0.254,0.448,0.89,0,
+smoke/cartoon/smoke_cartoon_005.png,omni,omni,0,128,128,1.0,alpha,gray,0.25,0.286,0.82,0,
+smoke/cartoon/smoke_cartoon_006.png,omni,omni,0,256,256,1.0,alpha,gray,0.299,0.434,0.82,0,
+smoke/cartoon/smoke_cartoon_007.png,omni,omni,0,256,256,1.0,alpha,gray,0.338,0.423,0.8,0,
+smoke/sheet/smoke_sheet_001.png,omni,xem,1,512,512,1.0,black_bg,gray,0.23,0.359,0.65,0,
+smoke/sheet/smoke_sheet_002.png,omni,omni,1,512,512,1.0,alpha,gray,0.598,0.627,0.77,0,
+smoke/sheet/smoke_sheet_003.png,omni,xem,1,512,512,1.0,alpha,gray,0.239,0.251,0.63,0,
+smoke/sheet/smoke_sheet_004.png,omni,xem,1,1024,1024,1.0,alpha,gray,0.199,0.346,0.7,0,
+smoke/sheet/smoke_sheet_005.png,omni,omni,1,512,512,1.0,black_bg,color,0.195,0.305,0.85,0,
+smoke/sheet/smoke_sheet_006.png,omni,xem,1,512,512,1.0,black_bg,gray,0.284,0.338,0.67,0,
+smoke/sheet/smoke_sheet_007.png,dir,dir,1,2560,2560,1.0,alpha,tinted,0.12,0.134,0.01,0,không POT
+smoke/sheet/smoke_sheet_008.png,omni,omni,1,256,256,1.0,alpha,gray,0.125,0.185,0.75,0,
+smoke/sheet/smoke_sheet_010.png,omni,dir,1,1024,1024,1.0,alpha,gray,0.161,0.242,0.26,0,
+smoke/sheet/smoke_sheet_013.png,omni,dir,1,1024,1024,1.0,alpha,tinted,0.121,0.242,0.26,0,
+smoke/sheet/smoke_sheet_014.png,dir,dir,1,4096,4096,1.0,alpha,gray,0.048,0.07,0.07,0,
+smoke/sheet/smoke_sheet_015.png,omni,dir,1,512,512,1.0,alpha,gray,0.208,0.285,0.41,1,chạm mép (có thể cắt vuông)
+smoke/sheet/smoke_sheet_016.png,dir,dir,1,1024,1024,1.0,alpha,gray,0.095,0.157,0.04,0,
+smoke/sheet/smoke_sheet_017.png,omni,dir,1,2048,2048,1.0,alpha,gray,0.125,0.208,0.17,0,
+smoke/sheet/smoke_sheet_018.png,omni,xem,1,512,512,1.0,alpha,gray,0.484,0.553,0.71,0,
+smoke/sheet/smoke_sheet_019.png,omni,dir,1,512,1024,0.5,alpha,gray,0.171,0.216,0.03,0,
+smoke/sheet/smoke_sheet_020.png,omni,omni,1,256,256,1.0,black_bg,gray,0.225,0.312,0.79,0,
+smoke/soft/smoke_soft_001.png,omni,omni,0,512,512,1.0,black_bg,gray,0.181,0.278,0.97,0,
+smoke/soft/smoke_soft_002.png,omni,omni,0,256,256,1.0,alpha,gray,0.246,0.385,0.9,0,
+smoke/soft/smoke_soft_003.png,omni,omni,0,128,128,1.0,alpha,gray,0.138,0.124,0.86,0,
+smoke/soft/smoke_soft_004.png,omni,omni,0,512,512,1.0,alpha,gray,0.131,0.191,0.86,0,
+smoke/soft/smoke_soft_005.png,omni,omni,0,418,397,1.05,alpha,gray,0.232,0.338,0.76,0,không POT
+smoke/soft/smoke_soft_006.png,omni,omni,0,2048,2048,1.0,black_bg,gray,0.082,0.102,0.98,0,
+spark/dot_sheet/spark_dot_sheet_001.png,omni,omni,1,512,512,1.0,black_bg,gray,0.089,0.071,0.99,0,
+spark/dot_sheet/spark_dot_sheet_002.psd,dir,dir,1,256,256,1.0,alpha,gray,0.012,0.006,-0.02,1,chạm mép (có thể cắt vuông)
+spark/dot_sheet/spark_dot_sheet_003.png,dir,xem,1,256,256,1.0,alpha,gray,0.025,0.038,0.65,0,
+spark/shard/spark_shard_001.png,dir,dir,0,256,512,0.5,black_bg,gray,0.068,0.065,-0.07,0,
+spark/shard/spark_shard_002.png,dir,dir,0,512,512,1.0,alpha,gray,0.116,0.119,0.08,0,
+spark/star/spark_star_001.png,omni,omni,0,512,512,1.0,alpha,gray,0.09,0.091,0.9,0,
+spark/star/spark_star_002.png,omni,omni,0,119,119,1.0,alpha,gray,0.11,0.136,1.0,0,nhỏ <128; không POT
+spark/star/spark_star_003.png,omni,omni,0,256,256,1.0,alpha,gray,0.102,0.119,1.0,0,
+spark/star/spark_star_004.png,omni,omni,0,1024,1024,1.0,alpha,gray,0.055,0.057,1.0,0,
+spark/star/spark_star_005.png,omni,omni,0,512,512,1.0,black_bg,gray,0.031,0.035,1.0,0,
+spark/star/spark_star_006.png,omni,omni,0,336,336,1.0,alpha,color,0.179,0.256,0.86,0,không POT
+spark/star/spark_star_007.png,omni,omni,0,128,128,1.0,alpha,color,0.12,0.12,1.0,0,
+spark/star/spark_star_008.png,omni,omni,0,512,512,1.0,alpha,gray,0.127,0.122,1.0,0,
+spark/star/spark_star_009.png,omni,omni,0,512,512,1.0,alpha,gray,0.032,0.036,0.92,0,
+spark/star/spark_star_010.png,omni,omni,0,124,123,1.01,alpha,gray,0.08,0.129,0.82,0,nhỏ <128; không POT
+spark/star/spark_star_011.png,omni,omni,0,256,256,1.0,alpha,gray,0.138,0.31,1.0,0,
+spark/star/spark_star_012.png,omni,omni,0,512,512,1.0,black_bg,gray,0.037,0.045,1.0,0,
+spark/star/spark_star_013.png,omni,omni,0,512,512,1.0,black_bg,gray,0.203,0.198,1.0,0,
+spark/star/spark_star_014.psd,omni,omni,0,128,128,1.0,black_bg,gray,0.278,0.305,0.95,0,
+spark/star/spark_star_015.tga,omni,dir,0,256,128,2.0,alpha,color,0.063,0.132,-0.11,1,chạm mép (có thể cắt vuông)
+spark/star/spark_star_016.png,omni,omni,0,512,512,1.0,alpha,gray,0.06,0.062,0.97,0,
+spark/star/spark_star_017.png,omni,omni,0,1024,1024,1.0,black_bg,gray,0.09,0.12,1.0,0,
+spark/star/spark_star_018.png,omni,omni,0,256,256,1.0,black_bg,gray,0.015,0.008,0.99,0,
+spark/star/spark_star_019.png,omni,omni,0,512,512,1.0,alpha,gray,0.19,0.232,0.98,0,
+spark/star/spark_star_020.png,omni,omni,0,512,512,1.0,alpha,gray,0.117,0.134,1.0,0,
+spark/streak/spark_streak_001.png,dir,dir,0,512,512,1.0,black_bg,gray,0.042,0.056,0.02,0,
+spark/streak/spark_streak_002.png,dir,dir,0,512,512,1.0,black_bg,gray,0.043,0.061,-0.01,0,
+spark/streak/spark_streak_003.png,dir,dir,0,256,64,4.0,alpha,gray,0.199,0.309,-0.03,1,chạm mép (có thể cắt vuông)
+spark/streak/spark_streak_004.png,dir,dir,0,256,64,4.0,alpha,gray,0.316,0.382,0.29,1,chạm mép (có thể cắt vuông)
+spark/streak/spark_streak_005.tga,dir,dir,0,256,256,1.0,alpha,gray,0.138,0.254,0.12,0,
+spark/streak/spark_streak_006.png,dir,dir,0,256,256,1.0,black_bg,gray,0.164,0.21,0.34,0,
+trail/band/trail_band_001.png,dir,dir,0,256,256,1.0,alpha,gray,0.165,0.204,0.08,0,
+trail/ribbon/trail_ribbon_001.png,dir,dir,0,1024,256,4.0,black_bg,gray,0.282,0.36,-0.02,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_002.png,dir,dir,0,1024,386,2.65,alpha,gray,0.019,0.059,0.07,1,chạm mép (có thể cắt vuông); không POT
+trail/ribbon/trail_ribbon_003.png,dir,dir,0,256,256,1.0,alpha,gray,0.259,0.281,-0.2,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_004.png,dir,dir,0,2048,2048,1.0,black_bg,gray,0.594,0.597,0.11,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_005.png,dir,dir,0,2048,2048,1.0,black_bg,gray,0.381,0.383,0.04,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_006.png,dir,dir,0,2048,2048,1.0,black_bg,gray,0.295,0.296,-0.18,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_007.png,dir,dir,0,256,64,4.0,black_bg,gray,0.281,0.354,-0.02,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_008.png,dir,dir,0,1024,512,2.0,alpha,gray,0.131,0.219,-0.01,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_009.png,dir,dir,0,256,64,4.0,alpha,gray,0.167,0.337,0.01,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_010.png,dir,dir,0,256,128,2.0,black_bg,gray,0.345,0.419,0.02,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_011.png,dir,dir,0,256,256,1.0,opaque,gray,0.561,0.677,-0.13,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+trail/ribbon/trail_ribbon_012.png,dir,dir,0,128,128,1.0,black_bg,gray,0.653,0.661,-0.0,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_013.png,dir,dir,0,256,128,2.0,alpha,gray,0.209,0.253,0.03,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_014.png,dir,dir,0,256,256,1.0,alpha,gray,0.184,0.516,0.23,1,chạm mép (có thể cắt vuông)
+trail/ribbon/trail_ribbon_015.png,dir,dir,0,256,256,1.0,alpha,gray,0.112,0.179,0.03,1,chạm mép (có thể cắt vuông)
+trail/streak/trail_streak_001.png,dir,dir,0,256,128,2.0,black_bg,gray,0.213,0.292,0.05,0,
+trail/streak/trail_streak_002.png,dir,dir,0,512,256,2.0,alpha,gray,0.08,0.112,0.12,0,
+trail/streak/trail_streak_003.png,dir,xem,0,512,256,2.0,black_bg,gray,0.257,0.286,0.6,0,
+trail/streak/trail_streak_004.png,dir,xem,0,512,512,1.0,black_bg,gray,0.06,0.071,0.51,0,
+trail/streak/trail_streak_005.png,dir,xem,0,512,256,2.0,alpha,gray,0.129,0.127,0.68,0,
+trail/streak/trail_streak_006.png,dir,xem,0,512,256,2.0,alpha,gray,0.129,0.127,0.68,0,
+trail/streak/trail_streak_007.png,dir,dir,0,512,512,1.0,alpha,gray,0.046,0.061,-0.03,0,
+trail/streak/trail_streak_008.png,dir,dir,0,256,256,1.0,alpha,gray,0.089,0.129,-0.09,0,
+trail/streak/trail_streak_009.png,dir,dir,0,512,512,1.0,black_bg,gray,0.113,0.123,-0.03,0,
+trail/streak/trail_streak_010.png,dir,dir,0,512,512,1.0,black_bg,gray,0.194,0.251,0.39,1,chạm mép (có thể cắt vuông)
+trail/streak/trail_streak_011.png,dir,dir,0,256,256,1.0,black_bg,gray,0.156,0.197,-0.19,0,
+trail/streak/trail_streak_012.png,dir,dir,0,256,256,1.0,opaque,gray,0.671,0.734,-0.0,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+water/bubble/water_bubble_001.png,dir,dir,0,256,256,1.0,alpha,color,0.076,0.168,0.32,0,
+water/bubble/water_bubble_002.png,omni,omni,0,256,256,1.0,alpha,color,0.175,0.358,0.95,0,
+water/bubble/water_bubble_003.png,omni,xem,0,256,256,1.0,alpha,gray,0.1,0.123,0.72,0,
+water/bubble/water_bubble_004.png,omni,dir,0,1024,1024,1.0,black_bg,gray,0.103,0.089,0.13,0,
+water/splash/water_splash_001.png,dir,dir,0,512,512,1.0,black_bg,gray,0.041,0.07,0.21,0,
+water/splash/water_splash_002.png,dir,dir,0,1024,1024,1.0,black_bg,gray,0.084,0.153,0.13,1,chạm mép (có thể cắt vuông)
+water/splash/water_splash_003.png,dir,dir,0,1024,512,2.0,alpha,gray,0.556,0.646,0.0,1,chạm mép (có thể cắt vuông)
+water/splash/water_splash_004.png,dir,dir,0,1024,1024,1.0,black_bg,gray,0.075,0.077,0.18,0,
+water/splash/water_splash_005.png,omni,dir,0,1024,1024,1.0,black_bg,gray,0.105,0.16,0.2,0,
+water/splash/water_splash_006.png,omni,xem,0,512,512,1.0,black_bg,gray,0.081,0.129,0.74,0,
+water/splash/water_splash_007.png,omni,dir,0,512,512,1.0,alpha,gray,0.069,0.138,0.15,0,
+water/splash/water_splash_008.png,omni,xem,0,512,512,1.0,black_bg,color,0.165,0.292,0.58,0,
+water/splash/water_splash_009.png,dir,dir,0,1024,512,2.0,black_bg,gray,0.206,0.341,-0.04,1,chạm mép (có thể cắt vuông)
+water/splash/water_splash_010.jpg,omni,dir,0,1024,1024,1.0,black_bg,gray,0.199,0.29,0.31,0,
+water/streak/water_streak_001.psd,dir,dir,0,512,512,1.0,black_bg,gray,0.034,0.024,0.02,1,chạm mép (có thể cắt vuông)
+water/streak/water_streak_002.psd,dir,dir,0,512,512,1.0,black_bg,gray,0.101,0.136,0.09,1,chạm mép (có thể cắt vuông)
+water/tile/water_tile_001.jpg,na,dir,0,800,800,1.0,black_bg,gray,0.077,0.047,0.02,1,chạm mép (có thể cắt vuông); không POT
+water/tile/water_tile_002.png,na,dir,0,1024,1024,1.0,alpha,gray,0.149,0.153,0.03,1,chạm mép (có thể cắt vuông)
+water/tile/water_tile_003.psd,na,dir,0,512,512,1.0,opaque,gray,0.21,0.226,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+water/tile/water_tile_004.png,na,dir,0,256,256,1.0,opaque,color,0.657,1.0,0.03,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+water/tile/water_tile_005.png,na,dir,0,512,512,1.0,opaque,color,0.621,1.0,0.08,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+water/tile/water_tile_006.png,na,dir,0,512,512,1.0,opaque,color,0.626,1.0,0.06,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"
+water/tile/water_tile_007.png,na,dir,0,1024,1024,1.0,opaque,color,0.664,1.0,-0.01,1,"chạm mép (có thể cắt vuông); không alpha, không nền đen"

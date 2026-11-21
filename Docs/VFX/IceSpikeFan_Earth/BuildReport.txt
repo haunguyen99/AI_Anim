@@ -1,0 +1,20 @@
+Effect: IceSpikeFan_Earth   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 09:10:43
+Preview times (s): 0.05, 0.15, 0.4, 0.9, 1.4, 1.8, 2.2, 2.6
+
+Layers:
+  VFX_IceSpikeFan_Earth/S2_Cracks  max=50  life=2.3  mode=Billboard  mat=M_IceSpikeFan_Earth_Cracks (VFXLib/ColosoShaderAlpha_Optimized)
+  VFX_IceSpikeFan_Earth/S2b_CrackRim  max=50  life=2.3  mode=Billboard  mat=M_IceSpikeFan_Earth_CracksRim (VFXLib/ColosoShaderAlpha_Optimized)
+  VFX_IceSpikeFan_Earth/S7_GroundChunks  max=60  life=0.7  mode=Mesh  mat=M_IceSpikeFan_Earth_Chunk (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S1_Spikes_Tall  max=30  life=2.5  mode=Mesh  mat=M_IceSpikeFan_Earth_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S1_Spikes_Long  max=30  life=2.1  mode=Mesh  mat=M_IceSpikeFan_Earth_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S1_Spikes_MidA  max=30  life=1.8  mode=Mesh  mat=M_IceSpikeFan_Earth_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S1_Spikes_MidB  max=30  life=1.7  mode=Mesh  mat=M_IceSpikeFan_Earth_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S1_Spikes_Edge  max=30  life=1.45  mode=Mesh  mat=M_IceSpikeFan_Earth_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S6_Shards  max=60  life=0.6  mode=Mesh  mat=M_IceSpikeFan_Earth_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Earth/S5_IceSmoke  max=30  life=1.1  mode=Billboard  mat=M_IceSpikeFan_Earth_Smoke (Mobile/Particles/Alpha Blended)
+  VFX_IceSpikeFan_Earth/S3_ImpactMix/00_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Earth/S3_ImpactMix/00_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+Total maxParticles: 404
+
+Errors: none

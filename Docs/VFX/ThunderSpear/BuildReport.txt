@@ -1,0 +1,11 @@
+Effect: ThunderSpear   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 14:55:54
+Preview times (s): 0.15, 0.4, 0.8, 1.3, 1.9, 2.6, 3.4, 4.4
+
+Layers:
+  VFX_ThunderSpear  max=1000  life=1  mode=Stretch  mat=M_ThunderSpear_Glow (Mobile/Particles/Additive)
+  VFX_ThunderSpear/Thunder  max=1000  life=0.2  mode=Stretch  mat=M_ThunderSpear_Arcs (Mobile/Particles/Additive)
+  VFX_ThunderSpear/electric  max=1000  life=0.3  mode=Stretch  mat=M_ThunderSpear_SmallArcs (Mobile/Particles/Additive)
+Total maxParticles: 3000
+
+Errors: none

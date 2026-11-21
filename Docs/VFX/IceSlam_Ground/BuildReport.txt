@@ -1,0 +1,31 @@
+Mix: IceSlam_Ground   Recipe: Docs/VFX/_Recipes/IceSlam_Ground.json   Unity: 2022.3.62f3
+Built: 2026-11-03 09:32:13
+Preview times (s): 0.01, 0.311, 0.622, 0.933, 1.244, 1.554, 1.865, 2.176
+Palette: Core #F2FCFF · Mid #7FD6FF · Outer #2A6FD1 · Dust #C9D6DE
+
+Items:
+  00_IMP_Hit_Ground_01               delay 0  dur 0.45 (gốc 0.45, speed ×1)  size 1.25  int 1  rot 0  off (0.00, 0.00, 0.00)
+  01_SPK_Ground_01                   delay 0.02  dur 1.438 (gốc 1.25, speed ×0.87)  size 1.25  int 1  rot 0  off (0.00, 0.00, 0.00)
+  02_GLW_Ground_01                   delay 0  dur 0.632 (gốc 0.55, speed ×0.87)  size 1.25  int 1  rot 0  off (0.00, 0.00, 0.00)
+  03_DST_Ground_01                   delay 0.05  dur 1.541 (gốc 1.34, speed ×0.87)  size 1.25  int 1  rot 0  off (0.00, 0.00, 0.00)
+  04_RNG_Ground_01                   delay 0.03  dur 0.598 (gốc 0.52, speed ×0.87)  size 1.3  int 1  rot 0  off (0.00, 0.00, 0.00)
+  05_RNG_Ground_01                   delay 0.13  dur 0.598 (gốc 0.52, speed ×0.87)  size 0.88  int 0.6  rot 0  off (0.00, 0.00, 0.00)
+    ↳ Body: T_CFX_Scorch_Body_4x4 → Assets/VFX/Mixes/_Palettes/CFX_Scorch_dc36d91c (render lại theo palette)
+    ↳ Light: T_CFX_Scorch_Light_4x4 → Assets/VFX/Mixes/_Palettes/CFX_Scorch_dc36d91c (render lại theo palette)
+  06_SCR_Ground_01                   delay 0.03  dur 2.357 (gốc 2.05, speed ×0.87)  size 1.25  int 1  rot 0  off (0.00, 0.00, 0.00)
+
+Layers:
+  00_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  00_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+  01_SPK_Ground_01/Streaks  max=24  life=0.6  mode=Stretch  mat=M_SPK_Streak_Add (Mobile/Particles/Additive)
+  01_SPK_Ground_01/Ember  max=8  life=1.2  mode=Billboard  mat=M_SPK_Ember_Add (Mobile/Particles/Additive)
+  02_GLW_Ground_01/Pool  max=1  life=0.5  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  02_GLW_Ground_01/Halo  max=1  life=0.25  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  03_DST_Ground_01/Puffs  max=12  life=1.2  mode=Billboard  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  03_DST_Ground_01/Core  max=2  life=1.1  mode=Billboard  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  04_RNG_Ground_01/Ring  max=2  life=0.45  mode=Billboard  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+  05_RNG_Ground_01/Ring  max=2  life=0.45  mode=Billboard  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+  06_SCR_Ground_01/Body  max=1  life=2  mode=Billboard  mat=M_CFX_Scorch_Body_Alpha (Mobile/Particles/Alpha Blended)
+  06_SCR_Ground_01/Light  max=1  life=2  mode=Billboard  mat=M_CFX_Scorch_Light_Add (Mobile/Particles/Additive)
+
+Errors: none

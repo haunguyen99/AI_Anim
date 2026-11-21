@@ -1,0 +1,52 @@
+{
+ "source": "D:/Game_prj/VFX_LIb/Docs/VFX/BombBlast/codefx/bomb_fire.py",
+ "name": "CFX_BombFire",
+ "blend": "alpha",
+ "duration": 1.6,
+ "loop": false,
+ "fps": 30,
+ "frames": 16,
+ "cols": 4,
+ "rows": 4,
+ "times": [
+  0.0,
+  0.1,
+  0.2,
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9,
+  1.0,
+  1.1,
+  1.2,
+  1.3,
+  1.4,
+  1.5
+ ],
+ "size": [
+  256,
+  208
+ ],
+ "res": 1.0,
+ "space": {
+  "context": "ground",
+  "plane": "billboard",
+  "camera": "3/4 40",
+  "width_m": 6.0,
+  "anchor": "world point (ground)",
+  "background": "mixed"
+ },
+ "pivot": [
+  0.5,
+  0.9423076923076923
+ ],
+ "options": {
+  "palette": null,
+  "seed": 7,
+  "scale": 1.0,
+  "lumps": 11
+ }
+}

@@ -1,0 +1,13 @@
+Effect: LightningStrike   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 14:56:24
+Preview times (s): 0.04, 0.1, 0.2, 0.4, 0.8, 1.1, 1.5, 2.2
+
+Layers:
+  VFX_LightningStrike  max=1  life=0.3  mode=Billboard  mat=M_LightningStrike_Flare (Mobile/Particles/Additive)
+  VFX_LightningStrike/Cracks  max=1000  life=1  mode=Billboard  mat=M_LightningStrike_GroundCrack (Mobile/Particles/Additive)
+  VFX_LightningStrike/line_impact  max=1000  life=0.15  mode=Stretch  mat=M_LightningStrike_LineImpact (Mobile/Particles/Additive)
+  VFX_LightningStrike/wave  max=1000  life=0.5  mode=Billboard  mat=M_LightningStrike_Wave (Mobile/Particles/Alpha Blended)
+  VFX_LightningStrike/electric_remain  max=1000  life=0.5  mode=Stretch  mat=M_LightningStrike_Arcs (Mobile/Particles/Additive)
+Total maxParticles: 4001
+
+Errors: none

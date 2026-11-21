@@ -1,0 +1,10 @@
+Component: IMP_Hit_Air_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 08:29:17
+Preview times (s): 0.01, 0.025, 0.04, 0.06, 0.09, 0.12, 0.15, 0.18
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+
+Layers:
+  CMP_IMP_Hit_Air_01/Star  max=4  life=0.18  mode=Billboard/View  mat=M_IMP_HitStar_Add (Mobile/Particles/Additive)
+  CMP_IMP_Hit_Air_01/Core  max=1  life=0.08  mode=Billboard/View  mat=M_IMP_CoreStar4_Add (Mobile/Particles/Additive)
+
+Errors: none

@@ -1,0 +1,10 @@
+Component: IMP_Hit_Ground_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 08:29:17
+Preview times (s): 0.02, 0.05, 0.09, 0.14, 0.2, 0.26, 0.33, 0.4
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+
+Layers:
+  CMP_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  CMP_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard/Local  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+
+Errors: none

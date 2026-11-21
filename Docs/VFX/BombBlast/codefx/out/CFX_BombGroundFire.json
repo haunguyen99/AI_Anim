@@ -1,0 +1,52 @@
+{
+ "source": "D:/Game_prj/VFX_LIb/Docs/VFX/BombBlast/codefx/bomb_groundfire.py",
+ "name": "CFX_BombGroundFire",
+ "blend": "alpha",
+ "duration": 2.0,
+ "loop": false,
+ "fps": 30,
+ "frames": 16,
+ "cols": 4,
+ "rows": 4,
+ "times": [
+  0.0,
+  0.125,
+  0.25,
+  0.375,
+  0.5,
+  0.625,
+  0.75,
+  0.875,
+  1.0,
+  1.125,
+  1.25,
+  1.375,
+  1.5,
+  1.625,
+  1.75,
+  1.875
+ ],
+ "size": [
+  256,
+  64
+ ],
+ "res": 1.0,
+ "space": {
+  "context": "ground",
+  "plane": "billboard",
+  "camera": "3/4 40",
+  "width_m": 6.0,
+  "anchor": "world point (ground)",
+  "background": "mixed"
+ },
+ "pivot": [
+  0.5,
+  0.9375
+ ],
+ "options": {
+  "palette": null,
+  "seed": 3,
+  "scale": 1.0,
+  "flames": 13
+ }
+}

@@ -1,0 +1,13 @@
+Component: DST_Fire_Ground_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 08:14:44
+Preview times (s): 0.05, 0.12, 0.22, 0.35, 0.5, 0.7, 0.9, 1.15
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+Preview_combo = game 3/4 together with: CMP_IMP_Hit_Ground_01, CMP_GLW_Ground_01, CMP_RNG_Ground_01, CMP_SPK_Ground_01
+
+Layers:
+  CMP_DST_Fire_Ground_01/Puffs  max=12  life=1.2  mode=Billboard/View  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  CMP_DST_Fire_Ground_01/Puffs_Glow  max=12  life=1.2  mode=Billboard/View  mat=M_DST_ToonPuff_Add (Mobile/Particles/Additive)
+  CMP_DST_Fire_Ground_01/Core  max=2  life=1.1  mode=Billboard/View  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  CMP_DST_Fire_Ground_01/Core_Glow  max=2  life=1.1  mode=Billboard/View  mat=M_DST_ToonPuff_Add (Mobile/Particles/Additive)
+
+Errors: none

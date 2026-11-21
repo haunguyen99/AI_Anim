@@ -1,0 +1,10 @@
+Effect: Meteor   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-10-28 16:50:05
+Preview times (s): 0.3, 0.6, 0.85, 0.95, 1.05, 1.2, 1.4, 1.58
+
+Layers:
+  VFX_Meteor/Meteor  max=50  life=0.9  mode=Billboard  mat=M_Meteor_Add (VFX/FX/Meteor)
+  VFX_Meteor/Blast  max=50  life=0.7  mode=Billboard  mat=M_Meteor_Blast_Add (VFX/FX/Blast)
+Total maxParticles: 100
+
+Errors: none
