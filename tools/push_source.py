@@ -26,6 +26,7 @@ os.chdir(ROOT)
 ALLOW = [
     "README.md", "MAP.md", "CLAUDE.md", "requirements.txt", ".gitignore", ".vscode/extensions.json",
     ".claude/settings.json", ".claude/output-styles/**",
+    ".claude/usage/*.jsonl",   # số lần gọi công cụ mỗi máy (tools/tool_usage.py), người dùng 2026-11-21
     ".claude/skills/**", ".claude/agents/**", ".claude/rules/**", "Docs/VFX/**", "contexte/**", ".claude/memory_store/**", "docs/**", "tools/**",
     "work/clips.json", "work/patch_localdb.py", "work/jobs/index.json", "work/jobs/*.md",
     "work/pose_lab/index.html", "work/pose_lab/*.py", "work/pose_lab/fbx/*.py", "work/pose_lab/fbx/*.js", "work/pose_lab/fbx/test.html",

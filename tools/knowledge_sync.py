@@ -19,7 +19,9 @@ import push_source as ps   # noqa: E402  (danh sách cho phép dùng chung; đ�
 import knowledge_merge as km   # noqa: E402
 
 R = pathlib.Path(ps.ROOT)
-SCOPE = [".claude/skills", ".claude/memory_store", "tools/claude_memory.py"]
+SCOPE = [".claude/skills", ".claude/memory_store", "tools/claude_memory.py",
+         ".claude/usage"]   # số lần gọi công cụ: tự đẩy theo lịch, nhưng không nhắc (đổi sau mỗi lệnh)
+USAGE = ".claude/usage/"
 STATE = R / "work" / "store" / "_sys" / "watch" / "knowledge_sync.json"
 LOG = STATE.with_name("knowledge_autopush.log")
 PY = R / ".venv" / "Scripts" / "python.exe"
@@ -97,6 +99,8 @@ def report(state, fetch=False):
 
 
 def message(state, unc, unp, rem):
+    # File đếm lần gọi công cụ đổi sau mỗi lệnh: lịch tự đẩy lo, không nhắc người dùng vì nó.
+    unc, unp, rem = ([f for f in fs if not f.startswith(USAGE)] for fs in (unc, unp, rem))
     parts = []
     if unc or unp:
         parts.append(f"có kiến thức mới chưa đẩy lên GitHub ({len(unc)} file chưa commit, {len(unp)} file khác bản GitHub)")

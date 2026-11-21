@@ -19,7 +19,7 @@
 - Việc nào làm lần thứ hai thì làm thành lệnh một bước. Không đọc lại tài liệu / memory đã đọc trong phiên; ghi kiến thức một lần ở cuối việc. Báo trước bước nào lâu.
 
 ## Đếm số lần gọi công cụ (người dùng, 2026-11-21)
-- Hook `PostToolUse` tự ghi mỗi lần gọi `tools/<tên>.py`, skill hay plugin `frolvy_plugins/<tên>` vào `.claude/usage/<máy>.jsonl`. Chỉ ghi tên, không ghi lệnh hay tham số. Commit các file này cùng việc thường ngày để số liệu cả team gộp lại được.
+- Hook `PostToolUse` tự ghi mỗi lần gọi `tools/<tên>.py`, skill hay plugin `frolvy_plugins/<tên>` vào `.claude/usage/<máy>.jsonl`. Chỉ ghi tên, không ghi lệnh hay tham số. Các file này tự lên GitHub cùng kiến thức (lịch `AIAnim_KnowledgePush` mỗi ngày, và `/push`), không cần commit tay; mỗi máy một file nên không xung đột.
 - Muốn được đếm thì chạy công cụ bằng đường dẫn `tools/...` (ví dụ `.venv/Scripts/python.exe -I tools/x.py`). Không chép code công cụ vào `work/` hay dán vào `execute_code`: làm vậy thì không đếm được.
 - Trước khi đưa một công cụ sang Frolvy, xoá nó hay viết lại nó, xem `.venv/Scripts/python.exe -I tools/tool_usage.py report`. Chỉ công cụ được gọi ở **nhiều phiên** mới đáng đưa vào Frolvy. Nhiều lần trong một phiên không tính là dùng lại.
 
