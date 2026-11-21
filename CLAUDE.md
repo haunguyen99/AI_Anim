@@ -18,6 +18,11 @@
 - Frolvy: mở đầu bằng `.venv/Scripts/python.exe -I tools/frolvy_port.py scene` (file đang mở, `*` = chưa lưu, layer, key). Người dùng có thể mở lại Frolvy giữa hai lượt, scene có thể đã khác (đừng giả định). Việc hay gặp có lệnh một bước: `keys <tên>`, `clear <tên>` (xóa key + về pose mặc định), `reset <tên>` (xem đầu `tools/frolvy_port.py`). Có công cụ `frolvy` trực tiếp thì gọi `anim_ops` qua `execute_code`. Không đụng cổng của phiên khác (9878…).
 - Việc nào làm lần thứ hai thì làm thành lệnh một bước. Không đọc lại tài liệu / memory đã đọc trong phiên; ghi kiến thức một lần ở cuối việc. Báo trước bước nào lâu.
 
+## Đếm số lần gọi công cụ (người dùng, 2026-11-21)
+- Hook `PostToolUse` tự ghi mỗi lần gọi `tools/<tên>.py`, skill hay plugin `frolvy_plugins/<tên>` vào `.claude/usage/<máy>.jsonl`. Chỉ ghi tên, không ghi lệnh hay tham số. Commit các file này cùng việc thường ngày để số liệu cả team gộp lại được.
+- Muốn được đếm thì chạy công cụ bằng đường dẫn `tools/...` (ví dụ `.venv/Scripts/python.exe -I tools/x.py`). Không chép code công cụ vào `work/` hay dán vào `execute_code`: làm vậy thì không đếm được.
+- Trước khi đưa một công cụ sang Frolvy, xoá nó hay viết lại nó, xem `.venv/Scripts/python.exe -I tools/tool_usage.py report`. Chỉ công cụ được gọi ở **nhiều phiên** mới đáng đưa vào Frolvy. Nhiều lần trong một phiên không tính là dùng lại.
+
 ## Chạy ngoài app Claude desktop (Paseo, VS Code, terminal)
 - Không có công cụ riêng của app (danh sách việc, wrap_up, Artifact, trình duyệt trong app, start_session…). Dùng MCP `harness` của repo thay: `plan` / `wrap_up` (hiện ở Home `/harness/`), `publish_page` thay Artifact, `studio` / `studio_snap`, `session` (phiên con Paseo). Hook đầu phiên tự nạp bảng thay thế. Chi tiết: `docs/harness.md`.
 
