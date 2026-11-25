@@ -1,14 +1,6 @@
 {
- "seq": 36,
+ "seq": 38,
  "log": [
-  {
-   "t": "15:52:08",
-   "say": "Active v3: kéo lao dứt khoát theo cung cong, mất chậm hơn"
-  },
-  {
-   "t": "15:53:34",
-   "say": "Active v4: kéo bay nhanh hơn"
-  },
   {
    "t": "15:55:02",
    "say": "Active v5: kéo mờ dần F40-46"
@@ -120,14 +112,22 @@
   {
    "t": "17:14:10",
    "say": "Đã tách xong 22 layer (L/R theo màn hình), chưa rig. Layer nào nằm sau layer khác đã được tô phần bị che để rig không bị hở."
+  },
+  {
+   "t": "17:29:38",
+   "say": "Rig xong (20 xương). Demo rig: mỗi xương lần lượt lắc ±18° rồi về setup."
+  },
+  {
+   "t": "17:30:55",
+   "say": "Idle thở 90F: ngực nâng + nở, đầu và hai tay trễ nhịp, tóc bên physics, chớp mắt F58."
   }
  ],
  "json": "work/peace_girl/spine/PeaceGirl/peacegirl.json",
- "anim": "setup",
+ "anim": "idle",
  "frame": null,
  "view": {},
- "say": "Đã tách xong 22 layer (L/R theo màn hình), chưa rig. Layer nào nằm sau layer khác đã được tô phần bị che để rig không bị hở.",
+ "say": "Idle thở 90F: ngực nâng + nở, đầu và hai tay trễ nhịp, tóc bên physics, chớp mắt F58.",
  "what": "show",
- "t": "17:14:10",
+ "t": "17:30:55",
  "theme": "dark"
 }

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Quy trình Rigging 3D với AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{--light:#F6F3EE;--dark:#13203A;--ink:#16223A;--gold:#F0B13B;--goldtxt:#8A5208;--good:#2E7D5B;--bad:#C2492E;--mute:#4C5568;--card:#EDE6D8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;font-family:'Be Vietnam Pro',Arial,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
+section{position:absolute;inset:0;display:none;padding:100px 128px 140px;flex-direction:column;gap:30px;background:var(--light);color:var(--ink)}
+section.on{display:flex}
+section.dark{background:var(--dark);color:#fff}
+.kick{font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--goldtxt)}
+.dark .kick{color:var(--gold)}
+h1{font-size:96px;font-weight:800;line-height:1.05}
+h2{font-size:56px;font-weight:700;line-height:1.1}
+p,li{font-size:28px;line-height:1.35}
+.row{display:flex;gap:26px}
+.card{flex:1;background:var(--card);border-radius:18px;padding:28px 32px;display:flex;flex-direction:column;gap:10px}
+.dark .card{background:#1D3554}
+.card h3{font-size:32px;font-weight:700}
+.card p,.card li{font-size:25px}
+.card ul{padding-left:26px;display:flex;flex-direction:column;gap:6px}
+.err{background:#fff;border-left:10px solid var(--bad)}
+.dark .err{background:#2a2f45;border-left-color:#E5603F}
+.err .lab{font-size:21px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--bad)}
+.dark .err .lab{color:#ff9a7e}
+.fix{background:#fff;border-left:10px solid var(--good)}
+.fix .lab{font-size:21px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--good)}
+.tag{display:inline-block;font-size:22px;font-weight:700;padding:4px 14px;border-radius:999px;background:var(--gold);color:#13203A;width:max-content}
+.big{font-size:72px;font-weight:800;color:var(--goldtxt);line-height:1;font-family:'JetBrains Mono',monospace}
+.dark .big{color:var(--gold)}
+.ok{color:var(--good)} .no{color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:25px}
+th,td{text-align:left;padding:14px 18px;border-bottom:2px solid #D9D0BE;vertical-align:top}
+th{font-size:22px;color:var(--mute);font-weight:600}
+.dark th{color:#9db0cc}.dark td{border-bottom-color:#2d4568}
+tr.hl{background:var(--card)}
+.dark tr.hl{background:#1D3554}
+.flow{display:flex;align-items:stretch}
+.step{flex:1;background:var(--card);padding:22px 18px;display:flex;flex-direction:column;gap:8px;clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,8% 50%);margin-right:-16px}
+.step:first-child{clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%);padding-left:26px}
+.step b{font-size:24px}
+.step span{font-size:20px;color:var(--mute);line-height:1.3}
+.step.gate{background:var(--gold)}
+.step.gate span{color:#3a2a08}
+.num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:20px;color:var(--goldtxt)}
+.pg{position:absolute;right:128px;bottom:52px;font-size:24px;color:var(--mute)}
+.dark .pg{color:#9db0cc}
+.note{position:absolute;left:128px;bottom:52px;width:1400px;font-size:23px;color:var(--mute)}
+.dark .note{color:#9db0cc}
+.split{display:flex;gap:28px;flex:1;min-height:0}
+.col{flex:1;display:flex;flex-direction:column;gap:18px;min-width:0}
+.col.w{flex:1.35}
+.fig{margin:0;background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;border:2px solid #D9D0BE}
+.fig img{width:100%;display:block;object-fit:contain;max-height:470px;background:#fff}
+.fig figcaption{padding:10px 16px;font-size:21px;line-height:1.3;color:var(--mute);border-top:2px solid #EFE9DC}
+.fig figcaption b{color:var(--ink)}
+.fig.sch figcaption::before{content:"SƠ ĐỒ MINH HOẠ · ";font-weight:700;color:var(--goldtxt)}
+.fig.real figcaption::before{content:"ẢNH THẬT TRONG DỰ ÁN · ";font-weight:700;color:var(--good)}
+.pair{display:flex;gap:18px}.pair .fig{flex:1}
+.tall img{max-height:640px}
+section>.card{flex:none}
+.fig{flex-shrink:0}
+b.n{font-family:'JetBrains Mono',monospace;color:var(--bad)}
+#hint{position:fixed;left:12px;bottom:8px;color:#888;font:12px sans-serif;z-index:9}
+@media print{html,body{overflow:visible;background:#fff}#stage{position:static;transform:none!important;width:auto;height:auto}section{position:relative;display:flex!important;width:1920px;height:1080px;page-break-after:always}}
+@page{size:1920px 1080px;margin:0}
+</style>
+</head>
+<body>
+<div id="stage">
+<!-- 1 Bìa -->
+<section class="dark on" style="justify-content:center;gap:44px">
+  <p class="kick">Art Animation · Rigging 3D với AI</p>
+  <h1>Quy trình Rigging 3D<br>từng bước, kèm lỗi thật</h1>
+  <p style="max-width:1400px;color:#c9d6ea">Từ model trần tới rig chạy trong Unity. Mỗi bước có hình minh hoạ: ảnh thật từ các Pet đã làm (Night Bat, Mecha Pup, Wind Chameleon, Steam Pug, Kitsune, Pinchy) và sơ đồ vẽ theo số đo thật của Hero, MeoTom, London.</p>
+</section>
+
+<!-- 2 Tổng quan -->
+<section>
+  <p class="kick">Tổng quan</p>
+  <h2>10 bước, mỗi bước dừng ở cổng duyệt</h2>
+  <div class="flow" style="margin-top:14px">
+    <div class="step"><span class="num">1</span><b>Đo model</b><span>Từng mảnh rời</span></div>
+    <div class="step gate"><span class="num">1b · CỔNG</span><b>Kiểm lưới</b><span>Retopo nếu cần</span></div>
+    <div class="step gate"><span class="num">2 · CỔNG</span><b>Joint fit</b><span>Đặt điểm xoay</span></div>
+    <div class="step"><span class="num">3–4</span><b>Sửa joint, vải</b><span>Chuỗi đuôi, tai, hàm</span></div>
+    <div class="step"><span class="num">5</span><b>Build Rig</b><span>Control ôm mesh</span></div>
+    <div class="step gate"><span class="num">6 · CỔNG</span><b>Skin</b><span>Luật từng mảnh</span></div>
+    <div class="step"><span class="num">7</span><b>Picker</b><span>Dễ bấm</span></div>
+    <div class="step gate"><span class="num">8 · CỔNG</span><b>Kiểm rig</b><span>Thử mọi khớp</span></div>
+    <div class="step"><span class="num">9</span><b>Xuất FBX</b><span>Kiểm trong Unity</span></div>
+  </div>
+  <div class="row" style="margin-top:20px">
+    <div class="card"><h3>Người duyệt luôn thắng</h3><p>Người chỉnh joint hoặc skin bằng tay thì giữ nguyên. AI chỉ nhắc nếu thấy rủi ro, không tự đổi lại.</p></div>
+    <div class="card"><h3>Mỗi cổng có hình để xem</h3><p>Báo bằng số và hình (3 góc nhìn, thử khớp). Người xem trực tiếp trong Frolvy.</p></div>
+    <div class="card"><h3>Chưa kiểm thì nói rõ</h3><p>Chưa thử trong Unity, chưa playblast, chưa Director: ghi thẳng vào báo cáo.</p></div>
+  </div>
+  <p class="note">Nhãn trên hình: ẢNH THẬT = chụp từ Frolvy trong dự án. SƠ ĐỒ = vẽ lại theo số đo thật, vì ảnh gốc của ca đó không còn trên máy này.</p>
+</section>
+
+<!-- 3 Luật -->
+<section class="dark">
+  <p class="kick">Luật chung</p>
+  <h2>Rig cho game: 6 luật đã chốt với người dùng</h2>
+  <div class="split">
+    <div class="col">
+      <div class="row" style="gap:16px"><div class="card"><h3>1 · Chỉ joint base</h3><p>Không helper, twist.</p></div><div class="card"><h3>2 · Root_M = hông</h3><p>Không Pelvis.</p></div></div>
+      <div class="row"><div class="card"><h3>3 · Skin chỉ DEF</h3><p>Tối đa 4 joint / đỉnh.</p></div><div class="card"><h3>4 · Mảnh cứng 100%</h3><p>Giáp, mắt, đạo cụ.</p></div></div>
+      <div class="row"><div class="card"><h3>5 · Joint xa không kéo</h3><p>Tay chân không kéo thân.</p></div><div class="card"><h3>6 · Control ôm mesh</h3><p>Thấy được, bấm được.</p></div></div>
+      <div class="card err"><span class="lab">Lỗi thật · Bastion 2026-10-31</span><p>AI tự bật "helper set": thêm <b>126 joint thừa</b>, thân bị kéo theo tay chân.</p></div>
+    </div>
+    <div class="col w"><figure class="fig real"><img src="img/rig/steam_joints.jpg"><figcaption><b>Steam Pug Turbo:</b> khung xương base (nhìn bên và nhìn trên), mỗi joint có tên. Chỉ có xương thân, chân, đuôi, mảnh giáp.</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- 4 Đo model -->
+<section>
+  <p class="kick">Bước 1 · Đo model</p>
+  <h2>Đo bằng số trước khi giao việc, cắt đúng mảnh cần</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Làm gì</h3><ul>
+        <li>Liệt kê từng mảnh rời: kích thước, đơn vị, đối xứng, cạnh hở</li>
+        <li>Đặt tên vai trò: thân, quần, giày, váy, giáp, khăn</li>
+        <li>Báo mốc: chiều cao, hướng mặt, đạo cụ</li>
+        <li>Cắt lát chỉ trên mảnh liên quan</li></ul></div>
+      <div class="card err"><span class="lab">Lỗi thật · Hero RPG2</span><p>Cắt cả model một lần: váy lẫn vào lát chân, giáp lẫn vào lát tay. Công cụ chỉ cắt mảnh lớn nhất nên lát chân / tay ra rỗng.</p></div>
+      <div class="card err"><span class="lab">Lỗi thật · Pet mesh v2</span><p>So số mesh cũ / mới trước khi giao: bắt được 2 file quay ngược 180°. Brief viết theo suy đoán ("mảnh 80 đỉnh là mắt") thì sai: đó là cánh Night Bat.</p></div>
+    </div>
+    <div class="col w"><figure class="fig real"><img src="img/rig/mesh_turtle.jpg"><figcaption><b>Pebble Turtle:</b> lưới 4 góc nhìn + bản UV. Đây là bản đo mesh (đỉnh, mảnh rời, bbox, UV) làm trước khi chuyển rig sang mesh mới.</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- 5 Kiểm lưới -->
+<section>
+  <p class="kick">Bước 1b · Kiểm lưới và Retopology</p>
+  <h2>Lưới không hợp rig thì skin kiểu gì cũng xấu</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Kiểm: đạt hay chưa, chỗ nào</h3><ul>
+        <li>Toàn quad, edge loop quanh vai, khuỷu, gối, cổ, mặt</li>
+        <li>Pole và tam giác ở vùng gập</li>
+        <li>Pose mesh (T / A), khớp hơi gập</li>
+        <li>Số tam giác hợp mobile (~1.500–15.000)</li></ul></div>
+      <div class="card err"><span class="lab">Lỗi thật · MeoTom (mèo Tripo)</span><ul>
+        <li>Giảm mesh (decimate) <b>không phải</b> retopo</li>
+        <li>Bake normal từ Tripo mang theo lồi lõm: bỏ</li>
+        <li>Frolvy lật dọc UV: bake phải lật mới đúng</li>
+        <li>Quadriflow cho quad đều nhưng <b>không theo xương</b>, không có vòng mắt, miệng (Hậu: "cách đi lưới chưa đúng")</li></ul></div>
+    </div>
+    <div class="col w">
+      <div class="pair"><figure class="fig real"><img src="img/rig/mesh_nightbat.jpg"><figcaption><b>Night Bat:</b> lưới quad + UV</figcaption></figure></div>
+      <div class="card"><h3>Cách đọc ảnh</h3><p>Vòng lưới quanh mắt, miệng, gốc tai, chỗ nối cánh–thân. UV không chồng, mỗi mảnh một vùng riêng để bake texture sạch.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 Joint fit: ví dụ thật -->
+<section>
+  <p class="kick">Bước 2 · Đặt joint fit</p>
+  <h2>Joint là điểm xoay giải phẫu, chụp 3 góc gửi duyệt</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Quy tắc</h3><ul>
+        <li>Chỉ joint giữa + phải; Root = hông</li>
+        <li>Đặt theo hình mesh từng vùng</li>
+        <li><b>Chụp trước, bên, trên</b> với joint chồng mesh, chờ duyệt rồi mới build</li>
+        <li>Số đo tâm mặt cắt chỉ để tham khảo</li></ul></div>
+      <div class="card"><h3>Hình bên phải</h3><p>Joint chồng mesh ở các Pet: người duyệt nhìn đường xương có nằm đúng tâm xoay (vai, gốc cánh, chân, gốc đuôi) hay không.</p></div>
+    </div>
+    <div class="col w">
+      <figure class="fig real"><img src="img/rig/nb_rig_show.jpg"><figcaption><b>Night Bat:</b> joint (vàng) chồng mesh, nhìn trước</figcaption></figure>
+      <div class="pair"><figure class="fig real"><img src="img/rig/pinchy_rig.jpg"><figcaption><b>Pinchy Balboa:</b> rig sau khi sửa</figcaption></figure><figure class="fig real"><img src="img/rig/kitsune_rig.jpg"><figcaption><b>Kitsune Nine Mist:</b> chuỗi joint đầu và đuôi</figcaption></figure></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 Lỗi joint MeoTom -->
+<section>
+  <p class="kick">Bước 2 · Ví dụ lỗi</p>
+  <h2>MeoTom: AI đặt theo tâm hình khối, Hậu chỉnh tay 18 / 33 joint hơn 2 cm</h2>
+  <div class="split">
+    <div class="col w"><figure class="fig sch"><img src="img/rig/d_ankle.svg"><figcaption>Cổ chân AI đặt ở chỗ thắt (0,115), đúng là chỗ chân gặp bàn chân (0,065): lệch 5 cm.</figcaption></figure></div>
+    <div class="col w"><figure class="fig sch"><img src="img/rig/d_foot_dir.svg"><figcaption>Hướng bàn chân: AI đo ra 5–9°, đúng khoảng 39° (đường gót → mút ngón).</figcaption></figure></div>
+  </div>
+  <table style="font-size:22px">
+    <tr><th style="width:15%">Joint</th><th style="width:40%">AI đặt</th><th>Đúng (Hậu chỉnh)</th></tr>
+    <tr class="hl"><td>Hông</td><td>Tâm bbox đùi, x 0,093</td><td>Tâm đùi trung bình hai bên, x 0,068</td></tr>
+    <tr><td>Cột sống</td><td>Cách 7,5 / 11,5 cm, Neck thấp 2,9 cm</td><td>Chia đều 9,2 cm</td></tr>
+    <tr class="hl"><td>Tai, hàm</td><td>Gốc tai theo mép ngoài (lệch ~5 cm); JawEnd ở đáy cằm</td><td>Gốc tai sát đỉnh đầu, vào trong; JawEnd ở mút môi dưới</td></tr>
+  </table>
+</section>
+
+<!-- 8 Chuỗi: đuôi, tai, hàm, vải -->
+<section>
+  <p class="kick">Bước 3–4 · Chuỗi joint, người sửa joint</p>
+  <h2>Chuỗi theo đúng hình đuôi, tai, hàm, vải</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Quy tắc</h3><ul>
+        <li>Đuôi: theo đường tâm, <b>thêm đốt ở chỗ cuộn</b>; điểm cuối nằm trong mesh</li>
+        <li>Vải (váy, khăn): joint đầu ở <b>mép trên vạt</b>, không ở Root</li>
+        <li>Người sửa joint thì giữ nguyên, chỉ đặt lại <b>con trực tiếp</b> về vị trí cũ</li>
+        <li>Vải hai bên không đối xứng: mỗi dải một chuỗi, tắt mirror</li></ul></div>
+      <div class="card err"><span class="lab">Lỗi thật</span><p><b>Hero:</b> người dùng hạ Root / Chest / Neck 4–13 cm → phải đặt lại Hip, Scapula, khăn, HeadEnd; Neck / Head hạ dưới vai thì AI chỉ nhắc rủi ro.<br><b>Hero Axe:</b> Build với danh sách một-bên rỗng từng xoá cả control bên trái, hoàn tác không lấy lại.</p></div>
+    </div>
+    <div class="col w">
+      <figure class="fig real"><img src="img/rig/wc_tail.jpg"><figcaption><b>Wind Chameleon:</b> chuỗi joint bám theo đuôi cuộn (zoom). Chỗ cuộn gấp có thêm đốt.</figcaption></figure>
+      <figure class="fig real tall"><img src="img/rig/wc_jaw.jpg" style="max-height:300px;object-fit:cover;object-position:top"><figcaption><b>Wind Chameleon:</b> hàm mở 4 mức (mặt trước và bên). Bản lề hàm ngang miệng.</figcaption></figure>
+    </div>
+  </div>
+</section>
+<!-- 9 Build Rig -->
+<section class="dark">
+  <p class="kick">Bước 5 · Build Rig</p>
+  <h2>Build một lần cho sạch, Rebuild thì kiểm lại</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Trước và sau khi build</h3><ul><li>Tắt helper, bendy, twist; mọi control về 0; Root ở hông</li><li>Sau build: không bản trái thừa, DEF khớp fit ở FK, switch hai bên cùng cỡ</li></ul></div>
+      <div class="card err"><span class="lab">Lỗi thật · Bastion</span><p>Rebuild khi Pelvis đang posed: pose bị nướng vào nhóm offset, rig nghiêng dù control = 0. Mất dây translate tuỳ chỉnh; pivot control (Neck, Head, Scapula) ở chỗ joint cũ.</p></div>
+      <div class="card err"><span class="lab">Lỗi thật · Night Bat</span><p>Dựng lại rig trong cùng scene: joint, constraint cũ vẫn bị xuất ra thành <b>joint ma</b> trong FBX. MeoTom: rest đọc lệch 0,1–0,9 m ở đuôi, hàm, tai sau Build.</p></div>
+      
+    </div>
+    <div class="col w">
+      <figure class="fig real"><img src="img/rig/pinchy_rig.jpg"><figcaption><b>Pinchy Balboa:</b> rig sau khi sửa (bản "rigfix"). Kiểm: joint đúng chỗ, control quanh thân.</figcaption></figure>
+      
+    </div>
+  </div>
+</section>
+
+<!-- 10 Control -->
+<section>
+  <p class="kick">Bước 5 · Control và switch</p>
+  <h2>Control phải thấy được, bấm được, hai bên giống nhau</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Quy tắc</h3><ul>
+        <li>Vẽ ôm mesh (đo mặt cắt, cộng vài cm); IK chân là hộp ôm giày</li>
+        <li>Control trục giữa cùng cỡ, ở giữa (trừ Root)</li>
+        <li>Hai bên soi gương nhau; switch cùng cỡ</li></ul></div>
+      <div class="card err"><span class="lab">Lỗi thật</span><ul>
+        <li>Hero: "mỗi lần tạo control luôn bị ẩn trong mesh"</li>
+        <li>Hero: vòng cổ chân 2 m, vai 2,5 m (váy, mũ là lưới một lớp)</li>
+        <li>Hero Axe: cổ tay 1,46 m, Root 1,85 m vì vòng ôm cả rìu</li>
+        <li>Hero: switch tay phải ra 2 cm trong bàn tay, tay trái 5,6 cm trên cổ tay</li></ul></div>
+    </div>
+    <div class="col w">
+      <figure class="fig real"><img src="img/rig/mecha_ctl.jpg"><figcaption><b>Mecha Pup:</b> control (đỏ, xanh, vàng) quanh mesh. So cỡ vòng với thân, chỗ nào ẩn trong mesh, chỗ nào to quá.</figcaption></figure>
+      <figure class="fig sch"><img src="img/rig/d_ctl_size.svg"><figcaption>MeoTom sau Build: Shoulder_R 0,84 m so với L 0,15 m. Sửa bằng soi gương.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 11 Skin: trước/sau Night Bat -->
+<section class="dark">
+  <p class="kick">Bước 6 · Skin</p>
+  <h2>Night Bat: thử 9 pose mặt trước, lần đầu so với lần thứ 13</h2>
+  <div class="pair">
+    <figure class="fig real"><img src="img/rig/nb_skin_before.jpg" style="max-height:470px"><figcaption><b>Bản thử đầu (12/11 10:36):</b> cánh phình, tai kéo méo, màng cánh dính vào mặt khi cánh gập.</figcaption></figure>
+    <figure class="fig real"><img src="img/rig/nb_skin_after.jpg" style="max-height:470px"><figcaption><b>Bản thử thứ 13 (12/11 14:17):</b> cùng 9 pose, cánh gọn, tai và đầu tách nhau.</figcaption></figure>
+  </div>
+  <div class="card err"><span class="lab">Lỗi thật · người dùng báo "cánh dính vào mặt, tai" 4 lần</span><p>Nguyên nhân gốc không phải trọng số: skin được bind khi một control đang posed, bind pose ghi lệch. <b>Phòng:</b> control = 0, đổi frame rồi về 0, bind, kiểm đối xứng ở pose 0.</p></div>
+</section>
+
+<!-- 12 Night Bat bên + mesh hàn -->
+<section>
+  <p class="kick">Bước 6 · Skin: mesh hàn liền</p>
+  <h2>Tai nối cánh bằng mặt dài: skin không tách nổi</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card err"><span class="lab">Lỗi thật · Night Bat</span><p>Mặt nối giữa tai và cánh giãn ×2–3 khi xoay mạnh, dù đã chỉnh weight nhiều vòng.</p></div>
+      <div class="card fix"><span class="lab">Cách đã duyệt</span><ul><li>Tách tai (cùng phần màng nối) thành mesh riêng</li><li>Gốc tai pha dần sang Head</li><li>Base FBX thành 2 mesh</li></ul></div>
+      <div class="card"><h3>Kiểm bằng gì</h3><p>Lấy vị trí đỉnh sau khi skin, đo giãn cạnh và dịch chuyển theo nhóm (cánh, tai, đầu, thân). Số đẹp vẫn phải xem hình.</p></div>
+    </div>
+    <div class="col w">
+      <figure class="fig real"><img src="img/rig/nb_skin_side.jpg" style="max-height:330px"><figcaption><b>Night Bat, nhìn bên (9 pose thử):</b> cánh và tai chồng vào khối đầu ở nhiều pose.</figcaption></figure>
+      <div class="pair"><figure class="fig real"><img src="img/rig/nb_junction.jpg"><figcaption><b>Vùng nối tai–cánh</b> trên mesh</figcaption></figure><figure class="fig real"><img src="img/rig/nb_web_split.jpg"><figcaption><b>Sau khi tách tai:</b> màng nối</figcaption></figure></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 Skin vai tay -->
+<section>
+  <p class="kick">Bước 6 · Skin: thân, vai, tay</p>
+  <h2>Vai và ống tay: vùng dễ móp nhất</h2>
+  <table style="font-size:22px">
+    <tr><th style="width:12%">Dự án</th><th style="width:34%">Người dùng thấy</th><th>Sửa</th></tr>
+    <tr class="hl"><td>Nova</td><td>Xoay vai, ống tay thót hình nêm</td><td>Mép dưới ống tay còn bám thân. Vertex tay chỉ bám Shoulder (+ Elbow gần khuỷu)</td></tr>
+    <tr><td>Hero</td><td>Bả vai không theo Scapula</td><td>Scapula tới 75% ở bả vai, đỉnh vai (biểu đồ dưới)</td></tr>
+    <tr class="hl"><td>Hero</td><td>Đai cứng khi xoay Spine1</td><td>Chia đai Root → Spine1 theo chiều cao</td></tr>
+    <tr><td>Hero</td><td>Cổ áo, cổ bị co</td><td>Chia theo bán kính tới trục cổ</td></tr>
+    <tr class="hl"><td>Hero Axe</td><td>Vành mũ chibi ăn Shoulder ×4,4</td><td>Trên chỗ cổ hẹp nhất, mọi đỉnh là đầu</td></tr>
+  </table>
+  <figure class="fig sch" style="flex:none"><img src="img/rig/d_scapula.svg" style="max-height:150px"><figcaption>Hero: Scapula ăn 20 / 79 đỉnh bả vai (TB 4%) → 53 / 79 (TB 21%) sau sửa. Test control vai ở góc người dùng hay dùng (hạ tay 50–70°), cả hai bên, camera cận.</figcaption></figure>
+</section>
+
+<!-- 14 Khuỷu -->
+<section class="dark">
+  <p class="kick">Bước 6 · Skin: khuỷu</p>
+  <h2>Khuỷu hở khi gập: sửa quá tay cũng móp</h2>
+  <div class="split">
+    <div class="col w"><figure class="fig sch"><img src="img/rig/d_elbow.svg"><figcaption>Hero gập khuỷu 57°: đầu bắp tay chỉ ăn Elbow 35–50% nên trượt khỏi ống giáp cẳng tay hở 4,1 cm.</figcaption></figure></div>
+    <div class="col w"><figure class="fig sch"><img src="img/rig/d_elbow_edges.svg"><figcaption>Lần 1 AI kéo cả bắp tay theo Elbow: 71 cạnh móp. Chỉ phần đầu trong ống: 12.</figcaption></figure></div>
+  </div>
+  <div class="row">
+    <div class="card err"><span class="lab">Lỗi thật · Hero</span><p>Người dùng: "chỉ gắn cứng phần mesh ở đầu thôi, giờ xoay lại bị móp tay". Đếm cả cạnh trong ống ra số ngược (37 vs 43): <b>đo sai chỗ</b>.</p></div>
+    <div class="card fix"><span class="lab">Cách phòng</span><p>Chỉ phần nằm trong ống = 100% joint của ống. Đo độ móp trên phần <b>nhìn thấy</b>, kèm camera cận.</p></div>
+  </div>
+</section>
+
+<!-- 15 Chân -->
+<section>
+  <p class="kick">Bước 6 · Skin: chân</p>
+  <h2>Chân móp khi kéo IK: sửa trước và sau gối khác nhau</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card err"><span class="lab">Lỗi thật · Hero</span><p>"Tay không móp mà chân móp, nhiều vertex chân ăn sai joint": 74 / 545 đỉnh sai. Chân dùng dải chiều cao tự đặt, không bám khớp như tay.</p></div>
+      <div class="card fix"><span class="lab">Sửa</span><ul><li>Chân chia theo xương như tay</li><li>Sau gối chuyển gọn, trước gối giữ rộng</li><li>Làm mịn có bỏ qua sau gối, đáy quần</li></ul></div>
+      <div class="card"><h3>Giới hạn thật</h3><p>Lưới thưa (cạnh 9 cm qua nếp bẹn) không thể hết hẳn. Gập đùi trên 60° hoặc cúi thân 40° bằng một khớp: anim nên chia góc cho Spine1, Chest, Neck.</p></div>
+    </div>
+    <div class="col w">
+      <figure class="fig sch"><img src="img/rig/d_stretch.svg"><figcaption>Hero: độ co giãn cạnh lưới trước / sau sửa. Dòng 3 là lỗi ngược do làm mịn quá tay.</figcaption></figure>
+      <figure class="fig real"><img src="img/rig/steam_leg.jpg"><figcaption><b>Steam Pug Turbo:</b> thử gập chân 6 góc, nhìn cận đùi và gối.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 16 Weight + root -->
+<section class="dark">
+  <p class="kick">Bước 6 · Skin: kiểm weight</p>
+  <h2>Lỗi ngầm: pose gốc nhìn ổn, chạy anim mới vỡ</h2>
+  <div class="split">
+    <div class="col w">
+      <figure class="fig real"><img src="img/rig/steam_weights.jpg"><figcaption><b>Steam Pug Turbo:</b> bản đồ weight, mỗi chấm một đỉnh, màu = joint ăn trội (nhìn bên, trước, trên). Kiểm vùng lẫn màu: chân kéo thân, đầu ăn cổ.</figcaption></figure>
+      <div class="card err"><span class="lab">Lỗi thật · Pet mesh v2</span><p>Rig không về dáng gốc: bind lệch gối 2,1 cm, kênh control "đường cong chết" giữ giá trị lệch. Phiên con không tự thấy. <b>Tự kiểm:</b> đổi frame rồi xem pose gốc có đứng yên không.</p></div>
+    </div>
+    <div class="col w">
+      <figure class="fig sch"><img src="img/rig/d_root.svg"><figcaption>Joint root có skin: London 277 / 1199 đỉnh (23% thân). Root dời thì thân méo.</figcaption></figure>
+      <div class="card fix"><span class="lab">Cách phòng</span><p>root (đầu cây) không skin, hông là Root_M. Chạy công cụ đo root trước khi xuất, phải ra "ok"; lỗi thì cộng weight root vào Root_M.</p></div>
+    </div>
+  </div>
+</section>
+<!-- 17 Picker -->
+<section>
+  <p class="kick">Bước 7 · Picker</p>
+  <h2>Picker đơn giản: ít nút, to, đúng chỗ</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card"><h3>Kiểm</h3><ul>
+        <li>Bấm từng nút = đúng control của nó</li>
+        <li>Không nút nào đè nhau</li>
+        <li>Liệt kê control không có nút</li>
+        <li>Nút All chứa mọi control</li></ul></div>
+      <div class="card err"><span class="lab">Lỗi thật · Hero 2026-11-04</span><p>Đổi cỡ control 3D mà không đổi nút picker: "kích cỡ control thân ở picker vẫn chưa thay đổi", rồi "cho nhỏ lại và nằm ở giữa 2 tay". Hai vòng sửa vì không đồng bộ picker với control.</p></div>
+    </div>
+    <div class="col w"><figure class="fig sch"><img src="img/rig/d_picker.svg"><figcaption>Bố cục picker Hero đã duyệt (vẽ lại theo quy tắc đã chốt; ảnh gốc picker không còn trên máy này).</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- 18 Kiểm rig -->
+<section class="dark">
+  <p class="kick">Bước 8 · Kiểm rig</p>
+  <h2>Thử rig như animator sẽ dùng, không chỉ đọc số</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card err"><span class="lab">Lỗi thật · rig 2026-11-02</span><p>Group rìu constrain vào DEF cổ tay làm cổ tay DEF thôi chạy. Kiểm rig báo sạch vì mặc định chỉ thử tay <b>trái</b>.</p></div>
+      <div class="card err"><span class="lab">Lỗi thật · Hero</span><p>Hàm thử biến dạng đưa control về 0 nên <b>xoá mất pose người dùng đang thử</b> (2 lần). Bọc thử nghiệm trong hàm giữ pose.</p></div>
+      <div class="card err"><span class="lab">Lỗi thật · MeoTom</span><p>Hậu: "rig chưa ổn", "mọi joint sai". AI báo xong khi chưa soi control, joint từng cái bằng số.</p></div>
+      <div class="card"><h3>Báo thẳng khi chưa kiểm</h3><p>Chưa nhập Unity, chưa playblast, chưa Director, chưa kiểm xuyên mesh (cánh–thân, đuôi–mào).</p></div>
+    </div>
+    <div class="col w">
+      <figure class="fig sch"><img src="img/rig/d_check.svg" style="max-height:290px"><figcaption>Kiểm đủ 4 chi × IK / FK.</figcaption></figure>
+      <figure class="fig sch"><img src="img/rig/d_autosnap.svg" style="max-height:215px"><figcaption>Thứ tự trả công tắc sau khi thử, để không mất pose của người dùng.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 19 Xuất FBX -->
+<section>
+  <p class="kick">Bước 9 · Xuất FBX và Unity</p>
+  <h2>FBX Frolvy cần xử lý thêm trước khi vào Unity</h2>
+  <div class="split" style="flex:none">
+    <div class="col w"><figure class="fig sch"><img src="img/rig/d_export.svg" style="max-height:370px"><figcaption>Pebble Turtle 2026-11-12: người dùng báo mesh vỡ, rồi file anim đỏ lỗi, sửa 3 vòng. Giờ chạy đủ các bước này cho mọi Pet mới.</figcaption></figure></div>
+    <div class="col">
+      <div class="card"><h3>Luật</h3><ul>
+        <li><b>Base</b> = xương + mesh; <b>file anim</b> = chỉ xương + clip</li>
+        <li>Chỉ xuất khi người duyệt nói "chốt"</li>
+        <li>Rig Generic của team: rig Frolvy lái skeleton cũ (tên, cây joint, trục giữ nguyên)</li>
+        <li>Có lỗi mới: đọc log Unity chạy nền, không đoán</li></ul></div>
+    </div>
+  </div>
+  <table style="font-size:22px">
+    <tr><th style="width:30%">Lỗi người dùng thấy</th><th style="width:34%">Nguyên nhân</th><th>Cách sửa</th></tr>
+    <tr class="hl"><td>Base vỡ skin: đầu, chân bay khỏi thân</td><td>Unity lấy Transform của cluster làm bind pose; Frolvy không ghi BindPose</td><td>Thêm BindPose; bỏ clip tĩnh khỏi Base</td></tr>
+    <tr><td>Copy Avatar: "Cannot find root motion transform"</td><td>File anim chỉ có một nút gốc nên Unity coi nó là gốc file</td><td>Thêm Null "Dummy" cùng cấp, chỉ ở file anim</td></tr>
+    <tr class="hl"><td>Joint ma, node thừa trong FBX</td><td>Frolvy luôn ghi cả scene</td><td>Lọc sau khi xuất: giữ cây root + mesh</td></tr>
+  </table>
+</section>
+
+<!-- 20 Bẫy Frolvy -->
+<section class="dark">
+  <p class="kick">Bẫy của công cụ</p>
+  <h2>Bẫy Frolvy đã gặp: biết trước để khỏi mất việc</h2>
+  <div class="split">
+    <div class="col">
+      <div class="card err"><span class="lab">Xoá nhầm mesh</span><p>Xoá khi đang ở chế độ đỉnh / mặt: chỉ số mặt chung cả scene nên xoá nhầm mesh khác (2026-10-31 Body mất nửa dưới), Ctrl+Z không lấy lại. Luôn về chế độ object, kiểm vùng chọn.</p></div>
+      <div class="card err"><span class="lab">Undo lẫn việc người dùng</span><p>Hoàn tác nhiều bước có thể lùi quá cả việc người dùng làm. Sửa tiến, kiểm lại trạng thái sau undo.</p></div>
+      <div class="card err"><span class="lab">Cổng nhầm cửa sổ</span><p>Cổng chết thì công cụ tự nhảy sang cửa sổ Frolvy khác không báo: lệnh chạy nhầm Pet khác. Kiểm scene sau mỗi lần khởi động lại.</p></div>
+    </div>
+    <div class="col">
+      <div class="card err"><span class="lab">Lưu, mở file</span><p>Lưu sang file đã có thì trả False; mở file khi scene đang sửa thì trả False và lệnh nhập sau đó chồng vào scene rig.</p></div>
+      <div class="card err"><span class="lab">Xoá joint</span><p>Giữ translate cục bộ của con (cả cây nhảy lên), xoá nhãn cha. Skin vẫn trỏ joint đã xoá sau Rebuild: lưu weight trước.</p></div>
+      <div class="card"><h3>Gặp lỗi của Frolvy</h3><p>Ghi một dòng (Lỗi / Cách thấy / Mong muốn), hỏi người dùng rồi mới gửi cho đội phát triển.</p></div>
+    </div>
+  </div>
+  <p class="note">Bẫy autoSnap (chuyển IK ↔ FK chép pose sang control): xem sơ đồ ở trang Kiểm rig.</p>
+</section>
+
+<!-- 18 Bảng tổng -->
+<section>
+  <p class="kick">Tổng kết lỗi</p>
+  <h2>Sáu nhóm lỗi AI hay mắc khi rig</h2>
+  <table style="font-size:23px">
+    <tr><th style="width:21%">Nhóm</th><th style="width:36%">Ví dụ</th><th>Phòng bằng</th></tr>
+    <tr class="hl"><td><b>Làm thừa</b></td><td>Bật helper set (126 joint thừa); xoá cả control bên trái</td><td>Chỉ làm đúng luật đã chốt, hỏi khi không chắc</td></tr>
+    <tr><td><b>Tin số, bỏ mắt</b></td><td>Độ giãn cạnh đẹp mà ống tay vẫn thót; đo cả phần trong ống</td><td>Xem hình ở góc thật; đo trên phần nhìn thấy</td></tr>
+    <tr class="hl"><td><b>Đặt theo hình khối</b></td><td>Cổ chân, hông, tai, hàm lệch 2–5 cm so với điểm xoay</td><td>Đặt theo giải phẫu, chụp 3 góc gửi duyệt</td></tr>
+    <tr><td><b>Sai chỗ gốc</b></td><td>Bind khi control posed (4 vòng sửa weight); root có skin</td><td>Control = 0 trước bind; đo root trước khi xuất</td></tr>
+    <tr class="hl"><td><b>Không đồng bộ</b></td><td>Switch hai bên khác cỡ; picker không theo control</td><td>So R / L; sửa control thì sửa picker</td></tr>
+    <tr><td><b>Báo xong sớm</b></td><td>"Rig xong" khi chưa thử 4 tay chân, chưa vào Unity</td><td>Danh sách "chưa kiểm" ghi thẳng trong báo cáo</td></tr>
+  </table>
+</section>
+
+<!-- 19 Checklist -->
+<section class="dark">
+  <p class="kick">Trước khi gửi duyệt</p>
+  <h2>Checklist rig, 12 mục</h2>
+  <div class="row">
+    <div class="card"><ul>
+      <li>Lưới đã kiểm, retopo xong nếu cần</li>
+      <li>Joint đặt theo điểm xoay, đã gửi 3 góc</li>
+      <li>Root_M ở hông, không helper / twist</li>
+      <li>Control ôm mesh, không ẩn, không quá to</li>
+      <li>Trái / phải đối xứng (cỡ, switch)</li>
+      <li>Joint của người chỉnh được giữ</li>
+    </ul></div>
+    <div class="card"><ul>
+      <li>Skin chỉ DEF, tối đa 4 joint, không lẫn bên</li>
+      <li>Root skin = 0 đỉnh</li>
+      <li>Thử vai, khuỷu, hông, gối, cổ, thân bằng mắt</li>
+      <li>Pose gốc đứng yên khi đổi frame; texture đúng</li>
+      <li>Picker khớp control, không nút đè nhau</li>
+      <li>Danh sách việc chưa kiểm ghi rõ</li>
+    </ul></div>
+  </div>
+  <p class="note">Gợi ý: gửi checklist này kèm mỗi bản rig để người duyệt biết đã kiểm tới đâu.</p>
+</section>
+</div>
+<div id="hint">← → chuyển slide · F toàn màn hình · Ctrl+P ra PDF</div>
+<script>
+const S=[...document.querySelectorAll('section')],st=document.getElementById('stage');
+S.forEach((s,j)=>{if(j>0){const p=document.createElement('span');p.className='pg';p.textContent=(j+1)+' / '+S.length;s.appendChild(p)}});
+let i=Math.max(0,Math.min(S.length-1,(parseInt(location.hash.slice(1))||1)-1));
+function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);st.style.transform='translate(-50%,-50%) scale('+k+')'}
+function show(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,j)=>s.classList.toggle('on',j===i));location.hash=i+1}
+addEventListener('resize',fit);fit();show(i);
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key))show(i+1);
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key))show(i-1);
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(S.length-1);
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+});
+addEventListener('click',e=>show(e.clientX>innerWidth/2?i+1:i-1));
+</script>
+</body>
+</html>
