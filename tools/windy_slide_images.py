@@ -38,8 +38,12 @@ INK=(22,34,58); GOLD=(240,177,59); RED=(194,73,46); GRN=(46,125,91)
 def tr(o):
     v=o['verts']; V=[(v[i],v[i+1],v[i+2]) for i in range(0,len(v),3)]; t=o['tris']
     return V,[(t[i],t[i+1],t[i+2]) for i in range(0,len(t),3)]
+VNMAP=[('HeadEnd','Đỉnh đầu'),('Spine1','Cột sống'),('Shoulder','Vai'),('Scapula','Bả vai'),('Elbow','Khuỷu'),('Wrist','Cổ tay'),('Ankle','Cổ chân'),('Toes','Ngón chân'),('Heel','Gót'),('Knee','Gối'),('Chest','Ngực'),('Neck','Cổ'),('Head','Đầu'),('Hip','Hông'),('Root','Gốc')]
+def tvn(t):
+    for a,b in VNMAP: t=t.replace(a,b)
+    return t
 def vn(x): return f'{x:.1f}'.replace('.',',')
-def view(kind,size,scale,center,joints=None,names=None,P=P1,hl=(),wire=False,objs=(0,1),labeloff=None,fill=True):
+def view(kind,size,scale,center,joints=None,names=None,P=P1,hl=(),wire=True,objs=(0,1),labeloff=None,fill=True,lw=None):
     W,H=size; im=Image.new('RGB',size,(246,243,238)); d=ImageDraw.Draw(im,'RGBA')
     u0,v0=center
     def pr(p):
@@ -56,7 +60,10 @@ def view(kind,size,scale,center,joints=None,names=None,P=P1,hl=(),wire=False,obj
             lit=0.55+0.45*abs({'front':n[2],'side':n[0],'top':n[1]}[kind]/l)
             base=(215,220,228) if oi==0 else (190,165,120)
             c=tuple(int(x*lit) for x in base)
-            if wire: d.polygon(pts,fill=(236,238,243,255) if fill else None,outline=(95,110,140,255))
+            if wire:
+                fc=(250,251,253,255) if oi==0 else (247,242,232,255); oc=(40,58,105,255) if oi==0 else (214,196,162,255)
+                d.polygon(pts,fill=fc if fill else None)
+                d.line(pts+[pts[0]],fill=oc,width=(lw or ((2 if scale>=4 else 1) if oi==0 else 1)))
             else: d.polygon(pts,fill=c+(235,))
     S=set(joints or [])
     for i in (joints or []):
@@ -68,6 +75,7 @@ def view(kind,size,scale,center,joints=None,names=None,P=P1,hl=(),wire=False,obj
         if names and i in names:
             dx,dy=(labeloff or {}).get(i,(14,-12))
             txt=names[i]; w=d.textlength(txt,font=FS)
+            if abs(dx)>22 or abs(dy)>22: d.line([(x,y),(x+dx+(w if dx<0 else 0),y+dy+17)],fill=INK+(255,),width=2)
             d.rectangle([x+dx-3,y+dy-2,x+dx+w+3,y+dy+38],fill=(246,243,238,215)); d.text((x+dx,y+dy),txt,fill=INK,font=FS)
     return im,pr,d
 def dim(d,a,b,txt,off=(0,0),col=INK):
@@ -83,7 +91,7 @@ def vlabel(d,pt,txt,col=INK,dx=14,dy=-12):
     w=d.textlength(txt,font=FB); d.rectangle([pt[0]+dx-3,pt[1]+dy-2,pt[0]+dx+w+3,pt[1]+dy+38],fill=(246,243,238,230)); d.text((pt[0]+dx,pt[1]+dy),txt,fill=col,font=FB)
 MAIN=[0,1,2,3,4,5,7,9,10,12,14,15,16,18,24,27,28,30,31,33,34,20,21,22]
 # 1. mesh + kích thước
-im,pr,d=view('front',(900,1000),4.2,(0,98),objs=(0,1))
+im,pr,d=view('front',(900,1000),4.2,(0,98),objs=(0,1),wire=False)
 dim(d,pr((104,0,0)),pr((104,185,0)),'cao 185 cm',off=(-250,-14))
 dim(d,pr((-87.8,-9,0)),pr((87.8,-9,0)),'sải tay 175,6 cm',off=(-130,-56))
 vlabel(d,pr((-100,127,0)),'gậy (staff): mảnh riêng',col=(150,100,30),dx=0,dy=-90)
@@ -94,11 +102,11 @@ im.save(f'{A.out}/w_mesh.png')
 im,_,d=view('front',(900,1000),4.6,(0,98),wire=True,objs=(0,)); im.save(f'{A.out}/w_wire.png')
 im,_,d=view('front',(900,700),12,(-28,112),wire=True,objs=(0,)); im.save(f'{A.out}/w_wire_zoom.png')
 # 3. joint ba góc
-nm={0:'Root',2:'Hip',4:'Knee',9:'Ankle',14:'Toes',3:'Chest',5:'Neck',10:'Head',16:'HeadEnd',7:'Scapula',12:'Shoulder',18:'Elbow',24:'Wrist'}
-lo={7:(14,6),12:(-60,16),24:(-10,-40),18:(-20,-40),2:(-70,-6),4:(-76,-8),9:(-76,-8)}
+nm={1:'Spine1',0:'Root',2:'Hip',4:'Knee',9:'Ankle',14:'Toes',3:'Chest',5:'Neck',10:'Head',16:'HeadEnd',7:'Scapula',12:'Shoulder',18:'Elbow',24:'Wrist'}
+lo={7:(34,56),12:(-110,70),24:(-60,-110),18:(-40,-70),2:(-90,-10),4:(-96,-10),9:(-96,-10),1:(16,-12)}
 view('front',(900,1000),4.6,(0,98),MAIN,nm,labeloff=lo,hl=())[0].save(f'{A.out}/w_joints_front.png')
 view('side',(900,1000),4.6,(0,98),MAIN,{k:v for k,v in nm.items() if k in(0,4,9,14,3,5,10,16,15)}|{15:'Heel'},labeloff={0:(14,-10)},objs=(0,1))[0].save(f'{A.out}/w_joints_side.png')
-view('top',(900,900),4.6,(0,0),MAIN,{0:'Root',12:'Shoulder',18:'Elbow',24:'Wrist',10:'Head'},objs=(0,1))[0].save(f'{A.out}/w_joints_top.png')
+view('top',(900,900),4.2,(0,40),[0,3,5,10,7,12,18,24],{0:'Root',12:'Shoulder',18:'Elbow',24:'Wrist',10:'Head'},objs=(0,),labeloff={0:(14,-10),12:(-100,-50),18:(-60,-50),24:(-60,-50),10:(14,-40)})[0].save(f'{A.out}/w_joints_top.png')
 # 4. chân
 nl={2:f'Hip · cao {vn(P1[2][1])} cm',4:f'Knee · cao {vn(P1[4][1])} cm',9:f'Ankle · cao {vn(P1[9][1])} cm',14:f'Toes · {vn(P1[14][1])} cm',15:'Heel'}
 a=view('front',(780,820),9.5,(-9,36),[2,4,9,14,15,20,21,22,0],nl,objs=(0,),labeloff={2:(16,-34),4:(16,-30),9:(16,-34),14:(16,6),15:(-70,6),0:(16,-14)})[0]
@@ -110,12 +118,21 @@ a=view('front',(780,900),6.2,(0,128),[0,1,3,5,10,16,7,12,2],ns,objs=(0,),labelof
 b=view('side',(780,900),6.2,(0,128),[0,1,3,5,10,16],ns,objs=(0,),labeloff={k:(16,-12) for k in ns})[0]
 pair(a,b).save(f'{A.out}/w_spine.png')
 # 6. tay
-na={7:'Scapula',12:'Shoulder',18:'Elbow',24:'Wrist',28:'Ngón giữa',27:'Ngón cái'}
-im,pr,d=view('front',(1500,560),9.2,(-48,114),[5,3,7,12,18,24,27,28,30,31,33,34],na,objs=(0,1),labeloff={7:(10,18),12:(-40,18),18:(-30,-48),24:(-20,-48),28:(-30,-76),27:(-50,22)})
+na={7:'Scapula',12:'Shoulder',18:'Elbow',24:'Wrist',28:'Middle finger',27:'Thumb'}
+im,pr,d=view('front',(1500,560),9.2,(-48,114),[5,3,7,12,18,24,27,28,30,31,33,34],na,objs=(0,1),labeloff={7:(36,58),12:(-90,60),18:(-30,-60),24:(10,-92),28:(-170,-64),27:(-50,26)})
 dim(d,pr((P1[7][0],104,0)),pr((P1[12][0],104,0)),f'{vn(abs(P1[12][0]-P1[7][0]))} cm',off=(-30,6)); im.save(f'{A.out}/w_arm.png')
 # 7. trước / sau chỉnh
 def ba(P,hl,title):
-    im,pr,d=view('front',(780,900),6.4,(-6,138),[0,1,3,5,10,16,7,12,2],{3:'Chest',16:'HeadEnd',7:'Scapula',12:'Shoulder',5:'Neck',10:'Head'},P=P,objs=(0,),hl=hl,labeloff={3:(16,-12),16:(16,-12),7:(8,22),12:(-40,24),5:(16,-12),10:(16,-12)})
+    im,pr,d=view('front',(780,900),6.4,(-6,138),[0,1,3,5,10,16,7,12,2],({3:'Chest',16:'HeadEnd',5:'Neck',10:'Head'} if hl else {3:'Chest',16:'HeadEnd',7:'Scapula',12:'Shoulder',5:'Neck',10:'Head'}),P=P,objs=(0,),hl=hl,labeloff={3:(24,6),16:(16,-12),7:(40,40),12:(-150,46),5:(16,-12),10:(16,-12)})
+    if hl:
+        for i in hl:
+            a=pr(P0[i]); b2=pr(P1[i]); d.ellipse([a[0]-12,a[1]-12,a[0]+12,a[1]+12],outline=RED+(255,),width=3)
+            d.line([a,b2],fill=RED+(255,),width=4)
+            import math as _m; ang=_m.atan2(b2[1]-a[1],b2[0]-a[0]); d.polygon([b2,(b2[0]-16*_m.cos(ang-0.45),b2[1]-16*_m.sin(ang-0.45)),(b2[0]-16*_m.cos(ang+0.45),b2[1]-16*_m.sin(ang+0.45))],fill=RED+(255,))
+    if hl:
+        for i,txt in {3:'Chest hạ 4 cm',16:'Head End về đỉnh đầu',7:'Scapula ra 6 cm',12:'Shoulder ra 6 cm'}.items():
+            pt=pr(P1[i]); off={3:(30,40),16:(-330,-30),7:(26,-120),12:(-260,-66)}[i]
+            vlabel(d,pt,txt,col=RED,dx=off[0],dy=off[1])
     vlabel(d,(20,20),title,col=RED if hl==() else GRN,dx=0,dy=0); return im
-pair(ba(P0,(),'Bản fit trong file'),ba(P1,(3,16,7,12),'Đã chỉnh (4 điểm đỏ)')).save(f'{A.out}/w_beforeafter.png')
+pair(ba(P0,(),'CHƯA ĐẠT: joint như trong file'),ba(P1,(3,16,7,12),'ĐẠT: đã chỉnh (vòng đỏ = chỗ cũ)')).save(f'{A.out}/w_beforeafter.png')
 print('ok',sorted(os.listdir(A.out)))

@@ -134,3 +134,4 @@
 - [Pet mesh v2 bài học](project-pet-mesh-v2-lessons.md) — thay mesh 6 Pet 18/11: so số mesh, tạo phiên "chưa làm", rig dáng gốc + texture lật, bẫy Frolvy Linux (2026-11-19)
 - [Rig demo anim](feedback-rig-demo-anim.md) — Spine: sau mỗi lệnh rig tự làm anim rig_demo + show lên Spine Live, không bắt tải lại (user 2026-11-19)
 - [Windy slide hình](project-windy-slide-illustration.md) — slide dạy Rigging 3D: hình Windy hạ Chest 4 cm, HeadEnd về đỉnh đầu (user 2026-11-25)
+- [Slide dùng thuật ngữ Anh](feedback-slide-english-terms.md) — slide Rigging: joint/control/skin/weight/bind..., giải thích bằng tiếng Việt (user 2026-11-26)
