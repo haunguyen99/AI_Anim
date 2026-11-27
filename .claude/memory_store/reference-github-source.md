@@ -12,10 +12,8 @@ Push: build a commit on top of `origin/main` with a temp index (`GIT_INDEX_FILE`
 **Update 2026-10-27:** pushing is now the `/push` skill (`tools/push_source.py`: allowlist, temp index, `--dry-run`, `--yes`, no force). `.claude/launch.json` and `.mcp.json` stay as on GitHub. Use it instead of the manual procedure above.
 
 2026-11-04 (user: "Bộ nhớ Claude cũng được đẩy lên git cho tài khoản khác cũng dùng được"): `.claude/memory_store/**` nằm trong ALLOW của push_source.py, đã đẩy 07d303a. Mỗi /push: `claude_memory.py backup` rồi đẩy kèm. `.claude/mcp_store` (có khoá MCP) vẫn không đẩy. Tài khoản mới: clone/pull → `claude_memory.py restore`.
-
-<<<<<<< HEAD
 2026-11-11 (user: "bỏ nhánh spine-live, chỉ giữ main và master"): nhánh spine-live đã xoá (đưa Spine Live vào main trước, merge bằng tools/knowledge_merge.py --ref origin/spine-live). push_source.py không còn --spine-live. master và main KHÔNG chung lịch sử: không git pull/merge; lấy mã về bằng knowledge_merge.py --apply.
-=======
+
 **2026-11-19 — kéo main mới về master (bài học gộp):**
 - Kéo: `git fetch origin` → xem `git log HEAD..origin/main` + `git diff --stat master...origin/main` → so với `git diff --name-only` (file đang sửa dở) để biết file nào sẽ trùng. Có trùng thì **commit bản local trước**, rồi `git merge origin/main`. Không merge lên cây đang bẩn.
 - Xung đột "cả file" (.gitignore, export.md…) thường chỉ do **CRLF vs LF**: so bằng `diff <(git show :2:f | tr -d '\r') <(git show :3:f | tr -d '\r')`; trống = giống nhau → `git checkout --theirs f`. Còn lại chỉ xung đột thật vài dòng thì giữ cả hai (MEMORY.md, REPORTS.md: hợp hai danh sách).
@@ -24,4 +22,3 @@ Push: build a commit on top of `origin/main` with a temp index (`GIT_INDEX_FILE`
 - Đừng dùng `find` quét cả ổ (/home, DataHDD): treo phiên hơn 2 phút (2026-11-18).
 - **Cả team đẩy main liên tục** (19/11: haunv 14:47, Huong 14:56, tungtq 15:01 trong vòng 15 phút). `push_source.py --dry-run` mà thấy dòng `XOÁ` = GitHub đang có file local chưa có (người khác mới đẩy), KHÔNG phải ý muốn xoá: dừng, `git fetch` + `git merge origin/main`, dry-run lại. Chỉ `--yes` khi `XOÁ` = 0. Làm fetch → merge → dry-run → push trong một lượt để khỏi bị đua.
 - Xung đột skill/knowledge mà bên local không đổi nội dung (chỉ CRLF) → lấy `--theirs`.
->>>>>>> origin/main

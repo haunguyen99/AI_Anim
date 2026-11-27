@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Rigging 3D bằng AI trong Frolvy: hướng dẫn cho người mới</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{--light:#F6F3EE;--dark:#13203A;--ink:#16223A;--gold:#F0B13B;--goldtxt:#8A5208;--good:#2E7D5B;--bad:#C2492E;--mute:#4C5568;--card:#EDE6D8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;font-family:'Be Vietnam Pro',Arial,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
+section{position:absolute;inset:0;display:none;padding:100px 128px 140px;flex-direction:column;gap:30px;background:var(--light);color:var(--ink)}
+section.on{display:flex}
+section.dark{background:var(--dark);color:#fff}
+.kick{font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--goldtxt)}
+.dark .kick{color:var(--gold)}
+h1{font-size:96px;font-weight:800;line-height:1.05}
+h2{font-size:56px;font-weight:700;line-height:1.1}
+p,li{font-size:28px;line-height:1.35}
+.row{display:flex;gap:26px}
+.card{flex:1;background:var(--card);border-radius:18px;padding:28px 32px;display:flex;flex-direction:column;gap:10px}
+.dark .card{background:#1D3554}
+.card h3{font-size:32px;font-weight:700}
+.card p,.card li{font-size:25px}
+.card ul{padding-left:26px;display:flex;flex-direction:column;gap:6px}
+.err{background:#fff;border-left:10px solid var(--bad)}
+.dark .err{background:#2a2f45;border-left-color:#E5603F}
+.err .lab{font-size:21px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--bad)}
+.dark .err .lab{color:#ff9a7e}
+.fix{background:#fff;border-left:10px solid var(--good)}
+.fix .lab{font-size:21px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--good)}
+.tag{display:inline-block;font-size:22px;font-weight:700;padding:4px 14px;border-radius:999px;background:var(--gold);color:#13203A;width:max-content}
+.big{font-size:72px;font-weight:800;color:var(--goldtxt);line-height:1;font-family:'JetBrains Mono',monospace}
+.dark .big{color:var(--gold)}
+.ok{color:var(--good)} .no{color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:25px}
+th,td{text-align:left;padding:14px 18px;border-bottom:2px solid #D9D0BE;vertical-align:top}
+th{font-size:22px;color:var(--mute);font-weight:600}
+.dark th{color:#9db0cc}.dark td{border-bottom-color:#2d4568}
+tr.hl{background:var(--card)}
+.dark tr.hl{background:#1D3554}
+.flow{display:flex;align-items:stretch}
+.step{flex:1;background:var(--card);padding:22px 18px;display:flex;flex-direction:column;gap:8px;clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,8% 50%);margin-right:-16px}
+.step:first-child{clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%);padding-left:26px}
+.step b{font-size:24px}
+.step span{font-size:20px;color:var(--mute);line-height:1.3}
+.step.gate{background:var(--gold)}
+.step.gate span{color:#3a2a08}
+.num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:20px;color:var(--goldtxt)}
+.pg{position:absolute;right:128px;bottom:52px;font-size:24px;color:var(--mute)}
+.dark .pg{color:#9db0cc}
+.note{position:absolute;left:128px;bottom:52px;width:1400px;font-size:23px;color:var(--mute)}
+.dark .note{color:#9db0cc}
+.split{display:flex;gap:28px;flex:1;min-height:0}
+.col{flex:1;display:flex;flex-direction:column;gap:18px;min-width:0}
+.col.w{flex:1.35}
+.fig{margin:0;background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;border:2px solid #D9D0BE}
+.fig img{width:100%;display:block;object-fit:contain;max-height:470px;background:#fff}
+.fig figcaption{padding:10px 16px;font-size:21px;line-height:1.3;color:var(--mute);border-top:2px solid #EFE9DC}
+.fig figcaption b{color:var(--ink)}
+.fig.sch figcaption::before{content:"SƠ ĐỒ MINH HOẠ · ";font-weight:700;color:var(--goldtxt)}
+.fig.real figcaption::before{content:"ẢNH THẬT TRONG DỰ ÁN · ";font-weight:700;color:var(--good)}
+.pair{display:flex;gap:18px}.pair .fig{flex:1}
+.tall img{max-height:640px}
+section>.card{flex:none}
+.fig{flex-shrink:0}
+b.n{font-family:'JetBrains Mono',monospace;color:var(--bad)}
+#hint{position:fixed;left:12px;bottom:8px;color:#888;font:12px sans-serif;z-index:9}
+@media print{html,body{overflow:visible;background:#fff}#stage{position:static;transform:none!important;width:auto;height:auto}section{position:relative;display:flex!important;width:1920px;height:1080px;page-break-after:always}}
+@page{size:1920px 1080px;margin:0}
+
+.blk{background:var(--card);border-radius:14px;padding:14px 22px}
+.dark .blk{background:#1D3554}
+.bl{font-size:19px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--goldtxt);margin-bottom:4px}
+.dark .bl{color:var(--gold)}
+.bt{font-size:25px;line-height:1.35}
+.bt ul{padding-left:24px;display:flex;flex-direction:column;gap:3px}
+.bt li{font-size:25px}
+.fig.wd figcaption::before{content:"NINJA · VẼ TỪ FILE JOINT THẬT · ";font-weight:700;color:var(--goldtxt)}
+.fig.nr figcaption::before{content:"";}
+.row2{flex-direction:row!important;gap:16px!important}.row2 .fig{flex:1;min-width:0}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;flex:1}
+.tc{background:var(--card);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.tc img{width:100%;height:185px;object-fit:cover;background:#fff;display:block}
+.tc .tt{padding:10px 16px;display:flex;flex-direction:column;gap:4px}
+.tc b{font-size:28px}.tc span{font-size:21px;line-height:1.3}
+.tc small{font-size:18px;color:var(--mute)}
+.prog{position:absolute;right:128px;top:38px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:19px;color:var(--mute)}
+.dark .prog{color:#9db0cc}
+.prog .pl{font-size:16px;color:var(--goldtxt);font-weight:600}
+.prog i{width:30px;height:30px;border-radius:50%;border:2px solid #B9B1A0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;font-weight:700}
+.prog i.g{border-color:var(--gold)}
+.prog i.d{background:#8793A8;border-color:#8793A8;color:#fff}
+.prog i.n{background:var(--gold);border-color:var(--gold);color:#13203A;width:40px;height:40px;font-size:21px}
+.prog b{margin-right:8px;font-size:20px;color:var(--ink)}.dark .prog b{color:#fff}
+.cmd{background:#fff;border-left:10px solid var(--gold);border-radius:12px;padding:12px 20px}
+.dark .cmd{background:#1D3554}
+.cmd .cl{font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--goldtxt)}
+.dark .cmd .cl{color:var(--gold)}
+.cmd .ct{font-size:25px;line-height:1.35;font-weight:600;margin:2px 0 8px}
+.cmd .cr{font-size:22px;line-height:1.3;color:var(--mute)}
+.dark .cmd .cr{color:#c9d6ea}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1}
+.qc{background:var(--card);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.solo .card{flex:none}.solo .card p{font-size:30px;line-height:1.4}.solo .card .lab{font-size:22px}
+.bigl li{font-size:32px!important;line-height:1.5}
+.qc img{width:100%;height:225px;object-fit:contain;background:#fff;display:block}
+.qt{padding:10px 20px;display:flex;flex-direction:column;gap:4px}.qt b{font-size:30px}.qt span{font-size:23px;line-height:1.3}
+.fig.bad figcaption::before{content:"CHƯA ĐẠT · ";font-weight:800;color:var(--bad)}
+.fig.good figcaption::before{content:"ĐẠT · ";font-weight:800;color:var(--good)}
+.fig.bad{border-color:var(--bad)}.fig.good{border-color:var(--good)}
+.say{background:#fff;border-left:10px solid var(--gold);border-radius:10px;padding:16px 22px;font-size:25px;line-height:1.35}
+.dark .say{background:#1D3554;color:#fff}
+.say b{color:var(--goldtxt)}.dark .say b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="stage">
+<section class="dark on" style="justify-content:center;gap:40px"><p class="kick">Hướng dẫn cho người mới</p><h1 style="margin-top:auto">Nhờ AI làm rig<br>nhân vật 3D</h1><p style="max-width:1300px;color:#c9d6ea;margin-bottom:auto">Bạn không cần biết 3D. Tài liệu này chỉ: AI làm gì, bạn xem gì, khi nào gật đầu, khi nào bảo làm lại. Ví dụ xuyên suốt: nhân vật <b style="color:#F0B13B">Ninja</b>.</p></section>
+<section class=""><p class="kick">Phần A · Đọc trước</p><h2>Đọc xong, bạn làm được 3 việc</h2><div class="split"><div class="col"><div class="blk"><div class="bl">1. Giao việc cho AI</div><div class="bt">Biết cần chuẩn bị gì và nói câu đầu tiên là gì.</div></div><div class="blk"><div class="bl">2. Duyệt từng bước</div><div class="bt">Biết nhìn vào đâu để thấy <b>đạt</b> hay <b>chưa đạt</b>.</div></div><div class="blk"><div class="bl">3. Bắt AI sửa đúng chỗ</div><div class="bt">Biết lỗi AI hay mắc và câu để AI làm lại.</div></div></div><div class="col" style="flex:1.6"><figure class="fig wd"><img src="img/ninja/n_beforeafter.png?v=1795685734" style="max-height:520px"><figcaption>Ví dụ một lần duyệt: trái chưa đạt (joint như trong file), phải đạt (đã hạ xuống).</figcaption></figure></div></div></section>
+<section class=""><p class="kick">Phần A · Đọc trước</p><h2>Bắt đầu từ đâu? 4 việc</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Bạn cần có</div><div class="bt">File nhân vật (.fbx) và file ảnh màu (texture).</div></div><div class="blk"><div class="bl">Câu đầu tiên</div><div class="bt">"Rig nhân vật Ninja trong Frolvy. Dừng ở bước đặt joint, chụp 3 góc gửi mình duyệt."</div></div></div><div class="col" style="flex:1.7"><figure class="fig sch"><img src="img/rig/d_start.svg?v=1795685734" style="max-height:600px"><figcaption>Bốn việc đầu tiên.</figcaption></figure></div></div></section>
+<section class=""><p class="kick">Phần A · Đọc trước</p><h2>Ai làm gì: bạn, AI và Frolvy</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Quy tắc</div><div class="bt">AI làm từng bước và <b>dừng ở các gate</b>. Bạn xem rồi bảo đi tiếp.</div></div><div class="blk"><div class="bl">Bạn là người quyết</div><div class="bt">Bạn tự sửa trong Frolvy thì ý bạn thắng. AI không tự đổi lại.</div></div><div class="blk"><div class="bl">AI làm sai hướng</div><div class="bt">Nói ngay: <b>"Dừng lại. Quay về bước …"</b></div></div></div><div class="col" style="flex:1.6"><figure class="fig sch"><img src="img/rig/d_roles.svg?v=1795685734" style="max-height:600px"><figcaption>Ba bên cùng làm việc.</figcaption></figure></div></div></section>
+<section class=""><p class="kick">Phần A · Đọc trước</p><h2>Bốn từ quan trọng nhất</h2><div class="qgrid"><div class="qc"><img src="img/ninja/n_joints_front.png?v=1795685734"><div class="qt"><b>Joint</b><span>Khớp bên trong mesh (chấm vàng). Nơi một bộ phận xoay.</span></div></div><div class="qc"><img src="img/rig/nova_controls.jpg?v=1795685734"><div class="qt"><b>Control</b><span>Thứ bạn kéo. Các hộp và vòng màu quanh nhân vật là control. Kéo control thì joint xoay.</span></div></div><div class="qc"><img src="img/rig/d_skinrule.svg?v=1795685734"><div class="qt"><b>Skin và weight</b><span>Skin bám vào joint theo phần trăm. 50% shoulder + 50% elbow thì gập theo cả hai.</span></div></div><div class="qc"><img src="img/rig/d_ikfk.svg?v=1795685734"><div class="qt"><b>FK và IK</b><span>FK: xoay từng khớp. IK: kéo bàn tay, cả tay gập theo.</span></div></div></div></section>
+<section class=""><p class="kick">Phần A · Từ điển (1/2)</p><h2>Từ điển</h2>
+<table style="font-size:23px"><tr><th style="width:21%">Từ</th><th>Nghĩa</th></tr><tr class="hl"><td><b>Mesh</b></td><td>Thân hình nhân vật, ghép từ rất nhiều mặt nhỏ</td></tr><tr class=""><td><b>Skin</b></td><td>Chính cái mesh đó, gọi là "skin" khi nói chuyện bám vào joint</td></tr><tr class="hl"><td><b>Bind skin</b></td><td>Lần đầu gắn skin vào joint, lúc nhân vật đứng ở bind pose</td></tr><tr class=""><td><b>Tris</b></td><td>Mặt nhỏ nhất của mesh. Ít quá thì thô, nhiều quá thì nặng game</td></tr><tr class="hl"><td><b>Texture</b></td><td>Ảnh màu dán lên mesh</td></tr><tr class=""><td><b>Root joint</b></td><td>Joint ở hip, mọi joint khác nối từ đây</td></tr><tr class="hl"><td><b>Joint chain</b></td><td>Nhiều joint nối nhau cho phần mềm: đuôi, áo choàng</td></tr><tr class=""><td><b>Build Rig</b></td><td>Bấm một nút, Frolvy tự sinh control từ skeleton</td></tr><tr class="hl"><td><b>Bind pose</b></td><td>Dáng đứng chuẩn lúc mới tạo, thường dang tay chữ T</td></tr><tr class=""><td><b>Frame</b></td><td>Một ảnh trong chuỗi chuyển động, như một trang flipbook</td></tr></table></section>
+<section class=""><p class="kick">Phần B · Từng bước</p><h2>8 bước (ô vàng là review gate bạn duyệt)</h2>
+<div class="flow" style="margin-top:14px">
+<div class="step gate"><span class="num">1·Gate</span><b>Kiểm tra Mesh</b><span>Đo + lưới</span></div>
+<div class="step gate"><span class="num">2·Gate</span><b>Đặt joint</b><span>Đúng chỗ khớp</span></div>
+<div class="step"><span class="num">3</span><b>Joint chain</b><span>Đuôi, khăn</span></div>
+<div class="step"><span class="num">4</span><b>Build Rig</b><span>Sinh control</span></div>
+<div class="step"><span class="num">5</span><b>Control</b><span>Vừa tay bấm</span></div>
+<div class="step gate"><span class="num">6·Gate</span><b>Bind skin</b><span>Skin bám joint</span></div>
+<div class="step"><span class="num">7</span><b>Picker</b><span>Chọn control nhanh</span></div>
+
+<div class="step"><span class="num">8</span><b>Export FBX</b><span>Vào game</span></div></div>
+<div class="row" style="margin-top:24px"><div class="card"><h3>Mỗi bước</h3><p>Trang sáng: làm gì, xem gì. Trang tối: lỗi AI hay mắc.</p></div>
+<div class="card"><h3>Nhãn trên hình</h3><p><b>ẢNH THẬT</b> chụp từ Frolvy · <b>NINJA</b> vẽ từ file joint thật · <b>SƠ ĐỒ</b> vẽ minh hoạ.</p></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 1/8</b><i class="n">1</i><i class=" g">2</i><i class="">3</i><i class="">4</i><i class="">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 1 · Kiểm tra Mesh (review gate)</p><h2>Lưới tốt thì skin mới uốn đẹp</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Để làm gì</div><div class="bt">Lưới là mạng ô trên mesh. Ô đều, có vòng ô quanh khớp thì gập mượt. Ít ô hoặc lộn xộn thì chỗ gập bị góc cạnh.</div></div><div class="blk"><div class="bl">Ninja</div><div class="bt">Khoảng <b>1.960 tris</b>, phần lớn ghép thành <b>quad</b> (ô 4 cạnh đều). Đây là ví dụ lưới đạt.</div></div><div class="blk"><div class="bl">Bạn xem gì</div><div class="bt">Nhìn ảnh phóng to shoulder: quanh khớp có mấy vòng quad? Càng đều càng tốt.</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Kiểm Lưới Ninja: xem số đường lưới ở các khớp có đủ không và kiểm tra xem đạt hay chưa."</div><div class="cr"><b>Bạn sẽ nhận được:</b> số đường lưới ở từng khớp, ảnh phóng to shoulder, và kết luận đạt hay chưa.</div></div></div><div class="col" style="flex:1.2"><figure class="fig wd"><img src="img/ninja/n_wire.png?v=1795685734" style="max-height:290px"><figcaption>Ninja: toàn bộ lưới (quad).</figcaption></figure><figure class="fig wd"><img src="img/ninja/n_wire_zoom.png?v=1795685734" style="max-height:290px"><figcaption>Phóng to shoulder: vòng quad quanh khớp.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 2/8</b><i class="d g">1</i><i class="n">2</i><i class="">3</i><i class="">4</i><i class="">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 2 · Đặt joint (1/2)</p><h2>Joint đặt ở chỗ khớp thật sự gập</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Quy tắc</div><div class="bt">Đặt <b>đúng chỗ cơ thể gập</b> (elbow, knee), không đặt giữa khối bắp tay hay đùi. Chỉ đặt bên phải và giữa, Frolvy tự lật sang trái.</div></div><div class="blk"><div class="bl">Bạn xem</div><div class="bt">Bảo AI chụp <b>trước, bên, trên</b>. Hỏi: mỗi chấm có đúng chỗ khớp xoay không?</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Đặt joint cho Ninja, chỉ bên phải và giữa, root joint ở hip. Chưa build. Chụp trước, bên, trên gửi mình duyệt."</div><div class="cr"><b>Bạn sẽ nhận được:</b> 3 ảnh joint chồng lưới và bảng độ cao từng joint.</div></div></div><div class="col row2" style="flex:1.5"><figure class="fig wd"><img src="img/ninja/n_joints_front.png?v=1795685734" style="max-height:560px"><figcaption>Nhìn trước (bên phải nhân vật ở bên trái ảnh).</figcaption></figure><figure class="fig wd"><img src="img/ninja/n_joints_side.png?v=1795685734" style="max-height:560px"><figcaption>Nhìn bên. Thanh ngang dài là cái khăn.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 2/8</b><i class="d g">1</i><i class="n">2</i><i class="">3</i><i class="">4</i><i class="">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 2 · Đặt joint (2/2, review gate)</p><h2>Đạt hay chưa đạt? Và lỗi AI hay mắc</h2><div class="split"><div class="col"><div class="card err"><span class="lab">Lỗi AI hay mắc</span><p>AI đặt joint ở chỗ "dễ thấy", không phải chỗ gập. Ví dụ: ankle cao 11,5 cm, đúng phải 6,5 cm (lệch 5 cm nên chân gập sai chỗ).</p></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Hạ Root, Hip, Knee 3 cm. Hạ Neck, Head 7 cm. Hạ Spine 5 cm, Chest 8 cm. Scapula hạ 3 cm và ra ngoài 6 cm, shoulder ra ngoài 6 cm. Giữ nguyên chỗ mình đã sửa."</div><div class="cr"><b>Bạn sẽ nhận được:</b> 3 ảnh mới, các điểm đã chỉnh (như hình bên). Chưa đạt thì nói tiếp.</div></div></div><div class="col" style="flex:1.7"><figure class="fig wd"><img src="img/ninja/n_beforeafter.png?v=1795685734" style="max-height:560px"><figcaption>Trái: chưa đạt (joint như trong file). Phải: đạt, joint đã hạ xuống đúng chỗ.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 3/8</b><i class="d g">1</i><i class="d g">2</i><i class="n">3</i><i class="">4</i><i class="">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 3 · Joint chain</p><h2>Đuôi, khăn, áo choàng: mỗi thứ một joint chain</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Để làm gì</div><div class="bt">Phần mềm như đuôi, áo choàng cần nhiều joint nối nhau để uốn lượn.</div></div><div class="blk"><div class="bl">Quy tắc</div><div class="bt">Đầu chuỗi ở <b>chỗ gắn vào thân</b>. Chỗ cuộn gấp thì thêm joint.</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Thêm joint chain cho khăn Ninja, mỗi bên 5 joint, đầu chuỗi ở Chest. Chụp gửi mình."</div><div class="cr"><b>Bạn sẽ nhận được:</b> ảnh joint chain chạy dọc theo khăn.</div></div></div><div class="col" style="flex:1.2"><figure class="fig wd"><img src="img/ninja/n_chain.png?v=1795685734" style="max-height:290px"><figcaption>Ninja nhìn bên: joint chain Scarf 1 → Scarf End chạy dọc theo khăn.</figcaption></figure><figure class="fig real"><img src="img/rig/wc_tail.jpg?v=1795685734" style="max-height:290px"><figcaption>Ví dụ khác: joint chain bám theo đuôi cuộn của một con vật.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 4/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="n">4</i><i class="">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 4 · Build Rig</p><h2>Bấm Build Rig: từ skeleton ra rig dùng được</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Để làm gì</div><div class="bt">Frolvy tự sinh control từ skeleton bạn đã đặt.</div></div><div class="blk"><div class="bl">Trước khi bấm</div><div class="bt"><ul><li>Bỏ helper joint (joint thêm cho hiệu ứng, game điện thoại không dùng)</li><li>Root joint ở hip</li><li>Dựng lại lần hai: đưa mọi control về 0 trước</li></ul></div></div><div class="blk"><div class="bl">Bạn xem gì</div><div class="bt">Joint đúng chỗ, không có bản sao thừa, hai bên giống nhau.</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Lưu file. Build Rig cho Ninja: không helper joint, root joint ở hip. Báo kết quả."</div><div class="cr"><b>Bạn sẽ nhận được:</b> báo đã build, không có bản thừa, kèm ảnh.</div></div></div><div class="col" style="flex:1.5"><figure class="fig sch"><img src="img/rig/d_build.svg?v=1795685734" style="max-height:600px"><figcaption>Build Rig sinh thêm gì.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 5/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="n">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 5 · Control</p><h2>Control phải thấy được và bấm được</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Để làm gì</div><div class="bt">Người làm hoạt hình kéo control mỗi ngày. Control chìm trong mesh hoặc to quá thì không ai dùng.</div></div><div class="blk"><div class="bl">Quy tắc</div><div class="bt">Vẽ ôm sát mesh. Hai bên trái phải giống nhau (bên trái là bản lật của bên phải).</div></div><div class="blk"><div class="bl">Ninja</div><div class="bt"><b>Kunai</b> là mảnh riêng, gắn vào joint <b>Weapon</b> dưới Wrist nên đi theo tay.</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Tạo Control ôm sát mesh. Vũ khí gắn vào joint tay, joint Weapon dưới Wrist. Tạo hai bên đối xứng, so trái với phải."</div><div class="cr"><b>Bạn sẽ nhận được:</b> control ôm sát mesh, vũ khí gắn Weapon, bảng cỡ hai bên trái và phải.</div></div></div><div class="col" style="flex:1.4"><figure class="fig real"><img src="img/rig/nova_controls.jpg?v=1795685734" style="max-height:290px"><figcaption>Nova (ảnh chụp từ Frolvy): control là các hộp và vòng màu quanh nhân vật. Đỏ và xanh dương là hai bên, vàng là giữa thân.</figcaption></figure><figure class="fig sch"><img src="img/rig/d_weapon.svg?v=1795685734" style="max-height:290px"><figcaption>Ninja: kunai gắn vào joint Weapon dưới Wrist.</figcaption></figure></div></div></section>
+<section class="dark"><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 5/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="n">5</i><i class=" g">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 5 · Lỗi AI hay mắc</p><h2>Control ẩn, quá to, hai bên khác nhau</h2><div class="split"><div class="col"><div class="card err"><span class="lab">Ví dụ 1 (không có hình)</span><p>"Control bị ẩn trong mesh." Có vòng ở ankle to tới 2 m.</p></div><div class="card err"><span class="lab">Ví dụ 2 (xem hình)</span><p>Control ở shoulder bên phải to 0,84 m, bên trái chỉ 0,15 m.</p></div><div class="card fix"><span class="lab">Bạn nói</span><p><b>"Liệt kê cỡ mọi control, so trái với phải."</b></p></div></div><div class="col" style="flex:1.4"><figure class="fig sch"><img src="img/ninja/n_ctl_bad.png?v=1795685734" style="max-height:600px"><figcaption>Ninja: control shoulder bên phải quá to, bên trái bé xíu. Xanh dương: phải. Tím: trái.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 6/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="d">5</i><i class="n">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 6 · Bind skin (1/3)</p><h2>Phần ảnh hưởng đúng của Bind skin ở mỗi vùng</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Ý chính</div><div class="bt">Mỗi điểm trên skin bám theo <b>joint gần nó nhất</b>. Chỗ gần khớp thì chia cho cả hai joint, nên màu pha trộn.</div></div><div class="blk"><div class="bl">Nhớ 3 điều</div><div class="bt"><ul><li>Tối đa <b>4 joint</b> mỗi điểm, tổng luôn <b>100%</b></li><li>Vùng nào bám joint của vùng đó, joint ở xa không kéo</li><li>Mảnh cứng (kunai) bám <b>100%</b> joint Weapon</li></ul></div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Đưa mọi control về 0, rồi bind skin cho Ninja. Kunai bám 100% Weapon. Tối đa 4 joint mỗi điểm."</div><div class="cr"><b>Bạn sẽ nhận được:</b> báo đã bind skin, chưa duyệt. Bước sau mới xem kết quả.</div></div></div><div class="col" style="flex:1.2"><figure class="fig sch"><img src="img/ninja/n_skinmap.png?v=1795685734" style="max-height:640px"><figcaption>Ninja: màu cho biết mỗi điểm trên skin bám joint nào.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 6/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="d">5</i><i class="n">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 6 · Bind skin (2/3, gate)</p><h2>Đạt hay chưa đạt? Xoay từng khớp rồi nhìn</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Bạn xem</div><div class="bt">AI xoay shoulder, elbow, hip, knee, neck, thân. Bạn nhìn bằng mắt, từ gần.</div></div><div class="blk"><div class="bl">Đạt</div><div class="bt">Skin gập tự nhiên, không phình, không thắt, không dính sang chỗ khác.</div></div><div class="blk"><div class="bl">Đừng chỉ tin số</div><div class="bt">Số đẹp vẫn có thể che lỗi mắt thấy.</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Xoay shoulder, elbow, hip, knee, neck, thân ở góc thường dùng. Gửi ảnh từng khớp, camera gần."</div><div class="cr"><b>Bạn sẽ nhận được:</b> ảnh nhân vật ở nhiều tư thế. Bạn nhìn skin có phình, thắt, dính không.</div></div></div><div class="col row2" style="flex:1.5"><figure class="fig real bad"><img src="img/rig/nb_cell_bad.jpg?v=1795685734" style="max-height:560px"><figcaption>Night Bat, cánh vỗ lên, lần thử đầu: cánh phình to, dính vào đầu.</figcaption></figure><figure class="fig real good"><img src="img/rig/bat_wingup.jpg?v=1795685734" style="max-height:560px"><figcaption>Cùng rig, cánh vỗ lên (chụp mới từ Frolvy): skin gập gọn, cánh không dính vào đầu hay tai.</figcaption></figure></div></div></section>
+<section class="dark"><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 6/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="d">5</i><i class="n">6</i><i class="">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 6 · Lỗi AI hay mắc (3/3)</p><h2>Skin dán lệch: bind pose thì ổn, cử động mới vỡ</h2><div class="split"><div class="col"><div class="card err"><span class="lab">Ví dụ thật</span><p>"Cánh dính vào mặt" báo tới <b>4 lần</b>. Chỉnh weight mãi không hết, vì skin bị dán lúc một control đang lệch.</p></div><div class="card err"><span class="lab">Ví dụ thật</span><p>Elbow hở khi gập, bắp tay trượt ra khỏi ống giáp.</p></div><div class="card fix"><span class="lab">Bạn nói</span><p><b>"Đưa mọi control về 0 rồi bind skin lại."</b> Báo móp thì nói rõ <b>khớp nào, xem từ góc nào</b>.</p></div></div><div class="col" style="flex:1.3"><figure class="fig real"><img src="img/rig/nb_cell_bad.jpg?v=1795685734" style="max-height:260px"><figcaption>Lỗi 1: cánh dính vào đầu.</figcaption></figure><figure class="fig sch"><img src="img/rig/d_elbow.svg?v=1795685734" style="max-height:260px"><figcaption>Lỗi 2: elbow hở khi gập.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 7/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="d">5</i><i class="d g">6</i><i class="n">7</i><i class="">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 7 · Picker</p><h2>Picker giúp chọn control nhanh</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Để làm gì</div><div class="bt">Bấm nút trên bảng thay vì mò từng control trên nhân vật.</div></div><div class="blk"><div class="bl">Bạn xem gì</div><div class="bt">Bấm từng nút ra đúng control. Không nút nào đè nhau.</div></div><div class="card err"><span class="lab">Ví dụ thật</span><p>Đổi cỡ control mà quên đổi nút trên bảng, phải sửa hai vòng.</p></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Làm picker cho Ninja: mỗi nút chọn đúng một control, không nút nào đè nhau. Liệt kê control chưa có nút."</div><div class="cr"><b>Bạn sẽ nhận được:</b> ảnh picker và danh sách control chưa có nút.</div></div></div><div class="col" style="flex:1.5"><figure class="fig sch"><img src="img/rig/d_picker.svg?v=1795685734" style="max-height:600px"><figcaption>Bố cục picker. Xanh dương: phải. Tím: trái. Vàng: thân.</figcaption></figure></div></div></section>
+<section class=""><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 8/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="d">5</i><i class="d g">6</i><i class="d">7</i><i class="n">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 8 · Export FBX</p><h2>Hai loại file, chỉ xuất khi bạn nói "chốt"</h2><div class="split"><div class="col"><div class="blk"><div class="bl">Hai loại file</div><div class="bt"><ul><li><b>File Base</b>: joint + mesh. Xuất ở bước này</li><li><b>File Anim</b>: joint + chuyển động. Có khi làm hoạt hình sau này</li></ul></div></div><div class="blk"><div class="bl">Quy tắc</div><div class="bt">Bạn nói <b>"chốt"</b> thì AI mới xuất. Còn sửa thì AI chỉ sửa.</div></div><div class="blk"><div class="bl">Bạn xem</div><div class="bt">AI báo file Base và kết quả kiểm trong game. Chưa nói "chốt" thì chưa giao.</div></div><div class="cmd"><div class="cl">Câu lệnh mẫu</div><div class="ct">"Chốt rig Ninja. Xuất file Base, kiểm trong Unity, báo lỗi nếu có."</div><div class="cr"><b>Bạn sẽ nhận được:</b> 1 file Base và báo kết quả kiểm trong game.</div></div></div><div class="col" style="flex:1.4"><figure class="fig sch"><img src="img/rig/d_files.svg?v=1795685734" style="max-height:600px"><figcaption>Hai loại file đưa vào game.</figcaption></figure></div></div></section>
+<section class="dark"><div class="prog"><div style="display:flex;align-items:center;gap:7px"><b>Bước 8/8</b><i class="d g">1</i><i class="d g">2</i><i class="d">3</i><i class="d">4</i><i class="d">5</i><i class="d g">6</i><i class="d">7</i><i class="n">8</i></div><div class="pl">viền vàng = review gate</div></div><p class="kick">Bước 8 · Lỗi AI hay mắc</p><h2>File vào game bị vỡ</h2><div class="split"><div class="col"><div class="card err"><span class="lab">Ví dụ thật</span><p><b>Đầu và chân bay khỏi thân</b>: file thiếu thông tin bind pose. Cách sửa: thêm thông tin đó.</p></div><div class="card err"><span class="lab">Ví dụ thật</span><p>File chuyển động báo lỗi gốc: thiếu một điểm phụ. Cách sửa: thêm điểm phụ.</p></div><div class="card fix"><span class="lab">Bạn nói</span><p><b>"Kiểm file bằng game và đọc báo lỗi."</b> Đừng đoán.</p></div></div><div class="col" style="flex:1.0"><figure class="fig sch"><img src="img/rig/d_bindpose.svg?v=1795685734" style="max-height:600px"><figcaption>Hai lỗi khi file vào game.</figcaption></figure></div></div></section>
+<section class=""><p class="kick">Phần C · Dùng ngay</p><h2>Thấy gì thì nghi lỗi nào</h2>
+<table style="font-size:25px"><tr><th style="width:32%">Bạn thấy</th><th style="width:30%">Thường do</th><th>Bạn nói</th></tr>
+<tr class="hl"><td>Skin móp khi xoay</td><td>Weight sai</td><td>"Móp ở khớp … khi xoay …"</td></tr>
+<tr><td>Cánh, tai dính vào mặt</td><td>Bind skin lúc control lệch</td><td>"Đưa control về 0, dán lại"</td></tr>
+<tr class="hl"><td>Rig nghiêng dù control ở 0</td><td>Dựng lại khi đang lệch</td><td>"Về 0 rồi dựng lại"</td></tr>
+<tr><td>Control ẩn, to quá, lệch hai bên</td><td>Vẽ control không theo mesh</td><td>"Liệt kê cỡ, so trái phải"</td></tr>
+<tr class="hl"><td>Joint sai chỗ khớp</td><td>AI đặt theo giữa khối</td><td>"Chụp 3 góc gửi mình"</td></tr>
+<tr><td>Vào game thấy vỡ</td><td>Thiếu thông tin trong file</td><td>"Kiểm file bằng game"</td></tr>
+<tr class="hl"><td>AI báo xong mà vẫn sai</td><td>Chưa kiểm hết</td><td>"Liệt kê cái chưa kiểm"</td></tr></table></section>
+<section class=""><p class="kick">Phần C · Dùng ngay</p><h2>Câu nói để AI làm đúng</h2><div class="split"><div class="col"><div class="say"><b>Giao việc:</b> "Rig nhân vật Ninja trong Frolvy. Dừng ở bước đặt joint, chụp 3 góc gửi mình duyệt."</div><div class="say"><b>Đạt:</b> "Đạt. Đi tiếp bước sau."</div><div class="say"><b>Chưa đạt:</b> "Hạ Chest xuống 8 cm. Giữ nguyên chỗ mình đã sửa."</div><div class="say"><b>Dừng:</b> "Dừng lại. Quay về bước đặt joint, ankle sai chỗ."</div><div class="say"><b>Bắt kiểm:</b> "Thử đủ 2 tay và 2 chân, đổi frame báo bind pose có đổi không. Liệt kê cái chưa kiểm."</div><div class="say"><b>Chốt:</b> "Chốt rig. Export FBX Base, kiểm trong game."</div></div><div class="col" style="flex:1.2"><figure class="fig wd"><img src="img/ninja/n_beforeafter.png?v=1795685734" style="max-height:460px"><figcaption>Góp ý tốt nói rõ <b>điểm nào</b>, <b>sửa bao nhiêu</b>, <b>hướng nào</b>.</figcaption></figure></div></div></section>
+<section class="dark"><p class="kick">Phần C · Dùng ngay</p><h2>Checklist duyệt rig: 6 ý chính</h2>
+<div class="row bigl" style="flex-direction:column;gap:14px"><div class="card"><ul><li><b>Mesh:</b> lưới đã kiểm, đủ vòng quad quanh khớp</li><li><b>Joint:</b> đúng chỗ khớp gập, đã xem 3 góc, Root ở hip</li><li><b>Control:</b> thấy rõ, không quá to, hai bên giống nhau</li><li><b>Skin:</b> tối đa 4 joint mỗi điểm, đã xoay các khớp và nhìn bằng mắt, không móp</li><li><b>AI báo rõ:</b> cái nào chưa kiểm</li><li><b>Xuất file:</b> chỉ khi bạn đã nói "chốt"</li></ul></div></div></section></div>
+<div id="hint">← → chuyển slide · F toàn màn hình · Ctrl+P ra PDF</div>
+<script>
+const S=[...document.querySelectorAll('section')],st=document.getElementById('stage');
+S.forEach((s,j)=>{if(j>0){const p=document.createElement('span');p.className='pg';p.textContent=(j+1)+' / '+S.length;s.appendChild(p)}});
+let i=Math.max(0,Math.min(S.length-1,(parseInt(location.hash.slice(1))||1)-1));
+function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);st.style.transform='translate(-50%,-50%) scale('+k+')'}
+function show(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,j)=>s.classList.toggle('on',j===i));location.hash=i+1}
+addEventListener('resize',fit);fit();show(i);
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key))show(i+1);
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key))show(i-1);
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(S.length-1);
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+});
+addEventListener('click',e=>show(e.clientX>innerWidth/2?i+1:i-1));
+</script>
+</body>
+</html>

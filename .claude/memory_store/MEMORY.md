@@ -132,6 +132,9 @@
 - [Trợ lý ngocvb trên Linux](project-assistant-ngocvb-linux.md) — /assistant: chủ cấu hình qua tools/.tro_ly_owner, phòng You không tên cần room --set (2026-11-18)
 - [Paseo trên Linux](reference-paseo-linux-launcher.md) — chỉ dùng AppImage 0.16.x, lối tắt không có --gtk-version=3 (2026-11-19)
 - [Pet mesh v2 bài học](project-pet-mesh-v2-lessons.md) — thay mesh 6 Pet 18/11: so số mesh, tạo phiên "chưa làm", rig dáng gốc + texture lật, bẫy Frolvy Linux (2026-11-19)
+- [Rig demo anim](feedback-rig-demo-anim.md) — Spine: sau mỗi lệnh rig tự làm anim rig_demo + show lên Spine Live, không bắt tải lại (user 2026-11-19)
+- [Windy slide hình](project-windy-slide-illustration.md) — slide dạy Rigging 3D: hình Windy hạ Chest 4 cm, HeadEnd về đỉnh đầu (user 2026-11-25)
+- [Slide dùng thuật ngữ Anh](feedback-slide-english-terms.md) — slide Rigging: joint/control/skin/weight/bind..., giải thích bằng tiếng Việt (user 2026-11-26)
 - [Pirate-wars](project-pirate-wars.md) — Unity /home/haunv/Documents/Project/pirate-wars, có AGENTS.md + CONTEXT.md (2026-11-20)
 - [Skin check: full ROM + wireframe](skin-check-full-rom-wireframe.md) — sweep every joint over full angle range, judge by even wireframe stretch
 - [Pose: no CTL curves](pose-no-ctl-curves.md) — animate by picking joint dots; user removed FK/IK curve controls
