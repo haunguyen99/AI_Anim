@@ -1,0 +1,12 @@
+Effect: ThunderImpact   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 15:12:19
+Preview times (s): 0.04, 0.12, 0.19, 0.26, 0.34, 0.41, 0.48, 0.56, 0.72, 0.95, 1.1
+
+Layers:
+  VFX_ThunderImpact  max=2  life=0.12  mode=Billboard  mat=M_ThunderImpact_L2_Flash (Mobile/Particles/Additive)
+  VFX_ThunderImpact/L1_Bolt  max=1  life=0.15  mode=Stretch  mat=M_ThunderImpact_L1_Bolt (Particles/Lightning_CustomBlend)
+  VFX_ThunderImpact/L3_Wave  max=3  life=0.38  mode=Billboard  mat=M_ThunderImpact_L3_Wave (Mobile/Particles/Additive)
+  VFX_ThunderImpact/L4_GroundElectric  max=24  life=0.48  mode=Billboard  mat=M_ThunderImpact_L4_GroundElectric (Mobile/Particles/Additive)
+Total maxParticles: 30
+
+Errors: none

@@ -1,0 +1,28 @@
+Mix: LightningStrike_Ground   Recipe: Docs/VFX/_Recipes/LightningStrike_Ground.json   Unity: 2022.3.62f3
+Built: 2026-11-03 14:39:11
+Preview times (s): 0.01, 0.186, 0.373, 0.559, 0.745, 0.931, 1.118, 1.304
+Palette: Core #F2FEFF · Mid #5CD6FF · Outer #4A55E0 · Dust #BDB7A0
+
+Items:
+  00_LTN_Bolt_Ground_01              delay 0  dur 0.3 (gốc 0.35, speed ×1.17)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  01_IMP_Hit_Ground_01               delay 0  dur 0.45 (gốc 0.45, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  02_SPK_Ground_01                   delay 0.02  dur 1.25 (gốc 1.25, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  03_GLW_Ground_01                   delay 0  dur 0.55 (gốc 0.55, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  04_DST_Ground_01                   delay 0.05  dur 1.34 (gốc 1.34, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  05_RNG_Ground_01                   delay 0.03  dur 0.52 (gốc 0.52, speed ×1)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+  06_LTN_Arcs_Ground_01              delay 0.03  dur 0.6 (gốc 0.72, speed ×1.2)  size 1  int 1  rot 0  off (0.00, 0.00, 0.00)
+
+Layers:
+  00_LTN_Bolt_Ground_01/Bolt  max=1  life=0.3  mode=Stretch  mat=M_LTN_Bolt_Add (Mobile/Particles/Additive)
+  01_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  01_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+  02_SPK_Ground_01/Streaks  max=24  life=0.6  mode=Stretch  mat=M_SPK_Streak_Add (Mobile/Particles/Additive)
+  02_SPK_Ground_01/Ember  max=8  life=1.2  mode=Billboard  mat=M_SPK_Ember_Add (Mobile/Particles/Additive)
+  03_GLW_Ground_01/Pool  max=1  life=0.5  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  03_GLW_Ground_01/Halo  max=1  life=0.25  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  04_DST_Ground_01/Puffs  max=12  life=1.2  mode=Billboard  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  04_DST_Ground_01/Core  max=2  life=1.1  mode=Billboard  mat=M_DST_ToonPuff_Alpha (Mobile/Particles/Alpha Blended)
+  05_RNG_Ground_01/Ring  max=2  life=0.45  mode=Billboard  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+  06_LTN_Arcs_Ground_01/Arcs  max=3  life=0.55  mode=Billboard  mat=M_LTN_Arcs_Add (Mobile/Particles/Additive)
+
+Errors: none

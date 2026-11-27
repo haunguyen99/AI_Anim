@@ -1,5 +1,5 @@
 """Chạy code Python trong Frolvy trên Linux qua Frolvy-mcp (nằm trong AppImage đang mount).
-Dùng: python3 -I fv_call.py <cổng> <file.py|-> [--tool execute_code|get_scene_info|get_viewport_screenshot --out x.png]"""
+Dùng: python3 -I fv_call.py <cổng> <file.py|-> [--tool execute_code|get_scene_info|get_viewport_screenshot --out x.png] [--timeout giây]"""
 import base64, glob, json, os, subprocess, sys
 port = sys.argv[1]; src = sys.argv[2]
 tool = "execute_code"; out = None
@@ -10,6 +10,7 @@ args = {}
 if "--args" in sys.argv: args = json.loads(sys.argv[sys.argv.index("--args") + 1])
 elif tool == "execute_code":
     args = {"code": sys.stdin.read() if src == "-" else open(src, encoding="utf-8").read()}
+    if "--timeout" in sys.argv: args["timeout_seconds"] = int(sys.argv[sys.argv.index("--timeout") + 1])   # Frolvy mặc định dừng script sau 120 s
 p = subprocess.Popen([exe], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=dict(os.environ, DCC_MCP_PORT=port))
 def send(m): p.stdin.write((json.dumps(m) + "\n").encode()); p.stdin.flush()
 def recv(i):

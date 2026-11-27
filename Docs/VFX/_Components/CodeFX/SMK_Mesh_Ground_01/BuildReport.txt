@@ -1,0 +1,9 @@
+Component: SMK_Mesh_Ground_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 13:56:22
+Preview times (s): 0.01, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+
+Layers:
+  CMP_SMK_Mesh_Ground_01/Body  max=1  life=1.2  mode=Mesh  mat=M_SmokeMesh (VFX/FX/Smoke Mesh)
+
+Errors: none

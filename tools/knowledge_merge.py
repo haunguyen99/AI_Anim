@@ -41,7 +41,8 @@ def show(ref, f):
 
 
 def group(f):
-    k = f.startswith((".claude/skills/", ".claude/memory_store/")) or f == "tools/claude_memory.py"
+    # .claude/usage: số lần gọi công cụ (tools/tool_usage.py), đi cùng kiến thức để tự đẩy theo lịch.
+    k = f.startswith((".claude/skills/", ".claude/memory_store/", ".claude/usage/")) or f == "tools/claude_memory.py"
     return "knowledge" if k else "code"
 
 

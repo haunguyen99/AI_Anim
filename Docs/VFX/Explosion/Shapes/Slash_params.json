@@ -1,0 +1,62 @@
+{
+  "tool": "Shape Lab",
+  "version": 2,
+  "shape": "draw",
+  "sheet": {
+    "frames": 8,
+    "mode": "once"
+  },
+  "params": {
+    "smooth": 0.004,
+    "grow": 0.001,
+    "warp": 0,
+    "warpScale": 3,
+    "core": 0.27,
+    "coreSize": 0.05,
+    "mbDist": 0.095,
+    "mbAngle": 0,
+    "feather": 0.01,
+    "dissolve": 0,
+    "dMode": "core",
+    "dAcross": "both",
+    "dSweep": 0.6,
+    "dAngle": 90,
+    "dNoise": 0.35,
+    "dScale": 4,
+    "dEdge": 0.03,
+    "disStart": 0,
+    "disCurve": 0,
+    "disEnd": 0,
+    "wobble": 0.05,
+    "cycles": 1,
+    "seed": 7
+  },
+  "palette": {
+    "name": "Lửa cam",
+    "stops": [
+      [
+        0,
+        "#460804"
+      ],
+      [
+        0.3,
+        "#b2280a"
+      ],
+      [
+        0.55,
+        "#ff741a"
+      ],
+      [
+        0.8,
+        "#ffce5a"
+      ],
+      [
+        1,
+        "#fff8e0"
+      ]
+    ],
+    "gain": 1.8,
+    "gamma": 1
+  },
+  "mask": "(ảnh vẽ tay — có trong file .json)"
+}

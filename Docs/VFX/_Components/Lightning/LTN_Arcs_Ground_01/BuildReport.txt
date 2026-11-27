@@ -1,0 +1,10 @@
+Component: LTN_Arcs_Ground_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 14:39:11
+Preview times (s): 0.02, 0.06, 0.12, 0.2, 0.3, 0.4, 0.5, 0.6
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+Preview_combo = game 3/4 together with: CMP_IMP_Hit_Ground_01, CMP_GLW_Ground_01, CMP_RNG_Ground_01
+
+Layers:
+  CMP_LTN_Arcs_Ground_01/Arcs  max=3  life=0.55  mode=Billboard/Local  mat=M_LTN_Arcs_Add (Mobile/Particles/Additive)
+
+Errors: none

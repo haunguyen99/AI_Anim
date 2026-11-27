@@ -1,0 +1,24 @@
+Effect: IceSpikeFan_Ice   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 09:10:43
+Preview times (s): 0.05, 0.15, 0.4, 0.9, 1.4, 1.8, 2.2, 2.6
+
+Layers:
+  VFX_IceSpikeFan_Ice/S0_GroundGlow  max=2  life=2.4  mode=Billboard  mat=M_IceSpikeFan_Ice_GroundGlow (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S2_Cracks  max=50  life=2.3  mode=Billboard  mat=M_IceSpikeFan_Ice_Cracks (VFXLib/ColosoShaderAdditive_Optimized)
+  VFX_IceSpikeFan_Ice/S7_GroundChunks  max=60  life=0.7  mode=Mesh  mat=M_IceSpikeFan_Ice_Chunk (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Ice/S1_Spikes_Tall  max=30  life=2.6  mode=Mesh  mat=M_IceSpikeFan_Ice_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Ice/S1_Spikes_Long  max=30  life=2.4  mode=Mesh  mat=M_IceSpikeFan_Ice_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Ice/S1_Spikes_Mid  max=30  life=2.3  mode=Mesh  mat=M_IceSpikeFan_Ice_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Ice/S1_Spikes_Edge  max=30  life=1.7  mode=Mesh  mat=M_IceSpikeFan_Ice_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Ice/S6_Shards  max=60  life=0.6  mode=Mesh  mat=M_IceSpikeFan_Ice_Crystal (VFX/FX/Rock Facet)
+  VFX_IceSpikeFan_Ice/S5_IceSmoke  max=30  life=1.1  mode=Billboard  mat=M_IceSpikeFan_Ice_Smoke (Mobile/Particles/Alpha Blended)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/00_IMP_Hit_Ground_01/Splash  max=2  life=0.4  mode=Stretch  mat=M_IMP_GroundSplash_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/00_IMP_Hit_Ground_01/Flat  max=2  life=0.22  mode=Billboard  mat=M_IMP_GroundRing_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/01_SPK_Ground_01/Streaks  max=24  life=0.6  mode=Stretch  mat=M_SPK_Streak_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/01_SPK_Ground_01/Ember  max=8  life=1.2  mode=Billboard  mat=M_SPK_Ember_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/02_GLW_Ground_01/Pool  max=1  life=0.5  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/02_GLW_Ground_01/Halo  max=1  life=0.25  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  VFX_IceSpikeFan_Ice/S3_ImpactMix/03_RNG_Ground_01/Ring  max=2  life=0.45  mode=Billboard  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+Total maxParticles: 362
+
+Errors: none

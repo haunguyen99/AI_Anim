@@ -8,6 +8,7 @@
 - Bộ ảnh key của một anim là một flipbook 2D: cùng camera, khung, cỡ, đường đất, chân trụ, tạo hình; sinh theo chuỗi (key chủ + key trước, chỉ đổi phần ghi), phát thử cả chuỗi trước khi gửi → gdd_stage0.md#đồng-nhất-chuỗi-ảnh
 - Mọi lần tạo ảnh đều gửi concept gốc làm ref + đoạn prompt ORIGINAL CHARACTER CONCEPT; không có concept thì dừng, hỏi người dùng → gdd_stage0.md#concept-gốc-bắt-buộc
 - Viết mô tả từng pha/bộ phận (cả vải/tóc/phụ kiện), user duyệt trước khi dựng, kể cả không ref → review_process.md#no-ref-clips
+- Ref video phải **cắt thành đoạn cụ thể** (chỉ pha cần làm, bỏ intro / chữ / cảnh thừa), ghi nguồn + mốc giờ; không đưa cả video (người dùng 2026-11-26) → review_process.md#ref-cut
 - Intake: hỏi prop treo vào joint nào khi xuất → export.md#reparent-prop
 - Clip không ref / ref điện ảnh: thiết kế theo silhouette camera game, đề xuất bản tối giản → review_process.md#no-ref-clips
 
@@ -32,6 +33,7 @@
 - Da vai ≥ 0,30 (vai lõm/xoắn); dò pole quanh trục vai→tay; mốc căng da = pose tự nhiên của mesh → arms_hands.md#shoulder-compression
 - Giải tay bằng `hand_on_limited` (legacy/blender/arm_limits.py + <clip>/joint_limits.json): góc giải phẫu đo từ vị trí khớp, xoay pole tới khi hợp lệ, cổ tay vượt thì nắn hướng bàn tay; pole theo bàn tay, gối theo bàn chân → arms_hands.md#joint-limits-in-solver
 - Tay tự do khuỷu luôn gập > 40°; khuỷu thấp hơn vai 12–20 cm; cầm vật bên hông thì khuỷu ra ngoài → arms_hands.md#elbow-pole
+- Cần tay trái = tay phải (run, walk, idle; người dùng 2026-11-26): copy **theo đường cong, cùng frame, không lệch nhịp** — tx đổi dấu, ty/tz giữ, rx giữ, ry/rz đổi dấu; cổ tay đi cùng quỹ đạo trong thế giới. Đọc switch FK/IK của tay nguồn trước (anim thật nằm ở IKWrist/PoleArm nếu đang IK, FK control chỉ là số cũ). Không lật theo mặt phẳng ngực (thân xoắn khi chạy làm tay kia lệch 20 cm). Lệnh: `tools/frolvy_plugins/mirror_limb` `mirror_arm(api,'L')`
 - Tay di chuyển prop: FK giữa key; review + playblast thêm góc phía tay đó → arms_hands.md#prop-hand-side-fk
 - Prop dày: áp lòng bàn tay lên mặt, cổ tay ngoài bán kính, không chìm trong cán → props_weapons.md#grip-big-shaft
 - Prop xuyên thân = 0 ở mọi key, không đổi bằng tay căng (khuỷu ≥ ~50°) → props_weapons.md#prop-penetration

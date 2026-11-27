@@ -1,0 +1,541 @@
+﻿duong_dan_hien_tai,duong_dan_library_cu,ten_goc,nguon,duong_dan_nguon
+beam/beam_001.png,trail/trail_045.png,Wave01.png,rpg,_Game\Resources_moved\Textures\Wave01.png
+glow/flare/glow_flare_001.png,glow/glow_010.png,Diagonal_RedFlare.png,rpg,RPG_VFX\Texture\Diagonal_RedFlare.png
+glow/flare/glow_flare_002.png,glow/glow_015.png,Flare3.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flare3.png
+glow/flare/glow_flare_003.png,glow/glow_017.png,Flare_2.png,rpg,2D_Art\Vfx\Textures\Flare.png
+glow/flare/glow_flare_004.png,glow/glow_018.png,Flare_Cross.png,rpg,RPG_VFX\Texture\Flare_Cross.png
+glow/flare/glow_flare_005.png,glow/glow_021.png,Flare_SoftCross.png,rpg,RPG_VFX\Texture\Flare_SoftCross.png
+glow/flare/glow_flare_006.png,glow/glow_064.png,star_02.png,rpg,RPG_VFX\Duong\Texture\Spark\star_02.png
+glow/flare/glow_flare_007.png,glow/glow_066.png,star_08 1.png,rpg,RPG_VFX\Duong\Texture\Spark\star_08 1.png
+glow/flare/glow_flare_008.png,impact/impact_015.png,Flash1.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash1.png
+glow/flare/glow_flare_009.png,impact/impact_017.png,Flash3.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash3.png
+glow/halo/glow_halo_001.png,glow/glow_020.png,Flare_Glowdot.png,rpg,RPG_VFX\Texture\Flare_Glowdot.png
+glow/halo/glow_halo_002.png,glow/glow_055.png,Point.png,rpg,2D_Art\Vfx\Point.png
+glow/halo/glow_halo_003.png,glow/glow_058.png,Point2.png,rpg,2D_Art\Vfx\Point2.png
+glow/soft_oval/glow_soft_oval_001.png,glow/glow_009.png,Circle_4.png,rpg,_Game\Resources_moved\Textures\Paladin\Circle.png
+glow/soft_oval/glow_soft_oval_002.png,glow/glow_031.png,FX_TX_GlowADD_02.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GlowADD_02.png
+glow/soft_round/glow_soft_round_001.png,decals/decals_030.png,Indicator2.png,rpg,_Game\Resources_moved\Textures\Indicator2.png
+glow/soft_round/glow_soft_round_002.png,glow/glow_004.png,Circle01.png,rpg,_Game\Resources_moved\Textures\Circle01.png
+glow/soft_round/glow_soft_round_003.png,glow/glow_005.png,Circle02.png,rpg,_Game\Resources_moved\Textures\Circle02.png
+glow/soft_round/glow_soft_round_004.png,glow/glow_011.png,dot.png,rpg,2D_Art\Vfx\dot.png
+glow/soft_round/glow_soft_round_005.png,glow/glow_012.png,flare.png,rpg,RPG_VFX\Texture\flare.png
+glow/soft_round/glow_soft_round_006.png,glow/glow_019.png,Flare_FatDot.png,prj,VFX\FireballProjectile\Textures\T_Glow_FatDot.png
+glow/soft_round/glow_soft_round_007.png,glow/glow_022.png,Flash7.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flash7.png
+glow/soft_round/glow_soft_round_008.png,glow/glow_023.png,FX_MT_GlowAlpha_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_MT_GlowAlpha_01.png
+glow/soft_round/glow_soft_round_009.png,glow/glow_028.png,FX_TX_GlowADD_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_GlowADD_01.png
+glow/soft_round/glow_soft_round_010.png,glow/glow_029.png,FX_TX_GlowADD_01_Gradient.png,prj,VFX\_Shared\Textures\RpgLib\Gradient\FX_TX_GlowADD_01_Gradient.png
+glow/soft_round/glow_soft_round_011.png,glow/glow_038.png,Glow.png,rpg,2D_Art\Vfx\Glow.png
+glow/soft_round/glow_soft_round_012.png,glow/glow_039.png,glow1.png,rpg,_Game\Resources_moved\Textures\glow1.png
+glow/soft_round/glow_soft_round_013.png,glow/glow_040.png,Glow_1.png,rpg,_Game\Resources_moved\Textures\Glow_1.png
+glow/soft_round/glow_soft_round_014.png,glow/glow_041.png,Glow_Dot_02.png,rpg,_Game\Resources_moved\Textures\Guardian\Glow_Dot_02.png
+glow/soft_round/glow_soft_round_015.png,glow/glow_044.png,Glow_Standard.png,rpg,_Game\Resources_moved\Textures\Guardian\Glow_Standard.png
+glow/soft_round/glow_soft_round_016.png,glow/glow_051.png,maintex_thrust 1.png,rpg,_Game\Resources_moved\Textures\maintex_thrust 1.png
+glow/soft_round/glow_soft_round_017.png,glow/glow_052.png,maintex_thrust.png,rpg,RPG_VFX\Texture\maintex_thrust.png
+glow/soft_round/glow_soft_round_018.png,glow/glow_056.png,Point12.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Point12.png
+glow/soft_round/glow_soft_round_019.png,glow/glow_057.png,Point19.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Point19.png
+glow/soft_round/glow_soft_round_020.png,glow/glow_059.png,Point5.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Point5.png
+glow/soft_round/glow_soft_round_021.png,glow/glow_060.png,softCircle.png,rpg,_Game\Resources_moved\Textures\softCircle.png
+glow/soft_round/glow_soft_round_022.png,glow/glow_061.png,Spark_White.png,prj,VFX\_Shared\Textures\RpgLib\Gradient\Spark_White.png
+glow/soft_round/glow_soft_round_023.png,glow/glow_070.png,T_Glow_Soft.png,prj,VFX\Slash360\Textures\T_Slash360_Glow.png
+glow/soft_round/glow_soft_round_024.png,glow/glow_071.png,T_GLW_Soft.png,prj,VFX\_Components\Glow\Textures\T_GLW_Soft.png
+glow/soft_round/glow_soft_round_025.png,glow/glow_073.png,T_HealCircle_Mote.png,prj,VFX\HealCircle\Textures\T_HealCircle_Mote.png
+glow/soft_round/glow_soft_round_026.png,glow/glow_076.png,T_SPK_Ember.png,prj,VFX\_Components\Sparks\Textures\T_SPK_Ember.png
+glow/soft_round/glow_soft_round_027.tga,glow/glow_080.tga,Tex_fx_HCFX_Circle_01.tga,rpg,2D_Art\Vfx\Bless\Textures\Tex_fx_HCFX_Circle_01.tga
+glow/soft_round/glow_soft_round_028.png,glow/glow_084.png,TX_VFX_Radials06.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials06.png
+glow/soft_round/glow_soft_round_029.png,glow/glow_085.png,TX_VFX_Radials10.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials10.png
+glow/soft_round/glow_soft_round_030.png,glow/glow_086.png,TX_VFX_Radials11.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials11.png
+glow/soft_round/glow_soft_round_031.png,glow/glow_087.png,TX_VFX_Radials12.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials12.png
+glow/soft_round/glow_soft_round_032.png,glow/glow_088.png,TX_VFX_Spark01.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark01.png
+glow/soft_round/glow_soft_round_033.png,glow/glow_092.png,TX_VFX_Spark06.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark06.png
+glow/soft_round/glow_soft_round_034.png,glow/glow_099.png,vuong_glow.png,rpg,_Game\Resources_moved\Textures\vuong_glow.png
+glow/soft_round/glow_soft_round_035.png,impact/impact_026.png,FX_TX_LightBurst.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LightBurst.png
+glow/soft_shape/glow_soft_shape_001.png,glow/glow_043.png,glow_sq.png,rpg,_Game\Resources_moved\Textures\glow_sq.png
+glow/soft_shape/glow_soft_shape_002.png,glow/glow_047.png,glowSquare.png,rpg,_Game\Resources_moved\Textures\glowSquare.png
+glow/soft_shape/glow_soft_shape_003.png,glow/glow_069.png,T_Ember.png,prj,VFX\FireballLoop\Textures\T_Ember_Chunk.png
+ground/crack_line/ground_crack_line_001.png,decals/decals_008.png,Crack.png,rpg,RPG_VFX\Duong\Texture\Decals\Crack.png
+ground/crack_line/ground_crack_line_002.png,decals/decals_009.png,crack_alpha 1.png,rpg,_Game\Resources_moved\Textures\crack_alpha 1.png
+ground/crack_line/ground_crack_line_003.png,decals/decals_010.png,crack_alpha.png,rpg,_Game\Resources_moved\Textures\crack_alpha.png
+ground/crack_line/ground_crack_line_004.png,decals/decals_011.png,crack_highlight.png,rpg,_Game\Resources_moved\Textures\crack_highlight.png
+ground/crack_line/ground_crack_line_005.psd,decals/decals_013.psd,decals.psd,rpg,RPG_VFX\Texture\decals.psd
+ground/crack_line/ground_crack_line_006.png,decals/decals_014.png,decals7.png,rpg,RPG_VFX\Texture\decals7.png
+ground/crack_line/ground_crack_line_007.png,decals/decals_015.png,decals_11.png,rpg,RPG_VFX\Texture\decals_11.png
+ground/crack_line/ground_crack_line_008.png,decals/decals_016.png,decals_6.png,rpg,RPG_VFX\Texture\decals_6.png
+ground/crack_line/ground_crack_line_009.png,decals/decals_037.png,T_CrackBranch.png,prj,StrongExplosion_v1\Textures\T_CrackBranch.png
+ground/crack_line/ground_crack_line_010.png,decals/decals_040.png,T_VFX_Crack.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack.png
+ground/crack_line/ground_crack_line_011.png,decals/decals_041.png,T_VFX_Crack_01.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack_01.png
+ground/crack_line/ground_crack_line_012.png,decals/decals_042.png,T_VFX_Crack_02.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack_02.png
+ground/crack_line/ground_crack_line_013.png,decals/decals_043.png,T_VFX_Crack_Curve_01.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Crack_Curve_01.png
+ground/crack_line/ground_crack_line_014.png,decals/decals_046.png,T_VFX_Ground_Crack_03.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_03.png
+ground/crack_line/ground_crack_line_015.png,decals/decals_048.png,T_VFX_Ground_Crack_In.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_In.png
+ground/crack_line/ground_crack_line_016.png,decals/decals_049.png,T_VFX_Ground_Crack_In_01.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_In_01.png
+ground/crack_radial/ground_crack_radial_001.png,decals/decals_001.png,break (2).png,rpg,_Game\Resources_moved\Textures\break (2).png
+ground/crack_radial/ground_crack_radial_002.png,decals/decals_004.png,break_dust 1.png,rpg,_Game\Resources_moved\Textures\break_dust 1.png
+ground/crack_radial/ground_crack_radial_003.psd,decals/decals_006.psd,break_ground_2.psd,rpg,RPG_VFX\Texture\break_ground_2.psd
+ground/crack_radial/ground_crack_radial_004.png,decals/decals_012.png,crack_punch.png,rpg,RPG_VFX\Texture\crack_punch.png
+ground/crack_radial/ground_crack_radial_005.png,decals/decals_021.png,gauntlet_break2.png,rpg,RPG_VFX\Texture\gauntlet_break2.png
+ground/crack_radial/ground_crack_radial_006.png,decals/decals_022.png,ground_1.png,rpg,_Game\Resources_moved\Textures\ground_1.png
+ground/crack_radial/ground_crack_radial_007.png,decals/decals_024.png,GroundCrack_SkeletonKing.png,rpg,_Game\Resources_moved\Textures\Guardian\GroundCrack_SkeletonKing.png
+ground/crack_radial/ground_crack_radial_008.png,decals/decals_025.png,GroundCrack_SkeletonKing_Bricks.png,rpg,_Game\Resources_moved\Textures\Guardian\GroundCrack_SkeletonKing_Bricks.png
+ground/crack_radial/ground_crack_radial_009.png,decals/decals_026.png,GroundCracks_Radial.png,prj,VFX\IceSpike\Textures\T_IceSpike_Cracks.png
+ground/crack_radial/ground_crack_radial_010.png,decals/decals_027.png,GroundCracks_Radial_02.png,rpg,RPG_VFX\Duong\Texture\GroundCracks_Radial_02.png
+ground/crack_radial/ground_crack_radial_011.png,decals/decals_028.png,GroundCracks_Radial_03.png,rpg,RPG_VFX\Duong\Texture\GroundCracks_Radial_03.png
+ground/crack_radial/ground_crack_radial_012.png,decals/decals_044.png,T_VFX_Ground_Crack.png,prj,VFX\_Imported\RpgGame\Lightning\Textures\T_VFX_Ground_Crack.png
+ground/crack_radial/ground_crack_radial_013.png,decals/decals_045.png,T_VFX_Ground_Crack_02.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_02.png
+ground/crack_radial/ground_crack_radial_014.png,decals/decals_047.png,T_VFX_Ground_Crack_04.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Ground_Crack_04.png
+ground/crack_x/ground_crack_x_001.png,decals/decals_002.png,break (3).png,rpg,_Game\Resources_moved\Textures\break (3).png
+ground/crack_x/ground_crack_x_002.png,decals/decals_063.png,x_break.png,rpg,_Game\Resources_moved\Textures\x_break.png
+ground/crack_x/ground_crack_x_003.png,decals/decals_064.png,X_ground 1.png,rpg,RPG_VFX\Texture\X_ground 1.png
+ground/indicator/ground_indicator_001.png,decals/decals_054.png,triangle_indicator.png,rpg,_Game\Resources_moved\Textures\triangle_indicator.png
+ground/indicator/ground_indicator_002.png,decals/decals_055.png,triangle_indicator_border.png,rpg,_Game\Resources_moved\Textures\triangle_indicator_border.png
+ground/indicator/ground_indicator_003.png,decals/decals_056.png,triangle_m.png,rpg,RPG_VFX\Duong\Texture\Decals\triangle_m.png
+ground/indicator/ground_indicator_004.png,decals/decals_057.png,triangle_Mask.png,rpg,RPG_VFX\Duong\Texture\Decals\triangle_Mask.png
+ground/scorch/ground_scorch_001.png,decals/decals_051.png,T_VFX_Poison_Ground.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Poison_Ground.png
+ground/scorch/ground_scorch_002.png,decals/decals_052.png,T_VFX_Poison_Ground_01.png,rpg,RPG_VFX\Duong\Texture\Decals\T_VFX_Poison_Ground_01.png
+ground/scorch/ground_scorch_003.png,decals/decals_058.png,TX_VFX_Decals01.png,rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals01.png
+ground/splat/ground_splat_001.psd,decals/decals_019.psd,explodeDecal.psd,rpg,EffectCore\textures\decals\explodeDecal.psd
+ground/splat/ground_splat_002.png,decals/decals_020.png,FX_TX_Crackground_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Crackground_01.png
+ground/splat/ground_splat_003.jpg,decals/decals_023.jpg,groundCrack 1.jpg,rpg,_Game\Resources_moved\Textures\groundCrack.jpg
+ground/splat/ground_splat_004.png,decals/decals_059.png,TX_VFX_Decals02.png,rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals02.png
+ground/splat/ground_splat_005.png,decals/decals_060.png,TX_VFX_Decals03.png,rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals03.png
+impact/flash_spiky/impact_flash_spiky_001.psd,impact/impact_018.psd,flashLarge.psd,prj,VFX\_Imported\RpgThunder\_Game\Resources_moved\Textures\flashLarge.psd
+impact/flash_spiky/impact_flash_spiky_002.png,impact/impact_024.png,FX_TX_Impact_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Impact_01.png
+impact/flash_spiky/impact_flash_spiky_003.jpg,impact/impact_032.jpg,Impact_1.jpg,rpg,_Game\Resources_moved\Textures\Impact_1.jpg
+impact/flash_spiky/impact_flash_spiky_004.png,impact/impact_035.png,impact_bomba.png,rpg,RPG_VFX\Texture\impact_bomba.png
+impact/flash_spiky/impact_flash_spiky_005.png,impact/impact_038.png,Light_01.png,rpg,_Game\Resources_moved\Textures\Guardian\Light_01.png
+impact/flash_spiky/impact_flash_spiky_006.png,impact/impact_043.png,Muzzle2.png,rpg,_Game\Resources_moved\Textures\Muzzle2.png
+impact/flash_spiky/impact_flash_spiky_007.png,impact/impact_059.png,T_IMP_CoreStar4.png,prj,VFX\_Components\Impact\Textures\T_IMP_CoreStar4.png
+impact/flash_spiky/impact_flash_spiky_008.png,impact/impact_064.png,T_IMP_HitDirSpike.png,prj,VFX\_Components\Impact\Textures\T_IMP_HitDirSpike.png
+impact/flash_spiky/impact_flash_spiky_009.png,impact/impact_067.png,T_IMP_Star7.png,prj,VFX\_Components\Impact\Textures\T_IMP_Star7.png
+impact/flash_spiky/impact_flash_spiky_010.png,impact/impact_085.png,TX_VFX_Impact05.png,rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact05.png
+impact/flash_spiky/impact_flash_spiky_011.png,impact/impact_087.png,TX_VFX_Impact07.png,rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact07.png
+impact/flash_spiky/impact_flash_spiky_012.png,impact/impact_092.png,TX_VFX_Spark04.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark04.png
+impact/flipbook/impact_flipbook_001.psd,impact/impact_019.psd,FX_TX_Fire_FireImpact_01_3x4.psd,rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireImpact_01_3x4.psd
+impact/flipbook/impact_flipbook_002.psd,impact/impact_020.psd,FX_TX_Fire_FireImpact_02_2x4.psd,rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_FireImpact_02_2x4.psd
+impact/flipbook/impact_flipbook_003.psd,impact/impact_022.psd,FX_TX_Fire_SimpleImpact_01_3x4.psd,rpg,RPG_VFX\Duong\Texture\FlipbookPSD\FX_TX_Fire_SimpleImpact_01_3x4.psd
+impact/flipbook/impact_flipbook_004.png,impact/impact_025.png,FX_TX_ImpactShapes_Sharp_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_ImpactShapes_Sharp_01.png
+impact/flipbook/impact_flipbook_005.png,impact/impact_044.png,MuzzleFlash3.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\MuzzleFlash3.png
+impact/flipbook/impact_flipbook_006.png,impact/impact_048.png,T_CFX_HitStar_4x4.png,prj,VFX\_Components\CodeFX\Textures\T_CFX_HitStar_4x4.png
+impact/flipbook/impact_flipbook_007.png,impact/impact_049.png,T_CFX_PuffBurst_Light_4x4.png,prj,VFX\_Components\CodeFX\Textures\T_CFX_PuffBurst_Light_4x4.png
+impact/flipbook/impact_flipbook_008.png,impact/impact_050.png,T_CFX_Scorch_Body_4x4.png,prj,VFX\Mixes\_Palettes\CFX_Scorch_dc36d91c\T_CFX_Scorch_Body_4x4.png
+impact/flipbook/impact_flipbook_009.png,impact/impact_051.png,T_CFX_Scorch_Body_4x4_2.png,prj,VFX\_Components\Scorch\Textures\T_CFX_Scorch_Body_4x4.png
+impact/flipbook/impact_flipbook_010.png,impact/impact_052.png,T_CFX_Scorch_Light_4x4.png,prj,VFX\Mixes\_Palettes\CFX_Scorch_dc36d91c\T_CFX_Scorch_Light_4x4.png
+impact/flipbook/impact_flipbook_011.png,impact/impact_053.png,T_CFX_Scorch_Light_4x4_2.png,prj,VFX\_Components\Scorch\Textures\T_CFX_Scorch_Light_4x4.png
+impact/flipbook/impact_flipbook_012.png,impact/impact_054.png,T_CFX_Spark_Burst_4x4.png,prj,VFX\CodeSparkBurst\Textures\T_CFX_Spark_Burst_4x4.png
+impact/flipbook/impact_flipbook_013.png,impact/impact_063.png,T_IMP_HitDir_2x2.png,prj,VFX\_Components\Impact\Textures\T_IMP_HitDir_2x2.png
+impact/flipbook/impact_flipbook_014.tga,impact/impact_071.tga,Tex_fx_splash_set.tga,rpg,_Game\Resources_moved\Textures\Tex_fx_splash_set.tga
+impact/flipbook/impact_flipbook_015.png,impact/impact_072.png,Tx_Burst_directional_03.png,rpg,RPG_VFX\Texture\Tx_Burst_directional_03.png
+impact/flipbook/impact_flipbook_016.png,impact/impact_075.png,Tx_Burst_directional_23_w.png,rpg,RPG_VFX\Texture\Tx_Burst_directional_23_w.png
+impact/flipbook/impact_flipbook_017.png,impact/impact_076.png,Tx_Ember_01.png,prj,VFX\FireballProjectile\Textures\T_Ember_Chunk_2x2.png
+impact/flipbook/impact_flipbook_018.png,impact/impact_077.png,Tx_Ember_02.png,rpg,_Game\Resources_moved\Textures\Tx_Ember_02.png
+impact/flipbook/impact_flipbook_019.png,impact/impact_083.png,TX_VFX_Impact03.png,rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact03.png
+impact/radial_ring/impact_radial_ring_001.psd,impact/impact_029.psd,FX_TX_RadialBurst_03.psd,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_RadialBurst_03.psd
+impact/radial_ring/impact_radial_ring_002.png,impact/impact_040.png,melee_fx2.png,rpg,RPG_VFX\Duong\Texture\melee_fx2.png
+impact/radial_ring/impact_radial_ring_003.png,impact/impact_078.png,Tx_radial_burst_04 1.png,rpg,RPG_VFX\Texture\Tx_radial_burst_04.png
+impact/radial_ring/impact_radial_ring_004.png,impact/impact_079.png,Tx_radial_burst_05.png,rpg,RPG_VFX\Texture\Tx_radial_burst_05.png
+impact/radial_ring/impact_radial_ring_005.png,impact/impact_089.png,TX_VFX_Impact09.png,rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact09.png
+impact/radial_ring/impact_radial_ring_006.png,impact/impact_091.png,TX_VFX_Radials03.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials03.png
+impact/shard/impact_shard_001.png,impact/impact_031.png,impact.png,rpg,RPG_VFX\Texture\impact.png
+impact/shard/impact_shard_002.png,impact/impact_042.png,Muzzle.png,rpg,_Game\Resources_moved\Textures\Muzzle.png
+lightning/arc_sheet/lightning_arc_sheet_001.png,Lightnings_Electrics/Lightnings_Electrics_003.png,DrTesla_LightningShield.png,rpg,_Game\Resources_moved\Textures\Guardian\DrTesla_LightningShield.png
+lightning/arc_sheet/lightning_arc_sheet_002.png,Lightnings_Electrics/Lightnings_Electrics_004.png,DrTesla_TeslaCore_Lightning_idle_tts.png,rpg,_Game\Resources_moved\Textures\Guardian\DrTesla_TeslaCore_Lightning_idle_tts.png
+lightning/arc_sheet/lightning_arc_sheet_003.png,Lightnings_Electrics/Lightnings_Electrics_008.png,HandPaintedLightning2.png,prj,VFX\_Imported\RpgGame\Lightning\Textures\HandPaintedLightning2.png
+lightning/arc_sheet/lightning_arc_sheet_004.png,Lightnings_Electrics/Lightnings_Electrics_011.png,Lightning01.png,rpg,_Game\Resources_moved\Textures\Lightning01.png
+lightning/arc_sheet/lightning_arc_sheet_005.png,Lightnings_Electrics/Lightnings_Electrics_014.png,Lightning_Tesla_Field.png,rpg,_Game\Resources_moved\Textures\Guardian\Lightning_Tesla_Field.png
+lightning/arc_sheet/lightning_arc_sheet_006.png,Lightnings_Electrics/Lightnings_Electrics_020.png,ShardLightning.png,rpg,_Game\Resources_moved\Textures\ShardLightning.png
+lightning/arc_sheet/lightning_arc_sheet_007.png,Lightnings_Electrics/Lightnings_Electrics_030.png,Tx_electricity_09.png,rpg,RPG_VFX\Texture\Tx_electricity_09.png
+lightning/arc_single/lightning_arc_single_001.png,Lightnings_Electrics/Lightnings_Electrics_006.png,Guardian_Lightning2.png,rpg,_Game\Resources_moved\Textures\Guardian_Lightning2.png
+lightning/bolt_sheet/lightning_bolt_sheet_001.png,Lightnings_Electrics/Lightnings_Electrics_002.png,cfxr electric arcs fade x4.png,prj,VFX\_Imported\RpgGame\Lightning\Textures\cfxr electric arcs fade x4.png
+lightning/bolt_sheet/lightning_bolt_sheet_002.png,Lightnings_Electrics/Lightnings_Electrics_005.png,Griffin_Lightning.png,rpg,_Game\Resources_moved\Textures\Guardian\Griffin_Lightning.png
+lightning/bolt_sheet/lightning_bolt_sheet_003.png,Lightnings_Electrics/Lightnings_Electrics_016.png,lightning_texture_sheet1.png,prj,VFX\_Imported\RpgGame\Lightning\Textures\lightning_texture_sheet1.png
+lightning/bolt_sheet/lightning_bolt_sheet_004.png,Lightnings_Electrics/Lightnings_Electrics_017.png,LightningChain_tts.png,rpg,_Game\Resources_moved\Textures\Guardian\LightningChain_tts.png
+lightning/bolt_sheet/lightning_bolt_sheet_005.png,Lightnings_Electrics/Lightnings_Electrics_026.png,T_VFX_Lightning4x2.png,rpg,RPG_VFX\Duong\Texture\Flipbooks\Lightning\T_VFX_Lightning4x2.png
+lightning/bolt_sheet/lightning_bolt_sheet_006.png,Lightnings_Electrics/Lightnings_Electrics_027.png,T_VFX_SmallLightning2x2.png,rpg,RPG_VFX\Duong\Texture\Flipbooks\Lightning\T_VFX_SmallLightning2x2.png
+lightning/bolt_sheet/lightning_bolt_sheet_007.png,Lightnings_Electrics/Lightnings_Electrics_029.png,Tx_electricity_08_rot.png,prj,VFX\_Imported\RpgGame\Lightning\Textures\Tx_electricity_08_rot.png
+lightning/bolt_sheet/lightning_bolt_sheet_008.png,Lightnings_Electrics/Lightnings_Electrics_031.png,TX_VFX_Electric01.png,rpg,RPG_VFX\Duong\Texture\Electric\TX_VFX_Electric01.png
+mask/gradient/mask_gradient_001.png,decals/decals_029.png,indicator.png,rpg,RPG_VFX\Texture\indicator.png
+mask/gradient/mask_gradient_002.psd,noise/noise_059.psd,T_VFX_Distortion_2.psd,rpg,RPG_VFX\Duong\Texture\Noise\T_VFX_Distortion.psd
+mask/gradient/mask_gradient_003.png,Slash/Slash_001.png,cfxr sword trail mask light.png,rpg,_Game\Resources_moved\Textures\cfxr sword trail mask light.png
+mask/gradient/mask_gradient_004.png,Slash/Slash_002.png,cfxr sword trail mask lines.png,rpg,_Game\Resources_moved\Textures\cfxr sword trail mask lines.png
+mask/gradient/mask_gradient_005.png,trail/trail_002.png,Beam_Upwards.png,rpg,RPG_VFX\Texture\Beam_Upwards.png
+mask/gradient/mask_gradient_006.png,trail/trail_006.png,ChargePath 1.png,rpg,_Game\Resources_moved\Textures\ChargePath 1.png
+mask/gradient/mask_gradient_007.png,trail/trail_023.png,trail.png,rpg,_Game\Resources_moved\Textures\trail.png
+mask/gradient/mask_gradient_008.png,trail/trail_028.png,Trail6.png,rpg,RPG_VFX\VFX\Trail6.png
+mask/gradient/mask_gradient_009.png,trail/trail_029.png,trail_2.png,rpg,_Game\Resources_moved\Textures\trail_2.png
+noise/cell/noise_cell_001.png,noise/noise_010.png,FX_TX_FireNoise_01.png,prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_FireNoise_01.png
+noise/cell/noise_cell_002.psd,noise/noise_011.psd,FX_TX_FireNoise_01.psd,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FireNoise_01.psd
+noise/cell/noise_cell_003.png,noise/noise_013.png,FX_TX_FlamesNoise_02.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FlamesNoise_04.png
+noise/cell/noise_cell_004.jpg,noise/noise_016.jpg,Hexagon_Pattern.jpg,rpg,RPG_VFX\Duong\Texture\Decals\Hexagon_Pattern.jpg
+noise/cell/noise_cell_005.png,noise/noise_023.png,Noise50.png,rpg,_Game\Resources_moved\Textures\Noise50.png
+noise/cell/noise_cell_006.png,noise/noise_026.png,Noise69.png,rpg,_Game\Resources_moved\Textures\Noise69.png
+noise/cell/noise_cell_007.png,noise/noise_036.png,noise_6.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_6.png
+noise/cell/noise_cell_008.png,noise/noise_048.png,T_Noise_Dissolve_Cells.png,prj,VFX\SmokeStylized\Textures\T_Noise_Dissolve_Cells.png
+noise/cell/noise_cell_009.png,noise/noise_054.png,T_Random_39.png,prj,VFX\_Shared\Textures\RpgLib\Noise\T_Random_39.png
+noise/cell/noise_cell_010.png,noise/noise_057.png,T_Slash360_Detail_Earth.png,prj,VFX\Slash360\Textures\T_Slash360_Detail_Earth.png
+noise/cell/noise_cell_011.png,noise/noise_063.png,Tx_Noise_42.png,rpg,RPG_VFX\Texture\Tx_Noise_42.png
+noise/cell/noise_cell_012.png,noise/noise_067.png,Tx_Noise_56.png,rpg,RPG_VFX\Texture\Tx_Noise_56.png
+noise/cell/noise_cell_013.png,noise/noise_068.png,Tx_Noise_60.png,rpg,RPG_VFX\Texture\Tx_Noise_60.png
+noise/cell/noise_cell_014.png,noise/noise_069.png,TX_VFX_Noise01.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise01.png
+noise/cell/noise_cell_015.png,noise/noise_071.png,TX_VFX_Noise03.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise03.png
+noise/cell/noise_cell_016.png,noise/noise_072.png,TX_VFX_Noise04.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise04.png
+noise/cell/noise_cell_017.png,noise/noise_075.png,TX_VFX_Noise07.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise07.png
+noise/cell/noise_cell_018.png,noise/noise_077.png,TX_VFX_Noise09.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise09.png
+noise/cell/noise_cell_019.png,noise/noise_079.png,TX_VFX_Noise11.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise11.png
+noise/cell/noise_cell_020.png,noise/noise_082.png,TX_VFX_Noise14.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise14.png
+noise/cell/noise_cell_021.png,noise/noise_084.png,TX_VFX_Noise17.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise17.png
+noise/cell/noise_cell_022.png,noise/noise_085.png,TX_VFX_Noise18.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise18.png
+noise/cell/noise_cell_023.png,noise/noise_086.png,TX_VFX_Noise19.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise19.png
+noise/cell/noise_cell_024.png,noise/noise_088.png,TX_VFX_Noise21.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise21.png
+noise/cell/noise_cell_025.png,noise/noise_089.png,TX_VFX_Noise22.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise22.png
+noise/cell/noise_cell_026.png,noise/noise_090.png,TX_VFX_Noise23.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise23.png
+noise/cell/noise_cell_027.png,noise/noise_091.png,TX_VFX_Noise24.png,prj,VFX\_Imported\RpgThunder\RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise24.png
+noise/cell/noise_cell_028.png,noise/noise_093.png,TX_VFX_Noise26.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise26.png
+noise/cloud/noise_cloud_001.png,noise/noise_001.png,cfxr perlin big.png,rpg,RPG_VFX\VFX_Base\ant\slash\cfxr perlin big.png
+noise/cloud/noise_cloud_002.png,noise/noise_002.png,cfxr perlin mid.png,rpg,RPG_VFX\VFX_Base\ant\slash\cfxr perlin mid.png
+noise/cloud/noise_cloud_003.jpg,noise/noise_003.jpg,cloudNoise.jpg,rpg,_Game\Resources_moved\Textures\cloudNoise.jpg
+noise/cloud/noise_cloud_004.png,noise/noise_005.png,Diss2.png,prj,VFX\_Shared\Textures\RpgLib\Noise\Diss2.png
+noise/cloud/noise_cloud_005.png,noise/noise_008.png,Foam 4.png,prj,shader_water\Foam 4.png
+noise/cloud/noise_cloud_006.png,noise/noise_009.png,FX_TX_DenseNoise_01.png,prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_DenseNoise_01.png
+noise/cloud/noise_cloud_007.png,noise/noise_012.png,FX_TX_FlamesNoise_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FlamesNoise_01.png
+noise/cloud/noise_cloud_008.png,noise/noise_019.png,Noise.png,prj,VFX\_Shared\Textures\RpgLib\Noise\Noise.png
+noise/cloud/noise_cloud_009.png,noise/noise_020.png,Noise1.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Noise1.png
+noise/cloud/noise_cloud_010.png,noise/noise_021.png,Noise28.png,prj,VFX\_Shared\Textures\RpgLib\Noise\Noise28.png
+noise/cloud/noise_cloud_011.png,noise/noise_022.png,Noise34.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Noise34.png
+noise/cloud/noise_cloud_012.png,noise/noise_032.png,noise_1.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_1.png
+noise/cloud/noise_cloud_013.png,noise/noise_033.png,noise_2.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_2.png
+noise/cloud/noise_cloud_014.png,noise/noise_034.png,noise_3.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_3.png
+noise/cloud/noise_cloud_015.png,noise/noise_039.png,Noise_Cloud02.png,rpg,_Game\Resources_moved\Textures\Guardian\Noise_Cloud02.png
+noise/cloud/noise_cloud_016.png,noise/noise_044.png,T_Lu_Noise_12.png,prj,VFX\_Shared\Textures\RpgLib\Noise\T_Lu_Noise_12.png
+noise/cloud/noise_cloud_017.png,noise/noise_049.png,T_Noise_Dissolve_Chunks.png,prj,VFX\SmokeStylized\Textures\T_Noise_Dissolve_Chunks.png
+noise/cloud/noise_cloud_018.png,noise/noise_051.png,T_Noise_Fire.png,prj,VFX\SmokeStylized\Textures\T_Noise_Smoke.png
+noise/cloud/noise_cloud_019.png,noise/noise_056.png,T_Random_59.png,rpg,RPG_VFX\Duong\Texture\Noise\T_Random_59.png
+noise/cloud/noise_cloud_020.png,noise/noise_060.png,Tx_Noise_08.png,rpg,RPG_VFX\Texture\Tx_Noise_08.png
+noise/cloud/noise_cloud_021.png,noise/noise_061.png,Tx_Noise_19.png,rpg,RPG_VFX\Texture\Tx_Noise_19.png
+noise/cloud/noise_cloud_022.png,noise/noise_080.png,TX_VFX_Noise12.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise12.png
+noise/cloud/noise_cloud_023.png,smoke/smoke_005.png,cfxr noise clouds big.png,rpg,RPG_VFX\Texture\cfxr noise clouds big.png
+noise/cloud/noise_cloud_024.png,smoke/smoke_063.png,—Pngtree—white smoke transparent clouds_5433156.png,prj,VFX\_Shared\Textures\RpgLib\Gradient\—Pngtree—white smoke transparent clouds_5433156.png
+noise/dash/noise_dash_001.png,noise/noise_070.png,TX_VFX_Noise02.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise02.png
+noise/dash/noise_dash_002.png,noise/noise_076.png,TX_VFX_Noise08.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise08.png
+noise/dash/noise_dash_003.png,noise/noise_095.png,TX_VFX_Noise28.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise28.png
+noise/electric_web/noise_electric_web_001.png,noise/noise_006.png,flame_noise.png,prj,VFX\_Shared\Textures\RpgLib\Noise\flame_noise.png
+noise/electric_web/noise_electric_web_002.png,noise/noise_018.png,noise 1.png,rpg,RPG_VFX\Texture\noise 1.png
+noise/electric_web/noise_electric_web_003.png,noise/noise_035.png,noise_5.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_5.png
+noise/electric_web/noise_electric_web_004.png,noise/noise_043.png,T_Lu_Noise_05.png,rpg,RPG_VFX\Duong\Texture\Noise\T_Lu_Noise_05.png
+noise/electric_web/noise_electric_web_005.png,noise/noise_045.png,T_Lu_Noise_29.png,prj,VFX\_Shared\Textures\RpgLib\Noise\T_Lu_Noise_29.png
+noise/electric_web/noise_electric_web_006.png,noise/noise_046.png,T_Lu_Noise_35.png,prj,VFX\_Shared\Textures\RpgLib\Noise\T_Lu_Noise_35.png
+noise/hard_edge/noise_hard_edge_001.png,noise/noise_014.png,FX_TX_NoiseTexture_01.png,prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_NoiseTexture_01.png
+noise/hard_edge/noise_hard_edge_002.png,noise/noise_015.png,FX_TX_NoiseTexture_01_Dissolve.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_NoiseTexture_01_Dissolve.png
+noise/hard_edge/noise_hard_edge_003.png,noise/noise_029.png,Noise_011.png,rpg,RPG_VFX\Texture\Noise_011.png
+noise/hard_edge/noise_hard_edge_004.png,noise/noise_078.png,TX_VFX_Noise10.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise10.png
+noise/hard_edge/noise_hard_edge_005.png,noise/noise_083.png,TX_VFX_Noise16.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise16.png
+noise/hard_edge/noise_hard_edge_006.png,noise/noise_087.png,TX_VFX_Noise20.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise20.png
+noise/packed_rgb/noise_packed_rgb_001.png,noise/noise_040.png,t_fx_cellular_inv.png,prj,VFX\_Shared\Textures\RpgLib\Noise\t_fx_cellular_inv.png
+noise/packed_rgb/noise_packed_rgb_002.png,noise/noise_041.png,t_fx_distorsion.png,prj,VFX\_Shared\Textures\RpgLib\Noise\t_fx_distorsion.png
+noise/packed_rgb/noise_packed_rgb_003.png,noise/noise_042.png,T_ky_noise5.png,rpg,_Game\Resources_moved\Textures\T_ky_noise5.png
+noise/packed_rgb/noise_packed_rgb_004.png,noise/noise_047.png,T_Noise_Cells.png,prj,VFX\_Shared\Textures\Noise\T_Noise_Cells.png
+noise/packed_rgb/noise_packed_rgb_005.png,noise/noise_052.png,T_Noise_Smooth.png,prj,VFX\_Shared\Textures\Noise\T_Noise_Smooth.png
+noise/packed_rgb/noise_packed_rgb_006.png,noise/noise_053.png,T_Noise_Streaks.png,prj,VFX\_Shared\Textures\Noise\T_Noise_Streaks.png
+noise/streak/noise_streak_001.png,noise/noise_024.png,Noise51 1.png,rpg,_Game\Resources_moved\Textures\Noise51.png
+noise/streak/noise_streak_002.png,noise/noise_025.png,Noise51_rounded.png,rpg,_Game\Resources_moved\Textures\Noise51_rounded.png
+noise/streak/noise_streak_003.png,noise/noise_037.png,noise_7.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_7.png
+noise/streak/noise_streak_004.png,noise/noise_038.png,noise_71.png,prj,VFX\_Shared\Textures\RpgLib\Noise\noise_71.png
+noise/streak/noise_streak_005.png,noise/noise_050.png,T_Noise_Dissolve_Streaks.png,prj,VFX\SmokeStylized\Textures\T_Noise_Dissolve_Streaks.png
+noise/streak/noise_streak_006.png,noise/noise_055.png,T_Random_45.png,prj,VFX\_Shared\Textures\RpgLib\Noise\T_Random_45.png
+noise/streak/noise_streak_007.png,noise/noise_058.png,T_Slash360_Detail_Trail.png,prj,VFX\Slash360\Textures\T_Slash360_Detail_Trail.png
+noise/streak/noise_streak_008.png,noise/noise_062.png,Tx_Noise_36.png,rpg,RPG_VFX\Texture\Tx_Noise_36.png
+noise/streak/noise_streak_009.png,noise/noise_066.png,Tx_Noise_55.png,rpg,RPG_VFX\Texture\Tx_Noise_55.png
+noise/streak/noise_streak_010.png,noise/noise_073.png,TX_VFX_Noise05.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise05.png
+noise/streak/noise_streak_011.png,noise/noise_074.png,TX_VFX_Noise06.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise06.png
+noise/streak/noise_streak_012.png,noise/noise_092.png,TX_VFX_Noise25.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise25.png
+noise/streak/noise_streak_013.psd,noise/noise_096.psd,TX_VFX_Noise_Gradient.psd,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise_Gradient.psd
+noise/streak/noise_streak_014.png,noise/noise_097.png,Tx_Wind_Noise_01_2.png,rpg,RPG_VFX\Texture\Tx_Wind_Noise_01_2.png
+noise/streak/noise_streak_015.png,noise/noise_098.png,wind_tex (1).png,rpg,_Game\Resources_moved\Textures\wind_tex (1).png
+noise/swirl/noise_swirl_001.png,noise/noise_004.png,Disolve_Twirly.png,rpg,RPG_VFX\Texture\Disolve_Twirly.png
+noise/swirl/noise_swirl_002.psd,noise/noise_007.psd,FlameNoise.psd,prj,VFX\_Shared\Textures\RpgLib\Noise\FlameNoise.psd
+noise/swirl/noise_swirl_003.png,noise/noise_017.png,Manifold_01-512x512 1.png,prj,VFX\_Shared\Textures\RpgLib\Noise\Manifold_01-512x512 1.png
+noise/swirl/noise_swirl_004.png,noise/noise_028.png,Noise_004.png,rpg,RPG_VFX\Texture\Noise_004.png
+noise/swirl/noise_swirl_005.png,noise/noise_030.png,Noise_012.png,rpg,RPG_VFX\Texture\Noise_012.png
+noise/swirl/noise_swirl_006.png,noise/noise_081.png,TX_VFX_Noise13.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise13.png
+noise/swirl/noise_swirl_007.png,noise/noise_094.png,TX_VFX_Noise27.png,rpg,RPG_VFX\Duong\Texture\Noise\TX_VFX_Noise27.png
+noise/swirl/noise_swirl_008.png,smoke/smoke_042.png,T_GroundBlast_SmokeErode.png,prj,VFX\GroundBlast\Textures\T_GroundBlast_SmokeErode.png
+noise/swirl/noise_swirl_009.png,smoke/smoke_043.png,T_GroundBlast_SmokeErode_TEMP.png,prj,VFX\GroundBlast\Textures\T_GroundBlast_SmokeErode_TEMP.png
+ring/flipbook/ring_flipbook_001.png,wave/wave_020.png,T_CFX_Shockwave_Ground_4x4.png,prj,VFX\CodeShockwaveGround\Textures\T_CFX_Shockwave_Ground_4x4.png
+ring/flipbook/ring_flipbook_002.png,wave/wave_023.png,T_RNG_Shock_4x2.png,prj,VFX\_Components\Ring\Textures\T_RNG_Shock_4x2.png
+ring/flipbook/ring_flipbook_003.png,wave/wave_024.png,T_RNG_ShockThick_4x2.png,prj,VFX\_Components\Ring\Textures\T_RNG_ShockThick_4x2.png
+ring/ragged/ring_ragged_001.psd,wave/wave_010.psd,Explosion.psd,rpg,_Game\Resources_moved\Textures\Explosion.psd
+ring/ragged/ring_ragged_002.png,wave/wave_015.png,Ring_150_c.png,rpg,_Game\Resources_moved\Textures\Paladin\Ring_150_c.png
+ring/ragged/ring_ragged_003.tga,wave/wave_017.tga,RingPack.tga,rpg,_Game\Resources_moved\Textures\RingPack.tga
+ring/ragged/ring_ragged_004.png,wave/wave_028.png,T_VFX_Wind.png,rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Wind.png
+ring/ragged/ring_ragged_005.png,wave/wave_033.png,TX_VFX_Glow03.png,rpg,RPG_VFX\Duong\Texture\Glow\TX_VFX_Glow03.png
+ring/ragged/ring_ragged_006.png,wave/wave_056.png,Vortex 1.png,rpg,2D_Art\Vfx\Vortex 1.png
+ring/ragged/ring_ragged_007.png,wave/wave_057.png,Vortex 2.png,rpg,2D_Art\Vfx\Vortex 2.png
+ring/ragged/ring_ragged_008.png,wave/wave_061.png,wave 1.png,prj,VFX\_Imported\RpgThunder\RPG_VFX\Texture\wave 1.png
+ring/ragged/ring_ragged_009.png,wave/wave_062.png,wave 2.png,rpg,RPG_VFX\Texture\wave 2.png
+ring/ragged/ring_ragged_010.png,wave/wave_063.png,wave 3.png,rpg,RPG_VFX\Texture\wave 3.png
+ring/soft/ring_soft_001.png,wave/wave_003.png,Circle.png,rpg,RPG_VFX\Duong\Texture\Radials\Circle.png
+ring/soft/ring_soft_002.png,wave/wave_005.png,Circle116.png,rpg,_Game\Resources_moved\Textures\Circle116.png
+ring/soft/ring_soft_003.png,wave/wave_007.png,Circle_1.png,rpg,_Game\Resources_moved\Textures\Circle_1.png
+ring/soft/ring_soft_004.png,wave/wave_008.png,Circle_Generic.png,rpg,RPG_VFX\Texture\Circle_Generic.png
+ring/soft/ring_soft_005.psd,wave/wave_012.psd,FX_TX_RadialBurst_01.psd,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_RadialBurst_01.psd
+ring/soft/ring_soft_006.png,wave/wave_013.png,Guardian_ring.png,rpg,_Game\Resources_moved\Textures\Guardian_ring.png
+ring/soft/ring_soft_007.png,wave/wave_014.png,melee_fx1.png,rpg,RPG_VFX\Texture\melee_fx1.png
+ring/soft/ring_soft_008.png,wave/wave_016.png,ring_shockwave.png,rpg,_Game\Resources_moved\Textures\ring_shockwave.png
+ring/soft/ring_soft_009.png,wave/wave_018.png,Semicircle6.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Semicircle6.png
+ring/soft/ring_soft_010.png,wave/wave_019.png,Semicircle7.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Semicircle7.png
+ring/soft/ring_soft_011.png,wave/wave_034.png,TX_VFX_Radials01.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials01.png
+ring/soft/ring_soft_012.png,wave/wave_035.png,TX_VFX_Radials02.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials02.png
+ring/soft/ring_soft_013.png,wave/wave_036.png,TX_VFX_Radials04 1.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials04.png
+ring/soft/ring_soft_014.png,wave/wave_038.png,TX_VFX_Radials07.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials07.png
+ring/soft/ring_soft_015.png,wave/wave_039.png,TX_VFX_Radials08.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials08.png
+ring/soft/ring_soft_016.png,wave/wave_041.png,TX_VFX_Radials13.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials13.png
+ring/soft/ring_soft_017.png,wave/wave_064.png,wave.png,rpg,RPG_VFX\Texture\wave.png
+ring/soft/ring_soft_018.png,wave/wave_066.png,wave2.png,rpg,_Game\Resources_moved\Textures\wave2.png
+ring/swirl/ring_swirl_001.png,wave/wave_055.png,VFX_Zypher_Skill1_Impact.png,rpg,_Game\Resources_moved\Textures\Guardian\VFX_Zypher_Skill1_Impact.png
+ring/swirl/ring_swirl_002.png,wave/wave_068.png,wind 2.png,rpg,RPG_VFX\Duong\Texture\wind 2.png
+ring/swirl/ring_swirl_003.png,wave/wave_069.png,wind.png,rpg,_Game\Resources_moved\Textures\wind.png
+ring/thin/ring_thin_001.png,decals/decals_050.png,T_VFX_Ground_Symbol.png,rpg,RPG_VFX\Duong\Texture\Radials\T_VFX_Ground_Symbol.png
+ring/thin/ring_thin_002.png,wave/wave_002.png,ball.png,rpg,RPG_VFX\Texture\ball.png
+ring/thin/ring_thin_003.png,wave/wave_004.png,Circle03.png,rpg,_Game\Resources_moved\Textures\Circle03.png
+ring/thin/ring_thin_004.png,wave/wave_006.png,Circle38.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Circle38.png
+ring/thin/ring_thin_005.png,wave/wave_009.png,Circle_Glow.png,rpg,_Game\Resources_moved\Textures\Guardian\Circle_Glow.png
+ring/thin/ring_thin_006.psd,wave/wave_011.psd,fullCircleFaded.psd,rpg,_Game\Resources_moved\Textures\fullCircleFaded.psd
+ring/thin/ring_thin_007.png,wave/wave_021.png,T_GroundBlast_Ring.png,prj,VFX\GroundBlast\Textures\T_GroundBlast_Ring.png
+ring/thin/ring_thin_008.png,wave/wave_022.png,T_Ring_Shock.png,prj,VFX\Explosion\Textures\T_Ring_Shock.png
+ring/thin/ring_thin_009.png,wave/wave_032.png,TX_VFX_Circle.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Circle.png
+ring/thin/ring_thin_010.png,wave/wave_037.png,TX_VFX_Radials05.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials05.png
+ring/thin/ring_thin_011.png,wave/wave_040.png,TX_VFX_Radials09.png,rpg,RPG_VFX\Duong\Texture\Radials\TX_VFX_Radials09.png
+ring/thin/ring_thin_012.png,wave/wave_058.png,Vortex 3.png,rpg,2D_Art\Vfx\Vortex 3.png
+ring/thin/ring_thin_013.png,wave/wave_060.png,Vortex.png,rpg,2D_Art\Vfx\Vortex.png
+ring/thin/ring_thin_014.png,wave/wave_067.png,wave_cir.png,rpg,_Game\Resources_moved\Textures\wave_cir.png
+ring/Uv_mesh/ring_Uv_mesh_001.png,wave/wave_001.png,Arthur_Boom_Texture.png,rpg,_Game\Resources_moved\Textures\Guardian\Arthur_Boom_Texture.png
+ring/Uv_mesh/ring_Uv_mesh_002.png,wave/wave_025.png,T_VFX_Impact_Cone_01.png,rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Impact_Cone_01.png
+ring/Uv_mesh/ring_Uv_mesh_003.png,wave/wave_026.png,T_VFX_Impact_Cone_02.png,rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Impact_Cone_02.png
+ring/Uv_mesh/ring_Uv_mesh_004.png,wave/wave_027.png,T_VFX_Impact_Shockwave.png,rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Impact_Shockwave.png
+ring/Uv_mesh/ring_Uv_mesh_005.png,wave/wave_029.png,Tx_impact_03.png,rpg,RPG_VFX\Texture\Tx_impact_03.png
+ring/Uv_mesh/ring_Uv_mesh_006.png,wave/wave_030.png,Tx_Impact_radial_01.png,rpg,_Game\Resources_moved\Textures\Tx_Impact_radial_01.png
+ring/Uv_mesh/ring_Uv_mesh_007.png,wave/wave_031.png,Tx_Impact_radial_03.png,rpg,RPG_VFX\Texture\Tx_Impact_radial_03.png
+ring/Uv_mesh/ring_Uv_mesh_008.png,wave/wave_043.png,TX_VFX_Wave02.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave02.png
+ring/Uv_mesh/ring_Uv_mesh_009.png,wave/wave_044.png,TX_VFX_Wave03.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave03.png
+ring/Uv_mesh/ring_Uv_mesh_010.png,wave/wave_045.png,TX_VFX_Wave04.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave04.png
+ring/Uv_mesh/ring_Uv_mesh_011.png,wave/wave_046.png,TX_VFX_Wave05.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave05.png
+ring/Uv_mesh/ring_Uv_mesh_012.png,wave/wave_047.png,TX_VFX_Wave06.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave06.png
+ring/Uv_mesh/ring_Uv_mesh_013.png,wave/wave_048.png,TX_VFX_Wave07.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave07.png
+ring/Uv_mesh/ring_Uv_mesh_014.png,wave/wave_049.png,TX_VFX_Wave08.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave08.png
+ring/Uv_mesh/ring_Uv_mesh_015.png,wave/wave_050.png,TX_VFX_Wave09.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave09.png
+ring/Uv_mesh/ring_Uv_mesh_016.png,wave/wave_051.png,TX_VFX_Wave10 1.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave10 1.png
+ring/Uv_mesh/ring_Uv_mesh_017.png,wave/wave_052.png,TX_VFX_Wave10.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave10.png
+ring/Uv_mesh/ring_Uv_mesh_018.png,wave/wave_053.png,TX_VFX_Wave11.png,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave11.png
+ring/Uv_mesh/ring_Uv_mesh_019.psd,wave/wave_054.psd,TX_VFX_Wave_Single.psd,rpg,RPG_VFX\Duong\Texture\Wave\TX_VFX_Wave_Single.psd
+ring/Uv_mesh/ring_Uv_mesh_020.png,wave/wave_065.png,wave02.png,rpg,_Game\Resources_moved\Textures\wave02.png
+rune/circle/rune_circle_001.png,decals/decals_007.png,CoreGlow.png,rpg,_Game\Resources_moved\Textures\CoreGlow.png
+rune/circle/rune_circle_002.png,decals/decals_031.png,magic_circle.png,rpg,RPG_VFX\Duong\Texture\Decals\magic_circle.png
+rune/circle/rune_circle_003.png,decals/decals_032.png,magic_circle_2.png,rpg,RPG_VFX\Texture\magic_circle.png
+rune/circle/rune_circle_004.png,decals/decals_034.png,ruin.png,rpg,RPG_VFX\Texture\ruin.png
+rune/circle/rune_circle_005.png,decals/decals_038.png,T_HealCircle_RuneInner.png,prj,VFX\HealCircle\Textures\T_HealCircle_RuneInner.png
+rune/circle/rune_circle_006.png,decals/decals_039.png,T_HealCircle_RuneOuter.png,prj,VFX\HealCircle\Textures\T_HealCircle_RuneOuter.png
+rune/circle/rune_circle_007.png,decals/decals_053.png,triangle.png,rpg,RPG_VFX\Duong\Texture\Decals\triangle.png
+rune/circle/rune_circle_008.png,decals/decals_061.png,TX_VFX_Decals04.png,rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals04.png
+rune/circle/rune_circle_009.png,decals/decals_062.png,TX_VFX_Decals05.png,rpg,RPG_VFX\Duong\Texture\Decals\TX_VFX_Decals05.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_001.png,glow/glow_034.png,FX_TX_LensFlare_01_Rook.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LensFlare_01_Rook.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_002.png,Slash/Slash_004.png,Slash.png,rpg,RPG_VFX\Duong\Texture\Slash\Slash.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_003.psd,Slash/Slash_007.psd,Slash1.psd,rpg,_Game\Resources_moved\Textures\Slash1.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_004.png,Slash/Slash_012.png,slash_texture (1).png,rpg,_Game\Resources_moved\Textures\Paladin\slash_texture (1).png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_005.png,Slash/Slash_017.png,SwordBeamDark.png,rpg,_Game\Resources_moved\Textures\SwordBeamDark.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_006.png,Slash/Slash_018.png,T_Slash360_Crescent_Earth.png,prj,VFX\Slash360\Textures\T_Slash360_Crescent_Earth.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_007.png,Slash/Slash_020.png,T_Slash_Body.png,prj,VFX\StylizedSlash\T_Slash_Body.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_008.png,Slash/Slash_022.png,T_VFX_Blunt_Slash.png,prj,VFX\Slash360\Textures\T_Slash360_Body_Earth.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_009.png,Slash/Slash_023.png,T_VFX_Slash_B.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_010.png,Slash/Slash_027.png,T_VFX_Slash_B_04.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_04.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_011.png,Slash/Slash_028.png,T_VFX_Slash_B_05.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_B_05.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_012.png,Slash/Slash_029.png,T_VFX_Slash_M.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_M.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_013.png,Slash/Slash_030.png,T_VFX_Slash_M_1.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_M_1.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_014.png,Slash/Slash_031.png,T_VFX_Slash_S.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_S.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_015.png,Slash/Slash_039.png,WindBlades_Animated.png,rpg,RPG_VFX\Texture\WindBlades_Animated.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_016.png,Slash/Slash_040.png,,,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_017.png,Slash/Slash_041.png,,,
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_018.png,trail/trail_008.png,ChargePath.png,rpg,_Game\Resources_moved\Textures\ChargePath.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_019.png,trail/trail_017.png,Ring.png,rpg,_Game\Resources_moved\Textures\Ring.png
+Slash/Onhit/Slash_Onhit_001.png,glow/glow_032.png,FX_TX_LensFlare_01 1.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LensFlare_01 1.png
+Slash/Onhit/Slash_Onhit_002.png,glow/glow_033.png,FX_TX_LensFlare_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_LensFlare_01.png
+Slash/Onhit/Slash_Onhit_003.png,glow/glow_042.png,Glow_SharpElip.png,rpg,RPG_VFX\Texture\Glow_SharpElip.png
+Slash/Onhit/Slash_Onhit_004.png,glow/glow_048.png,hit.png,rpg,_Game\Resources_moved\Textures\hit.png
+Slash/Onhit/Slash_Onhit_005.png,glow/glow_050.png,Lightning_light.png,prj,VFX\_Imported\RpgGame\Lightning\Textures\Lightning_light.png
+Slash/Onhit/Slash_Onhit_006.png,impact/impact_066.png,T_IMP_Line.png,prj,VFX\_Components\Impact\Textures\T_IMP_Line.png
+Slash/Onhit/Slash_Onhit_007.png,impact/impact_090.png,TX_VFX_Impact10.png,rpg,RPG_VFX\Duong\Texture\Impact\TX_VFX_Impact10.png
+Slash/Onhit/Slash_Onhit_008.png,Slash/Slash_006.png,Slash1.png,rpg,_Game\Resources_moved\Textures\Slash1.png
+Slash/Onhit/Slash_Onhit_009.psd,Slash/Slash_015.psd,Spin.psd,rpg,EffectCore\textures\slashes\Spin.psd
+Slash/Onhit/Slash_Onhit_010.psd,Slash/Slash_016.psd,Stab.psd,rpg,EffectCore\textures\slashes\Stab.psd
+Slash/Onhit/Slash_Onhit_011.png,Slash/Slash_019.png,T_Slash360_EdgeCrescent_Earth.png,prj,VFX\Slash360\Textures\T_Slash360_EdgeCrescent_Earth.png
+Slash/Onhit/Slash_Onhit_012.png,Slash/Slash_021.png,T_Slash_Edge.png,prj,VFX\StylizedSlash\T_Slash_Edge.png
+Slash/Onhit/Slash_Onhit_013.png,Slash/Slash_032.png,T_VFX_Slash_S_01.png,prj,VFX\Slash360\Textures\T_Slash360_Edge.png
+Slash/Onhit/Slash_Onhit_014.png,Slash/Slash_035.png,T_VFX_Slash_Straight_01.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_Straight_01.png
+Slash/Onhit/Slash_Onhit_015.png,Slash/Slash_036.png,T_VFX_Slash_Straight_02.png,rpg,RPG_VFX\Duong\Texture\Slash\T_VFX_Slash_Straight_02.png
+smoke/cartoon/smoke_cartoon_001.png,smoke/smoke_003.png,cfxr explosion smoke alpha.png,rpg,RPG_VFX\Texture\cfxr explosion smoke alpha.png
+smoke/cartoon/smoke_cartoon_002.png,smoke/smoke_018.png,MyCustomSmokeTex.png,rpg,_Game\Resources_moved\Textures\MyCustomSmokeTex.png
+smoke/cartoon/smoke_cartoon_003.png,smoke/smoke_034.png,Smoke_2.png,rpg,_Game\Resources_moved\Textures\Smoke.png
+smoke/cartoon/smoke_cartoon_004.png,smoke/smoke_036.png,SmokeMask.png,rpg,_Game\Resources_moved\Textures\SmokeMask.png
+smoke/cartoon/smoke_cartoon_005.png,smoke/smoke_059.png,TX_VFX_Smoke09.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke09.png
+smoke/cartoon/smoke_cartoon_006.png,smoke/smoke_061.png,TX_VFX_Smoke11.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke11.png
+smoke/cartoon/smoke_cartoon_007.png,smoke/smoke_062.png,TX_VFX_Smoke12.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke12.png
+smoke/sheet/smoke_sheet_001.png,smoke/smoke_006.png,cfxr smoke cloud x4 dissolve.png,rpg,_Game\Resources_moved\Textures\cfxr smoke cloud x4 dissolve.png
+smoke/sheet/smoke_sheet_002.png,smoke/smoke_007.png,cfxr smoke cloud x4.png,rpg,_Game\Resources_moved\Textures\cfxr smoke cloud x4.png
+smoke/sheet/smoke_sheet_003.png,smoke/smoke_008.png,cloud_2x2_hardshadow.png,rpg,2D_Art\Vfx\Textures\cloud_2x2_hardshadow.png
+smoke/sheet/smoke_sheet_004.png,smoke/smoke_013.png,Explosion.png,rpg,RPG_VFX\Duong\Texture\Flipbooks\Explosion.png
+smoke/sheet/smoke_sheet_005.png,smoke/smoke_016.png,FX_TX_Smoke.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Smoke.png
+smoke/sheet/smoke_sheet_006.png,smoke/smoke_017.png,hand_paint_smoke_2.png,rpg,_Game\Resources_moved\Textures\hand_paint_smoke_2.png
+smoke/sheet/smoke_sheet_007.png,smoke/smoke_022.png,Smoke3_2.png,rpg,_Game\Resources_moved\Textures\Smoke3.png
+smoke/sheet/smoke_sheet_008.png,smoke/smoke_035.png,SmokeHarsh.png,rpg,RPG_VFX\Texture\SmokeHarsh.png
+smoke/sheet/smoke_sheet_009.png,smoke/smoke_039.png,T_CFX_PuffBurst_Body_4x4.png,prj,VFX\_Components\CodeFX\Textures\T_CFX_PuffBurst_Body_4x4.png
+smoke/sheet/smoke_sheet_010.png,smoke/smoke_040.png,T_DST_ToonPuff_4x4.png,prj,VFX\_Components\Dust\Textures\T_DST_ToonPuff_4x4.png
+smoke/sheet/smoke_sheet_011.png,smoke/smoke_041.png,T_Explosion_Smoke_4x2.png,prj,VFX\Explosion\Textures\T_Explosion_Smoke_4x2.png
+smoke/sheet/smoke_sheet_012.png,smoke/smoke_046.png,T_SmokeShape_OneShot_4x2.png,prj,VFX\Explosion\Textures\T_SmokeShape_OneShot_4x2.png
+smoke/sheet/smoke_sheet_013.png,smoke/smoke_047.png,T_SmokeStylized3D_Puff_4x4.png,prj,VFX\SmokeStylized\Textures\T_SmokeStylized3D_Puff_4x4.png
+smoke/sheet/smoke_sheet_014.png,smoke/smoke_051.png,TX_VFX_Smoke01.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke01.png
+smoke/sheet/smoke_sheet_015.png,smoke/smoke_052.png,TX_VFX_Smoke02.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke02.png
+smoke/sheet/smoke_sheet_016.png,smoke/smoke_053.png,TX_VFX_Smoke03.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke03.png
+smoke/sheet/smoke_sheet_017.png,smoke/smoke_054.png,TX_VFX_Smoke04.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke04.png
+smoke/sheet/smoke_sheet_018.png,smoke/smoke_055.png,TX_VFX_Smoke05.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke05.png
+smoke/sheet/smoke_sheet_019.png,smoke/smoke_056.png,TX_VFX_Smoke06.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke06.png
+smoke/sheet/smoke_sheet_020.png,smoke/smoke_058.png,TX_VFX_Smoke08.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke08.png
+smoke/soft/smoke_soft_001.png,smoke/smoke_001.png,Artillery Heavy Mortar_Smoke_Texture.png,rpg,_Game\Resources_moved\Textures\Guardian\Artillery Heavy Mortar_Smoke_Texture.png
+smoke/soft/smoke_soft_002.png,smoke/smoke_010.png,Dust01.png,rpg,_Game\Resources_moved\Textures\Dust01.png
+smoke/soft/smoke_soft_003.png,smoke/smoke_011.png,Dust02.png,rpg,_Game\Resources_moved\Textures\Dust02.png
+smoke/soft/smoke_soft_004.png,smoke/smoke_012.png,Dust03.png,rpg,_Game\Resources_moved\Textures\Dust03.png
+smoke/soft/smoke_soft_005.png,smoke/smoke_014.png,fx_t_smoke_02 1.png,prj,VFX\fx_t_smoke_02.png
+smoke/soft/smoke_soft_006.png,smoke/smoke_023.png,Smoke5.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Smoke5.png
+spark/dot_sheet/spark_dot_sheet_001.png,glow/glow_045.png,Glowdots_Speckles.png,rpg,RPG_VFX\Texture\Glowdots_Speckles.png
+spark/dot_sheet/spark_dot_sheet_002.psd,glow/glow_046.psd,glowSparksOffset.psd,rpg,EffectCore\textures\sparks\glowSparksOffset.psd
+spark/dot_sheet/spark_dot_sheet_003.png,glow/glow_090.png,TX_VFX_Spark03.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark03.png
+spark/shard/spark_shard_001.png,glow/glow_027.png,FX_TX_FireSparks_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_FireSparks_01.png
+spark/shard/spark_shard_002.png,glow/glow_035.png,FX_TX_SimpleSpark.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_SimpleSpark.png
+spark/star/spark_star_001.png,glow/glow_001.png,5.png,rpg,RPG_VFX\Duong\Texture\Spark\5.png
+spark/star/spark_star_002.png,glow/glow_002.png,blink.png,rpg,RPG_VFX\Texture\blink.png
+spark/star/spark_star_003.png,glow/glow_013.png,Flare01.png,rpg,_Game\Resources_moved\Textures\Flare01.png
+spark/star/spark_star_004.png,glow/glow_014.png,Flare10.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Flare10.png
+spark/star/spark_star_005.png,glow/glow_016.png,Flare6.png,rpg,_Game\Resources_moved\Textures\Flare6.png
+spark/star/spark_star_006.png,glow/glow_024.png,fx_star.png,rpg,2D_Art\Vfx\Textures\fx_star.png
+spark/star/spark_star_007.png,glow/glow_025.png,fx_star_yellow.png,rpg,2D_Art\Vfx\Textures\fx_star_yellow.png
+spark/star/spark_star_008.png,glow/glow_037.png,FX_TX_Star_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_Star_01.png
+spark/star/spark_star_009.png,glow/glow_049.png,hit2.png,rpg,_Game\Resources_moved\Textures\hit2.png
+spark/star/spark_star_010.png,glow/glow_062.png,star.png,rpg,2D_Art\Vfx\star.png
+spark/star/spark_star_011.png,glow/glow_063.png,star3.png,rpg,2D_Art\Vfx\Textures\star3.png
+spark/star/spark_star_012.png,glow/glow_065.png,star_04.png,rpg,RPG_VFX\Duong\Texture\Spark\star_04.png
+spark/star/spark_star_013.png,glow/glow_074.png,T_HealCircle_Sparkle.png,prj,VFX\HealCircle\Textures\T_HealCircle_Sparkle.png
+spark/star/spark_star_014.psd,glow/glow_079.psd,T_VFX_Plus_Sign.psd,rpg,RPG_VFX\Duong\Texture\Spark\T_VFX_Plus_Sign.psd
+spark/star/spark_star_015.tga,glow/glow_082.tga,Tex_fx_HCFX_Twinkle_01.tga,rpg,2D_Art\Vfx\Bless\Textures\Tex_fx_HCFX_Twinkle_01.tga
+spark/star/spark_star_016.png,glow/glow_089.png,TX_VFX_Spark02.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark02.png
+spark/star/spark_star_017.png,glow/glow_091.png,TX_VFX_Spark05.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark05.png
+spark/star/spark_star_018.png,glow/glow_093.png,TX_VFX_Spark07.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark07.png
+spark/star/spark_star_019.png,glow/glow_100.png,X_LIGHT 1.png,rpg,RPG_VFX\Texture\X_LIGHT 1.png
+spark/star/spark_star_020.png,impact/impact_014.png,Flash.png,rpg,_Game\Resources_moved\Textures\Flash.png
+spark/streak/spark_streak_001.png,glow/glow_072.png,T_GroundBlast_Spark.png,prj,VFX\GroundBlast\Textures\T_GroundBlast_Spark.png
+spark/streak/spark_streak_002.png,glow/glow_075.png,T_Spark_Comet.png,prj,VFX\Explosion\Textures\T_Spark_Comet.png
+spark/streak/spark_streak_003.png,glow/glow_077.png,T_SPK_Streak.png,prj,VFX\_Components\Sparks\Textures\T_SPK_Streak.png
+spark/streak/spark_streak_004.png,glow/glow_078.png,T_SPK_Toon.png,prj,VFX\_Components\Sparks\Textures\T_SPK_Toon.png
+spark/streak/spark_streak_005.tga,glow/glow_081.tga,Tex_fx_HCFX_Glow_Long_01.tga,rpg,2D_Art\Vfx\Bless\Textures\Tex_fx_HCFX_Glow_Long_01.tga
+spark/streak/spark_streak_006.png,glow/glow_098.png,TX_VFX_Spark12.png,rpg,RPG_VFX\Duong\Texture\Spark\TX_VFX_Spark12.png
+trail/band/trail_band_001.png,trail/trail_011.png,IceBulletTrails.png,rpg,_Game\Resources_moved\Textures\IceBulletTrails.png
+trail/ribbon/trail_ribbon_001.png,smoke/smoke_057.png,TX_VFX_Smoke07.png,rpg,RPG_VFX\Duong\Texture\Smoke\TX_VFX_Smoke07.png
+trail/ribbon/trail_ribbon_002.png,trail/trail_009.png,FX_TX_SilkTrail_01.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_SilkTrail_01.png
+trail/ribbon/trail_ribbon_003.png,trail/trail_021.png,T_VFX_Dark_Trail.png,rpg,RPG_VFX\Duong\Texture\Trails\T_VFX_Dark_Trail.png
+trail/ribbon/trail_ribbon_004.png,trail/trail_026.png,Trail3 (2).png,rpg,_Game\Resources_moved\Textures\Trail3 (2).png
+trail/ribbon/trail_ribbon_005.png,trail/trail_030.png,Trails_1_16_v3.png,rpg,_Game\Resources_moved\Textures\Trails_1_16_v3.png
+trail/ribbon/trail_ribbon_006.png,trail/trail_031.png,Trails_output.png,rpg,_Game\Resources_moved\Textures\Trails_output.png
+trail/ribbon/trail_ribbon_007.png,trail/trail_033.png,TX_VFX_Trails01.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails01.png
+trail/ribbon/trail_ribbon_008.png,trail/trail_036.png,TX_VFX_Trails04.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails04.png
+trail/ribbon/trail_ribbon_009.png,trail/trail_037.png,TX_VFX_Trails05.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails05.png
+trail/ribbon/trail_ribbon_010.png,trail/trail_038.png,TX_VFX_Trails06.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails06.png
+trail/ribbon/trail_ribbon_011.png,trail/trail_039.png,TX_VFX_Trails07.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails08.png
+trail/ribbon/trail_ribbon_012.png,trail/trail_041.png,TX_VFX_Trails10.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails10.png
+trail/ribbon/trail_ribbon_013.png,trail/trail_042.png,TX_VFX_Trails11.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails11.png
+trail/ribbon/trail_ribbon_014.png,trail/trail_043.png,TX_VFX_Trails12.png,rpg,RPG_VFX\Duong\Texture\Trails\TX_VFX_Trails12.png
+trail/ribbon/trail_ribbon_015.png,wave/wave_070.png,Wind01.png,rpg,_Game\Resources_moved\Textures\Wind01.png
+trail/streak/trail_streak_001.png,trail/trail_003.png,cfxr stretch ray blur.png,rpg,RPG_VFX\VFX_Base\ant\slash\cfxr stretch ray blur.png
+trail/streak/trail_streak_002.png,trail/trail_010.png,FX_TX_TrailHead_Glow.png,rpg,RPG_VFX\Duong\Texture\Shared\FX_TX_TrailHead_Glow.png
+trail/streak/trail_streak_003.png,trail/trail_012.png,Javelin_thrust (4).png,rpg,RPG_VFX\Texture\Javelin_thrust (4).png
+trail/streak/trail_streak_004.png,trail/trail_013.png,Javelin_thrust (5).png,rpg,RPG_VFX\Texture\Javelin_thrust (5).png
+trail/streak/trail_streak_005.png,trail/trail_014.png,magic_line 1.png,rpg,_Game\Resources_moved\Textures\magic_line 1.png
+trail/streak/trail_streak_006.png,trail/trail_015.png,magic_line.png,rpg,_Game\Resources_moved\Textures\magic_line.png
+trail/streak/trail_streak_007.png,trail/trail_016.png,punch 1.png,rpg,_Game\Resources_moved\Textures\punch 1.png
+trail/streak/trail_streak_008.png,trail/trail_019.png,StaticTrail.png,rpg,_Game\Resources_moved\Textures\StaticTrail.png
+trail/streak/trail_streak_009.png,trail/trail_020.png,T_HealCircle_Beam.png,prj,VFX\HealCircle\Textures\T_HealCircle_Beam.png
+trail/streak/trail_streak_010.png,trail/trail_024.png,Trail21.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Trail21.png
+trail/streak/trail_streak_011.png,trail/trail_025.png,Trail25.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Trail25.png
+trail/streak/trail_streak_012.png,trail/trail_027.png,Trail39.png,rpg,RPG_VFX\Pack_Base\Hovl Studio\AAA Projectiles Vol 1\Textures\Trail39.png
+water/bubble/water_bubble_001.png,water/water_001.png,Bubble_half.png,rpg,_Game\Resources_moved\Textures\Bubble_half.png
+water/bubble/water_bubble_002.png,water/water_003.png,BubbleRainbow01.png,prj,VFX\_Shared\Textures\RpgLib\Gradient\BubbleRainbow01.png
+water/bubble/water_bubble_003.png,water/water_004.png,BubbleWhite01.png,prj,VFX\_Shared\Textures\RpgLib\Gradient\BubbleWhite01.png
+water/bubble/water_bubble_004.png,water/water_006.png,cfxr bubble 2.png,rpg,RPG_VFX\Texture\cfxr bubble 2.png
+water/splash/water_splash_001.png,water/water_002.png,BubblePop.png,rpg,RPG_VFX\Duong\Texture\Flipbooks\BubblePop.png
+water/splash/water_splash_002.png,water/water_010.png,Poison_Splash.png,rpg,RPG_VFX\Duong\Texture\Water\Poison_Splash.png
+water/splash/water_splash_003.png,water/water_011.png,Poison_Splash_01.png,rpg,RPG_VFX\Duong\Texture\Water\Poison_Splash_01.png
+water/splash/water_splash_004.png,water/water_012.png,Splash.png,rpg,RPG_VFX\Duong\Texture\Flipbooks\Splash.png
+water/splash/water_splash_005.png,water/water_013.png,T_Splash.png,rpg,RPG_VFX\Texture\T_Splash.png
+water/splash/water_splash_006.png,water/water_014.png,T_VFX_Splash.png,rpg,RPG_VFX\Duong\Texture\Shared\T_VFX_Splash.png
+water/splash/water_splash_007.png,water/water_019.png,TX_VFX_Liquid01.png,rpg,RPG_VFX\Duong\Texture\Misc\TX_VFX_Liquid01.png
+water/splash/water_splash_008.png,water/water_021.png,Tx_Water_02.png,rpg,RPG_VFX\Texture\Tx_Water_02.png
+water/splash/water_splash_009.png,water/water_022.png,Tx_Water_05.png,rpg,RPG_VFX\Texture\Tx_Water_05.png
+water/splash/water_splash_010.jpg,water/water_023.jpg,Water_Splash.jpg,rpg,RPG_VFX\Duong\Texture\Water\Water_Splash.jpg
+water/streak/water_streak_001.psd,water/water_015.psd,T_VFX_Water_Circle_Line.psd,rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Water_Circle_Line.psd
+water/streak/water_streak_002.psd,water/water_016.psd,T_VFX_Water_Circle_Thick_Line.psd,rpg,RPG_VFX\Duong\Texture\Wave\T_VFX_Water_Circle_Thick_Line.psd
+water/tile/water_tile_001.jpg,water/water_005.jpg,Caustic.jpg,prj,VFX\_Shared\Textures\RpgLib\Noise\Caustic.jpg
+water/tile/water_tile_002.png,water/water_007.png,Foam 5.png,rpg,_Game\Resources_moved\Textures\Foam 5.png
+water/tile/water_tile_003.psd,water/water_008.psd,FX_TX_CausticNoise_01.psd,prj,VFX\_Shared\Textures\RpgLib\Noise\FX_TX_CausticNoise_01.psd
+water/tile/water_tile_004.png,water/water_009.png,Normals 1.png,prj,shader_water\Normals 1.png
+water/tile/water_tile_005.png,water/water_017.png,t_vfx_waterfallTexture_DF.png,rpg,_Game\Resources_moved\Textures\t_vfx_waterfallTexture_DF.png
+water/tile/water_tile_006.png,water/water_018.png,t_vfx_waterTexture_DF.png,prj,shader_water\t_vfx_waterTexture_DF.png
+water/tile/water_tile_007.png,water/water_020.png,TX_VFX_Noise15.png,prj,VFX\_Shared\Textures\RpgLib\Noise\TX_VFX_Noise15.png
+impact/flipbook/impact_flipbook_020.png,,AImpact_1.png,art lead 2026-11-10,Impact_Ground.psd (AImpact_1)
+impact/flipbook/impact_flipbook_021.png,,AImpact_2.png,art lead 2026-11-10,Impact_Ground.psd (AImpact_2)
+impact/flipbook/impact_flipbook_022.png,,AImpact_4.png,art lead 2026-11-10,Impact_Ground.psd (AImpact_4)
+impact/flash_spiky/impact_flash_spiky_013.png,,AImpact_5.png,art lead 2026-11-10,Impact_Ground.psd (AImpact_5)
+impact/flash_spiky/impact_flash_spiky_014.png,,GImpact_1.png,art lead 2026-11-10,Impact_Ground.psd (GImpact_1)
+glow/flare/glow_flare_010.png,,GImpact_4.png,art lead 2026-11-10,Impact_Ground.psd (GImpact_4)
+lightning/bolt_sheet/lightning_bolt_sheet_009.png,,Thunder__0004_Thunder_1.png,user,C:\Users\Manh\Downloads\New folder\Thunder__0004_Thunder_1.png
+lightning/bolt_sheet/lightning_bolt_sheet_010.png,,Thunder__0003_Thunder_2.png,user,C:\Users\Manh\Downloads\New folder\Thunder__0003_Thunder_2.png
+lightning/bolt_sheet/lightning_bolt_sheet_011.png,,Thunder__0002_Thunder_3.png,user,C:\Users\Manh\Downloads\New folder\Thunder__0002_Thunder_3.png
+lightning/bolt_sheet/lightning_bolt_sheet_012.png,,Thunder__0001_Thunder_4.png,user,C:\Users\Manh\Downloads\New folder\Thunder__0001_Thunder_4.png
+lightning/bolt_sheet/lightning_bolt_sheet_013.png,,Thunder__0000_Thunder_5.png,user,C:\Users\Manh\Downloads\New folder\Thunder__0000_Thunder_5.png
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_020.png,,Anim.psd#layer2,user,Downloads\Texture\Anim.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_021.png,,Slash_Tex.psd#layer5,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_022.png,,Slash_Tex.psd#layer7,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_023.png,,Slash_Tex.psd#layer9,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_024.png,,Slash_Tex.psd#layer13,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_025.png,,Slash_Tex.psd#layer16,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_026.png,,Slash_Tex.psd#layer20,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_027.png,,Slash_Tex.psd#layer23,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_028.png,,Slash_Tex.psd#layer32,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_029.png,,Slash_Tex.psd#layer33,user,Downloads\Texture\Slash_Tex.psd
+Slash/Main_tex(Uvmesh)/Slash_Main_tex_Uvmesh_030.png,,Slash_Tex.psd#layer34,user,Downloads\Texture\Slash_Tex.psd
+impact/flipbook/impact_flipbook_023.png,,Gun.psd#layer2-5,user,Downloads\Texture\Gun.psd
+impact/radial_ring/impact_radial_ring_007.png,,Shockwave.psd#layer2,user,Downloads\Texture\Shockwave.psd
+impact/radial_ring/impact_radial_ring_008.png,,Shockwave.psd#layer6,user,Downloads\Texture\Shockwave.psd
+impact/radial_ring/impact_radial_ring_009.png,,Shockwave.psd#layer7,user,Downloads\Texture\Shockwave.psd
+impact/radial_ring/impact_radial_ring_010.png,,Shockwave.psd#layer19,user,Downloads\Texture\Shockwave.psd
+impact/radial_ring/impact_radial_ring_011.png,,Shockwave.psd#layer23,user,Downloads\Texture\Shockwave.psd
+mask/gradient/mask_gradient_010.png,,Slash_Tex.psd#layer22,user,Downloads\Texture\Slash_Tex.psd
+mask/gradient/mask_gradient_011.png,,Slash_Tex.psd#layer36,user,Downloads\Texture\Slash_Tex.psd
+ring/Uv_mesh/ring_Uv_mesh_021.png,,Shockwave_512x1024.psd#layer2,user,Downloads\Texture\Shockwave_512x1024.psd
+ring/Uv_mesh/ring_Uv_mesh_022.png,,Shockwave_512x1024.psd#layer4,user,Downloads\Texture\Shockwave_512x1024.psd
+ring/Uv_mesh/ring_Uv_mesh_023.png,,Shockwave_512x1024.psd#layer5,user,Downloads\Texture\Shockwave_512x1024.psd
+ring/ragged/ring_ragged_011.png,,Shockwave.psd#layer8,user,Downloads\Texture\Shockwave.psd
+ring/ragged/ring_ragged_012.png,,Shockwave.psd#layer10,user,Downloads\Texture\Shockwave.psd
+ring/ragged/ring_ragged_013.png,,Shockwave.psd#layer20,user,Downloads\Texture\Shockwave.psd
+ring/ragged/ring_ragged_014.png,,Shockwave.psd#layer22,user,Downloads\Texture\Shockwave.psd
+shield/crack/shield_crack_001.png,,Shield.psd#layer4,user,Downloads\Texture\Shield.psd
+shield/crack/shield_crack_002.png,,Shield.psd#layer6,user,Downloads\Texture\Shield.psd
+shield/crack/shield_crack_003.png,,Shield.psd#layer8,user,Downloads\Texture\Shield.psd
+shield/crack/shield_crack_004.png,,Shield.psd#layer10,user,Downloads\Texture\Shield.psd
+shield/fill/shield_fill_001.png,,Shield.psd#layer2,user,Downloads\Texture\Shield.psd
+shield/fill/shield_fill_002.png,,Shield.psd#layer12,user,Downloads\Texture\Shield.psd
+smoke/cartoon/smoke_cartoon_008.png,,Untitled-1.psd#layer2,user,Downloads\Texture\Untitled-1.psd
+spark/shard/spark_shard_003.png,,Trail.psd#layer18,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_016.png,,Trail.psd#layer3,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_017.png,,Trail.psd#layer4,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_018.png,,Trail.psd#layer5,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_019.png,,Trail.psd#layer6,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_020.png,,Trail.psd#layer8,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_021.png,,Trail.psd#layer9,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_022.png,,Trail.psd#layer17,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_023.png,,Trail.psd#layer21,user,Downloads\Texture\Trail.psd
+trail/ribbon/trail_ribbon_024.png,,Trail.psd#layer22,user,Downloads\Texture\Trail.psd
+trail/streak/trail_streak_013.png,,Trail.psd#layer10,user,Downloads\Texture\Trail.psd

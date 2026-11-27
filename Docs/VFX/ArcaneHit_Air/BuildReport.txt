@@ -1,0 +1,19 @@
+Mix: ArcaneHit_Air   Recipe: Docs/VFX/_Recipes/ArcaneHit_Air.json   Unity: 2022.3.62f3
+Built: 2026-11-03 08:19:09
+Preview times (s): 0.01, 0.148, 0.296, 0.443, 0.591, 0.739, 0.887, 1.034
+Palette: Core #FBEFFF · Mid #C77DFF · Outer #6A1BB0 · Dust #B9AFC6
+
+Items:
+  00_IMP_Hit_Air_01                  delay 0  dur 0.23 (gốc 0.23, speed ×1)  size 0.8  int 1  rot 0  off (0.00, 1.10, 0.00)
+  01_SPK_Air_01                      delay 0.02  dur 1.062 (gốc 1.25, speed ×1.18)  size 0.8  int 1  rot 0  off (0.00, 1.10, 0.00)
+  02_GLW_Air_01                      delay 0  dur 0.34 (gốc 0.4, speed ×1.18)  size 0.8  int 1  rot 0  off (0.00, 1.10, 0.00)
+
+Layers:
+  00_IMP_Hit_Air_01/Star  max=4  life=0.18  mode=Billboard  mat=M_IMP_HitStar_Add (Mobile/Particles/Additive)
+  00_IMP_Hit_Air_01/Core  max=1  life=0.08  mode=Billboard  mat=M_IMP_CoreStar4_Add (Mobile/Particles/Additive)
+  01_SPK_Air_01/Streaks  max=26  life=0.6  mode=Stretch  mat=M_SPK_Streak_Add (Mobile/Particles/Additive)
+  01_SPK_Air_01/Ember  max=8  life=1.2  mode=Billboard  mat=M_SPK_Ember_Add (Mobile/Particles/Additive)
+  02_GLW_Air_01/Outer  max=1  life=0.35  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+  02_GLW_Air_01/Inner  max=1  life=0.2  mode=Billboard  mat=M_GLW_Soft_Add (Mobile/Particles/Additive)
+
+Errors: none

@@ -1,0 +1,6539 @@
+[
+ {
+  "id": "arcane/arcane-beam",
+  "name": "Arcane beam",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-arcane-beam_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   264,
+   100
+  ],
+  "pivot": [
+   26,
+   84
+  ]
+ },
+ {
+  "id": "arcane/arcane-missiles",
+  "name": "Arcane missiles",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-arcane-missiles_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 54,
+  "picked": [
+   0,
+   4,
+   7,
+   11,
+   14,
+   18,
+   21,
+   25,
+   28,
+   32,
+   35,
+   39,
+   42,
+   46,
+   49,
+   53
+  ],
+  "frameSize": [
+   240,
+   116
+  ],
+  "pivot": [
+   26,
+   88
+  ]
+ },
+ {
+  "id": "arcane/arcane-orb",
+  "name": "Arcane orb",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-arcane-orb_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   136,
+   112
+  ],
+  "pivot": [
+   68,
+   104
+  ]
+ },
+ {
+  "id": "arcane/blink-in",
+  "name": "Blink in",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-blink-in_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 43,
+  "picked": [
+   0,
+   3,
+   6,
+   8,
+   11,
+   14,
+   17,
+   20,
+   22,
+   25,
+   28,
+   31,
+   34,
+   36,
+   39,
+   42
+  ],
+  "frameSize": [
+   136,
+   96
+  ],
+  "pivot": [
+   68,
+   80
+  ]
+ },
+ {
+  "id": "arcane/blink-out",
+  "name": "Blink out",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-blink-out_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 49,
+  "picked": [
+   0,
+   3,
+   6,
+   10,
+   13,
+   16,
+   19,
+   22,
+   26,
+   29,
+   32,
+   35,
+   38,
+   42,
+   45,
+   48
+  ],
+  "frameSize": [
+   136,
+   96
+  ],
+  "pivot": [
+   68,
+   80
+  ]
+ },
+ {
+  "id": "arcane/magic-circle-cast",
+  "name": "Magic circle cast",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-magic-circle-cast_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 118,
+  "picked": [
+   0,
+   8,
+   16,
+   23,
+   31,
+   39,
+   47,
+   55,
+   62,
+   70,
+   78,
+   86,
+   94,
+   101,
+   109,
+   117
+  ],
+  "frameSize": [
+   200,
+   220
+  ],
+  "pivot": [
+   100,
+   192
+  ]
+ },
+ {
+  "id": "arcane/mana-burst",
+  "name": "Mana burst",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-mana-burst_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 55,
+  "picked": [
+   0,
+   4,
+   7,
+   11,
+   14,
+   18,
+   22,
+   25,
+   29,
+   32,
+   36,
+   40,
+   43,
+   47,
+   50,
+   54
+  ],
+  "frameSize": [
+   208,
+   150
+  ],
+  "pivot": [
+   104,
+   124
+  ]
+ },
+ {
+  "id": "arcane/portal",
+  "name": "Portal",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-portal_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   152,
+   116
+  ],
+  "pivot": [
+   76,
+   106
+  ]
+ },
+ {
+  "id": "arcane/rune-circle",
+  "name": "Rune circle",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-rune-circle_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   136,
+   100
+  ],
+  "pivot": [
+   68,
+   80
+  ]
+ },
+ {
+  "id": "arcane/spell-charge",
+  "name": "Spell charge",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-spell-charge_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 48,
+  "picked": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42,
+   45
+  ],
+  "frameSize": [
+   120,
+   86
+  ],
+  "pivot": [
+   44,
+   80
+  ]
+ },
+ {
+  "id": "arcane/star-fall",
+  "name": "Star fall",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-star-fall_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 76,
+  "picked": [
+   0,
+   5,
+   10,
+   15,
+   20,
+   25,
+   30,
+   35,
+   40,
+   45,
+   50,
+   55,
+   60,
+   65,
+   70,
+   75
+  ],
+  "frameSize": [
+   232,
+   172
+  ],
+  "pivot": [
+   124,
+   150
+  ]
+ },
+ {
+  "id": "arcane/time-stop",
+  "name": "Time stop",
+  "category": "arcane",
+  "file": "sheets/arcane/arcane-time-stop_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 109,
+  "picked": [
+   0,
+   7,
+   14,
+   22,
+   29,
+   36,
+   43,
+   50,
+   58,
+   65,
+   72,
+   79,
+   86,
+   94,
+   101,
+   108
+  ],
+  "frameSize": [
+   196,
+   136
+  ],
+  "pivot": [
+   98,
+   118
+  ]
+ },
+ {
+  "id": "explosions/barrel-explosion",
+  "name": "Barrel explosion",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-barrel-explosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 157,
+  "picked": [
+   0,
+   10,
+   21,
+   31,
+   42,
+   52,
+   62,
+   73,
+   83,
+   94,
+   104,
+   114,
+   125,
+   135,
+   146,
+   156
+  ],
+  "frameSize": [
+   300,
+   240
+  ],
+  "pivot": [
+   150,
+   204
+  ]
+ },
+ {
+  "id": "explosions/big-explosion",
+  "name": "Big explosion",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-big-explosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 217,
+  "picked": [
+   0,
+   14,
+   29,
+   43,
+   58,
+   72,
+   86,
+   101,
+   115,
+   130,
+   144,
+   158,
+   173,
+   187,
+   202,
+   216
+  ],
+  "frameSize": [
+   360,
+   300
+  ],
+  "pivot": [
+   180,
+   262
+  ]
+ },
+ {
+  "id": "explosions/cartoon-pow",
+  "name": "Cartoon POW",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-cartoon-pow_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 33,
+  "picked": [
+   0,
+   2,
+   4,
+   6,
+   9,
+   11,
+   13,
+   15,
+   17,
+   19,
+   21,
+   23,
+   26,
+   28,
+   30,
+   32
+  ],
+  "frameSize": [
+   184,
+   144
+  ],
+  "pivot": [
+   92,
+   72
+  ]
+ },
+ {
+  "id": "explosions/dirt-explosion",
+  "name": "Dirt explosion",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-dirt-explosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 109,
+  "picked": [
+   0,
+   7,
+   14,
+   22,
+   29,
+   36,
+   43,
+   50,
+   58,
+   65,
+   72,
+   79,
+   86,
+   94,
+   101,
+   108
+  ],
+  "frameSize": [
+   260,
+   240
+  ],
+  "pivot": [
+   130,
+   206
+  ]
+ },
+ {
+  "id": "explosions/firework-burst",
+  "name": "Firework burst",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-firework-burst_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 109,
+  "picked": [
+   0,
+   7,
+   14,
+   22,
+   29,
+   36,
+   43,
+   50,
+   58,
+   65,
+   72,
+   79,
+   86,
+   94,
+   101,
+   108
+  ],
+  "frameSize": [
+   240,
+   248
+  ],
+  "pivot": [
+   120,
+   100
+  ]
+ },
+ {
+  "id": "explosions/firework-rocket",
+  "name": "Firework rocket",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-firework-rocket_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 115,
+  "picked": [
+   0,
+   8,
+   15,
+   23,
+   30,
+   38,
+   46,
+   53,
+   61,
+   68,
+   76,
+   84,
+   91,
+   99,
+   106,
+   114
+  ],
+  "frameSize": [
+   300,
+   300
+  ],
+  "pivot": [
+   150,
+   288
+  ]
+ },
+ {
+  "id": "explosions/grenade",
+  "name": "Grenade",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-grenade_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 127,
+  "picked": [
+   0,
+   8,
+   17,
+   25,
+   34,
+   42,
+   50,
+   59,
+   67,
+   76,
+   84,
+   92,
+   101,
+   109,
+   118,
+   126
+  ],
+  "frameSize": [
+   300,
+   200
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "explosions/implosion",
+  "name": "Implosion",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-implosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 51,
+  "picked": [
+   0,
+   3,
+   7,
+   10,
+   13,
+   17,
+   20,
+   23,
+   27,
+   30,
+   33,
+   37,
+   40,
+   43,
+   47,
+   50
+  ],
+  "frameSize": [
+   208,
+   184
+  ],
+  "pivot": [
+   104,
+   92
+  ]
+ },
+ {
+  "id": "explosions/nuke",
+  "name": "Nuke",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-nuke_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 271,
+  "picked": [
+   0,
+   18,
+   36,
+   54,
+   72,
+   90,
+   108,
+   126,
+   144,
+   162,
+   180,
+   198,
+   216,
+   234,
+   252,
+   270
+  ],
+  "frameSize": [
+   400,
+   320
+  ],
+  "pivot": [
+   200,
+   284
+  ]
+ },
+ {
+  "id": "explosions/plasma-explosion",
+  "name": "Plasma explosion",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-plasma-explosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 52,
+  "picked": [
+   0,
+   3,
+   7,
+   10,
+   14,
+   17,
+   20,
+   24,
+   27,
+   31,
+   34,
+   37,
+   41,
+   44,
+   48,
+   51
+  ],
+  "frameSize": [
+   224,
+   200
+  ],
+  "pivot": [
+   112,
+   100
+  ]
+ },
+ {
+  "id": "explosions/small-explosion",
+  "name": "Explosion",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-small-explosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 163,
+  "picked": [
+   0,
+   11,
+   22,
+   32,
+   43,
+   54,
+   65,
+   76,
+   86,
+   97,
+   108,
+   119,
+   130,
+   140,
+   151,
+   162
+  ],
+  "frameSize": [
+   300,
+   240
+  ],
+  "pivot": [
+   150,
+   196
+  ]
+ },
+ {
+  "id": "explosions/smoke-bomb",
+  "name": "Smoke bomb",
+  "category": "explosions",
+  "file": "sheets/explosions/explosions-smoke-bomb_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 151,
+  "picked": [
+   0,
+   10,
+   20,
+   30,
+   40,
+   50,
+   60,
+   70,
+   80,
+   90,
+   100,
+   110,
+   120,
+   130,
+   140,
+   150
+  ],
+  "frameSize": [
+   260,
+   176
+  ],
+  "pivot": [
+   130,
+   156
+  ]
+ },
+ {
+  "id": "fire/brazier",
+  "name": "Brazier",
+  "category": "fire",
+  "file": "sheets/fire/fire-brazier_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   112,
+   148
+  ],
+  "pivot": [
+   56,
+   136
+  ]
+ },
+ {
+  "id": "fire/campfire",
+  "name": "Campfire",
+  "category": "fire",
+  "file": "sheets/fire/fire-campfire_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   128,
+   128
+  ],
+  "pivot": [
+   64,
+   112
+  ]
+ },
+ {
+  "id": "fire/candle",
+  "name": "Candle",
+  "category": "fire",
+  "file": "sheets/fire/fire-candle_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   56,
+   76
+  ],
+  "pivot": [
+   28,
+   64
+  ]
+ },
+ {
+  "id": "fire/fire-breath",
+  "name": "Fire breath",
+  "category": "fire",
+  "file": "sheets/fire/fire-fire-breath_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 45,
+  "picked": [
+   0,
+   3,
+   6,
+   8,
+   11,
+   14,
+   17,
+   20,
+   22,
+   25,
+   28,
+   31,
+   34,
+   37,
+   39,
+   42
+  ],
+  "frameSize": [
+   160,
+   116
+  ],
+  "pivot": [
+   12,
+   72
+  ]
+ },
+ {
+  "id": "fire/fire-ring",
+  "name": "Fire ring",
+  "category": "fire",
+  "file": "sheets/fire/fire-fire-ring_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 118,
+  "picked": [
+   0,
+   8,
+   16,
+   23,
+   31,
+   39,
+   47,
+   55,
+   62,
+   70,
+   78,
+   86,
+   94,
+   101,
+   109,
+   117
+  ],
+  "frameSize": [
+   224,
+   128
+  ],
+  "pivot": [
+   112,
+   92
+  ]
+ },
+ {
+  "id": "fire/fire-tornado",
+  "name": "Fire tornado",
+  "category": "fire",
+  "file": "sheets/fire/fire-fire-tornado_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   120,
+   152
+  ],
+  "pivot": [
+   60,
+   136
+  ]
+ },
+ {
+  "id": "fire/fireball",
+  "name": "Fireball",
+  "category": "fire",
+  "file": "sheets/fire/fire-fireball_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   136,
+   56
+  ],
+  "pivot": [
+   112,
+   28
+  ]
+ },
+ {
+  "id": "fire/flame-pillar",
+  "name": "Flame pillar",
+  "category": "fire",
+  "file": "sheets/fire/fire-flame-pillar_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 151,
+  "picked": [
+   0,
+   10,
+   20,
+   30,
+   40,
+   50,
+   60,
+   70,
+   80,
+   90,
+   100,
+   110,
+   120,
+   130,
+   140,
+   150
+  ],
+  "frameSize": [
+   184,
+   256
+  ],
+  "pivot": [
+   92,
+   232
+  ]
+ },
+ {
+  "id": "fire/flamethrower",
+  "name": "Flamethrower",
+  "category": "fire",
+  "file": "sheets/fire/fire-flamethrower_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 48,
+  "picked": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42,
+   45
+  ],
+  "frameSize": [
+   184,
+   104
+  ],
+  "pivot": [
+   30,
+   60
+  ]
+ },
+ {
+  "id": "fire/meteor",
+  "name": "Meteor",
+  "category": "fire",
+  "file": "sheets/fire/fire-meteor_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 151,
+  "picked": [
+   0,
+   10,
+   20,
+   30,
+   40,
+   50,
+   60,
+   70,
+   80,
+   90,
+   100,
+   110,
+   120,
+   130,
+   140,
+   150
+  ],
+  "frameSize": [
+   272,
+   232
+  ],
+  "pivot": [
+   150,
+   208
+  ]
+ },
+ {
+  "id": "fire/spirit-flame",
+  "name": "Spirit flame",
+  "category": "fire",
+  "file": "sheets/fire/fire-spirit-flame_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   80,
+   124
+  ],
+  "pivot": [
+   40,
+   94
+  ]
+ },
+ {
+  "id": "fire/torch",
+  "name": "Torch",
+  "category": "fire",
+  "file": "sheets/fire/fire-torch_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   72,
+   120
+  ],
+  "pivot": [
+   36,
+   94
+  ]
+ },
+ {
+  "id": "holy/blessing",
+  "name": "Blessing",
+  "category": "holy",
+  "file": "sheets/holy/holy-blessing_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   80,
+   128
+  ],
+  "pivot": [
+   40,
+   108
+  ]
+ },
+ {
+  "id": "holy/divine-shield",
+  "name": "Divine shield",
+  "category": "holy",
+  "file": "sheets/holy/holy-divine-shield_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   88,
+   84
+  ],
+  "pivot": [
+   44,
+   68
+  ]
+ },
+ {
+  "id": "holy/feather-burst",
+  "name": "Feather burst",
+  "category": "holy",
+  "file": "sheets/holy/holy-feather-burst_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 91,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   160,
+   160
+  ],
+  "pivot": [
+   80,
+   60
+  ]
+ },
+ {
+  "id": "holy/halo",
+  "name": "Halo",
+  "category": "holy",
+  "file": "sheets/holy/holy-halo_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   56,
+   80
+  ],
+  "pivot": [
+   28,
+   70
+  ]
+ },
+ {
+  "id": "holy/heal-aoe",
+  "name": "Healing ring",
+  "category": "holy",
+  "file": "sheets/holy/holy-heal-aoe_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 88,
+  "picked": [
+   0,
+   6,
+   12,
+   17,
+   23,
+   29,
+   35,
+   41,
+   46,
+   52,
+   58,
+   64,
+   70,
+   75,
+   81,
+   87
+  ],
+  "frameSize": [
+   256,
+   136
+  ],
+  "pivot": [
+   128,
+   104
+  ]
+ },
+ {
+  "id": "holy/heal",
+  "name": "Heal",
+  "category": "holy",
+  "file": "sheets/holy/holy-heal_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 58,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   23,
+   27,
+   30,
+   34,
+   38,
+   42,
+   46,
+   49,
+   53,
+   57
+  ],
+  "frameSize": [
+   80,
+   104
+  ],
+  "pivot": [
+   40,
+   92
+  ]
+ },
+ {
+  "id": "holy/holy-pillar",
+  "name": "Holy pillar",
+  "category": "holy",
+  "file": "sheets/holy/holy-holy-pillar_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 106,
+  "picked": [
+   0,
+   7,
+   14,
+   21,
+   28,
+   35,
+   42,
+   49,
+   56,
+   63,
+   70,
+   77,
+   84,
+   91,
+   98,
+   105
+  ],
+  "frameSize": [
+   192,
+   232
+  ],
+  "pivot": [
+   96,
+   204
+  ]
+ },
+ {
+  "id": "holy/resurrection",
+  "name": "Resurrection",
+  "category": "holy",
+  "file": "sheets/holy/holy-resurrection_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 145,
+  "picked": [
+   0,
+   10,
+   19,
+   29,
+   38,
+   48,
+   58,
+   67,
+   77,
+   86,
+   96,
+   106,
+   115,
+   125,
+   134,
+   144
+  ],
+  "frameSize": [
+   192,
+   160
+  ],
+  "pivot": [
+   96,
+   140
+  ]
+ },
+ {
+  "id": "holy/smite",
+  "name": "Smite",
+  "category": "holy",
+  "file": "sheets/holy/holy-smite_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 85,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   50,
+   56,
+   62,
+   67,
+   73,
+   78,
+   84
+  ],
+  "frameSize": [
+   224,
+   176
+  ],
+  "pivot": [
+   112,
+   148
+  ]
+ },
+ {
+  "id": "holy/sunburst",
+  "name": "Sunburst",
+  "category": "holy",
+  "file": "sheets/holy/holy-sunburst_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   128,
+   128
+  ],
+  "pivot": [
+   64,
+   64
+  ]
+ },
+ {
+  "id": "ice/blizzard-vortex",
+  "name": "Blizzard vortex",
+  "category": "ice",
+  "file": "sheets/ice/ice-blizzard-vortex_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   128,
+   116
+  ],
+  "pivot": [
+   64,
+   102
+  ]
+ },
+ {
+  "id": "ice/freeze",
+  "name": "Freeze",
+  "category": "ice",
+  "file": "sheets/ice/ice-freeze_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 121,
+  "picked": [
+   0,
+   8,
+   16,
+   24,
+   32,
+   40,
+   48,
+   56,
+   64,
+   72,
+   80,
+   88,
+   96,
+   104,
+   112,
+   120
+  ],
+  "frameSize": [
+   176,
+   128
+  ],
+  "pivot": [
+   88,
+   108
+  ]
+ },
+ {
+  "id": "ice/frost-breath",
+  "name": "Frost breath",
+  "category": "ice",
+  "file": "sheets/ice/ice-frost-breath_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   184,
+   104
+  ],
+  "pivot": [
+   12,
+   50
+  ]
+ },
+ {
+  "id": "ice/frost-nova",
+  "name": "Frost nova",
+  "category": "ice",
+  "file": "sheets/ice/ice-frost-nova_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 103,
+  "picked": [
+   0,
+   7,
+   14,
+   20,
+   27,
+   34,
+   41,
+   48,
+   54,
+   61,
+   68,
+   75,
+   82,
+   88,
+   95,
+   102
+  ],
+  "frameSize": [
+   288,
+   192
+  ],
+  "pivot": [
+   144,
+   150
+  ]
+ },
+ {
+  "id": "ice/ice-crystal",
+  "name": "Ice crystal",
+  "category": "ice",
+  "file": "sheets/ice/ice-ice-crystal_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   96,
+   100
+  ],
+  "pivot": [
+   48,
+   92
+  ]
+ },
+ {
+  "id": "ice/ice-lance",
+  "name": "Ice lance",
+  "category": "ice",
+  "file": "sheets/ice/ice-ice-lance_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 24,
+  "picked": [
+   0,
+   2,
+   3,
+   4,
+   6,
+   8,
+   9,
+   10,
+   12,
+   14,
+   15,
+   16,
+   18,
+   20,
+   21,
+   22
+  ],
+  "frameSize": [
+   176,
+   64
+  ],
+  "pivot": [
+   146,
+   32
+  ]
+ },
+ {
+  "id": "ice/ice-shatter",
+  "name": "Ice shatter",
+  "category": "ice",
+  "file": "sheets/ice/ice-ice-shatter_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 85,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   50,
+   56,
+   62,
+   67,
+   73,
+   78,
+   84
+  ],
+  "frameSize": [
+   224,
+   112
+  ],
+  "pivot": [
+   68,
+   90
+  ]
+ },
+ {
+  "id": "ice/ice-spikes",
+  "name": "Ice spikes",
+  "category": "ice",
+  "file": "sheets/ice/ice-ice-spikes_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 91,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   264,
+   112
+  ],
+  "pivot": [
+   24,
+   96
+  ]
+ },
+ {
+  "id": "ice/icicle-fall",
+  "name": "Icicle fall",
+  "category": "ice",
+  "file": "sheets/ice/ice-icicle-fall_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 79,
+  "picked": [
+   0,
+   5,
+   10,
+   16,
+   21,
+   26,
+   31,
+   36,
+   42,
+   47,
+   52,
+   57,
+   62,
+   68,
+   73,
+   78
+  ],
+  "frameSize": [
+   152,
+   120
+  ],
+  "pivot": [
+   76,
+   100
+  ]
+ },
+ {
+  "id": "ice/snowflake-burst",
+  "name": "Snowflake burst",
+  "category": "ice",
+  "file": "sheets/ice/ice-snowflake-burst_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   140,
+   120
+  ],
+  "pivot": [
+   70,
+   106
+  ]
+ },
+ {
+  "id": "impacts/blunt-hit",
+  "name": "Blunt hit",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-blunt-hit_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 28,
+  "picked": [
+   0,
+   2,
+   4,
+   5,
+   7,
+   9,
+   11,
+   13,
+   14,
+   16,
+   18,
+   20,
+   22,
+   23,
+   25,
+   27
+  ],
+  "frameSize": [
+   128,
+   88
+  ],
+  "pivot": [
+   64,
+   72
+  ]
+ },
+ {
+  "id": "impacts/bullet-impact",
+  "name": "Bullet impact",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-bullet-impact_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 43,
+  "picked": [
+   0,
+   3,
+   6,
+   8,
+   11,
+   14,
+   17,
+   20,
+   22,
+   25,
+   28,
+   31,
+   34,
+   36,
+   39,
+   42
+  ],
+  "frameSize": [
+   152,
+   100
+  ],
+  "pivot": [
+   116,
+   84
+  ]
+ },
+ {
+  "id": "impacts/crit-hit",
+  "name": "Critical hit",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-crit-hit_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 28,
+  "picked": [
+   0,
+   2,
+   4,
+   5,
+   7,
+   9,
+   11,
+   13,
+   14,
+   16,
+   18,
+   20,
+   22,
+   23,
+   25,
+   27
+  ],
+  "frameSize": [
+   216,
+   136
+  ],
+  "pivot": [
+   84,
+   106
+  ]
+ },
+ {
+  "id": "impacts/ground-slam",
+  "name": "Ground slam",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-ground-slam_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   288,
+   208
+  ],
+  "pivot": [
+   144,
+   164
+  ]
+ },
+ {
+  "id": "impacts/heavy-landing",
+  "name": "Heavy landing",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-heavy-landing_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 49,
+  "picked": [
+   0,
+   3,
+   6,
+   10,
+   13,
+   16,
+   19,
+   22,
+   26,
+   29,
+   32,
+   35,
+   38,
+   42,
+   45,
+   48
+  ],
+  "frameSize": [
+   176,
+   80
+  ],
+  "pivot": [
+   88,
+   60
+  ]
+ },
+ {
+  "id": "impacts/hit-flash",
+  "name": "Hit flash",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-hit-flash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 16,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "frameSize": [
+   80,
+   64
+  ],
+  "pivot": [
+   40,
+   54
+  ]
+ },
+ {
+  "id": "impacts/hit-spark",
+  "name": "Hit spark",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-hit-spark_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 16,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "frameSize": [
+   136,
+   80
+  ],
+  "pivot": [
+   44,
+   64
+  ]
+ },
+ {
+  "id": "impacts/impact-frame",
+  "name": "Impact frame",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-impact-frame_4x3.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 10,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   90
+  ]
+ },
+ {
+  "id": "impacts/parry",
+  "name": "Parry",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-parry_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 31,
+  "picked": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14,
+   16,
+   18,
+   20,
+   22,
+   24,
+   26,
+   28,
+   30
+  ],
+  "frameSize": [
+   200,
+   112
+  ],
+  "pivot": [
+   100,
+   96
+  ]
+ },
+ {
+  "id": "impacts/ricochet",
+  "name": "Ricochet",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-ricochet_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 34,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   13,
+   15,
+   18,
+   20,
+   22,
+   24,
+   26,
+   29,
+   31,
+   33
+  ],
+  "frameSize": [
+   232,
+   84
+  ],
+  "pivot": [
+   64,
+   60
+  ]
+ },
+ {
+  "id": "impacts/shield-block",
+  "name": "Shield block",
+  "category": "impacts",
+  "file": "sheets/impacts/impacts-shield-block_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 34,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   13,
+   15,
+   18,
+   20,
+   22,
+   24,
+   26,
+   29,
+   31,
+   33
+  ],
+  "frameSize": [
+   148,
+   104
+  ],
+  "pivot": [
+   40,
+   88
+  ]
+ },
+ {
+  "id": "lightning/ball-lightning",
+  "name": "Ball lightning",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-ball-lightning_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   136,
+   104
+  ],
+  "pivot": [
+   68,
+   92
+  ]
+ },
+ {
+  "id": "lightning/chain-lightning",
+  "name": "Chain lightning",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-chain-lightning_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 55,
+  "picked": [
+   0,
+   4,
+   7,
+   11,
+   14,
+   18,
+   22,
+   25,
+   29,
+   32,
+   36,
+   40,
+   43,
+   47,
+   50,
+   54
+  ],
+  "frameSize": [
+   248,
+   104
+  ],
+  "pivot": [
+   40,
+   82
+  ]
+ },
+ {
+  "id": "lightning/charge-up",
+  "name": "Charge up",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-charge-up_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 82,
+  "picked": [
+   0,
+   5,
+   11,
+   16,
+   22,
+   27,
+   32,
+   38,
+   43,
+   49,
+   54,
+   59,
+   65,
+   70,
+   76,
+   81
+  ],
+  "frameSize": [
+   272,
+   184
+  ],
+  "pivot": [
+   124,
+   148
+  ]
+ },
+ {
+  "id": "lightning/electrified",
+  "name": "Electrified",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-electrified_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   108,
+   92
+  ],
+  "pivot": [
+   54,
+   76
+  ]
+ },
+ {
+  "id": "lightning/lightning-strike",
+  "name": "Lightning strike",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-lightning-strike_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 91,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   240,
+   264
+  ],
+  "pivot": [
+   120,
+   228
+  ]
+ },
+ {
+  "id": "lightning/plasma-ball",
+  "name": "Plasma ball",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-plasma-ball_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   112,
+   104
+  ],
+  "pivot": [
+   56,
+   96
+  ]
+ },
+ {
+  "id": "lightning/spark-arc",
+  "name": "Spark arc",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-spark-arc_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   124,
+   120
+  ],
+  "pivot": [
+   62,
+   108
+  ]
+ },
+ {
+  "id": "lightning/storm-cloud",
+  "name": "Storm cloud",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-storm-cloud_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   168,
+   176
+  ],
+  "pivot": [
+   84,
+   164
+  ]
+ },
+ {
+  "id": "lightning/tesla-coil",
+  "name": "Tesla coil",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-tesla-coil_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   224,
+   136
+  ],
+  "pivot": [
+   112,
+   120
+  ]
+ },
+ {
+  "id": "lightning/thunderclap",
+  "name": "Thunderclap",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-thunderclap_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 58,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   23,
+   27,
+   30,
+   34,
+   38,
+   42,
+   46,
+   49,
+   53,
+   57
+  ],
+  "frameSize": [
+   288,
+   156
+  ],
+  "pivot": [
+   144,
+   124
+  ]
+ },
+ {
+  "id": "lightning/zap-hit",
+  "name": "Zap hit",
+  "category": "lightning",
+  "file": "sheets/lightning/lightning-zap-hit_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 28,
+  "picked": [
+   0,
+   2,
+   4,
+   5,
+   7,
+   9,
+   11,
+   13,
+   14,
+   16,
+   18,
+   20,
+   22,
+   23,
+   25,
+   27
+  ],
+  "frameSize": [
+   144,
+   112
+  ],
+  "pivot": [
+   76,
+   56
+  ]
+ },
+ {
+  "id": "melee/claw-swipe",
+  "name": "Claw swipe",
+  "category": "melee",
+  "file": "sheets/melee/melee-claw-swipe_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 28,
+  "picked": [
+   0,
+   2,
+   4,
+   5,
+   7,
+   9,
+   11,
+   13,
+   14,
+   16,
+   18,
+   20,
+   22,
+   23,
+   25,
+   27
+  ],
+  "frameSize": [
+   128,
+   96
+  ],
+  "pivot": [
+   36,
+   84
+  ]
+ },
+ {
+  "id": "melee/dagger-flurry",
+  "name": "Dagger flurry",
+  "category": "melee",
+  "file": "sheets/melee/melee-dagger-flurry_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 30,
+  "picked": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14,
+   15,
+   17,
+   19,
+   21,
+   23,
+   25,
+   27,
+   29
+  ],
+  "frameSize": [
+   148,
+   104
+  ],
+  "pivot": [
+   36,
+   86
+  ]
+ },
+ {
+  "id": "melee/double-slash",
+  "name": "Double slash",
+  "category": "melee",
+  "file": "sheets/melee/melee-double-slash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 25,
+  "picked": [
+   0,
+   2,
+   3,
+   5,
+   6,
+   8,
+   10,
+   11,
+   13,
+   14,
+   16,
+   18,
+   19,
+   21,
+   22,
+   24
+  ],
+  "frameSize": [
+   164,
+   108
+  ],
+  "pivot": [
+   44,
+   92
+  ]
+ },
+ {
+  "id": "melee/hammer-smash",
+  "name": "Hammer smash",
+  "category": "melee",
+  "file": "sheets/melee/melee-hammer-smash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 61,
+  "picked": [
+   0,
+   4,
+   8,
+   12,
+   16,
+   20,
+   24,
+   28,
+   32,
+   36,
+   40,
+   44,
+   48,
+   52,
+   56,
+   60
+  ],
+  "frameSize": [
+   208,
+   112
+  ],
+  "pivot": [
+   80,
+   92
+  ]
+ },
+ {
+  "id": "melee/heavy-cleave",
+  "name": "Heavy cleave",
+  "category": "melee",
+  "file": "sheets/melee/melee-heavy-cleave_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 58,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   23,
+   27,
+   30,
+   34,
+   38,
+   42,
+   46,
+   49,
+   53,
+   57
+  ],
+  "frameSize": [
+   208,
+   116
+  ],
+  "pivot": [
+   68,
+   96
+  ]
+ },
+ {
+  "id": "melee/scythe-reap",
+  "name": "Scythe reap",
+  "category": "melee",
+  "file": "sheets/melee/melee-scythe-reap_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 64,
+  "picked": [
+   0,
+   4,
+   8,
+   13,
+   17,
+   21,
+   25,
+   29,
+   34,
+   38,
+   42,
+   46,
+   50,
+   55,
+   59,
+   63
+  ],
+  "frameSize": [
+   184,
+   116
+  ],
+  "pivot": [
+   84,
+   98
+  ]
+ },
+ {
+  "id": "melee/spear-sweep",
+  "name": "Spear sweep",
+  "category": "melee",
+  "file": "sheets/melee/melee-spear-sweep_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 46,
+  "picked": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42,
+   45
+  ],
+  "frameSize": [
+   216,
+   84
+  ],
+  "pivot": [
+   104,
+   70
+  ]
+ },
+ {
+  "id": "melee/spin-slash",
+  "name": "Spin slash",
+  "category": "melee",
+  "file": "sheets/melee/melee-spin-slash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 25,
+  "picked": [
+   0,
+   2,
+   3,
+   5,
+   6,
+   8,
+   10,
+   11,
+   13,
+   14,
+   16,
+   18,
+   19,
+   21,
+   22,
+   24
+  ],
+  "frameSize": [
+   208,
+   104
+  ],
+  "pivot": [
+   104,
+   84
+  ]
+ },
+ {
+  "id": "melee/sword-slash",
+  "name": "Sword slash",
+  "category": "melee",
+  "file": "sheets/melee/melee-sword-slash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 24,
+  "picked": [
+   0,
+   2,
+   3,
+   5,
+   6,
+   8,
+   9,
+   11,
+   12,
+   14,
+   15,
+   17,
+   18,
+   20,
+   21,
+   23
+  ],
+  "frameSize": [
+   136,
+   104
+  ],
+  "pivot": [
+   44,
+   92
+  ]
+ },
+ {
+  "id": "melee/thrust",
+  "name": "Thrust",
+  "category": "melee",
+  "file": "sheets/melee/melee-thrust_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 24,
+  "picked": [
+   0,
+   2,
+   3,
+   5,
+   6,
+   8,
+   9,
+   11,
+   12,
+   14,
+   15,
+   17,
+   18,
+   20,
+   21,
+   23
+  ],
+  "frameSize": [
+   196,
+   76
+  ],
+  "pivot": [
+   34,
+   62
+  ]
+ },
+ {
+  "id": "melee/uppercut",
+  "name": "Uppercut",
+  "category": "melee",
+  "file": "sheets/melee/melee-uppercut_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 27,
+  "picked": [
+   0,
+   2,
+   3,
+   5,
+   7,
+   9,
+   10,
+   12,
+   14,
+   16,
+   17,
+   19,
+   21,
+   23,
+   24,
+   26
+  ],
+  "frameSize": [
+   132,
+   128
+  ],
+  "pivot": [
+   48,
+   110
+  ]
+ },
+ {
+  "id": "melee/whip-crack",
+  "name": "Whip crack",
+  "category": "melee",
+  "file": "sheets/melee/melee-whip-crack_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 27,
+  "picked": [
+   0,
+   2,
+   3,
+   5,
+   7,
+   9,
+   10,
+   12,
+   14,
+   16,
+   17,
+   19,
+   21,
+   23,
+   24,
+   26
+  ],
+  "frameSize": [
+   192,
+   80
+  ],
+  "pivot": [
+   30,
+   68
+  ]
+ },
+ {
+  "id": "nature/acid-splash",
+  "name": "Acid splash",
+  "category": "nature",
+  "file": "sheets/nature/nature-acid-splash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 85,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   50,
+   56,
+   62,
+   67,
+   73,
+   78,
+   84
+  ],
+  "frameSize": [
+   184,
+   116
+  ],
+  "pivot": [
+   92,
+   100
+  ]
+ },
+ {
+  "id": "nature/boulder",
+  "name": "Boulder",
+  "category": "nature",
+  "file": "sheets/nature/nature-boulder_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 70,
+  "picked": [
+   0,
+   5,
+   9,
+   14,
+   18,
+   23,
+   28,
+   32,
+   37,
+   41,
+   46,
+   51,
+   55,
+   60,
+   64,
+   69
+  ],
+  "frameSize": [
+   264,
+   120
+  ],
+  "pivot": [
+   40,
+   104
+  ]
+ },
+ {
+  "id": "nature/earth-spike",
+  "name": "Earth spike",
+  "category": "nature",
+  "file": "sheets/nature/nature-earth-spike_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 103,
+  "picked": [
+   0,
+   7,
+   14,
+   20,
+   27,
+   34,
+   41,
+   48,
+   54,
+   61,
+   68,
+   75,
+   82,
+   88,
+   95,
+   102
+  ],
+  "frameSize": [
+   272,
+   150
+  ],
+  "pivot": [
+   136,
+   132
+  ]
+ },
+ {
+  "id": "nature/healing-bloom",
+  "name": "Healing bloom",
+  "category": "nature",
+  "file": "sheets/nature/nature-healing-bloom_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 100,
+  "picked": [
+   0,
+   7,
+   13,
+   20,
+   26,
+   33,
+   40,
+   46,
+   53,
+   59,
+   66,
+   73,
+   79,
+   86,
+   92,
+   99
+  ],
+  "frameSize": [
+   124,
+   120
+  ],
+  "pivot": [
+   62,
+   108
+  ]
+ },
+ {
+  "id": "nature/leaf-storm",
+  "name": "Leaf storm",
+  "category": "nature",
+  "file": "sheets/nature/nature-leaf-storm_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   112,
+   104
+  ],
+  "pivot": [
+   56,
+   92
+  ]
+ },
+ {
+  "id": "nature/poison-cloud",
+  "name": "Poison cloud",
+  "category": "nature",
+  "file": "sheets/nature/nature-poison-cloud_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   256,
+   100
+  ],
+  "pivot": [
+   128,
+   86
+  ]
+ },
+ {
+  "id": "nature/quake",
+  "name": "Quake",
+  "category": "nature",
+  "file": "sheets/nature/nature-quake_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 94,
+  "picked": [
+   0,
+   6,
+   12,
+   19,
+   25,
+   31,
+   37,
+   43,
+   50,
+   56,
+   62,
+   68,
+   74,
+   81,
+   87,
+   93
+  ],
+  "frameSize": [
+   288,
+   104
+  ],
+  "pivot": [
+   144,
+   88
+  ]
+ },
+ {
+  "id": "nature/root-snare",
+  "name": "Root snare",
+  "category": "nature",
+  "file": "sheets/nature/nature-root-snare_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 82,
+  "picked": [
+   0,
+   5,
+   11,
+   16,
+   22,
+   27,
+   32,
+   38,
+   43,
+   49,
+   54,
+   59,
+   65,
+   70,
+   76,
+   81
+  ],
+  "frameSize": [
+   128,
+   96
+  ],
+  "pivot": [
+   64,
+   78
+  ]
+ },
+ {
+  "id": "nature/spore-burst",
+  "name": "Spore burst",
+  "category": "nature",
+  "file": "sheets/nature/nature-spore-burst_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   212,
+   132
+  ],
+  "pivot": [
+   106,
+   118
+  ]
+ },
+ {
+  "id": "nature/thorns",
+  "name": "Thorns",
+  "category": "nature",
+  "file": "sheets/nature/nature-thorns_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 73,
+  "picked": [
+   0,
+   5,
+   10,
+   14,
+   19,
+   24,
+   29,
+   34,
+   38,
+   43,
+   48,
+   53,
+   58,
+   62,
+   67,
+   72
+  ],
+  "frameSize": [
+   232,
+   92
+  ],
+  "pivot": [
+   48,
+   78
+  ]
+ },
+ {
+  "id": "nature/tornado",
+  "name": "Tornado",
+  "category": "nature",
+  "file": "sheets/nature/nature-tornado_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   196,
+   168
+  ],
+  "pivot": [
+   98,
+   152
+  ]
+ },
+ {
+  "id": "nature/toxic-puddle",
+  "name": "Toxic puddle",
+  "category": "nature",
+  "file": "sheets/nature/nature-toxic-puddle_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   176,
+   100
+  ],
+  "pivot": [
+   88,
+   86
+  ]
+ },
+ {
+  "id": "nature/vine-whip",
+  "name": "Vine whip",
+  "category": "nature",
+  "file": "sheets/nature/nature-vine-whip_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 43,
+  "picked": [
+   0,
+   3,
+   6,
+   8,
+   11,
+   14,
+   17,
+   20,
+   22,
+   25,
+   28,
+   31,
+   34,
+   36,
+   39,
+   42
+  ],
+  "frameSize": [
+   216,
+   128
+  ],
+  "pivot": [
+   60,
+   114
+  ]
+ },
+ {
+  "id": "projectiles/arrow",
+  "name": "Arrow",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-arrow_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 18,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   14,
+   15,
+   16,
+   17
+  ],
+  "frameSize": [
+   112,
+   32
+  ],
+  "pivot": [
+   92,
+   16
+  ]
+ },
+ {
+  "id": "projectiles/bullet-tracer",
+  "name": "Bullet tracer",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-bullet-tracer_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 18,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   14,
+   15,
+   16,
+   17
+  ],
+  "frameSize": [
+   200,
+   40
+  ],
+  "pivot": [
+   184,
+   18
+  ]
+ },
+ {
+  "id": "projectiles/cannonball",
+  "name": "Cannon shot",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-cannonball_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 115,
+  "picked": [
+   0,
+   8,
+   15,
+   23,
+   30,
+   38,
+   46,
+   53,
+   61,
+   68,
+   76,
+   84,
+   91,
+   99,
+   106,
+   114
+  ],
+  "frameSize": [
+   208,
+   116
+  ],
+  "pivot": [
+   48,
+   102
+  ]
+ },
+ {
+  "id": "projectiles/energy-disc",
+  "name": "Energy disc",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-energy-disc_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 15,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14
+  ],
+  "frameSize": [
+   120,
+   52
+  ],
+  "pivot": [
+   92,
+   26
+  ]
+ },
+ {
+  "id": "projectiles/flare",
+  "name": "Signal flare",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-flare_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 151,
+  "picked": [
+   0,
+   10,
+   20,
+   30,
+   40,
+   50,
+   60,
+   70,
+   80,
+   90,
+   100,
+   110,
+   120,
+   130,
+   140,
+   150
+  ],
+  "frameSize": [
+   152,
+   232
+  ],
+  "pivot": [
+   76,
+   226
+  ]
+ },
+ {
+  "id": "projectiles/homing-missile",
+  "name": "Homing missile",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-homing-missile_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 115,
+  "picked": [
+   0,
+   8,
+   15,
+   23,
+   30,
+   38,
+   46,
+   53,
+   61,
+   68,
+   76,
+   84,
+   91,
+   99,
+   106,
+   114
+  ],
+  "frameSize": [
+   248,
+   140
+  ],
+  "pivot": [
+   160,
+   120
+  ]
+ },
+ {
+  "id": "projectiles/laser-bolt",
+  "name": "Laser bolt",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-laser-bolt_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 15,
+  "picked": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14
+  ],
+  "frameSize": [
+   128,
+   32
+  ],
+  "pivot": [
+   108,
+   16
+  ]
+ },
+ {
+  "id": "projectiles/magic-missile",
+  "name": "Magic missile",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-magic-missile_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 58,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   23,
+   27,
+   30,
+   34,
+   38,
+   42,
+   46,
+   49,
+   53,
+   57
+  ],
+  "frameSize": [
+   208,
+   112
+  ],
+  "pivot": [
+   24,
+   104
+  ]
+ },
+ {
+  "id": "projectiles/muzzle-pistol",
+  "name": "Pistol shot",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-muzzle-pistol_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 55,
+  "picked": [
+   0,
+   4,
+   7,
+   11,
+   14,
+   18,
+   22,
+   25,
+   29,
+   32,
+   36,
+   40,
+   43,
+   47,
+   50,
+   54
+  ],
+  "frameSize": [
+   96,
+   72
+  ],
+  "pivot": [
+   44,
+   66
+  ]
+ },
+ {
+  "id": "projectiles/muzzle-shotgun",
+  "name": "Shotgun blast",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-muzzle-shotgun_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   160,
+   88
+  ],
+  "pivot": [
+   44,
+   82
+  ]
+ },
+ {
+  "id": "projectiles/muzzle-smg",
+  "name": "SMG burst",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-muzzle-smg_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 30,
+  "picked": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   9,
+   11,
+   13,
+   15,
+   17,
+   19,
+   21,
+   22,
+   24,
+   26,
+   28
+  ],
+  "frameSize": [
+   112,
+   72
+  ],
+  "pivot": [
+   56,
+   66
+  ]
+ },
+ {
+  "id": "projectiles/plasma-shot",
+  "name": "Plasma shot",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-plasma-shot_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 24,
+  "picked": [
+   0,
+   2,
+   3,
+   4,
+   6,
+   8,
+   9,
+   10,
+   12,
+   14,
+   15,
+   16,
+   18,
+   20,
+   21,
+   22
+  ],
+  "frameSize": [
+   144,
+   60
+  ],
+  "pivot": [
+   108,
+   30
+  ]
+ },
+ {
+  "id": "projectiles/rocket",
+  "name": "Rocket",
+  "category": "projectiles",
+  "file": "sheets/projectiles/projectiles-rocket_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   288,
+   76
+  ],
+  "pivot": [
+   252,
+   42
+  ]
+ },
+ {
+  "id": "scifi/emp-blast",
+  "name": "EMP blast",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-emp-blast_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   152,
+   116
+  ],
+  "pivot": [
+   76,
+   84
+  ]
+ },
+ {
+  "id": "scifi/energy-core",
+  "name": "Energy core",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-energy-core_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   112,
+   100
+  ],
+  "pivot": [
+   56,
+   88
+  ]
+ },
+ {
+  "id": "scifi/force-field",
+  "name": "Force field",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-force-field_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   184,
+   104
+  ],
+  "pivot": [
+   76,
+   84
+  ]
+ },
+ {
+  "id": "scifi/glitch",
+  "name": "Glitch",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-glitch_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   88,
+   64
+  ],
+  "pivot": [
+   44,
+   54
+  ]
+ },
+ {
+  "id": "scifi/hologram",
+  "name": "Hologram",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-hologram_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   112,
+   104
+  ],
+  "pivot": [
+   56,
+   92
+  ]
+ },
+ {
+  "id": "scifi/jetpack",
+  "name": "Jetpack",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-jetpack_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   96,
+   116
+  ],
+  "pivot": [
+   48,
+   30
+  ]
+ },
+ {
+  "id": "scifi/laser-grid",
+  "name": "Laser grid",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-laser-grid_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   128,
+   84
+  ],
+  "pivot": [
+   64,
+   76
+  ]
+ },
+ {
+  "id": "scifi/scanner",
+  "name": "Scanner",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-scanner_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 96,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   112,
+   78
+  ],
+  "pivot": [
+   42,
+   58
+  ]
+ },
+ {
+  "id": "scifi/teleporter-pad",
+  "name": "Teleporter pad",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-teleporter-pad_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   96,
+   104
+  ],
+  "pivot": [
+   48,
+   92
+  ]
+ },
+ {
+  "id": "scifi/tractor-beam",
+  "name": "Tractor beam",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-tractor-beam_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   120,
+   132
+  ],
+  "pivot": [
+   60,
+   114
+  ]
+ },
+ {
+  "id": "scifi/warp-in",
+  "name": "Warp in",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-warp-in_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 91,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   192,
+   168
+  ],
+  "pivot": [
+   96,
+   128
+  ]
+ },
+ {
+  "id": "scifi/warp-out",
+  "name": "Warp out",
+  "category": "scifi",
+  "file": "sheets/scifi/scifi-warp-out_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 79,
+  "picked": [
+   0,
+   5,
+   10,
+   16,
+   21,
+   26,
+   31,
+   36,
+   42,
+   47,
+   52,
+   57,
+   62,
+   68,
+   73,
+   78
+  ],
+  "frameSize": [
+   128,
+   168
+  ],
+  "pivot": [
+   64,
+   128
+  ]
+ },
+ {
+  "id": "shadow/black-hole",
+  "name": "Black hole",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-black-hole_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   184,
+   132
+  ],
+  "pivot": [
+   92,
+   124
+  ]
+ },
+ {
+  "id": "shadow/curse",
+  "name": "Curse",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-curse_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 103,
+  "picked": [
+   0,
+   7,
+   14,
+   20,
+   27,
+   34,
+   41,
+   48,
+   54,
+   61,
+   68,
+   75,
+   82,
+   88,
+   95,
+   102
+  ],
+  "frameSize": [
+   112,
+   124
+  ],
+  "pivot": [
+   56,
+   108
+  ]
+ },
+ {
+  "id": "shadow/dark-explosion",
+  "name": "Dark explosion",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-dark-explosion_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 115,
+  "picked": [
+   0,
+   8,
+   15,
+   23,
+   30,
+   38,
+   46,
+   53,
+   61,
+   68,
+   76,
+   84,
+   91,
+   99,
+   106,
+   114
+  ],
+  "frameSize": [
+   280,
+   248
+  ],
+  "pivot": [
+   140,
+   206
+  ]
+ },
+ {
+  "id": "shadow/eclipse",
+  "name": "Eclipse",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-eclipse_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   160,
+   144
+  ],
+  "pivot": [
+   80,
+   72
+  ]
+ },
+ {
+  "id": "shadow/grasping-hands",
+  "name": "Grasping hands",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-grasping-hands_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 94,
+  "picked": [
+   0,
+   6,
+   12,
+   19,
+   25,
+   31,
+   37,
+   43,
+   50,
+   56,
+   62,
+   68,
+   74,
+   81,
+   87,
+   93
+  ],
+  "frameSize": [
+   200,
+   116
+  ],
+  "pivot": [
+   100,
+   100
+  ]
+ },
+ {
+  "id": "shadow/hex-sigil",
+  "name": "Hex sigil",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-hex-sigil_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 127,
+  "picked": [
+   0,
+   8,
+   17,
+   25,
+   34,
+   42,
+   50,
+   59,
+   67,
+   76,
+   84,
+   92,
+   101,
+   109,
+   118,
+   126
+  ],
+  "frameSize": [
+   168,
+   128
+  ],
+  "pivot": [
+   84,
+   112
+  ]
+ },
+ {
+  "id": "shadow/life-steal",
+  "name": "Life steal",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-life-steal_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 67,
+  "picked": [
+   0,
+   4,
+   9,
+   13,
+   18,
+   22,
+   26,
+   31,
+   35,
+   40,
+   44,
+   48,
+   53,
+   57,
+   62,
+   66
+  ],
+  "frameSize": [
+   184,
+   100
+  ],
+  "pivot": [
+   36,
+   92
+  ]
+ },
+ {
+  "id": "shadow/necro-skulls",
+  "name": "Necro skulls",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-necro-skulls_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   136,
+   116
+  ],
+  "pivot": [
+   68,
+   108
+  ]
+ },
+ {
+  "id": "shadow/shadow-flames",
+  "name": "Shadow flames",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-shadow-flames_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   104,
+   112
+  ],
+  "pivot": [
+   52,
+   102
+  ]
+ },
+ {
+  "id": "shadow/shadow-tendrils",
+  "name": "Shadow tendrils",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-shadow-tendrils_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   208,
+   130
+  ],
+  "pivot": [
+   104,
+   106
+  ]
+ },
+ {
+  "id": "shadow/soul-drain",
+  "name": "Soul drain",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-soul-drain_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 96,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   208,
+   120
+  ],
+  "pivot": [
+   40,
+   110
+  ]
+ },
+ {
+  "id": "shadow/void-orb",
+  "name": "Void orb",
+  "category": "shadow",
+  "file": "sheets/shadow/shadow-void-orb_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 96,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   168,
+   160
+  ],
+  "pivot": [
+   84,
+   150
+  ]
+ },
+ {
+  "id": "spawn/coin-drop",
+  "name": "Coin drop",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-coin-drop_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 91,
+  "picked": [
+   0,
+   6,
+   12,
+   18,
+   24,
+   30,
+   36,
+   42,
+   48,
+   54,
+   60,
+   66,
+   72,
+   78,
+   84,
+   90
+  ],
+  "frameSize": [
+   160,
+   88
+  ],
+  "pivot": [
+   80,
+   78
+  ]
+ },
+ {
+  "id": "spawn/disintegrate",
+  "name": "Disintegrate",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-disintegrate_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 103,
+  "picked": [
+   0,
+   7,
+   14,
+   20,
+   27,
+   34,
+   41,
+   48,
+   54,
+   61,
+   68,
+   75,
+   82,
+   88,
+   95,
+   102
+  ],
+  "frameSize": [
+   176,
+   100
+  ],
+  "pivot": [
+   48,
+   86
+  ]
+ },
+ {
+  "id": "spawn/dissolve-burn",
+  "name": "Dissolve burn",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-dissolve-burn_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 109,
+  "picked": [
+   0,
+   7,
+   14,
+   22,
+   29,
+   36,
+   43,
+   50,
+   58,
+   65,
+   72,
+   79,
+   86,
+   94,
+   101,
+   108
+  ],
+  "frameSize": [
+   96,
+   112
+  ],
+  "pivot": [
+   48,
+   100
+  ]
+ },
+ {
+  "id": "spawn/egg-hatch",
+  "name": "Egg hatch",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-egg-hatch_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 94,
+  "picked": [
+   0,
+   6,
+   12,
+   19,
+   25,
+   31,
+   37,
+   43,
+   50,
+   56,
+   62,
+   68,
+   74,
+   81,
+   87,
+   93
+  ],
+  "frameSize": [
+   120,
+   96
+  ],
+  "pivot": [
+   60,
+   84
+  ]
+ },
+ {
+  "id": "spawn/poof",
+  "name": "Poof",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-poof_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 49,
+  "picked": [
+   0,
+   3,
+   6,
+   10,
+   13,
+   16,
+   19,
+   22,
+   26,
+   29,
+   32,
+   35,
+   38,
+   42,
+   45,
+   48
+  ],
+  "frameSize": [
+   112,
+   92
+  ],
+  "pivot": [
+   56,
+   80
+  ]
+ },
+ {
+  "id": "spawn/respawn-beam",
+  "name": "Respawn beam",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-respawn-beam_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 76,
+  "picked": [
+   0,
+   5,
+   10,
+   15,
+   20,
+   25,
+   30,
+   35,
+   40,
+   45,
+   50,
+   55,
+   60,
+   65,
+   70,
+   75
+  ],
+  "frameSize": [
+   128,
+   150
+  ],
+  "pivot": [
+   64,
+   136
+  ]
+ },
+ {
+  "id": "spawn/shatter-death",
+  "name": "Shatter death",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-shatter-death_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 100,
+  "picked": [
+   0,
+   7,
+   13,
+   20,
+   26,
+   33,
+   40,
+   46,
+   53,
+   59,
+   66,
+   73,
+   79,
+   86,
+   92,
+   99
+  ],
+  "frameSize": [
+   172,
+   96
+  ],
+  "pivot": [
+   84,
+   84
+  ]
+ },
+ {
+  "id": "spawn/soul-rise",
+  "name": "Soul rise",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-soul-rise_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   96,
+   140
+  ],
+  "pivot": [
+   48,
+   126
+  ]
+ },
+ {
+  "id": "spawn/spawn-portal",
+  "name": "Spawn portal",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-spawn-portal_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 115,
+  "picked": [
+   0,
+   8,
+   15,
+   23,
+   30,
+   38,
+   46,
+   53,
+   61,
+   68,
+   76,
+   84,
+   91,
+   99,
+   106,
+   114
+  ],
+  "frameSize": [
+   208,
+   150
+  ],
+  "pivot": [
+   104,
+   122
+  ]
+ },
+ {
+  "id": "spawn/summon-rise",
+  "name": "Summon rise",
+  "category": "spawn",
+  "file": "sheets/spawn/spawn-summon-rise_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 139,
+  "picked": [
+   0,
+   9,
+   18,
+   28,
+   37,
+   46,
+   55,
+   64,
+   74,
+   83,
+   92,
+   101,
+   110,
+   120,
+   129,
+   138
+  ],
+  "frameSize": [
+   176,
+   116
+  ],
+  "pivot": [
+   88,
+   94
+  ]
+ },
+ {
+  "id": "status/bleeding",
+  "name": "Bleeding",
+  "category": "status",
+  "file": "sheets/status/status-bleeding_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   60,
+   56
+  ],
+  "pivot": [
+   30,
+   46
+  ]
+ },
+ {
+  "id": "status/burning",
+  "name": "Burning",
+  "category": "status",
+  "file": "sheets/status/status-burning_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   72,
+   80
+  ],
+  "pivot": [
+   36,
+   70
+  ]
+ },
+ {
+  "id": "status/charmed",
+  "name": "Charmed",
+  "category": "status",
+  "file": "sheets/status/status-charmed_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   60,
+   76
+  ],
+  "pivot": [
+   30,
+   68
+  ]
+ },
+ {
+  "id": "status/confused",
+  "name": "Confused",
+  "category": "status",
+  "file": "sheets/status/status-confused_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   60,
+   78
+  ],
+  "pivot": [
+   30,
+   70
+  ]
+ },
+ {
+  "id": "status/cursed",
+  "name": "Cursed",
+  "category": "status",
+  "file": "sheets/status/status-cursed_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   64,
+   84
+  ],
+  "pivot": [
+   32,
+   76
+  ]
+ },
+ {
+  "id": "status/frozen",
+  "name": "Frozen",
+  "category": "status",
+  "file": "sheets/status/status-frozen_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   72,
+   64
+  ],
+  "pivot": [
+   36,
+   54
+  ]
+ },
+ {
+  "id": "status/haste",
+  "name": "Haste",
+  "category": "status",
+  "file": "sheets/status/status-haste_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   100,
+   56
+  ],
+  "pivot": [
+   64,
+   48
+  ]
+ },
+ {
+  "id": "status/petrified",
+  "name": "Petrified",
+  "category": "status",
+  "file": "sheets/status/status-petrified_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 115,
+  "picked": [
+   0,
+   8,
+   15,
+   23,
+   30,
+   38,
+   46,
+   53,
+   61,
+   68,
+   76,
+   84,
+   91,
+   99,
+   106,
+   114
+  ],
+  "frameSize": [
+   120,
+   74
+  ],
+  "pivot": [
+   60,
+   64
+  ]
+ },
+ {
+  "id": "status/poisoned",
+  "name": "Poisoned",
+  "category": "status",
+  "file": "sheets/status/status-poisoned_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 48,
+  "picked": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42,
+   45
+  ],
+  "frameSize": [
+   72,
+   64
+  ],
+  "pivot": [
+   36,
+   54
+  ]
+ },
+ {
+  "id": "status/rage",
+  "name": "Rage",
+  "category": "status",
+  "file": "sheets/status/status-rage_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 36,
+  "picked": [
+   0,
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34
+  ],
+  "frameSize": [
+   80,
+   80
+  ],
+  "pivot": [
+   40,
+   70
+  ]
+ },
+ {
+  "id": "status/sleep",
+  "name": "Sleep",
+  "category": "status",
+  "file": "sheets/status/status-sleep_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   60,
+   82
+  ],
+  "pivot": [
+   26,
+   74
+  ]
+ },
+ {
+  "id": "status/slowed",
+  "name": "Slowed",
+  "category": "status",
+  "file": "sheets/status/status-slowed_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   64,
+   76
+  ],
+  "pivot": [
+   32,
+   68
+  ]
+ },
+ {
+  "id": "status/stunned",
+  "name": "Stunned",
+  "category": "status",
+  "file": "sheets/status/status-stunned_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   60,
+   64
+  ],
+  "pivot": [
+   30,
+   56
+  ]
+ },
+ {
+  "id": "water/bubbles",
+  "name": "Bubbles",
+  "category": "water",
+  "file": "sheets/water/water-bubbles_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 120,
+  "picked": [
+   0,
+   8,
+   15,
+   22,
+   30,
+   38,
+   45,
+   52,
+   60,
+   68,
+   75,
+   82,
+   90,
+   98,
+   105,
+   112
+  ],
+  "frameSize": [
+   104,
+   112
+  ],
+  "pivot": [
+   52,
+   104
+  ]
+ },
+ {
+  "id": "water/drip",
+  "name": "Drip",
+  "category": "water",
+  "file": "sheets/water/water-drip_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 48,
+  "picked": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42,
+   45
+  ],
+  "frameSize": [
+   72,
+   88
+  ],
+  "pivot": [
+   36,
+   78
+  ]
+ },
+ {
+  "id": "water/fountain",
+  "name": "Fountain",
+  "category": "water",
+  "file": "sheets/water/water-fountain_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   120,
+   104
+  ],
+  "pivot": [
+   60,
+   96
+  ]
+ },
+ {
+  "id": "water/geyser",
+  "name": "Geyser",
+  "category": "water",
+  "file": "sheets/water/water-geyser_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 151,
+  "picked": [
+   0,
+   10,
+   20,
+   30,
+   40,
+   50,
+   60,
+   70,
+   80,
+   90,
+   100,
+   110,
+   120,
+   130,
+   140,
+   150
+  ],
+  "frameSize": [
+   184,
+   168
+  ],
+  "pivot": [
+   92,
+   146
+  ]
+ },
+ {
+  "id": "water/rain-splash",
+  "name": "Rain splash",
+  "category": "water",
+  "file": "sheets/water/water-rain-splash_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 72,
+  "picked": [
+   0,
+   4,
+   9,
+   14,
+   18,
+   22,
+   27,
+   32,
+   36,
+   40,
+   45,
+   50,
+   54,
+   58,
+   63,
+   68
+  ],
+  "frameSize": [
+   176,
+   80
+  ],
+  "pivot": [
+   88,
+   50
+  ]
+ },
+ {
+  "id": "water/ripples",
+  "name": "Ripples",
+  "category": "water",
+  "file": "sheets/water/water-ripples_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   136,
+   52
+  ],
+  "pivot": [
+   68,
+   30
+  ]
+ },
+ {
+  "id": "water/splash",
+  "name": "Splash",
+  "category": "water",
+  "file": "sheets/water/water-splash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 76,
+  "picked": [
+   0,
+   5,
+   10,
+   15,
+   20,
+   25,
+   30,
+   35,
+   40,
+   45,
+   50,
+   55,
+   60,
+   65,
+   70,
+   75
+  ],
+  "frameSize": [
+   176,
+   100
+  ],
+  "pivot": [
+   88,
+   78
+  ]
+ },
+ {
+  "id": "water/water-jet",
+  "name": "Water jet",
+  "category": "water",
+  "file": "sheets/water/water-water-jet_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 30,
+  "picked": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   9,
+   11,
+   13,
+   15,
+   17,
+   19,
+   21,
+   22,
+   24,
+   26,
+   28
+  ],
+  "frameSize": [
+   188,
+   80
+  ],
+  "pivot": [
+   14,
+   32
+  ]
+ },
+ {
+  "id": "water/water-orb",
+  "name": "Water orb",
+  "category": "water",
+  "file": "sheets/water/water-water-orb_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   100,
+   108
+  ],
+  "pivot": [
+   50,
+   100
+  ]
+ },
+ {
+  "id": "water/waterfall",
+  "name": "Waterfall",
+  "category": "water",
+  "file": "sheets/water/water-waterfall_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 60,
+  "picked": [
+   0,
+   4,
+   8,
+   11,
+   15,
+   19,
+   22,
+   26,
+   30,
+   34,
+   38,
+   41,
+   45,
+   49,
+   52,
+   56
+  ],
+  "frameSize": [
+   144,
+   136
+  ],
+  "pivot": [
+   72,
+   118
+  ]
+ },
+ {
+  "id": "water/wave-crash",
+  "name": "Wave crash",
+  "category": "water",
+  "file": "sheets/water/water-wave-crash_4x4.png",
+  "fps": 30,
+  "loop": false,
+  "framesOriginal": 97,
+  "picked": [
+   0,
+   6,
+   13,
+   19,
+   26,
+   32,
+   38,
+   45,
+   51,
+   58,
+   64,
+   70,
+   77,
+   83,
+   90,
+   96
+  ],
+  "frameSize": [
+   224,
+   104
+  ],
+  "pivot": [
+   112,
+   86
+  ]
+ },
+ {
+  "id": "water/whirlpool",
+  "name": "Whirlpool",
+  "category": "water",
+  "file": "sheets/water/water-whirlpool_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 90,
+  "picked": [
+   0,
+   6,
+   11,
+   17,
+   22,
+   28,
+   34,
+   39,
+   45,
+   51,
+   56,
+   62,
+   68,
+   73,
+   79,
+   84
+  ],
+  "frameSize": [
+   128,
+   84
+  ],
+  "pivot": [
+   64,
+   42
+  ]
+ },
+ {
+  "id": "weather/aurora",
+  "name": "Aurora",
+  "category": "weather",
+  "file": "sheets/weather/weather-aurora_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 360,
+  "picked": [
+   0,
+   22,
+   45,
+   68,
+   90,
+   112,
+   135,
+   158,
+   180,
+   202,
+   225,
+   248,
+   270,
+   292,
+   315,
+   338
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   180
+  ]
+ },
+ {
+  "id": "weather/blizzard",
+  "name": "Blizzard",
+  "category": "weather",
+  "file": "sheets/weather/weather-blizzard_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 240,
+  "picked": [
+   0,
+   15,
+   30,
+   45,
+   60,
+   75,
+   90,
+   105,
+   120,
+   135,
+   150,
+   165,
+   180,
+   195,
+   210,
+   225
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/cherry-blossoms",
+  "name": "Cherry blossoms",
+  "category": "weather",
+  "file": "sheets/weather/weather-cherry-blossoms_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 300,
+  "picked": [
+   0,
+   19,
+   38,
+   56,
+   75,
+   94,
+   112,
+   131,
+   150,
+   169,
+   188,
+   206,
+   225,
+   244,
+   262,
+   281
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/clouds",
+  "name": "Clouds",
+  "category": "weather",
+  "file": "sheets/weather/weather-clouds_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 360,
+  "picked": [
+   0,
+   22,
+   45,
+   68,
+   90,
+   112,
+   135,
+   158,
+   180,
+   202,
+   225,
+   248,
+   270,
+   292,
+   315,
+   338
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   180
+  ]
+ },
+ {
+  "id": "weather/falling-leaves",
+  "name": "Falling leaves",
+  "category": "weather",
+  "file": "sheets/weather/weather-falling-leaves_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 300,
+  "picked": [
+   0,
+   19,
+   38,
+   56,
+   75,
+   94,
+   112,
+   131,
+   150,
+   169,
+   188,
+   206,
+   225,
+   244,
+   262,
+   281
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/fireflies",
+  "name": "Fireflies",
+  "category": "weather",
+  "file": "sheets/weather/weather-fireflies_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 360,
+  "picked": [
+   0,
+   22,
+   45,
+   68,
+   90,
+   112,
+   135,
+   158,
+   180,
+   202,
+   225,
+   248,
+   270,
+   292,
+   315,
+   338
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/fog",
+  "name": "Fog",
+  "category": "weather",
+  "file": "sheets/weather/weather-fog_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 360,
+  "picked": [
+   0,
+   22,
+   45,
+   68,
+   90,
+   112,
+   135,
+   158,
+   180,
+   202,
+   225,
+   248,
+   270,
+   292,
+   315,
+   338
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/god-rays",
+  "name": "God rays",
+  "category": "weather",
+  "file": "sheets/weather/weather-god-rays_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 300,
+  "picked": [
+   0,
+   19,
+   38,
+   56,
+   75,
+   94,
+   112,
+   131,
+   150,
+   169,
+   188,
+   206,
+   225,
+   244,
+   262,
+   281
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/rain",
+  "name": "Rain",
+  "category": "weather",
+  "file": "sheets/weather/weather-rain_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 240,
+  "picked": [
+   0,
+   15,
+   30,
+   45,
+   60,
+   75,
+   90,
+   105,
+   120,
+   135,
+   150,
+   165,
+   180,
+   195,
+   210,
+   225
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/shooting-stars",
+  "name": "Shooting stars",
+  "category": "weather",
+  "file": "sheets/weather/weather-shooting-stars_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 300,
+  "picked": [
+   0,
+   19,
+   38,
+   56,
+   75,
+   94,
+   112,
+   131,
+   150,
+   169,
+   188,
+   206,
+   225,
+   244,
+   262,
+   281
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   180
+  ]
+ },
+ {
+  "id": "weather/snow",
+  "name": "Snow",
+  "category": "weather",
+  "file": "sheets/weather/weather-snow_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 360,
+  "picked": [
+   0,
+   22,
+   45,
+   68,
+   90,
+   112,
+   135,
+   158,
+   180,
+   202,
+   225,
+   248,
+   270,
+   292,
+   315,
+   338
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ },
+ {
+  "id": "weather/storm",
+  "name": "Storm",
+  "category": "weather",
+  "file": "sheets/weather/weather-storm_4x4.png",
+  "fps": 30,
+  "loop": true,
+  "framesOriginal": 300,
+  "picked": [
+   0,
+   19,
+   38,
+   56,
+   75,
+   94,
+   112,
+   131,
+   150,
+   169,
+   188,
+   206,
+   225,
+   244,
+   262,
+   281
+  ],
+  "frameSize": [
+   320,
+   180
+  ],
+  "pivot": [
+   160,
+   170
+  ]
+ }
+]

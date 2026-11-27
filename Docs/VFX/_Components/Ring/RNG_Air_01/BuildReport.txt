@@ -1,0 +1,10 @@
+Component: RNG_Air_01   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 08:17:52
+Preview times (s): 0.03, 0.06, 0.1, 0.14, 0.18, 0.23, 0.27, 0.32
+Views: Preview_sheet = game 3/4 (40 deg down), Preview_side = side. Grid 1 m, capsule 2 m, red dot = hit point.
+Preview_combo = game 3/4 together with: CMP_IMP_Hit_Air_01, CMP_GLW_Air_01
+
+Layers:
+  CMP_RNG_Air_01/Ring  max=2  life=0.3  mode=Billboard/View  mat=M_RNG_Shock_Add (Mobile/Particles/Additive)
+
+Errors: none

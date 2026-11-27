@@ -1,0 +1,9 @@
+Effect: LightningTrail   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-04 14:26:40
+Preview times (s): 0.4, 0.8, 1.2, 1.6, 2, 2.4, 2.7, 3
+
+Layers:
+  VFX_LightningTrail  max=1000  life=1.2  mode=Mesh  mat=M_LightningTrail_Bolt (Particles/Lightning_CustomBlend)
+Total maxParticles: 1000
+
+Errors: none

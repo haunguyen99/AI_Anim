@@ -13,6 +13,11 @@
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" -I \"$CLAUDE_PROJECT_DIR/tools/knowledge_sync.py\" hook 2>/dev/null || true",
             "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" -I \"$CLAUDE_PROJECT_DIR/tools/harness/env_hook.py\" 2>/dev/null || true",
+            "timeout": 10
           }
         ]
       }
@@ -29,6 +34,18 @@
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" -I \"$CLAUDE_PROJECT_DIR/tools/knowledge_sync.py\" hook 2>/dev/null || true",
             "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Skill|mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.venv/Scripts/python.exe\" -I \"$CLAUDE_PROJECT_DIR/tools/tool_usage.py\" hook 2>/dev/null || true",
+            "timeout": 5
           }
         ]
       }

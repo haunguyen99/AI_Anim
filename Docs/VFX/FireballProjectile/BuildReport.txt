@@ -1,0 +1,14 @@
+Effect: FireballProjectile   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-10-19 17:50:05
+Preview times (s): 0.2, 0.45, 0.7, 1, 1.3
+
+Layers:
+  VFX_FireballProjectile/Tongues  max=6  life=0.4  mode=Stretch  mat=M_FireballProjectile_Tongue_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_FireballProjectile/Flame_Outer  max=10  life=0.45  mode=Billboard  mat=M_FireballProjectile_Flame_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_FireballProjectile/Flame_Mid  max=10  life=0.42  mode=Billboard  mat=M_FireballProjectile_Flame_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_FireballProjectile/Flame_Inner  max=10  life=0.38  mode=Billboard  mat=M_FireballProjectile_Flame_Add (Mobile/Particles/Additive)
+  VFX_FireballProjectile/Core  max=2  life=0.5  mode=Billboard  mat=M_FireballProjectile_Core_Add (Mobile/Particles/Additive)
+  VFX_FireballProjectile/Embers  max=15  life=0.9  mode=Billboard  mat=M_FireballProjectile_Ember_Add (Mobile/Particles/Additive)
+Total maxParticles: 53
+
+Errors: none

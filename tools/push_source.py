@@ -26,7 +26,8 @@ os.chdir(ROOT)
 ALLOW = [
     "README.md", "MAP.md", "CLAUDE.md", "requirements.txt", ".gitignore", ".vscode/extensions.json",
     ".claude/settings.json", ".claude/output-styles/**",
-    ".claude/skills/**", ".claude/agents/**", ".claude/memory_store/**", "docs/**", "tools/**",
+    ".claude/usage/*.jsonl",   # số lần gọi công cụ mỗi máy (tools/tool_usage.py), người dùng 2026-11-21
+    ".claude/skills/**", ".claude/agents/**", ".claude/rules/**", "Docs/VFX/**", "contexte/**", ".claude/memory_store/**", "docs/**", "tools/**",
     "work/clips.json", "work/patch_localdb.py", "work/jobs/index.json", "work/jobs/*.md",
     "work/pose_lab/index.html", "work/pose_lab/*.py", "work/pose_lab/fbx/*.py", "work/pose_lab/fbx/*.js", "work/pose_lab/fbx/test.html",
     "work/review_page/index.html", "work/review_page/*.py",
@@ -36,7 +37,7 @@ ALLOW = [
 ]
 # Không bao giờ đẩy / không đụng tới (giữ bản trên GitHub)
 DENY = ["**/.env", "**/.env.ai", "**/.env.haunv", "tools/.profile", "**/__pycache__/**", "**/*.pyc", "**/.venv/**", "tools/spine_mcp/.venv/**", "**/node_modules/**", "work/*/pages/**",
-        "work/store/**", "work/pose_lab/models/**", "work/review_page/clips/**"]
+        "Docs/VFX/**/_archive/**", "work/store/**", "work/pose_lab/models/**", "work/review_page/clips/**"]
 KEEP_REMOTE = {".claude/launch.json", ".mcp.json"}
 # Nhánh spine-live đã bỏ (người dùng 2026-11-11): Spine Live đi chung main như mọi file khác.
 SPINE_LIVE = []

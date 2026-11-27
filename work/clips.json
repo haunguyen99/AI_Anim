@@ -59,6 +59,9 @@
   },
   "Nova": {
    "rig_url": ""
+  },
+  "Ship202": {
+   "rig_url": ""
   }
  },
  "clips": [
@@ -1353,6 +1356,48 @@
    "desc": "Pose bắn, sấy laser thì thân trên ngả về sau (dựa trên IdleGame)",
    "created": "2026-11-13",
    "updated": "2026-11-13"
+  },
+  {
+   "id": "ship202_idle",
+   "character": "Ship202",
+   "stage": "polish",
+   "note": "",
+   "review": {
+    "key": "ship202_idle",
+    "clip": "Ship202_Idle",
+    "title": "Ship202 Idle Review Lab",
+    "crumb": "Ship202 · anim",
+    "name": "Ship202_Idle",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "ship202_idle",
+    "clip": "Ship202_Idle",
+    "title": "Ship202 Idle Pose Lab",
+    "url": ""
+   }
+  },
+  {
+   "id": "ship202_move",
+   "character": "Ship202",
+   "stage": "blocking",
+   "note": "",
+   "review": {
+    "key": "ship202_move",
+    "clip": "Ship202_Move",
+    "title": "Ship202 Move Review Lab",
+    "crumb": "Ship202 · anim",
+    "name": "Ship202_Move",
+    "parts": null,
+    "url": ""
+   },
+   "pose": {
+    "key": "ship202_move",
+    "clip": "Ship202_Move",
+    "title": "Ship202 Move Pose Lab",
+    "url": ""
+   }
   }
  ],
  "projects": [
@@ -1485,6 +1530,19 @@
    },
    "char_notes": {},
    "created": "2026-11-13"
+  },
+  {
+   "id": "pirate_wars",
+   "name": "Pirate-wars",
+   "desc": "Unity /home/haunv/Documents/Project/pirate-wars · tàu bồng bềnh, buồm + cờ bay trong gió",
+   "characters": [
+    "Ship202"
+   ],
+   "labels": {
+    "Ship202": "Tàu ship_202_new"
+   },
+   "char_notes": {},
+   "created": "2026-11-20"
   }
  ]
 }

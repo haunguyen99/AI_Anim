@@ -9,6 +9,7 @@ metadata:
 ---
 
 - Intro deck "Quy trình diễn hoạt với AI": https://claude.ai/artifact/AJH1PgGbgyFCUEdHzoLj9K (made 2026-10-23, updated to the Pose Lab pipeline 2026-10-26; 32 slides incl. Walk analysis.md full text, physics slides; shared "anyone with link").
+- Short guide deck "Làm anim với Claude": https://claude.ai/artifact/JWw4v9fK4Jds6Fh8g55N9Q (2026-11-06, 8 slides: 3 việc, chọn đường A/B/C, 5 mốc, giao việc, góp ý ✎ + /check_fb, 5 lệnh, mẹo; private).
 - Report deck "Báo cáo áp dụng AI cho diễn hoạt": https://claude.ai/artifact/FTgdJwRrGya6BwkQTJXmns (2026-10-27, 10 slides: numbers, status table, speed, tools, pivots, issues, next; private until shared).
 - Source files lived in the session scratchpad, not the repo: to revise, `read` the artifact files first. Assets copy between decks with publish asset:true + from_url + asset_ids.
 - Webm for decks must be color_range tv, else it does not play.

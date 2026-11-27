@@ -1,0 +1,13 @@
+Effect: Slash360_Earth   Kit: 1.1.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-11-03 19:30:47
+Preview times (s): 0.04, 0.09, 0.14, 0.2, 0.28, 0.34
+
+Layers:
+  VFX_Slash360_Earth/Swing/L0_Trail  max=50  life=0.35  mode=Mesh  mat=M_Slash360_Earth_Trail (VFXLib/ColosoShaderAlpha_Optimized)
+  VFX_Slash360_Earth/Swing/L1_Body  max=50  life=0.35  mode=Mesh  mat=M_Slash360_Earth_Body (VFXLib/ColosoShaderAlphaCutOut_Optimized)
+  VFX_Slash360_Earth/Swing/L2_Edge  max=50  life=0.35  mode=Mesh  mat=M_Slash360_Earth_Edge (VFXLib/ColosoShaderAdditive_Optimized)
+  VFX_Slash360_Earth/Swing/L3_Debris  max=60  life=0.32  mode=Mesh  mat=M_Slash360_Earth_Debris (Mobile/Particles/Alpha Blended)
+  VFX_Slash360_Earth/Swing/L4_StartFlash  max=50  life=0.1  mode=Billboard  mat=M_Slash360_Earth_Flash (Mobile/Particles/Additive)
+Total maxParticles: 260
+
+Errors: none

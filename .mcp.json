@@ -7,6 +7,10 @@
     "frolvy": {
       "command": "C:\\Program Files\\Frolvy\\Frolvy-mcp.exe",
       "args": []
+    },
+    "harness": {
+      "command": ".venv/Scripts/python.exe",
+      "args": ["-I", "tools/harness/mcp_server.py"]
     }
   }
 }

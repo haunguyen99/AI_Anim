@@ -1,0 +1,24 @@
+{
+ "fps": 30,
+ "frames": 37,
+ "duration": 1.2,
+ "cell": [
+  176,
+  128
+ ],
+ "origin": [
+  88,
+  112
+ ],
+ "width_m": 4.4,
+ "res": 2.0,
+ "channels": [
+  "nx",
+  "ny",
+  "noise",
+  "alpha",
+  "ao",
+  "region"
+ ],
+ "mode": "meta"
+}

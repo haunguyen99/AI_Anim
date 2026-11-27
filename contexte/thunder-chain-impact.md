@@ -1,0 +1,3 @@
+# ThunderChainImpact — 2026-11-04
+
+User explicitly requested a different Thunder Impact and a demo scene showing lightning propagating to 2–3 objects, with no skills used. Implementation kept separate from previous ThunderImpact and LightningStrike. Selected bolt by contact sheet and full-size image (025), not by filename. Scene defaults to three targets, sequential links with receiver flashes. Previous palette/camera/three beats retained as implementation choices, not a newly approved design. Native prefabs have no runtime controllers; only scene demo controls endpoints/replay. Visual approval and mobile performance pending.

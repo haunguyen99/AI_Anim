@@ -1,0 +1,16 @@
+Effect: FireballLoop   Kit: 1.0.0   Unity: 2022.3.62f3   Pipeline: Built-in
+Built: 2026-10-21 11:36:22
+Preview times (s): 0.4, 0.9, 1.4, 2, 2.7
+
+Layers:
+  VFX_FireballLoop/Aura_Glow  max=4  life=2.4  mode=Billboard  mat=M_FireballLoop_Glow_Add (Mobile/Particles/Additive)
+  VFX_FireballLoop/Body_Outer  max=14  life=0.8  mode=Billboard  mat=M_FireballLoop_Flame_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_FireballLoop/Body_Mid  max=14  life=0.8  mode=Billboard  mat=M_FireballLoop_Flame_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_FireballLoop/Core_Hollow  max=4  life=3  mode=Billboard  mat=M_FireballLoop_Hollow_Alpha (Mobile/Particles/Alpha Blended)
+  VFX_FireballLoop/Core_Light  max=3  life=1.2  mode=Billboard  mat=M_FireballLoop_Glow_Add (Mobile/Particles/Additive)
+  VFX_FireballLoop/Core_Spark  max=4  life=0.5  mode=Billboard  mat=M_FireballLoop_Ember_Add (Mobile/Particles/Additive)
+  VFX_FireballLoop/Tongues  max=6  life=1.2  mode=Billboard  mat=M_FireballLoop_Tongue_Add (Mobile/Particles/Additive)
+  VFX_FireballLoop/Embers  max=12  life=3  mode=Billboard  mat=M_FireballLoop_Ember_Add (Mobile/Particles/Additive)
+Total maxParticles: 61
+
+Errors: none

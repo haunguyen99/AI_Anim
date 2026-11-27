@@ -1,0 +1,621 @@
+<meta charset="utf-8">
+<title>VFX Mix Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout v2: steps read left -> right like the task itself: 1 pick components (bin) · 2 arrange (viewer + timeline) · 3 tune (inspector).
+   Dark compositing look shared with Shape Lab; additive light only reads on a dark stage. */
+:root{
+  color-scheme: dark;
+  --bg:#131418; --panel:#1d1f24; --panel-2:#262931; --line:#343844; --line-2:#454a57;
+  --fg:#e0e2e7; --muted:#8d929e; --value:#62aefc; --accent:#ff9638; --accent-ink:#1a1006; --stage:#0d0e10; --danger:#ef6a5a;
+  --t-scr:#8a6a52; --t-dst:#b3a796; --t-glw:#f0c26a; --t-rng:#ff9a3c; --t-imp:#fff3c4; --t-spk:#ff7a4a; --t-cfx:#b48cff;
+  --font-ui:'Be Vietnam Pro','Segoe UI',system-ui,sans-serif;
+  --font-num:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --r:7px;
+}
+html,body{height:100%}
+[hidden]{display:none !important}
+body{margin:0;background:var(--bg);color:var(--fg);font:13px/1.5 var(--font-ui)}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--value);outline-offset:1px}
+.app{min-height:100%;display:flex;flex-direction:column;gap:10px;padding-block:10px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.brand b{font-size:16px;font-weight:700;letter-spacing:.01em}
+.name{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
+.txt{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:13px;min-width:0}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:6px 12px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--panel-2);border-color:var(--line-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.small{padding:4px 9px;font-size:12px}
+.btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px;gap:2px}
+.seg button{border:0;background:transparent;padding:4px 10px;border-radius:4px;color:var(--muted);font-size:12.5px}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+/* steps */
+.work{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:10px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;min-width:0}
+.ph{padding:9px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.step{width:20px;height:20px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line-2);display:grid;place-items:center;font:600 11px var(--font-num);flex:none}
+.ph b{font-size:13px;font-weight:600}
+.ph span{color:var(--muted);font-size:12px}
+.sticky{position:sticky;top:calc(10px + env(safe-area-inset-top,0px))}
+/* bin */
+.bin-tools{padding:8px 10px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line)}
+.bin-list{overflow:auto;max-height:calc(100vh - 210px)}
+.bin-tools .seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.bin-tools .seg button{padding:4px 2px;white-space:nowrap}
+.grp-h{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:10px 12px 4px;display:flex;gap:6px;align-items:center}
+.grp-h i{width:8px;height:8px;border-radius:2px}
+.comp{display:grid;grid-template-columns:56px minmax(0,1fr) 22px;gap:9px;align-items:center;padding:6px 10px;margin:0 4px;border-radius:6px;cursor:pointer;border:1px solid transparent;background:none;text-align:left;width:calc(100% - 8px)}
+.comp:hover{background:var(--panel-2);border-color:var(--line)}
+.comp canvas{width:56px;height:56px;border-radius:5px;background:var(--stage);display:block}
+.comp .nm{font-size:12.5px;font-weight:600;line-height:1.3}
+.comp .mt{display:flex;gap:5px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.tag{font:10.5px var(--font-num);padding:0 6px;border-radius:9px;border:1px solid var(--line-2);color:var(--muted)}
+.tag.ctx{color:var(--fg)}
+.comp .plus{font-size:16px;color:var(--muted);text-align:center}
+.comp:hover .plus{color:var(--accent)}
+/* viewer */
+.mid{display:flex;flex-direction:column;gap:10px;min-width:0}
+.stage{position:relative;background:var(--stage);border:1px solid var(--line);border-radius:var(--r);display:grid;place-items:center;overflow:hidden}
+.stage canvas{width:min(100%,560px,62vh);aspect-ratio:1;max-width:100%;height:auto;display:block}
+.hud{position:absolute;left:12px;top:10px;display:flex;flex-direction:column;gap:2px;pointer-events:none}
+.hud b{font-size:13px}
+.hud span{font:11.5px var(--font-num);color:var(--muted)}
+.camsw{position:absolute;right:10px;top:10px}
+.note{position:absolute;left:12px;right:12px;bottom:8px;font-size:11px;color:var(--muted);pointer-events:none;text-align:right}
+.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;padding:24px;pointer-events:none}
+.empty b{display:block;color:var(--fg);font-size:15px;margin-bottom:4px}
+/* transport + timeline */
+.tl{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.transport{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:7px 10px;border-bottom:1px solid var(--line)}
+.play{width:34px;height:28px;border-radius:6px;border:1px solid var(--line-2);background:var(--panel-2);display:grid;place-items:center}
+.play svg{width:12px;height:12px;fill:var(--fg)}
+.readout{font:12px var(--font-num);font-variant-numeric:tabular-nums;min-width:98px}
+.chk{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12.5px;cursor:pointer}
+.keys{font-size:11.5px;color:var(--muted)}
+.keys kbd{font:10.5px var(--font-num);border:1px solid var(--line-2);border-radius:3px;padding:0 4px;color:var(--fg)}
+.tl-scroll{overflow-x:auto}
+.tl-inner{position:relative;min-width:600px;--lw:230px}
+.ruler{position:relative;height:24px;margin-left:var(--lw);border-bottom:1px solid var(--line);cursor:ew-resize;touch-action:none}
+.ruler i{position:absolute;top:0;width:1px;background:var(--line);height:6px}
+.ruler i.maj{height:11px;background:var(--muted)}
+.ruler span{position:absolute;top:9px;font:10.5px var(--font-num);color:var(--muted);transform:translateX(-50%)}
+.track{display:grid;grid-template-columns:var(--lw) minmax(0,1fr);height:38px;border-bottom:1px solid var(--line)}
+.track.sel{background:color-mix(in srgb,var(--value) 10%,transparent)}
+.track.muted .blk{opacity:.3}
+.tlab{display:flex;align-items:center;gap:7px;padding:0 6px 0 10px;font-size:12px;overflow:hidden;cursor:pointer;border-right:1px solid var(--line)}
+.tlab i{width:9px;height:9px;border-radius:2px;flex:none}
+.tlab .tn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ib{border:0;background:none;width:24px;height:24px;border-radius:4px;display:grid;place-items:center;color:var(--muted);flex:none}
+.ib:hover{background:var(--panel-2);color:var(--fg)}
+.ib.del:hover{color:var(--danger)}
+.ib svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.lane{position:relative;cursor:pointer}
+.blk{position:absolute;top:6px;bottom:6px;border-radius:5px;cursor:grab;touch-action:none;display:flex;align-items:center;padding:0 12px 0 8px;font-size:11px;font-weight:600;color:#17130f;overflow:hidden;white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.blk:active{cursor:grabbing}
+.track.sel .blk{box-shadow:0 0 0 2px var(--value)}
+.blk small{font:10.5px var(--font-num);opacity:.7;margin-left:6px;font-weight:400}
+.blk .hdl{position:absolute;right:0;top:0;bottom:0;width:9px;cursor:ew-resize;background:rgba(0,0,0,.2);border-radius:0 5px 5px 0}
+.playhead{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--accent);pointer-events:none}
+.endmark{position:absolute;top:24px;bottom:0;width:0;border-left:1px dashed var(--line-2);pointer-events:none}
+.drop-hint{padding:16px 12px;color:var(--muted);font-size:12.5px;text-align:center}
+.warn{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 12px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--danger) 14%,var(--panel));font-size:12.5px}
+.tlab .cx{font:10px var(--font-num);padding:0 5px;border-radius:8px;border:1px solid var(--line-2);color:var(--muted);flex:none}
+.comp.off{opacity:.38}
+.tl.dragover{outline:2px dashed var(--accent);outline-offset:-3px}
+/* inspector */
+.sec{padding:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.sec:last-child{border-bottom:0}
+.sec h4{margin:0;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.param{display:flex;flex-direction:column;gap:3px}
+.param .top2{display:flex;align-items:baseline;gap:8px}
+.param label{font-size:12.5px;font-weight:500}
+.param output{margin-left:auto;font:12px var(--font-num);color:var(--value)}
+.param input[type=range]{width:100%;accent-color:var(--value)}
+.param .help{font-size:11.5px;color:var(--muted);line-height:1.4}
+.opts{display:flex;flex-wrap:wrap;gap:5px}
+.opt{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:3px 10px;font-size:12px}
+.opt[aria-pressed="true"]{border-color:var(--value);color:var(--value)}
+details summary{cursor:pointer;color:var(--muted);font-size:12px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.row3 label{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--muted)}
+.row3 input{width:100%;font:12px var(--font-num);color:var(--value);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:3px 5px;text-align:right}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.insp-empty{padding:16px 12px;color:var(--muted);font-size:12.5px;line-height:1.6}
+.insp-empty b{color:var(--fg)}
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.sw{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
+.sw input{width:100%;height:30px;border:1px solid var(--line);border-radius:5px;background:none;padding:0;cursor:pointer}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:3px 10px 3px 6px;font-size:12px;display:inline-flex;gap:6px;align-items:center}
+.chip i{display:inline-flex;gap:1px}
+.chip i b{width:7px;height:12px;border-radius:1px}
+.chip:hover,.chip[aria-pressed="true"]{border-color:var(--value)}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.45}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;z-index:30;padding:16px}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;width:min(620px,100%);display:flex;flex-direction:column;gap:10px}
+.modal-card textarea{width:100%;height:300px;background:var(--bg);border:1px solid var(--line);border-radius:5px;font:12px var(--font-num);padding:8px;resize:vertical}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--line-2);border-radius:7px;padding:9px 15px;font-size:12.5px;z-index:40;max-width:calc(100% - 32px);box-shadow:0 8px 28px rgba(0,0,0,.45)}
+@media (max-width:1180px){.work{grid-template-columns:240px minmax(0,1fr)}.insp{grid-column:2}.bin{grid-row:span 2}}
+@media (max-width:780px){html,body{height:auto}.work{grid-template-columns:minmax(0,1fr)}.insp,.bin{grid-column:auto;grid-row:auto}.bin-list{max-height:300px}.sticky{position:static}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><b>Mix Lab</b></div>
+    <label class="name" for="recName">Tên VFX <input class="txt" id="recName" spellcheck="false" style="width:180px"></label>
+    <span class="spacer"></span>
+    <label class="name" for="tpl">Bắt đầu từ mẫu
+      <select class="txt" id="tpl">
+        <option value="">— chọn —</option>
+        <option value="ground">Trúng đất (lửa nổ)</option>
+        <option value="air">Trúng trên không</option>
+        <option value="dir">Đòn có hướng</option>
+        <option value="empty">Trống</option>
+      </select></label>
+    <button class="btn" id="bOpen" title="Dán recipe.json đã có"><svg viewBox="0 0 24 24"><path d="M4 20h16M12 4v12M7 11l5 5 5-5"/></svg>Mở recipe</button>
+    <button class="btn primary" id="bCopy" title="Copy recipe để dán cho Claude dựng trong Unity"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Copy recipe → gửi Claude</button>
+  </header>
+
+  <main class="work">
+    <!-- 1 · components -->
+    <aside class="panel bin sticky" aria-label="Thành phần">
+      <div class="ph"><span class="step">1</span><b>Chọn thành phần</b></div>
+      <div class="bin-tools">
+        <div class="seg" id="ctxSeg" role="group" aria-label="Lọc theo ngữ cảnh">
+          <button data-ctx="all" aria-pressed="true">Tất cả</button>
+          <button data-ctx="ground" aria-pressed="false" title="Trúng tại đất">Đất</button>
+          <button data-ctx="air" aria-pressed="false" title="Trúng trên không">Không</button>
+          <button data-ctx="dir" aria-pressed="false" title="Đòn có hướng">Hướng</button>
+        </div>
+        <span class="hint">Bấm để thêm, hoặc kéo thả vào timeline đúng thời điểm. Rê chuột lên ảnh để xem chuyển động.</span>
+      </div>
+      <div class="bin-list" id="bin"></div>
+    </aside>
+
+    <!-- 2 · arrange -->
+    <section class="mid">
+      <div class="stage">
+        <canvas id="cv" width="512" height="512" aria-label="Xem trước VFX ghép"></canvas>
+        <div class="hud"><b id="hudName"></b><span id="hudInfo"></span></div>
+        <div class="seg camsw" id="camSeg" role="group" aria-label="Góc camera">
+          <button data-cam="q" aria-pressed="true">Góc game 3/4</button>
+          <button data-cam="s" aria-pressed="false">Ngang</button>
+        </div>
+        <div class="empty" id="emptyStage" hidden><div><b>Chưa có lớp nào</b>Chọn thành phần ở cột trái, hoặc chọn một mẫu ở góc trên.</div></div>
+        <div class="note">Xem gần đúng · bản chính xác do Unity dựng từ recipe</div>
+      </div>
+      <div class="tl" id="tlBox">
+        <div class="warn" id="mixWarn" hidden></div>
+        <div class="transport">
+          <button class="play" id="bPlay" aria-label="Phát / dừng"><svg viewBox="0 0 12 12" id="playIcon"><path d="M2 1l9 5-9 5z"/></svg></button>
+          <span class="readout" id="readout">0.00 s</span>
+          <label class="chk"><input type="checkbox" id="cLoop" checked> Lặp</label>
+          <label class="chk">Tốc độ <select id="speed" class="txt"><option value="1">1×</option><option value="0.5">0.5×</option><option value="0.25">0.25×</option></select></label>
+          <span class="spacer"></span>
+          <span class="keys">Lớp trên cùng = nằm trước · <kbd>Space</kbd> phát · <kbd>←</kbd><kbd>→</kbd> dời 1 frame · <kbd>Del</kbd> xoá lớp</span>
+        </div>
+        <div class="tl-scroll"><div class="tl-inner" id="tl"></div></div>
+      </div>
+    </section>
+
+    <!-- 3 · tune -->
+    <aside class="panel insp sticky" aria-label="Chỉnh">
+      <div class="ph"><span class="step">3</span><b>Chỉnh</b><span id="selName"></span></div>
+      <div id="trackSec"></div>
+      <div class="sec">
+        <h4>Màu cả VFX</h4>
+        <div class="opts" id="presets"></div>
+        <div class="swatches">
+          <label class="sw">Lõi<input type="color" id="pCore" aria-label="Core"></label>
+          <label class="sw">Giữa<input type="color" id="pMid" aria-label="Mid"></label>
+          <label class="sw">Viền<input type="color" id="pOuter" aria-label="Outer"></label>
+          <label class="sw">Bụi<input type="color" id="pDust" aria-label="Dust"></label>
+        </div>
+        <span class="hint">Trên web chỉ đổi màu gần đúng. Unity thay đúng các ô màu trong mọi thành phần; vết cháy và lớp làm bằng code được render lại theo bảng màu.</span>
+      </div>
+    </aside>
+  </main>
+</div>
+<div class="modal" id="modal" hidden><div class="modal-card" role="dialog" aria-label="Recipe">
+  <b id="mTitle">Recipe</b><span class="hint" id="mHint"></span>
+  <textarea id="mText" spellcheck="false"></textarea>
+  <div class="acts"><button class="btn primary" id="mOk">Áp dụng</button><button class="btn" id="mClose">Đóng</button></div>
+</div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="mix_data.js"></script>
+<script>
+'use strict';
+const D = window.MIX_DATA || {fps:30,cell:256,cols:8,cams:{},comps:[]};
+// the skill ships only the standard groups below (codefx groups Scorch / CodeFX left the skill 2026-11-03)
+D.comps = D.comps.filter(c => ['Impact', 'Glow', 'Ring', 'Sparks', 'Dust'].includes(c.group));
+const $ = s => document.querySelector(s);
+const FPS = D.fps, CELL = D.cell, COLS = D.cols, STEP = 1 / FPS;
+const BYID = Object.fromEntries(D.comps.map(c => [c.id, c]));
+// draw order = each component's Unity sortingOrder (c.orders, table in ComponentKit): ground plane -> smoke -> light -> ring -> sparks -> flash
+// plane first: a ring lying on the ground goes under the smoke
+const orderOf = c => Math.max(...ordersOf(c));
+// timeline lists the front-most layer at the top, like After Effects / Photoshop
+function sortItems() { const cur = rec.items[sel]; rec.items.sort((a, b) => orderOf(BYID[b.id]) - orderOf(BYID[a.id])); sel = cur ? rec.items.indexOf(cur) : -1; }
+const GROUPS = [
+  ['Impact', 'Chớp va chạm', '--t-imp'], ['Glow', 'Quầng sáng', '--t-glw'], ['Ring', 'Vòng sóng xung kích', '--t-rng'],
+  ['Sparks', 'Tia lửa', '--t-spk'], ['Dust', 'Khói bụi / lửa', '--t-dst']];
+const GINFO = Object.fromEntries(GROUPS.map(g => [g[0], {name:g[1], col:g[2]}]));
+const CTX = {ground:'Tại đất', air:'Trên không', dir:'Có hướng'};
+const SPECIAL = {DST_Fire_Ground_01:'Cụm lửa', DST_FireSmoke_Ground_01:'Lửa → khói (nổ)'};
+const label = c => (SPECIAL[c.id] || GINFO[c.group].name);
+const fullLabel = c => label(c) + ' · ' + CTX[c.context].toLowerCase();
+const DEF_PAL = {Core:'#FFF3C4', Mid:'#FF9A3C', Outer:'#C8281E', Dust:'#CDBBA6'};
+const PRESETS = [
+  {name:'Lửa', p:DEF_PAL},
+  {name:'Băng', p:{Core:'#F2FCFF', Mid:'#7FD6FF', Outer:'#2A6FD1', Dust:'#C9D6DE'}},
+  {name:'Độc', p:{Core:'#F4FFD6', Mid:'#9BE04A', Outer:'#2F8A2A', Dust:'#A9B58E'}},
+  {name:'Điện', p:{Core:'#FFFBE0', Mid:'#FFE24A', Outer:'#C79200', Dust:'#BDB7A0'}},
+  {name:'Phép', p:{Core:'#FBEFFF', Mid:'#C77DFF', Outer:'#6A1BB0', Dust:'#B9AFC6'}},
+  {name:'Thánh', p:{Core:'#FFFFFF', Mid:'#FFE7A3', Outer:'#E0A93A', Dust:'#E3DCCB'}},
+];
+const TEMPLATES = {
+  ground:{name:'FireHit_Ground', items:[['DST_FireSmoke_Ground_01', 0.03], ['GLW_Ground_01', 0], ['RNG_Ground_01', 0.03], ['IMP_Hit_Ground_01', 0], ['SPK_Ground_01', 0.03]]},
+  air:{name:'Hit_Air', items:[['DST_Air_01', 0.03], ['GLW_Air_01', 0], ['RNG_Air_01', 0.03], ['IMP_Hit_Air_01', 0], ['SPK_Air_01', 0]]},
+  dir:{name:'Hit_Dir', items:[['DST_Dir_01', 0.02], ['GLW_Dir_01', 0], ['RNG_Dir_01', 0], ['IMP_Hit_Dir_01', 0], ['SPK_Dir_01', 0]]},
+  empty:{name:'VFX_Mix', items:[]},
+};
+const HEIGHTS = [['Mặt đất', 0], ['Ngang ngực', 1.1], ['Ngang đầu', 1.8]];
+const LS = 'mixLab.recipe.v1';
+
+/* ---------- state ---------- */
+let rec = null, sel = -1, cam = 'q', ctxFilter = 'all', t = 0, playing = true, last = 0;
+function item(id, o = {}) {
+  const c = BYID[id];
+  const off = c && c.context !== 'ground' ? [0, 1.1, 0] : [0, 0, 0];
+  return Object.assign({id, delay:0, duration:c ? c.dur : 1, size:1, intensity:1, rotation:0, offset:off.slice(), mute:false}, o);
+}
+function normalize(r) {
+  const out = {name:r.name || 'VFX_Mix', version:1, palette:Object.assign({...DEF_PAL}, r.palette || {}), items:[]};
+  for (const it of r.items || []) if (BYID[it.id]) { const n = item(it.id, it); n.offset = (it.offset || n.offset).slice(); out.items.push(n); }
+  return out;
+}
+function fromTemplate(k) { const T = TEMPLATES[k]; return normalize({name:T.name, palette:rec ? rec.palette : DEF_PAL, items:T.items.map(([id, d]) => ({id, delay:d}))}); }
+function save() { try { localStorage.setItem(LS, JSON.stringify(rec)); } catch (e) {} }
+function load() { try { const j = JSON.parse(localStorage.getItem(LS) || 'null'); if (j && j.items) return normalize(j); } catch (e) {} return fromTemplate('ground'); }
+const active = () => rec.items.filter(i => !i.mute);
+const total = () => Math.max(0.5, ...active().map(i => i.delay + i.duration)) + 0.15;
+const span = () => Math.max(1, Math.ceil(total() * 4) / 4);
+const snap = v => Math.round(v / STEP) * STEP;
+
+/* ---------- images ---------- */
+const imgs = new Map();
+function img(src) {
+  if (!imgs.has(src)) { const im = new Image(); im.src = src; im.onload = () => { if (!playing) draw(); }; imgs.set(src, im); }
+  return imgs.get(src);
+}
+// one sheet per sortingOrder used inside a component (MixCapture), so every layer stacks where Unity puts it
+const sheet = (id, c, o) => img('data/' + id + '_' + c + '_o' + o + '.png');
+const ordersOf = c => c.orders && c.orders.length ? c.orders : [0];
+const plate = c => img('data/plate_' + c + '.png');
+
+/* ---------- colour (web approximation) ---------- */
+function hsl(hex) {
+  const n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+  let h = 0, s = 0;
+  if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; }
+  return {h:(h + 360) % 360, s, l};
+}
+function filterFor(c) {
+  const slot = c.group === 'Dust' && !/Fire/.test(c.id) ? 'Dust' : 'Mid';
+  const a = hsl(DEF_PAL[slot]), b = hsl(rec.palette[slot] || DEF_PAL[slot]);
+  const dh = Math.round(b.h - a.h), ds = a.s > 0.02 ? b.s / a.s : 1, dl = b.l / Math.max(a.l, 0.05);
+  if (Math.abs(dh) < 1 && Math.abs(ds - 1) < 0.02 && Math.abs(dl - 1) < 0.02) return 'none';
+  return `hue-rotate(${dh}deg) saturate(${Math.max(0, ds).toFixed(2)}) brightness(${Math.min(1.6, Math.max(0.4, dl)).toFixed(2)})`;
+}
+
+/* ---------- render ---------- */
+const cv = $('#cv'), ctx = cv.getContext('2d');
+function frameOf(it, c, tt) {
+  const lt = tt - it.delay;
+  if (lt < 0 || lt >= it.duration) return -1;
+  return Math.min(c.frames - 1, Math.floor(lt / it.duration * c.dur * FPS));
+}
+function draw() {
+  const S = cv.width / CELL, P = D.cams[cam];
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = '#141519'; ctx.fillRect(0, 0, cv.width, cv.height);
+  const pl = plate(cam); if (pl.complete && pl.naturalWidth) ctx.drawImage(pl, 0, 0, cv.width, cv.height);
+  const items = rec.items.map((it, i) => ({it, i, c:BYID[it.id]})).filter(o => o.c && !o.it.mute);
+  const list = items.flatMap(o => ordersOf(o.c).map(ord => ({...o, ord})))
+    .sort((a, b) => a.ord - b.ord || b.i - a.i);            // same order: the layer higher in the list is in front
+  for (const {it, c, ord} of list) {
+    const f = frameOf(it, c, t); if (f < 0) continue;
+    const sh = sheet(it.id, cam, ord); if (!sh.complete || !sh.naturalWidth) continue;
+    const sx = (f % COLS) * CELL, sy = Math.floor(f / COLS) * CELL, o = P.o;
+    const ox = o[0] + it.offset[0] * P.x[0] + it.offset[1] * P.y[0] + it.offset[2] * P.z[0];
+    const oy = o[1] + it.offset[0] * P.x[1] + it.offset[1] * P.y[1] + it.offset[2] * P.z[1];
+    ctx.setTransform(S * it.size, 0, 0, S * it.size, S * ox - S * it.size * o[0], S * oy - S * it.size * o[1]);
+    ctx.filter = filterFor(c);
+    ctx.globalAlpha = Math.min(1, it.intensity);
+    ctx.drawImage(sh, sx, sy, CELL, CELL, 0, 0, CELL, CELL);
+    if (it.intensity > 1) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, it.intensity - 1); ctx.drawImage(sh, sx, sy, CELL, CELL, 0, 0, CELL, CELL); ctx.globalCompositeOperation = 'source-over'; }
+  }
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1;
+  $('#readout').textContent = `${t.toFixed(2)} s · frame ${Math.floor(t * FPS + 1e-6)}`;
+  $('#hudName').textContent = rec.name;
+  $('#hudInfo').textContent = `${items.length} lớp · dài ${total().toFixed(2)} s`;
+  $('#emptyStage').hidden = rec.items.length > 0;
+  placePlayhead();
+}
+function loop(now) {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  if (playing) {
+    t += dt * +$('#speed').value;
+    const T = total();
+    if (t >= T) { if ($('#cLoop').checked) t = 0; else { t = T; setPlay(false); } }
+    draw();
+  }
+  requestAnimationFrame(loop);
+}
+function setPlay(p) { playing = p; $('#playIcon').innerHTML = p ? '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>' : '<path d="M2 1l9 5-9 5z"/>'; }
+
+/* ---------- 1 · bin ---------- */
+const anim = new Map();
+function thumb(c, canvas, f) {
+  const ims = ordersOf(c).map(o => sheet(c.id, 'q', o)), x = canvas.getContext('2d');
+  const paint = () => { x.clearRect(0, 0, canvas.width, canvas.height);
+    for (const im of ims) if (im.complete && im.naturalWidth)
+      x.drawImage(im, (f % COLS) * CELL + 36, Math.floor(f / COLS) * CELL + 36, CELL - 72, CELL - 72, 0, 0, canvas.width, canvas.height); };
+  paint(); for (const im of ims) if (!im.complete) im.addEventListener('load', paint, {once:true});
+}
+function restFrame(c) { return Math.min(c.frames - 1, /Sparks|Impact/.test(c.group) || /IMP_/.test(c.id) ? 3 : Math.floor(c.frames * 0.3)); }
+function buildBin() {
+  const bin = $('#bin'); bin.innerHTML = '';
+  for (const [g, gname, gcol] of GROUPS) {
+    const cs = D.comps.filter(c => c.group === g && (ctxFilter === 'all' || c.context === ctxFilter)); if (!cs.length) continue;
+    const h = document.createElement('div'); h.className = 'grp-h'; h.innerHTML = `<i style="background:var(${gcol})"></i>${gname}`; bin.appendChild(h);
+    for (const c of cs) {
+      const row = document.createElement('button'); row.className = 'comp' + (rec && mixCtx() && c.context !== mixCtx() ? ' off' : ''); row.draggable = true; row.type = 'button';
+      row.title = `${fullLabel(c)} — bấm để thêm, hoặc kéo vào timeline`;
+      const th = document.createElement('canvas'); th.width = th.height = 112;
+      thumb(c, th, restFrame(c));
+      const tx = document.createElement('div'); tx.style.minWidth = '0';
+      tx.innerHTML = `<div class="nm">${label(c)}</div><div class="mt"><span class="tag ctx">${CTX[c.context]}</span><span class="tag">${c.dur.toFixed(2)} s</span></div>`;
+      const pl = document.createElement('span'); pl.className = 'plus'; pl.textContent = '+';
+      row.append(th, tx, pl);
+      row.onclick = () => addItem(c.id, null);
+      row.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', c.id); e.dataTransfer.effectAllowed = 'copy'; });
+      row.addEventListener('mouseenter', () => { let f = 0; anim.set(row, setInterval(() => { thumb(c, th, f); f = (f + 1) % c.frames; }, 1000 / FPS)); });
+      row.addEventListener('mouseleave', () => { clearInterval(anim.get(row)); anim.delete(row); thumb(c, th, restFrame(c)); });
+      bin.appendChild(row);
+    }
+  }
+}
+// One effect = one space (art lead 2026-11-03: two hit flashes of different directions ended up in one effect).
+const CTXS = {ground:'Đất', air:'Không', dir:'Hướng'};
+const mixCtx = () => { const it = rec.items.find(i => BYID[i.id]); return it ? BYID[it.id].context : null; };
+function blockReason(c) {
+  const cx = mixCtx();
+  if (cx && c.context !== cx) return `Effect này đang là "${CTX[cx]}", còn thành phần này là "${CTX[c.context]}". Mỗi effect chỉ dùng một ngữ cảnh. Chọn bản "${CTX[cx]}" của thành phần, hoặc bắt đầu effect mới từ mẫu.`;
+  if (c.group === 'Impact' && rec.items.some(i => BYID[i.id] && BYID[i.id].group === 'Impact'))
+    return 'Effect đã có một lớp chớp va chạm. Mỗi effect chỉ có một chớp. Muốn đổi kiểu thì xoá lớp chớp cũ trước.';
+  return null;
+}
+function checkMix() {
+  const w = $('#mixWarn'), ctxs = [...new Set(rec.items.map(i => BYID[i.id] && BYID[i.id].context).filter(Boolean))];
+  const imps = rec.items.filter(i => BYID[i.id] && BYID[i.id].group === 'Impact');
+  if (ctxs.length <= 1 && imps.length <= 1) { w.hidden = true; return; }
+  const main = mixCtx();
+  w.hidden = false;
+  w.innerHTML = `<span>${ctxs.length > 1 ? 'Effect đang lẫn nhiều ngữ cảnh (' + ctxs.map(x => CTX[x]).join(', ') + ').' : ''} ${imps.length > 1 ? 'Có ' + imps.length + ' lớp chớp va chạm.' : ''} Mỗi effect chỉ dùng một ngữ cảnh và một chớp.</span>`;
+  const b = document.createElement('button'); b.className = 'btn small'; b.textContent = `Giữ "${CTX[main]}", bỏ lớp lạc`;
+  b.onclick = () => { let seen = false;
+    rec.items = rec.items.filter(i => { const c = BYID[i.id]; if (!c || c.context !== main) return false;
+      if (c.group === 'Impact') { if (seen) return false; seen = true; } return true; });
+    sel = -1; commit(); toast('Đã bỏ các lớp khác ngữ cảnh / chớp thừa'); };
+  w.appendChild(b);
+}
+function addItem(id, at) {
+  const why = blockReason(BYID[id]); if (why) { toast(why); return; }
+  const it = item(id); if (at != null) it.delay = Math.max(0, snap(at));
+  rec.items.push(it); sel = rec.items.length - 1; commit();   // commit re-sorts and keeps the new layer selected
+  toast(`Đã thêm ${fullLabel(BYID[id])}${at != null ? ' ở ' + it.delay.toFixed(2) + ' s' : ''}`);
+}
+document.querySelectorAll('#ctxSeg button').forEach(b => b.onclick = () => {
+  ctxFilter = b.dataset.ctx; document.querySelectorAll('#ctxSeg button').forEach(x => x.setAttribute('aria-pressed', x === b)); buildBin(); });
+
+/* ---------- 2 · timeline ---------- */
+const ICON = {eye:'<svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeOff:'<svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 3.9M6.6 6.6C3.9 8.3 2 12 2 12s4 7 10 7a9.6 9.6 0 0 0 4.2-1"/></svg>',
+  del:'<svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg>'};
+function buildTimeline() {
+  const tl = $('#tl'); tl.innerHTML = '';
+  const S = span();
+  const ru = document.createElement('div'); ru.className = 'ruler'; ru.setAttribute('aria-label', 'Thước thời gian, kéo để tua');
+  for (let k = 0; k <= Math.round(S * 10); k++) {
+    const x = k / 10 / S * 100, i = document.createElement('i'); i.style.left = x + '%';
+    if (k % 5 === 0) { i.className = 'maj'; const s = document.createElement('span'); s.style.left = x + '%'; s.textContent = (k / 10).toFixed(1) + 's'; ru.appendChild(s); }
+    ru.appendChild(i);
+  }
+  const scrub = e => { const r = ru.getBoundingClientRect(); t = snap(Math.max(0, Math.min(S, (e.clientX - r.left) / r.width * S))); setPlay(false); draw(); };
+  ru.addEventListener('pointerdown', e => { ru.setPointerCapture(e.pointerId); scrub(e); ru.onpointermove = scrub; });
+  ru.addEventListener('pointerup', () => { ru.onpointermove = null; });
+  tl.appendChild(ru);
+  if (!rec.items.length) { const e = document.createElement('div'); e.className = 'drop-hint'; e.textContent = 'Kéo thành phần từ cột trái thả vào đây, hoặc bấm vào thành phần để thêm.'; tl.appendChild(e); }
+  rec.items.forEach((it, i) => {
+    const c = BYID[it.id], gi = GINFO[c.group];
+    const tr = document.createElement('div'); tr.className = 'track' + (i === sel ? ' sel' : '') + (it.mute ? ' muted' : '');
+    const lab = document.createElement('div'); lab.className = 'tlab';
+    lab.innerHTML = `<i style="background:var(${gi.col})"></i><span class="tn" title="${fullLabel(c)}">${label(c)}</span><span class="cx">${CTXS[c.context]}</span>`;
+    const eye = document.createElement('button'); eye.className = 'ib'; eye.innerHTML = it.mute ? ICON.eyeOff : ICON.eye;
+    eye.title = it.mute ? 'Hiện lớp' : 'Ẩn lớp'; eye.setAttribute('aria-label', eye.title);
+    eye.onclick = e => { e.stopPropagation(); it.mute = !it.mute; commit(); };
+    const del = document.createElement('button'); del.className = 'ib del'; del.innerHTML = ICON.del; del.title = 'Xoá lớp'; del.setAttribute('aria-label', 'Xoá lớp');
+    del.onclick = e => { e.stopPropagation(); removeItem(i); };
+    lab.append(eye, del);
+    lab.onclick = () => select(i);
+    const lane = document.createElement('div'); lane.className = 'lane'; lane.onclick = e => { if (e.target === lane) select(i); };
+    const bk = document.createElement('div'); bk.className = 'blk'; bk.tabIndex = 0;
+    bk.style.left = it.delay / S * 100 + '%'; bk.style.width = it.duration / S * 100 + '%';
+    bk.style.background = `var(${gi.col})`;
+    bk.innerHTML = `${label(c)}<small>${it.delay.toFixed(2)}–${(it.delay + it.duration).toFixed(2)}s</small><span class="hdl" title="Kéo để đổi thời lượng"></span>`;
+    const hd = bk.querySelector('.hdl');
+    let mode = null, x0 = 0, d0 = 0, w0 = 0;
+    bk.addEventListener('pointerdown', e => { e.preventDefault(); mode = e.target === hd ? 'dur' : 'move'; x0 = e.clientX; d0 = it.delay; w0 = it.duration;
+      bk.setPointerCapture(e.pointerId); if (sel !== i) select(i, true); });
+    bk.addEventListener('pointermove', e => { if (!mode) return;
+      const dt = (e.clientX - x0) / lane.getBoundingClientRect().width * S;
+      if (mode === 'move') it.delay = Math.max(0, snap(d0 + dt)); else it.duration = Math.max(STEP * 3, snap(w0 + dt));
+      bk.style.left = it.delay / S * 100 + '%'; bk.style.width = it.duration / S * 100 + '%';
+      bk.querySelector('small').textContent = `${it.delay.toFixed(2)}–${(it.delay + it.duration).toFixed(2)}s`; syncInspector(); draw(); });
+    bk.addEventListener('pointerup', () => { if (mode) { mode = null; commit(); } });
+    lane.appendChild(bk); tr.append(lab, lane); tl.appendChild(tr);
+  });
+  const end = document.createElement('div'); end.className = 'endmark'; end.title = 'Kết thúc VFX'; tl.appendChild(end);
+  const ph = document.createElement('div'); ph.className = 'playhead'; tl.appendChild(ph);
+  placePlayhead();
+}
+function placePlayhead() {
+  const ph = $('#tl .playhead'), ru = $('#tl .ruler'), end = $('#tl .endmark'); if (!ph || !ru) return;
+  ph.style.left = (ru.offsetLeft + t / span() * ru.offsetWidth) + 'px';
+  if (end) end.style.left = (ru.offsetLeft + (total() - 0.15) / span() * ru.offsetWidth) + 'px';
+}
+function select(i, keepTimeline) { sel = i; if (keepTimeline) document.querySelectorAll('#tl .track').forEach((el, k) => el.classList.toggle('sel', k === sel)); else buildTimeline(); buildInspector(); }
+function removeItem(i) { const c = BYID[rec.items[i].id]; rec.items.splice(i, 1); sel = Math.min(sel, rec.items.length - 1); if (sel >= rec.items.length) sel = -1; commit(); toast('Đã xoá ' + fullLabel(c)); }
+const box = $('#tlBox');
+box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('dragover'); });
+box.addEventListener('dragleave', e => { if (!box.contains(e.relatedTarget)) box.classList.remove('dragover'); });
+box.addEventListener('drop', e => {
+  e.preventDefault(); box.classList.remove('dragover');
+  const id = e.dataTransfer.getData('text/plain'); if (!BYID[id]) return;
+  const ru = $('#tl .ruler'), r = ru.getBoundingClientRect();
+  addItem(id, Math.max(0, (e.clientX - r.left) / r.width * span()));
+});
+
+/* ---------- 3 · inspector ---------- */
+const PARAMS = [
+  {k:'delay', lab:'Bắt đầu sau', unit:'s', min:0, max:2, step:STEP, help:'Lớp xuất hiện sau bao lâu kể từ lúc trúng.'},
+  {k:'duration', lab:'Thời lượng', unit:'s', min:0.1, max:4, step:STEP, help:'Kéo dài thì chậm lại, rút ngắn thì nhanh lên. Hình không đổi.'},
+  {k:'size', lab:'Độ to', unit:'×', min:0.3, max:3, step:0.05, help:'1 = cỡ chuẩn của thành phần.'},
+  {k:'intensity', lab:'Độ đậm', unit:'×', min:0, max:2, step:0.05, help:'Dưới 1 mờ đi, trên 1 sáng / đặc hơn.'},
+  {k:'rotation', lab:'Xoay ngang', unit:'°', min:-180, max:180, step:5, help:'Xoay quanh trục đứng. Chỉ thấy khi dựng trong Unity.'}];
+function fmt(p, v) { return p.k === 'rotation' ? Math.round(v) + p.unit : (+v).toFixed(2) + ' ' + p.unit; }
+function buildInspector() {
+  const s = $('#trackSec'); s.innerHTML = '';
+  const it = rec.items[sel];
+  if (!it) {
+    $('#selName').textContent = '';
+    s.innerHTML = `<div class="insp-empty"><b>Bấm một lớp trên timeline</b> để chỉnh thời điểm, thời lượng, độ to, độ đậm và độ cao.<br><br>Kéo khối trên timeline để đổi thời điểm, kéo mép phải để đổi thời lượng.</div>`;
+    return;
+  }
+  const c = BYID[it.id];
+  $('#selName').textContent = fullLabel(c);
+  const sec = document.createElement('div'); sec.className = 'sec';
+  sec.innerHTML = `<h4>Lớp đang chọn</h4>`;
+  for (const p of PARAMS) {
+    const w = document.createElement('div'); w.className = 'param';
+    w.innerHTML = `<div class="top2"><label for="r_${p.k}">${p.lab}</label><output id="o_${p.k}">${fmt(p, it[p.k])}</output></div>
+      <input type="range" id="r_${p.k}" min="${p.min}" max="${p.max}" step="${p.step}" value="${it[p.k]}"><div class="help">${p.help}</div>`;
+    const r = w.querySelector('input');
+    r.oninput = () => { it[p.k] = p.k === 'delay' || p.k === 'duration' ? snap(+r.value) : +r.value; w.querySelector('output').textContent = fmt(p, it[p.k]); buildTimeline(); draw(); save(); };
+    sec.appendChild(w);
+  }
+  // height presets + advanced xyz
+  const hw = document.createElement('div'); hw.className = 'param';
+  hw.innerHTML = `<div class="top2"><label>Độ cao</label><output>${it.offset[1].toFixed(2)} m</output></div><div class="opts"></div>
+    <details><summary>Vị trí chi tiết (m)</summary><div class="row3">${['x · ngang', 'y · cao', 'z · sâu'].map((n, k) => `<label>${n}<input type="number" step="0.1" id="f_o${k}" value="${it.offset[k].toFixed(2)}"></label>`).join('')}</div></details>`;
+  const opts = hw.querySelector('.opts');
+  for (const [n, y] of HEIGHTS) {
+    const b = document.createElement('button'); b.className = 'opt'; b.textContent = n; b.setAttribute('aria-pressed', Math.abs(it.offset[1] - y) < 0.01);
+    b.onclick = () => { it.offset[1] = y; commit(); }; opts.appendChild(b);
+  }
+  hw.querySelectorAll('.row3 input').forEach((inp, k) => inp.oninput = () => { const v = parseFloat(inp.value); if (!isNaN(v)) { it.offset[k] = v; hw.querySelector('output').textContent = it.offset[1].toFixed(2) + ' m'; draw(); save(); } });
+  sec.appendChild(hw);
+  const acts = document.createElement('div'); acts.className = 'acts';
+  const mk = (txt, fn, cls = '') => { const x = document.createElement('button'); x.className = 'btn small ' + cls; x.textContent = txt; x.onclick = fn; acts.appendChild(x); };
+  mk('Về mặc định', () => { const d = item(it.id); Object.assign(it, {duration:d.duration, size:1, intensity:1, rotation:0, offset:d.offset}); commit(); });
+  mk('Nhân bản', () => { rec.items.splice(sel + 1, 0, JSON.parse(JSON.stringify(it))); sel++; commit(); });
+  mk(it.mute ? 'Hiện lớp' : 'Ẩn lớp', () => { it.mute = !it.mute; commit(); });
+  mk('Xoá', () => removeItem(sel));
+  sec.appendChild(acts);
+  const info = document.createElement('div'); info.className = 'hint';
+  info.textContent = `Bản gốc dài ${c.dur.toFixed(2)} s · ${c.blend === 'add' ? 'phát sáng (Add)' : c.blend === 'alpha' ? 'che phủ (Alpha)' : 'Alpha + phát sáng'}`;
+  sec.appendChild(info);
+  s.appendChild(sec);
+}
+function syncInspector() {
+  const it = rec.items[sel]; if (!it) return;
+  for (const p of PARAMS.slice(0, 2)) { const r = $('#r_' + p.k), o = $('#o_' + p.k); if (r) { r.value = it[p.k]; o.textContent = fmt(p, it[p.k]); } }
+}
+
+/* ---------- palette ---------- */
+function buildPalette() {
+  for (const k of ['Core', 'Mid', 'Outer', 'Dust']) { const el = $('#p' + k); el.value = rec.palette[k].toLowerCase(); el.oninput = e => { rec.palette[k] = e.target.value.toUpperCase(); save(); buildPresets(); draw(); }; }
+  buildPresets();
+}
+function buildPresets() {
+  const pr = $('#presets'); pr.innerHTML = '';
+  for (const p of PRESETS) {
+    const b = document.createElement('button'); b.className = 'chip';
+    b.setAttribute('aria-pressed', ['Core', 'Mid', 'Outer'].every(k => p.p[k].toUpperCase() === rec.palette[k].toUpperCase()));
+    b.innerHTML = `<i>${['Core', 'Mid', 'Outer'].map(k => `<b style="background:${p.p[k]}"></b>`).join('')}</i>${p.name}`;
+    b.onclick = () => { rec.palette = {...p.p}; buildPalette(); save(); draw(); };
+    pr.appendChild(b);
+  }
+}
+
+/* ---------- recipe io ---------- */
+function recipeJSON() {
+  return JSON.stringify({name:rec.name, version:1, palette:rec.palette, items:active().map(i => ({
+    id:i.id, delay:+i.delay.toFixed(3), duration:+i.duration.toFixed(3), size:+(+i.size).toFixed(3), intensity:+(+i.intensity).toFixed(3),
+    rotation:+(+i.rotation).toFixed(1), offset:i.offset.map(v => +(+v).toFixed(3))}))}, null, 2);
+}
+function openModal(mode) {
+  $('#modal').hidden = false;
+  if (mode === 'copy') { $('#mTitle').textContent = 'Recipe'; $('#mHint').textContent = 'Trình duyệt không cho copy tự động. Chọn hết đoạn dưới (Ctrl+A), copy rồi dán vào chat cho Claude.'; $('#mText').value = recipeJSON(); $('#mOk').hidden = true; $('#mText').select(); }
+  else { $('#mTitle').textContent = 'Mở recipe'; $('#mHint').textContent = 'Dán nội dung recipe.json vào đây rồi bấm Áp dụng.'; $('#mText').value = ''; $('#mOk').hidden = false; $('#mText').focus(); }
+}
+$('#mClose').onclick = () => { $('#modal').hidden = true; };
+$('#mOk').onclick = () => {
+  try { const j = JSON.parse($('#mText').value); if (!j.items) throw new Error('thiếu "items"'); rec = normalize(j); sel = -1; $('#modal').hidden = true; refresh(); toast('Đã mở recipe ' + rec.name); }
+  catch (e) { toast('Không đọc được recipe (' + e.message + '). Kiểm tra lại đoạn JSON.'); }
+};
+$('#bCopy').onclick = () => {
+  if (!active().length) { toast('Chưa có lớp nào để xuất. Thêm thành phần trước.'); return; }
+  const txt = recipeJSON();
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => toast('Đã copy recipe. Dán vào chat để Claude dựng prefab trong Unity.'), () => openModal('copy'));
+  else openModal('copy');
+};
+$('#bOpen').onclick = () => openModal('open');
+$('#tpl').onchange = e => { const k = e.target.value; if (!k) return; rec = fromTemplate(k); sel = -1; refresh(); e.target.value = ''; toast(k === 'empty' ? 'Đã xoá hết, bắt đầu từ đầu' : 'Đã mở mẫu ' + rec.name); };
+$('#recName').oninput = e => { rec.name = e.target.value.replace(/[^A-Za-z0-9_]/g, '_') || 'VFX_Mix'; save(); draw(); };
+
+/* ---------- misc ---------- */
+let tt0 = 0;
+function toast(s) { const el = $('#toast'); el.textContent = s; el.hidden = false; clearTimeout(tt0); tt0 = setTimeout(() => el.hidden = true, 2800); }
+function commit() { sortItems(); save(); buildTimeline(); buildInspector(); checkMix(); buildBin(); draw(); }
+function refresh() { sortItems(); $('#recName').value = rec.name; buildPalette(); buildTimeline(); buildInspector(); checkMix(); buildBin(); t = 0; draw(); save(); }
+document.querySelectorAll('#camSeg button').forEach(b => b.onclick = () => {
+  cam = b.dataset.cam; document.querySelectorAll('#camSeg button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+$('#bPlay').onclick = () => { if (!playing && t >= total()) t = 0; setPlay(!playing); };
+document.addEventListener('keydown', e => {
+  if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || !$('#modal').hidden) return;
+  if (e.code === 'Space') { e.preventDefault(); $('#bPlay').click(); }
+  else if ((e.key === 'Delete' || e.key === 'Backspace') && rec.items[sel]) { e.preventDefault(); removeItem(sel); }
+  else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && rec.items[sel]) {
+    e.preventDefault(); const it = rec.items[sel]; it.delay = Math.max(0, snap(it.delay + (e.key === 'ArrowRight' ? STEP : -STEP))); commit(); }
+});
+window.addEventListener('resize', placePlayhead);
+
+rec = load();
+buildBin(); refresh(); setPlay(true);
+requestAnimationFrame(n => { last = n; loop(n); });
+</script>
