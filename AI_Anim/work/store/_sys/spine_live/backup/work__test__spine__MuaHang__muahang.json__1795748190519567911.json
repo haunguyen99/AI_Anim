@@ -1,0 +1,972 @@
+{
+ "skeleton": {
+  "spine": "4.2.43",
+  "fps": 30,
+  "x": -771.5,
+  "y": 0,
+  "width": 1543,
+  "height": 1266,
+  "images": "./images/"
+ },
+ "bones": [
+  {
+   "name": "root",
+   "length": 30,
+   "x": -1.5,
+   "y": 0.0,
+   "rotation": 0.0
+  },
+  {
+   "name": "fx_shadow",
+   "length": 0,
+   "x": -120.0,
+   "y": 646.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "streak_1",
+   "length": 60,
+   "x": 189.0,
+   "y": 458.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "streak_2",
+   "length": 60,
+   "x": 444.0,
+   "y": 360.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "streak_3",
+   "length": 60,
+   "x": -268.0,
+   "y": 222.5,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "streak_4",
+   "length": 60,
+   "x": -1.0,
+   "y": 129.5,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "ghost_wheel_1",
+   "length": 40,
+   "x": 427.0,
+   "y": 226.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "ghost_wheel_2",
+   "length": 40,
+   "x": 523.0,
+   "y": 225.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "star_1",
+   "length": 25,
+   "x": 250.5,
+   "y": 910.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "star_2",
+   "length": 25,
+   "x": 210.5,
+   "y": 962.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "star_3",
+   "length": 25,
+   "x": -324.5,
+   "y": 1143.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "star_4",
+   "length": 25,
+   "x": -275.5,
+   "y": 1092.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "star_5",
+   "length": 25,
+   "x": -560.5,
+   "y": 996.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "ctrl_cart",
+   "length": 0,
+   "x": -130.0,
+   "y": 266.0,
+   "rotation": 0.0,
+   "parent": "root"
+  },
+  {
+   "name": "wheel_1",
+   "length": 40,
+   "x": -334.5,
+   "y": -111.5,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "wheel_2",
+   "length": 40,
+   "x": -26.0,
+   "y": 17.5,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "wheel_3",
+   "length": 40,
+   "x": 262.5,
+   "y": -62.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "wheel_4",
+   "length": 40,
+   "x": -61.0,
+   "y": -192.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "coins_L",
+   "length": 50,
+   "x": -210.0,
+   "y": 120.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "coins_R",
+   "length": 50,
+   "x": 80.0,
+   "y": 210.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "item_bst2",
+   "length": 70,
+   "x": -11.0,
+   "y": 560.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "item_bst3",
+   "length": 70,
+   "x": 259.0,
+   "y": 420.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "item_bst4",
+   "length": 70,
+   "x": 158.0,
+   "y": 160.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "mascot",
+   "length": 80,
+   "x": -210.0,
+   "y": 210.0,
+   "rotation": 0.0,
+   "parent": "ctrl_cart"
+  },
+  {
+   "name": "glow",
+   "length": 40,
+   "x": 20.0,
+   "y": 264.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "face",
+   "length": 40,
+   "x": -90.0,
+   "y": 420.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "eye_L",
+   "length": 20,
+   "x": -69.0,
+   "y": 50.0,
+   "rotation": 0.0,
+   "parent": "face"
+  },
+  {
+   "name": "eye_R",
+   "length": 20,
+   "x": 61.0,
+   "y": 9.0,
+   "rotation": 0.0,
+   "parent": "face"
+  },
+  {
+   "name": "mouth",
+   "length": 20,
+   "x": -23.0,
+   "y": -10.0,
+   "rotation": 0.0,
+   "parent": "face"
+  },
+  {
+   "name": "nose",
+   "length": 15,
+   "x": -15.0,
+   "y": 5.0,
+   "rotation": 0.0,
+   "parent": "face"
+  },
+  {
+   "name": "whisker_L",
+   "length": 40,
+   "x": -115.0,
+   "y": 25.0,
+   "rotation": 0.0,
+   "parent": "face"
+  },
+  {
+   "name": "whisker_R",
+   "length": 40,
+   "x": 120.0,
+   "y": -45.0,
+   "rotation": 0.0,
+   "parent": "face"
+  },
+  {
+   "name": "ear_L",
+   "length": 70,
+   "x": -110.0,
+   "y": 500.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "ear_R",
+   "length": 70,
+   "x": 90.0,
+   "y": 450.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "paw_L",
+   "length": 70,
+   "x": -230.0,
+   "y": 320.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "paw_R",
+   "length": 70,
+   "x": 90.0,
+   "y": 335.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "foot_L",
+   "length": 60,
+   "x": -99.0,
+   "y": 85.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  },
+  {
+   "name": "foot_R",
+   "length": 60,
+   "x": 114.0,
+   "y": 80.0,
+   "rotation": 0.0,
+   "parent": "mascot"
+  }
+ ],
+ "slots": [
+  {
+   "name": "bong",
+   "bone": "streak_1",
+   "attachment": "bong"
+  },
+  {
+   "name": "bong_2",
+   "bone": "streak_2",
+   "attachment": "bong_2"
+  },
+  {
+   "name": "bong_3",
+   "bone": "streak_3",
+   "attachment": "bong_3"
+  },
+  {
+   "name": "banhxe_Layer_1",
+   "bone": "wheel_1",
+   "attachment": "banhxe_Layer_1"
+  },
+  {
+   "name": "banhxe_Layer_2",
+   "bone": "wheel_2",
+   "attachment": "banhxe_Layer_2"
+  },
+  {
+   "name": "banhxe_Layer_3",
+   "bone": "wheel_3",
+   "attachment": "banhxe_Layer_3"
+  },
+  {
+   "name": "banhxe_Layer_4",
+   "bone": "wheel_4",
+   "attachment": "banhxe_Layer_4"
+  },
+  {
+   "name": "xeday_bong2",
+   "bone": "ctrl_cart",
+   "attachment": "xeday_bong2"
+  },
+  {
+   "name": "xe_day1",
+   "bone": "ctrl_cart",
+   "attachment": "xe_day1"
+  },
+  {
+   "name": "gold",
+   "bone": "coins_R",
+   "attachment": "gold"
+  },
+  {
+   "name": "gold_2",
+   "bone": "coins_R",
+   "attachment": "gold_2"
+  },
+  {
+   "name": "gold_3",
+   "bone": "coins_R",
+   "attachment": "gold_3"
+  },
+  {
+   "name": "gold_4",
+   "bone": "coins_R",
+   "attachment": "gold_4"
+  },
+  {
+   "name": "gold2",
+   "bone": "coins_L",
+   "attachment": "gold2"
+  },
+  {
+   "name": "gold1",
+   "bone": "coins_L",
+   "attachment": "gold1"
+  },
+  {
+   "name": "bst3",
+   "bone": "item_bst3",
+   "attachment": "bst3"
+  },
+  {
+   "name": "bst4",
+   "bone": "item_bst4",
+   "attachment": "bst4"
+  },
+  {
+   "name": "bst2",
+   "bone": "item_bst2",
+   "attachment": "bst2"
+  },
+  {
+   "name": "shadow_mascot",
+   "bone": "fx_shadow",
+   "attachment": "shadow_mascot",
+   "blend": "multiply"
+  },
+  {
+   "name": "glow_mascot",
+   "bone": "glow",
+   "attachment": "glow_mascot"
+  },
+  {
+   "name": "bong_4",
+   "bone": "streak_4",
+   "attachment": "bong_4"
+  },
+  {
+   "name": "banhxe1",
+   "bone": "ghost_wheel_1",
+   "attachment": "banhxe1"
+  },
+  {
+   "name": "banhxe2",
+   "bone": "ghost_wheel_2",
+   "attachment": "banhxe2"
+  },
+  {
+   "name": "star",
+   "bone": "star_1",
+   "attachment": "star"
+  },
+  {
+   "name": "star_2",
+   "bone": "star_2",
+   "attachment": "star_2"
+  },
+  {
+   "name": "star_3",
+   "bone": "star_3",
+   "attachment": "star_3"
+  },
+  {
+   "name": "star_4",
+   "bone": "star_4",
+   "attachment": "star_4"
+  },
+  {
+   "name": "star_5",
+   "bone": "star_5",
+   "attachment": "star_5"
+  },
+  {
+   "name": "tay2",
+   "bone": "paw_L",
+   "attachment": "tay2"
+  },
+  {
+   "name": "chan1",
+   "bone": "foot_R",
+   "attachment": "chan1"
+  },
+  {
+   "name": "chan2",
+   "bone": "foot_L",
+   "attachment": "chan2"
+  },
+  {
+   "name": "tai1",
+   "bone": "ear_L",
+   "attachment": "tai1"
+  },
+  {
+   "name": "body",
+   "bone": "mascot",
+   "attachment": "body"
+  },
+  {
+   "name": "tai2",
+   "bone": "ear_R",
+   "attachment": "tai2"
+  },
+  {
+   "name": "mui",
+   "bone": "nose",
+   "attachment": "mui"
+  },
+  {
+   "name": "mieng",
+   "bone": "mouth",
+   "attachment": "mieng"
+  },
+  {
+   "name": "mat1",
+   "bone": "eye_L",
+   "attachment": "mat1"
+  },
+  {
+   "name": "mat2",
+   "bone": "eye_R",
+   "attachment": "mat2"
+  },
+  {
+   "name": "rau2",
+   "bone": "whisker_L",
+   "attachment": "rau2"
+  },
+  {
+   "name": "rau1",
+   "bone": "whisker_R",
+   "attachment": "rau1"
+  },
+  {
+   "name": "xeday_bong1",
+   "bone": "ctrl_cart",
+   "attachment": "xeday_bong1"
+  },
+  {
+   "name": "xeday2",
+   "bone": "ctrl_cart",
+   "attachment": "xeday2"
+  },
+  {
+   "name": "tay1",
+   "bone": "paw_R",
+   "attachment": "tay1"
+  }
+ ],
+ "skins": [
+  {
+   "name": "default",
+   "attachments": {
+    "bong": {
+     "bong": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 658,
+      "height": 428
+     }
+    },
+    "bong_2": {
+     "bong_2": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 658,
+      "height": 428
+     }
+    },
+    "bong_3": {
+     "bong_3": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 428,
+      "height": 279
+     }
+    },
+    "banhxe_Layer_1": {
+     "banhxe_Layer_1": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 169,
+      "height": 143
+     }
+    },
+    "banhxe_Layer_2": {
+     "banhxe_Layer_2": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 168,
+      "height": 145
+     }
+    },
+    "banhxe_Layer_3": {
+     "banhxe_Layer_3": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 167,
+      "height": 142
+     }
+    },
+    "banhxe_Layer_4": {
+     "banhxe_Layer_4": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 170,
+      "height": 144
+     }
+    },
+    "xeday_bong2": {
+     "xeday_bong2": {
+      "type": "region",
+      "x": 341.0,
+      "y": 877.0,
+      "rotation": 0,
+      "width": 816,
+      "height": 246
+     }
+    },
+    "xe_day1": {
+     "xe_day1": {
+      "type": "region",
+      "x": 48.0,
+      "y": 404.5,
+      "rotation": 0,
+      "width": 1196,
+      "height": 1099
+     }
+    },
+    "gold": {
+     "gold": {
+      "type": "region",
+      "x": -108.5,
+      "y": 78.0,
+      "rotation": 0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold_2": {
+     "gold_2": {
+      "type": "region",
+      "x": 112.5,
+      "y": 51.0,
+      "rotation": 0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold_3": {
+     "gold_3": {
+      "type": "region",
+      "x": 48.5,
+      "y": 25.0,
+      "rotation": 0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold_4": {
+     "gold_4": {
+      "type": "region",
+      "x": -86.5,
+      "y": -39.0,
+      "rotation": 0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold2": {
+     "gold2": {
+      "type": "region",
+      "x": -52.5,
+      "y": 52.5,
+      "rotation": 0,
+      "width": 353,
+      "height": 217
+     }
+    },
+    "gold1": {
+     "gold1": {
+      "type": "region",
+      "x": 55.5,
+      "y": -4.0,
+      "rotation": 0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "bst3": {
+     "bst3": {
+      "type": "region",
+      "x": 0.0,
+      "y": 218.0,
+      "rotation": 0,
+      "width": 392,
+      "height": 456
+     }
+    },
+    "bst4": {
+     "bst4": {
+      "type": "region",
+      "x": 0.0,
+      "y": 244.0,
+      "rotation": 0,
+      "width": 502,
+      "height": 508
+     }
+    },
+    "bst2": {
+     "bst2": {
+      "type": "region",
+      "x": 0.0,
+      "y": 154.0,
+      "rotation": 0,
+      "width": 304,
+      "height": 338
+     }
+    },
+    "shadow_mascot": {
+     "shadow_mascot": {
+      "type": "region",
+      "x": 3.5,
+      "y": -3.5,
+      "rotation": 0,
+      "width": 1307,
+      "height": 1191
+     }
+    },
+    "glow_mascot": {
+     "glow_mascot": {
+      "type": "region",
+      "x": 0.5,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 865,
+      "height": 886
+     }
+    },
+    "bong_4": {
+     "bong_4": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 378,
+      "height": 247
+     }
+    },
+    "banhxe1": {
+     "banhxe1": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 106,
+      "height": 144
+     }
+    },
+    "banhxe2": {
+     "banhxe2": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 140,
+      "height": 140
+     }
+    },
+    "star": {
+     "star": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 105,
+      "height": 104
+     }
+    },
+    "star_2": {
+     "star_2": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 75,
+      "height": 74
+     }
+    },
+    "star_3": {
+     "star_3": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 105,
+      "height": 104
+     }
+    },
+    "star_4": {
+     "star_4": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 73,
+      "height": 72
+     }
+    },
+    "star_5": {
+     "star_5": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0,
+      "width": 71,
+      "height": 70
+     }
+    },
+    "tay2": {
+     "tay2": {
+      "type": "region",
+      "x": -55.0,
+      "y": -1.0,
+      "rotation": 0,
+      "width": 140,
+      "height": 112
+     }
+    },
+    "chan1": {
+     "chan1": {
+      "type": "region",
+      "x": 0.0,
+      "y": -57.5,
+      "rotation": 0,
+      "width": 178,
+      "height": 135
+     }
+    },
+    "chan2": {
+     "chan2": {
+      "type": "region",
+      "x": 0.0,
+      "y": -56.0,
+      "rotation": 0,
+      "width": 172,
+      "height": 132
+     }
+    },
+    "tai1": {
+     "tai1": {
+      "type": "region",
+      "x": 22.0,
+      "y": 46.0,
+      "rotation": 0,
+      "width": 168,
+      "height": 100
+     }
+    },
+    "body": {
+     "body": {
+      "type": "region",
+      "x": -4.5,
+      "y": 264.0,
+      "rotation": 0,
+      "width": 581,
+      "height": 578
+     }
+    },
+    "tai2": {
+     "tai2": {
+      "type": "region",
+      "x": 37.0,
+      "y": 39.5,
+      "rotation": 0,
+      "width": 166,
+      "height": 155
+     }
+    },
+    "mui": {
+     "mui": {
+      "type": "region",
+      "x": 0.0,
+      "y": -0.5,
+      "rotation": 0,
+      "width": 36,
+      "height": 27
+     }
+    },
+    "mieng": {
+     "mieng": {
+      "type": "region",
+      "x": 0.5,
+      "y": -27.5,
+      "rotation": 0,
+      "width": 63,
+      "height": 75
+     }
+    },
+    "mat1": {
+     "mat1": {
+      "type": "region",
+      "x": 0.0,
+      "y": 0.5,
+      "rotation": 0,
+      "width": 52,
+      "height": 45
+     }
+    },
+    "mat2": {
+     "mat2": {
+      "type": "region",
+      "x": 0.5,
+      "y": -0.5,
+      "rotation": 0,
+      "width": 67,
+      "height": 57
+     }
+    },
+    "rau2": {
+     "rau2": {
+      "type": "region",
+      "x": -26.0,
+      "y": 4.0,
+      "rotation": 0,
+      "width": 44,
+      "height": 36
+     }
+    },
+    "rau1": {
+     "rau1": {
+      "type": "region",
+      "x": 16.0,
+      "y": -4.0,
+      "rotation": 0,
+      "width": 44,
+      "height": 42
+     }
+    },
+    "xeday_bong1": {
+     "xeday_bong1": {
+      "type": "region",
+      "x": 21.0,
+      "y": 325.0,
+      "rotation": 0,
+      "width": 1124,
+      "height": 766
+     }
+    },
+    "xeday2": {
+     "xeday2": {
+      "type": "region",
+      "x": -25.0,
+      "y": 302.0,
+      "rotation": 0,
+      "width": 1060,
+      "height": 710
+     }
+    },
+    "tay1": {
+     "tay1": {
+      "type": "region",
+      "x": 35.0,
+      "y": -1.0,
+      "rotation": 0,
+      "width": 142,
+      "height": 140
+     }
+    }
+   }
+  }
+ ],
+ "animations": {}
+}

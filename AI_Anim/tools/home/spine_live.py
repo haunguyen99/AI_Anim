@@ -62,7 +62,7 @@ KEEP_BACKUP = 40   # mỗi file JSON giữ chừng này bản backup
 CLIENTS = {}   # id trang -> {t, follow, seq, json}
 CT = {".json": "application/json; charset=utf-8", ".atlas": "text/plain; charset=utf-8", ".txt": "text/plain; charset=utf-8",
       ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".js": "text/javascript; charset=utf-8",
-      ".css": "text/css; charset=utf-8"}
+      ".css": "text/css; charset=utf-8", ".mp4": "video/mp4"}
 
 
 def rel(p):
@@ -945,7 +945,8 @@ def handle_post(h, path, body):
     if path.startswith("/api/spine/br/"):   # cầu nối lệnh Claude <-> trang (spine_bridge.py)
         import spine_bridge
         return spine_bridge.handle_post(h, path, body)
-    fn = {"/api/spine/key": key_pose, "/api/spine/params": set_params, "/api/spine/file/delete": delete_file, "/api/spine/attachment": set_attachment, "/api/spine/note": lambda b: {"id": add_note(b)}, "/api/spine/undo": lambda b: _labeled(b, "Hoàn tác", undo), "/api/spine/redo": lambda b: _labeled(b, "Làm lại", redo),
+    fn = {"/api/spine/playblast": lambda b: __import__("spine_playblast").handle(b, safe, rel),   # quay video (spine_playblast.py)
+          "/api/spine/key": key_pose, "/api/spine/params": set_params, "/api/spine/file/delete": delete_file, "/api/spine/attachment": set_attachment, "/api/spine/note": lambda b: {"id": add_note(b)}, "/api/spine/undo": lambda b: _labeled(b, "Hoàn tác", undo), "/api/spine/redo": lambda b: _labeled(b, "Làm lại", redo),
           "/api/spine/version/restore": restore_version, "/api/spine/version/thumb": save_thumb,
           "/api/spine/version/publish": publish_version, "/api/spine/history/goto": history_goto, "/api/spine/anim": anim_op,
           "/api/spine/keyed/clear": clear_keyed, "/api/spine/keyed/delete": delete_keypose,

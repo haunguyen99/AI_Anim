@@ -1,0 +1,599 @@
+{
+ "skeleton": {
+  "spine": "4.2.43",
+  "fps": 30,
+  "x": -771.5,
+  "y": 0,
+  "width": 1543,
+  "height": 1266,
+  "images": "./images/"
+ },
+ "bones": [
+  {
+   "name": "root"
+  }
+ ],
+ "slots": [
+  {
+   "name": "bong",
+   "bone": "root",
+   "attachment": "bong"
+  },
+  {
+   "name": "bong_2",
+   "bone": "root",
+   "attachment": "bong_2"
+  },
+  {
+   "name": "bong_3",
+   "bone": "root",
+   "attachment": "bong_3"
+  },
+  {
+   "name": "banhxe_Layer_1",
+   "bone": "root",
+   "attachment": "banhxe_Layer_1"
+  },
+  {
+   "name": "banhxe_Layer_2",
+   "bone": "root",
+   "attachment": "banhxe_Layer_2"
+  },
+  {
+   "name": "banhxe_Layer_3",
+   "bone": "root",
+   "attachment": "banhxe_Layer_3"
+  },
+  {
+   "name": "banhxe_Layer_4",
+   "bone": "root",
+   "attachment": "banhxe_Layer_4"
+  },
+  {
+   "name": "xeday_bong2",
+   "bone": "root",
+   "attachment": "xeday_bong2"
+  },
+  {
+   "name": "xe_day1",
+   "bone": "root",
+   "attachment": "xe_day1"
+  },
+  {
+   "name": "gold",
+   "bone": "root",
+   "attachment": "gold"
+  },
+  {
+   "name": "gold_2",
+   "bone": "root",
+   "attachment": "gold_2"
+  },
+  {
+   "name": "gold_3",
+   "bone": "root",
+   "attachment": "gold_3"
+  },
+  {
+   "name": "gold_4",
+   "bone": "root",
+   "attachment": "gold_4"
+  },
+  {
+   "name": "gold2",
+   "bone": "root",
+   "attachment": "gold2"
+  },
+  {
+   "name": "gold1",
+   "bone": "root",
+   "attachment": "gold1"
+  },
+  {
+   "name": "bst3",
+   "bone": "root",
+   "attachment": "bst3"
+  },
+  {
+   "name": "bst4",
+   "bone": "root",
+   "attachment": "bst4"
+  },
+  {
+   "name": "bst2",
+   "bone": "root",
+   "attachment": "bst2"
+  },
+  {
+   "name": "shadow_mascot",
+   "bone": "root",
+   "attachment": "shadow_mascot",
+   "blend": "multiply"
+  },
+  {
+   "name": "glow_mascot",
+   "bone": "root",
+   "attachment": "glow_mascot"
+  },
+  {
+   "name": "bong_4",
+   "bone": "root",
+   "attachment": "bong_4"
+  },
+  {
+   "name": "banhxe1",
+   "bone": "root",
+   "attachment": "banhxe1"
+  },
+  {
+   "name": "banhxe2",
+   "bone": "root",
+   "attachment": "banhxe2"
+  },
+  {
+   "name": "star",
+   "bone": "root",
+   "attachment": "star"
+  },
+  {
+   "name": "star_2",
+   "bone": "root",
+   "attachment": "star_2"
+  },
+  {
+   "name": "star_3",
+   "bone": "root",
+   "attachment": "star_3"
+  },
+  {
+   "name": "star_4",
+   "bone": "root",
+   "attachment": "star_4"
+  },
+  {
+   "name": "star_5",
+   "bone": "root",
+   "attachment": "star_5"
+  },
+  {
+   "name": "tay2",
+   "bone": "root",
+   "attachment": "tay2"
+  },
+  {
+   "name": "chan1",
+   "bone": "root",
+   "attachment": "chan1"
+  },
+  {
+   "name": "chan2",
+   "bone": "root",
+   "attachment": "chan2"
+  },
+  {
+   "name": "tai1",
+   "bone": "root",
+   "attachment": "tai1"
+  },
+  {
+   "name": "body",
+   "bone": "root",
+   "attachment": "body"
+  },
+  {
+   "name": "tai2",
+   "bone": "root",
+   "attachment": "tai2"
+  },
+  {
+   "name": "mui",
+   "bone": "root",
+   "attachment": "mui"
+  },
+  {
+   "name": "mieng",
+   "bone": "root",
+   "attachment": "mieng"
+  },
+  {
+   "name": "mat1",
+   "bone": "root",
+   "attachment": "mat1"
+  },
+  {
+   "name": "mat2",
+   "bone": "root",
+   "attachment": "mat2"
+  },
+  {
+   "name": "rau2",
+   "bone": "root",
+   "attachment": "rau2"
+  },
+  {
+   "name": "rau1",
+   "bone": "root",
+   "attachment": "rau1"
+  },
+  {
+   "name": "xeday_bong1",
+   "bone": "root",
+   "attachment": "xeday_bong1"
+  },
+  {
+   "name": "xeday2",
+   "bone": "root",
+   "attachment": "xeday2"
+  },
+  {
+   "name": "tay1",
+   "bone": "root",
+   "attachment": "tay1"
+  }
+ ],
+ "skins": [
+  {
+   "name": "default",
+   "attachments": {
+    "bong": {
+     "bong": {
+      "x": 187.5,
+      "y": 458.0,
+      "width": 658,
+      "height": 428
+     }
+    },
+    "bong_2": {
+     "bong_2": {
+      "x": 442.5,
+      "y": 360.0,
+      "width": 658,
+      "height": 428
+     }
+    },
+    "bong_3": {
+     "bong_3": {
+      "x": -269.5,
+      "y": 222.5,
+      "width": 428,
+      "height": 279
+     }
+    },
+    "banhxe_Layer_1": {
+     "banhxe_Layer_1": {
+      "x": -466.0,
+      "y": 154.5,
+      "width": 169,
+      "height": 143
+     }
+    },
+    "banhxe_Layer_2": {
+     "banhxe_Layer_2": {
+      "x": -157.5,
+      "y": 283.5,
+      "width": 168,
+      "height": 145
+     }
+    },
+    "banhxe_Layer_3": {
+     "banhxe_Layer_3": {
+      "x": 131.0,
+      "y": 204.0,
+      "width": 167,
+      "height": 142
+     }
+    },
+    "banhxe_Layer_4": {
+     "banhxe_Layer_4": {
+      "x": -192.5,
+      "y": 74.0,
+      "width": 170,
+      "height": 144
+     }
+    },
+    "xeday_bong2": {
+     "xeday_bong2": {
+      "x": 209.5,
+      "y": 1143.0,
+      "width": 816,
+      "height": 246
+     }
+    },
+    "xe_day1": {
+     "xe_day1": {
+      "x": -83.5,
+      "y": 670.5,
+      "width": 1196,
+      "height": 1099
+     }
+    },
+    "gold": {
+     "gold": {
+      "x": -160.0,
+      "y": 554.0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold_2": {
+     "gold_2": {
+      "x": 61.0,
+      "y": 527.0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold_3": {
+     "gold_3": {
+      "x": -3.0,
+      "y": 501.0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold_4": {
+     "gold_4": {
+      "x": -138.0,
+      "y": 437.0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "gold2": {
+     "gold2": {
+      "x": -394.0,
+      "y": 438.5,
+      "width": 353,
+      "height": 217
+     }
+    },
+    "gold1": {
+     "gold1": {
+      "x": -286.0,
+      "y": 382.0,
+      "width": 351,
+      "height": 216
+     }
+    },
+    "bst3": {
+     "bst3": {
+      "x": 127.5,
+      "y": 904.0,
+      "width": 392,
+      "height": 456
+     }
+    },
+    "bst4": {
+     "bst4": {
+      "x": 26.5,
+      "y": 670.0,
+      "width": 502,
+      "height": 508
+     }
+    },
+    "bst2": {
+     "bst2": {
+      "x": -142.5,
+      "y": 980.0,
+      "width": 304,
+      "height": 338
+     }
+    },
+    "shadow_mascot": {
+     "shadow_mascot": {
+      "x": -118.0,
+      "y": 642.5,
+      "width": 1307,
+      "height": 1191
+     }
+    },
+    "glow_mascot": {
+     "glow_mascot": {
+      "x": -321.0,
+      "y": 740.0,
+      "width": 865,
+      "height": 886
+     }
+    },
+    "bong_4": {
+     "bong_4": {
+      "x": -2.5,
+      "y": 129.5,
+      "width": 378,
+      "height": 247
+     }
+    },
+    "banhxe1": {
+     "banhxe1": {
+      "x": 425.5,
+      "y": 226.0,
+      "width": 106,
+      "height": 144
+     }
+    },
+    "banhxe2": {
+     "banhxe2": {
+      "x": 521.5,
+      "y": 225.0,
+      "width": 140,
+      "height": 140
+     }
+    },
+    "star": {
+     "star": {
+      "x": 249.0,
+      "y": 910.0,
+      "width": 105,
+      "height": 104
+     }
+    },
+    "star_2": {
+     "star_2": {
+      "x": 209.0,
+      "y": 962.0,
+      "width": 75,
+      "height": 74
+     }
+    },
+    "star_3": {
+     "star_3": {
+      "x": -326.0,
+      "y": 1143.0,
+      "width": 105,
+      "height": 104
+     }
+    },
+    "star_4": {
+     "star_4": {
+      "x": -277.0,
+      "y": 1092.0,
+      "width": 73,
+      "height": 72
+     }
+    },
+    "star_5": {
+     "star_5": {
+      "x": -562.0,
+      "y": 996.0,
+      "width": 71,
+      "height": 70
+     }
+    },
+    "tay2": {
+     "tay2": {
+      "x": -626.5,
+      "y": 795.0,
+      "width": 140,
+      "height": 112
+     }
+    },
+    "chan1": {
+     "chan1": {
+      "x": -227.5,
+      "y": 498.5,
+      "width": 178,
+      "height": 135
+     }
+    },
+    "chan2": {
+     "chan2": {
+      "x": -440.5,
+      "y": 505.0,
+      "width": 172,
+      "height": 132
+     }
+    },
+    "tai1": {
+     "tai1": {
+      "x": -429.5,
+      "y": 1022.0,
+      "width": 168,
+      "height": 100
+     }
+    },
+    "body": {
+     "body": {
+      "x": -346.0,
+      "y": 740.0,
+      "width": 581,
+      "height": 578
+     }
+    },
+    "tai2": {
+     "tai2": {
+      "x": -214.5,
+      "y": 965.5,
+      "width": 166,
+      "height": 155
+     }
+    },
+    "mui": {
+     "mui": {
+      "x": -446.5,
+      "y": 900.5,
+      "width": 36,
+      "height": 27
+     }
+    },
+    "mieng": {
+     "mieng": {
+      "x": -454.0,
+      "y": 858.5,
+      "width": 63,
+      "height": 75
+     }
+    },
+    "mat1": {
+     "mat1": {
+      "x": -500.5,
+      "y": 946.5,
+      "width": 52,
+      "height": 45
+     }
+    },
+    "mat2": {
+     "mat2": {
+      "x": -370.0,
+      "y": 904.5,
+      "width": 67,
+      "height": 57
+     }
+    },
+    "rau2": {
+     "rau2": {
+      "x": -572.5,
+      "y": 925.0,
+      "width": 44,
+      "height": 36
+     }
+    },
+    "rau1": {
+     "rau1": {
+      "x": -295.5,
+      "y": 847.0,
+      "width": 44,
+      "height": 42
+     }
+    },
+    "xeday_bong1": {
+     "xeday_bong1": {
+      "x": -110.5,
+      "y": 591.0,
+      "width": 1124,
+      "height": 766
+     }
+    },
+    "xeday2": {
+     "xeday2": {
+      "x": -156.5,
+      "y": 568.0,
+      "width": 1060,
+      "height": 710
+     }
+    },
+    "tay1": {
+     "tay1": {
+      "x": -216.5,
+      "y": 810.0,
+      "width": 142,
+      "height": 140
+     }
+    }
+   }
+  }
+ ],
+ "animations": {
+  "setup": {
+   "bones": {
+    "root": {
+     "translate": [
+      {
+       "x": 0,
+       "y": 0
+      }
+     ]
+    }
+   }
+  }
+ }
+}

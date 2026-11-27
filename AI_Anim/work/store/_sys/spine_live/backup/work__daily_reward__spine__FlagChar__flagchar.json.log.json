@@ -3,34 +3,6 @@
   "who": "user",
   "what": "Áp dụng lưới",
   "keyed": null,
-  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165608208889757.json",
-  "t": "2026-11-20 16:06:48"
- },
- {
-  "who": "user",
-  "what": "Áp dụng lưới",
-  "keyed": null,
-  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165617131762943.json",
-  "t": "2026-11-20 16:06:57"
- },
- {
-  "who": "user",
-  "what": "Áp dụng lưới",
-  "keyed": null,
-  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165619430005261.json",
-  "t": "2026-11-20 16:06:59"
- },
- {
-  "who": "user",
-  "what": "Áp dụng lưới",
-  "keyed": null,
-  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165621804500980.json",
-  "t": "2026-11-20 16:07:01"
- },
- {
-  "who": "user",
-  "what": "Áp dụng lưới",
-  "keyed": null,
   "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165624503016502.json",
   "t": "2026-11-20 16:07:04"
  },
@@ -278,5 +250,33 @@
   "keyed": null,
   "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165860339520065.json",
   "t": "2026-11-20 16:11:00"
+ },
+ {
+  "who": "user",
+  "what": "Graph: xoá 10 key (chest)",
+  "keyed": null,
+  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795746965093282498.json",
+  "t": "2026-11-27 09:36:05"
+ },
+ {
+  "who": "user",
+  "what": "Graph: smooth cho 8 key (chest)",
+  "keyed": null,
+  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795746970909944391.json",
+  "t": "2026-11-27 09:36:10"
+ },
+ {
+  "who": "user",
+  "what": "Graph: xoá 16 key (chest)",
+  "keyed": null,
+  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795746973380700632.json",
+  "t": "2026-11-27 09:36:13"
+ },
+ {
+  "who": "user",
+  "what": "Graph: smooth cho 12 key (chest)",
+  "keyed": null,
+  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795746976621069650.json",
+  "t": "2026-11-27 09:36:16"
  }
 ]

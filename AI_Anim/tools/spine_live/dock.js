@@ -12,6 +12,7 @@
     { id: "note", sec: "noteBox", ic: "✎", label: "Ghi chú cho Claude (vẽ + Gen)", mode: "any" },
     { id: "param", sec: "parBox", ic: "🎚", label: "Tham số anim", mode: "anim" },
     { id: "phys", sec: "physBox", ic: "〰", label: "Physics (overlap)", mode: "anim" },
+    { id: "pb", sec: "pbBox", ic: "🎬", label: "Playblast (quay video mp4)", mode: "any" },
     { id: "mb", sec: "mbBox", ic: "▦", label: "Mesh / Bind (lưới, bind xương, weight)", mode: "any" },   // cả Animate: sửa weight ngay lúc anim
   ];
   const T = { active: store.get("tool", "") };

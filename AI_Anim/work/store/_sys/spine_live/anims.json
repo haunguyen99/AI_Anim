@@ -36,5 +36,22 @@
    "loop": true,
    "t": "2026-11-20 17:29:27"
   }
+ },
+ "work/test/spine/MuaHang/muahang.json": {
+  "rig_demo": {
+   "loop": true,
+   "t": "2026-11-27 09:56:31"
+  }
+ },
+ "work/meo_winstreak/spine/MeoWinstreak/meo.json": {
+  "rig_demo": {
+   "loop": true,
+   "t": "2026-11-27 11:10:12"
+  },
+  "grab": {
+   "desc": "LOOP: mèo idle -> máy gắp hạ xuống, khép càng, nhấc lên, mèo giãy, càng mở thả mèo rơi, máy bay lên cao (F cuối = F0)",
+   "loop": false,
+   "t": "2026-11-27 11:59:12"
+  }
  }
 }

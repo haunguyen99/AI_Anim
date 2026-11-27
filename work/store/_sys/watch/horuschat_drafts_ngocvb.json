@@ -1,0 +1,26 @@
+[
+ {
+  "id": 1,
+  "time": "2026-11-17 10:39:10",
+  "status": "sent",
+  "room": "!J0prldUbFjsOB87e:localhost",
+  "to": null,
+  "thread": null,
+  "text": "Hậu ơi, bạn nhắn mình khi rảnh nhé.",
+  "why": "ngocvb: 'hậu nhắn tin cho tôi' trong You",
+  "mentions": [],
+  "sent_at": "2026-11-17 10:41:31"
+ },
+ {
+  "id": 2,
+  "time": "2026-11-17 11:26:29",
+  "status": "sent",
+  "room": "!J0prldUbFjsOB87e:localhost",
+  "to": null,
+  "thread": null,
+  "text": "Mình rảnh rồi nhé, bạn nhắn mình trao đổi luôn đi.",
+  "why": "ngocvb: 'giờ mình rảnh r đây'",
+  "mentions": [],
+  "sent_at": "2026-11-17 11:27:35"
+ }
+]

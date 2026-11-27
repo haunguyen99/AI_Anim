@@ -1,0 +1,254 @@
+{
+ "canvas": [
+  1695,
+  4899
+ ],
+ "layers": {
+  "claw_arm_L": {
+   "psd": "Layer 1547",
+   "bbox": [
+    84,
+    3776,
+    576,
+    4443
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    492,
+    667
+   ]
+  },
+  "claw_knob_L": {
+   "psd": "Brightness/Contrast 1",
+   "bbox": [
+    70,
+    3704,
+    634,
+    4196
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    564,
+    492
+   ]
+  },
+  "cat_foot_L": {
+   "psd": "meo nam/Layer 12",
+   "bbox": [
+    218,
+    4232,
+    430,
+    4545
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    212,
+    313
+   ]
+  },
+  "cat_body": {
+   "psd": "meo nam/Layer 0",
+   "bbox": [
+    246,
+    3755,
+    1385,
+    4612
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    1139,
+    857
+   ]
+  },
+  "cat_belly": {
+   "psd": "meo nam/Layer 15",
+   "bbox": [
+    412,
+    4282,
+    1199,
+    4522
+   ],
+   "blend": "MULTIPLY",
+   "opacity": 0.1608,
+   "size": [
+    787,
+    240
+   ]
+  },
+  "mouth_nam": {
+   "psd": "meo nam/Layer 19",
+   "bbox": [
+    492,
+    4221,
+    575,
+    4274
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    83,
+    53
+   ]
+  },
+  "eye_L_nam": {
+   "psd": "meo nam/Layer 18",
+   "bbox": [
+    421,
+    4158,
+    487,
+    4254
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    66,
+    96
+   ]
+  },
+  "eye_R_nam": {
+   "psd": "meo nam/Layer 17",
+   "bbox": [
+    572,
+    4174,
+    655,
+    4271
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    83,
+    97
+   ]
+  },
+  "cat_ear_R": {
+   "psd": "meo nam/Layer 3",
+   "bbox": [
+    678,
+    3766,
+    934,
+    3969
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    256,
+    203
+   ]
+  },
+  "mouth_keo": {
+   "psd": "meo keo/Shape 2",
+   "bbox": [
+    492,
+    4221,
+    575,
+    4324
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    83,
+    103
+   ]
+  },
+  "eye_R_keo": {
+   "psd": "meo keo/Shape 1",
+   "bbox": [
+    594,
+    4170,
+    668,
+    4281
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    74,
+    111
+   ]
+  },
+  "eye_L_keo": {
+   "psd": "meo keo/Shape 1 copy",
+   "bbox": [
+    415,
+    4145,
+    491,
+    4255
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    76,
+    110
+   ]
+  },
+  "claw_arm_R": {
+   "psd": "Layer 1559",
+   "bbox": [
+    1050,
+    4015,
+    1523,
+    4486
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    473,
+    471
+   ]
+  },
+  "claw_knob_R": {
+   "psd": "Brightness/Contrast 1 copy",
+   "bbox": [
+    1049,
+    3776,
+    1613,
+    4268
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    564,
+    492
+   ]
+  },
+  "claw_body": {
+   "psd": "Layer 1548",
+   "bbox": [
+    167,
+    264,
+    1485,
+    4007
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    1318,
+    3743
+   ]
+  }
+ },
+ "order_bottom_to_top": [
+  "claw_arm_L",
+  "claw_knob_L",
+  "cat_foot_L",
+  "cat_body",
+  "cat_belly",
+  "mouth_nam",
+  "eye_L_nam",
+  "eye_R_nam",
+  "cat_ear_R",
+  "meo keo/Layer 12",
+  "meo keo/Layer 0",
+  "meo keo/Layer 15",
+  "mouth_keo",
+  "eye_R_keo",
+  "eye_L_keo",
+  "meo keo/Layer 3",
+  "claw_arm_R",
+  "claw_knob_R",
+  "claw_body"
+ ]
+}

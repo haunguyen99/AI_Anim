@@ -1,0 +1,196 @@
+[
+ {
+  "who": "claude",
+  "what": "Claude dựng rig mascot mua hàng",
+  "keyed": null,
+  "group": "1795747561792382946",
+  "name": "work__test__spine__MuaHang__muahang.json__1795747572861018844.json",
+  "t": "2026-11-27 09:46:12"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen rig_demo (demo rig)",
+  "keyed": null,
+  "group": "1795747561792382946",
+  "name": "work__test__spine__MuaHang__muahang.json__1795747573360257706.json",
+  "t": "2026-11-27 09:46:13"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #1",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747637424429514.json",
+  "t": "2026-11-27 09:47:17"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #2",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747639715694924.json",
+  "t": "2026-11-27 09:47:19"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #1",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747665381413340.json",
+  "t": "2026-11-27 09:47:45"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #2",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747666765509491.json",
+  "t": "2026-11-27 09:47:46"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #1",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747667869390237.json",
+  "t": "2026-11-27 09:47:47"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #2",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747749426363439.json",
+  "t": "2026-11-27 09:49:09"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #1",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795747822118382751.json",
+  "t": "2026-11-27 09:50:22"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #2",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748036055543335.json",
+  "t": "2026-11-27 09:53:56"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #1",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748101403224503.json",
+  "t": "2026-11-27 09:55:01"
+ },
+ {
+  "who": "claude",
+  "what": "Claude dựng rig mascot mua hàng",
+  "keyed": null,
+  "group": "1795748153027757605",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748190159421147.json",
+  "t": "2026-11-27 09:56:30"
+ },
+ {
+  "who": "claude",
+  "what": "Claude rig 2 tay + 2 tai mèo (mesh + weight)",
+  "keyed": null,
+  "group": "1795748153027757605",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748190519567911.json",
+  "t": "2026-11-27 09:56:30"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen rig_demo (demo rig)",
+  "keyed": null,
+  "group": "1795748153027757605",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748191207634942.json",
+  "t": "2026-11-27 09:56:31"
+ },
+ {
+  "who": "user",
+  "what": "Áp dụng lưới",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748379468947230.json",
+  "t": "2026-11-27 09:59:39"
+ },
+ {
+  "who": "user",
+  "what": "Áp dụng lưới",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748389365737190.json",
+  "t": "2026-11-27 09:59:49"
+ },
+ {
+  "who": "user",
+  "what": "Áp dụng lưới",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748401189776957.json",
+  "t": "2026-11-27 10:00:01"
+ },
+ {
+  "who": "user",
+  "what": "Áp dụng lưới",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748410365465935.json",
+  "t": "2026-11-27 10:00:10"
+ },
+ {
+  "who": "user",
+  "what": "Áp dụng lưới",
+  "keyed": null,
+  "name": "work__test__spine__MuaHang__muahang.json__1795748415605522466.json",
+  "t": "2026-11-27 10:00:15"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795748618605911198",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748618764766625.json",
+  "t": "2026-11-27 10:03:38"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795748680047223487",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748680212680724.json",
+  "t": "2026-11-27 10:04:40"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795748889110847752",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748889283895389.json",
+  "t": "2026-11-27 10:08:09"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795748922805896349",
+  "name": "work__test__spine__MuaHang__muahang.json__1795748922963594897.json",
+  "t": "2026-11-27 10:08:42"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795749037794518917",
+  "name": "work__test__spine__MuaHang__muahang.json__1795749037970834060.json",
+  "t": "2026-11-27 10:10:37"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795749103016293411",
+  "name": "work__test__spine__MuaHang__muahang.json__1795749103227053953.json",
+  "t": "2026-11-27 10:11:43"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen idle",
+  "keyed": null,
+  "group": "1795749662628750507",
+  "name": "work__test__spine__MuaHang__muahang.json__1795749662681657037.json",
+  "t": "2026-11-27 10:21:02"
+ }
+]

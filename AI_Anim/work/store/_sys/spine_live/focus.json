@@ -1,118 +1,6 @@
 {
- "seq": 38,
+ "seq": 66,
  "log": [
-  {
-   "t": "15:55:02",
-   "say": "Active v5: kéo mờ dần F40-46"
-  },
-  {
-   "t": "15:57:15",
-   "say": "Active v6: F30-45 kéo bay theo một cung cong"
-  },
-  {
-   "t": "16:01:28",
-   "say": "Active v7: kéo lao nhanh, dứt khoát hơn"
-  },
-  {
-   "t": "16:14:24",
-   "say": "Giao diện: ban đêm"
-  },
-  {
-   "t": "16:30:19",
-   "say": "Unlock: active v7 (kéo lao cung cong, mờ F40-46)"
-  },
-  {
-   "t": "09:29:55",
-   "say": "Rig xong: 13 xương, 2 IK tay (kéo grip = 2 tay + cờ đi cùng). Đang chạy rig_demo."
-  },
-  {
-   "t": "09:32:03",
-   "say": "Rig + idle (thở) + active (cúi nhẹ) xong. Xem anim idle, rồi chọn active trong ô anim."
-  },
-  {
-   "t": "09:41:25",
-   "say": "Idle mới: thở lên/xuống (ngực -> đầu trễ ~6F -> tay + cờ trễ ~8F), chớp mắt F58. Active có chớp mắt lúc cúi (F32)."
-  },
-  {
-   "t": "09:44:25",
-   "say": "Quạt: xương đặt đúng tâm quả cầu trắng. Chân: leg_F/foot_F (chân trước), leg_B/foot_B (chân sau) — demo đang chạy từng chân."
-  },
-  {
-   "t": "09:48:41",
-   "say": "Idle: tay + cờ trễ nhịp ngực — ở đỉnh hít tay còn thấp hơn ngực ~2 px, ở đáy thở ra tay còn cao hơn ngực ~1-2 px."
-  },
-  {
-   "t": "09:52:25",
-   "say": "Thêm xương mouth ở tâm mỏ: idle cho mỏ phồng nhẹ (+3,5%) ngay sau đỉnh hít rồi xẹp từ từ."
-  },
-  {
-   "t": "09:54:07",
-   "say": "Mỏ: phồng nhỏ lại (+2%), thêm nhấp lên xuống ~2 px theo nhịp thở."
-  },
-  {
-   "t": "09:57:07",
-   "say": "Tay: trễ nhiều hơn (~20F sau ngực), mỗi găng trễ thêm lệch nhau, găng ngả ±5-6°."
-  },
-  {
-   "t": "10:02:55",
-   "say": "Chuỗi trễ: ngực F38 -> cánh tay (grip, IK cẳng tay) F50 -> bàn tay F55; bàn tay cụp theo độ trễ so với cánh tay."
-  },
-  {
-   "t": "10:04:13",
-   "say": "Cánh tay + cờ lên xuống ~10 px (trước ~6,5 px), vẫn trễ sau ngực."
-  },
-  {
-   "t": "10:05:58",
-   "say": "Cánh tay: nhịp nhanh hơn (đỉnh F45, trễ ~7F sau ngực); bàn tay: biên độ riêng giảm một nửa."
-  },
-  {
-   "t": "10:06:08",
-   "say": "Bàn tay: biên độ riêng giảm còn ~30% bản trước."
-  },
-  {
-   "t": "10:21:46",
-   "say": "Đã sửa lỗi Remesh (hiển thị % lưới sai) và khôi phục rig sau lần thử."
-  },
-  {
-   "t": "11:27:33",
-   "say": "Active mới: đưa tay + cờ lên (F16) -> nhún xuống mạnh (F32-42) -> đưa cờ lên vọt (F54) -> lắng về idle."
-  },
-  {
-   "t": "11:39:33",
-   "say": "Active: nhún nhỏ (F27-31), nảy lên dứt khoát F31-41 (tay + cờ vọt ~26 px, ngực bật +7 px), bàn tay trễ overlap sau cánh tay."
-  },
-  {
-   "t": "11:41:20",
-   "say": "Lá cờ: overlap mạnh hơn — bị tay kéo theo nhịp (vọt lên cờ ngả ra sau, hạ cờ hất ra trước) và nảy thêm ~2 nhịp rồi lắng."
-  },
-  {
-   "t": "11:46:18",
-   "say": "Active 50F: lấy đà F0-8, nhún nhỏ, nảy lên F19-26, hồi về F26-50. Cán cờ (xương pole) dính tay; chỉ vải cờ overlap."
-  },
-  {
-   "t": "11:50:06",
-   "say": "Cờ bay mạnh hơn (vải vung ~±34°), đầu cúi thêm lúc nhún (-7°)."
-  },
-  {
-   "t": "11:53:42",
-   "say": "Cờ quanh F28 giảm ~10%."
-  },
-  {
-   "t": "14:18:44",
-   "say": "Cẳng tay arm_R / arm_L giờ có key xoay (IK đã nướng thành key, IK tắt): chọn xương trên hình -> Graph để thấy curve."
-  },
-  {
-   "t": "17:08:36",
-   "say": "Đã tách 22 layer của nhân vật mới (PeaceGirl), tất cả còn gắn xương root, chưa rig. Kiểm xem các layer ghép lại có khớp ảnh gốc không."
-  },
-  {
-   "t": "17:08:50",
-   "say": "Đã tách 22 layer của nhân vật mới (PeaceGirl), tất cả còn gắn xương root, chưa rig. Kiểm xem các layer ghép lại có khớp ảnh gốc không."
-  },
-  {
-   "t": "17:14:10",
-   "say": "Đã tách xong 22 layer (L/R theo màn hình), chưa rig. Layer nào nằm sau layer khác đã được tô phần bị che để rig không bị hở."
-  },
   {
    "t": "17:29:38",
    "say": "Rig xong (20 xương). Demo rig: mỗi xương lần lượt lắc ±18° rồi về setup."
@@ -120,14 +8,128 @@
   {
    "t": "17:30:55",
    "say": "Idle thở 90F: ngực nâng + nở, đầu và hai tay trễ nhịp, tóc bên physics, chớp mắt F58."
+  },
+  {
+   "t": "09:42:59",
+   "say": "Đã mở mascot mua hàng (xe đẩy): 43 layer từ PSD, chưa rig, còn gắn xương root. Layer ẩn bst4 (pixel) được bỏ qua."
+  },
+  {
+   "t": "09:46:13",
+   "say": "Rig xong. Demo rig: từng xương lần lượt lắc ±18° rồi về setup; ctrl_cart dời + phồng; cuối anim cả rig cùng lắc."
+  },
+  {
+   "t": "09:56:31",
+   "say": "Đã rig 2 tai + 2 tay mèo: mỗi cái 2 xương + mesh (gốc dính thân, uốn ở giữa). Bật Hiển thị > Lưới để xem."
+  },
+  {
+   "t": "10:03:40",
+   "say": "Idle xe chạy nhanh: xe + hàng rung, bánh lăn 3 vòng/loop, mèo rung trễ pha, tai + tay overlap theo thân."
+  },
+  {
+   "t": "10:04:42",
+   "say": "Đã tăng biên độ rung: xe ~5 px, mèo ~5 px, hàng ~3 px."
+  },
+  {
+   "t": "10:08:23",
+   "say": "Đã sửa: bánh xe không quay, nhún tại chỗ bằng scale; nhịp rung giảm còn 3 nhịp/loop, biên độ nhỏ hơn."
+  },
+  {
+   "t": "10:08:45",
+   "say": "Giảm thêm overlap tay + tai (±12° thay vì ±20°)."
+  },
+  {
+   "t": "10:10:40",
+   "say": "Miệng mèo scale lên/xuống theo nhịp; khói dưới xe đứng yên, chỉ co giãn trái/phải."
+  },
+  {
+   "t": "10:11:45",
+   "say": "Giảm lắc ngang / nghiêng của xe: nhịp 1 lần/loop, biên độ ~0,9 px + 0,3°."
+  },
+  {
+   "t": "10:21:04",
+   "say": "Idle mới 60F: xe + mèo nhấp nhẹ lên xuống, tai / tay / râu / miệng overlap trễ sau thân."
+  },
+  {
+   "t": "10:58:33",
+   "say": "Rig MeoWinstreak vừa dựng: 23 xương, 12 slot. Đang chạy rig_demo: mỗi xương lần lượt lắc ±15°."
+  },
+  {
+   "t": "11:07:03",
+   "say": "Đã sửa lớp bóng bụng (bỏ multiply làm sáng bụng). Rig: 23 xương, 9 mesh + 3 slot mặt (region), rig_demo 288F."
+  },
+  {
+   "t": "11:10:19",
+   "say": "Cán chỉ còn 1 xương (hang), thân máy gắp là claw. 21 xương."
+  },
+  {
+   "t": "11:25:37",
+   "say": "Anim grab 150F: mèo idle, máy gắp hạ xuống, khép càng, nhấc lên, mèo giãy."
+  },
+  {
+   "t": "11:26:27",
+   "say": "grab v2: giãy mạnh hơn, chậm nhịp hơn (8F), chân quẫy nhỏ lại."
+  },
+  {
+   "t": "11:28:24",
+   "say": "grab v3: hạ xuống F4-26 (trước F6-46), nhấc F36-62 (trước F56-108); tổng 128F."
+  },
+  {
+   "t": "11:30:22",
+   "say": "grab v4: cần bắt đầu cao 3200 px, rơi nhanh dần F8-26, nhấc lên 2000 px trong ~30F."
+  },
+  {
+   "t": "11:34:17",
+   "say": "grab v5: chân trước quẫy nhẹ; F106-110 càng bật mở, F110-132 mèo rơi tự do, chạm đất dẹt + nảy 2 lần."
+  },
+  {
+   "t": "11:37:41",
+   "say": "grab v6: sửa khe hở chân trái (weight), rơi 13F, chạm đất dẹt nặng 0.58/1.42, nảy thấp."
+  },
+  {
+   "t": "11:38:10",
+   "say": "Chân trái bám thân hơn để hết hở khe khi mèo giãy."
+  },
+  {
+   "t": "11:39:59",
+   "say": "grab v7: nảy F128-135 cao 55 px, giãn 1.24 / 0.84; sau khi thả máy đứng yên."
+  },
+  {
+   "t": "11:44:10",
+   "say": "grab v8: chạm đất dẹt 0.74/1.24 (bớt bẹp), nảy cao 85 px."
+  },
+  {
+   "t": "11:46:46",
+   "say": "grab v9: F138 đổi mặt keo -> nam, mắt mở dần F138-140 (0.15 -> 0.55 -> 1)."
+  },
+  {
+   "t": "11:47:57",
+   "say": "grab v10 LOOP: sau khi thả mèo máy bay lên lại vị trí đầu (F129-153), F157 = F0."
+  },
+  {
+   "t": "11:50:31",
+   "say": "grab v11: F125 dẹt 0.94/1.10 (bớt bẹp 0.2), nảy nhanh: lên đỉnh F129-130, chạm lại F133, yên F141."
+  },
+  {
+   "t": "11:51:56",
+   "say": "grab v12: nảy lần 1 cao 255 px (trước 85), 6F; yên khoảng F142."
+  },
+  {
+   "t": "11:54:26",
+   "say": "grab v13: nảy lần 1 cao 170 px (giảm 0.1 chiều cao mèo)."
+  },
+  {
+   "t": "11:56:28",
+   "say": "Đã về bản #14 (grab loop, nảy 85 px, dẹt 0.74/1.24)."
   }
  ],
- "json": "work/peace_girl/spine/PeaceGirl/peacegirl.json",
- "anim": "idle",
+ "json": "work/meo_winstreak/spine/MeoWinstreak/meo.json",
+ "anim": "grab",
  "frame": null,
- "view": {},
- "say": "Idle thở 90F: ngực nâng + nở, đầu và hai tay trễ nhịp, tóc bên physics, chớp mắt F58.",
+ "view": {
+  "bones": true
+ },
+ "say": "Đã về bản #14 (grab loop, nảy 85 px, dẹt 0.74/1.24).",
  "what": "show",
- "t": "17:30:55",
+ "t": "11:56:28",
  "theme": "dark"
 }
