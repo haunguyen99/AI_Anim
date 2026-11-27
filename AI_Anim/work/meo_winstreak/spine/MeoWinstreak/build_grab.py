@@ -21,6 +21,9 @@ T0 = 26                   # frame máy chạm mèo (càng khép lại quanh đó
 R = 110                   # frame máy mở càng thả mèo (R - T0 = 3 chu kỳ đu đưa 28F: cán đang ở giữa nhịp, mèo không lệch ngang)
 TF = 13                   # mèo rơi tự do R -> LAND (13F, ~2000 px, gia tốc đều, chạm đất ~300 px/F)
 LAND = R + TF
+K_BODY = 0.2              # hệ số biên độ lắc THÂN / ĐẦU khi giãy (2026-11-27: người dùng "giảm biên độ lắc của mèo sao cho không bị lộ hoặc cắt"; bản #14 = 1.0).
+                          # Mép cắt giữa cat_head và thân máy là bản sao mép kẹp ở tư thế gốc: lắc lệch quá vài px thì lộ bậc.
+K_STRETCH = 0.15           # hệ số độ kéo giãn dọc khi bị nhấc / giãy (bản #14 = 1.0)
 HOP1 = 85.0               # độ cao nảy lần 1 (px). Người dùng chọn bản #14 (85 px, dẹt 0.74 / 1.24, nảy 7F) hơn các bản sau (2026-11-27)
 EYE_OPEN = 138              # frame mèo bắt đầu mở mắt lại (đổi mặt keo -> nam, mở hẳn ở EYE_OPEN + 2)
 N = LAND + 34
@@ -71,24 +74,54 @@ def hop(f):
     return 0.0
 
 
+HANG_FILE = None        # key `hang` (xoay / dời) người dùng đã sửa trong file (Graph: xoá key, Sửa curve): nếu có thì GIỮ NGUYÊN và mèo bám theo chính các key đó
+_hang_cache = {}
+
+
+def th_deg(f):
+    """góc đu đưa THỰC của xương hang tại frame f (độ): từ file nếu người dùng đã sửa, không thì THETA của script"""
+    if HANG_FILE is None:
+        return THETA(f)
+    g = _hang_cache.setdefault("r", K.spine_curve(HANG_FILE["rotate"], "value"))
+    return g(f)
+
+
+def d_px(f):
+    """độ dời THỰC của xương hang (px, local x = dời lên thế giới)"""
+    if HANG_FILE is None:
+        return D(f)
+    g = _hang_cache.setdefault("t", K.spine_curve(HANG_FILE["translate"], "x"))
+    return g(f)
+
+
 def cat_xy(f):
     """dời THẾ GIỚI của xương cat: tới R bám máy (cứng quanh đỉnh cán + D), sau R rơi tự do về 0 (dy = dy0 (1 - u^2)), rồi nảy"""
     if f <= R:
-        th = math.radians(THETA(f)); w = W_GRIP(f)
-        return L_CAT * math.sin(th) * w, (L_CAT * (1 - math.cos(th)) + D(f)) * w
-    th = math.radians(THETA(R)); dx0 = L_CAT * math.sin(th); dy0 = L_CAT * (1 - math.cos(th)) + D(R)
+        th = math.radians(th_deg(f)); w = W_GRIP(f)
+        return L_CAT * math.sin(th) * w, (L_CAT * (1 - math.cos(th)) + d_px(f)) * w
+    th = math.radians(th_deg(R)); dx0 = L_CAT * math.sin(th); dy0 = L_CAT * (1 - math.cos(th)) + d_px(R)
     u = min(1.0, (f - R) / float(TF))
     return dx0 * (1 - ss(R, LAND, f)), dy0 * (1 - u * u) + hop(f)
 
 
 def cat_rot(f):
     if f <= R:
-        return W_GRIP(f) * THETA(f) + 4.0 * STRUG(f) * u1(f - 1)
+        return W_GRIP(f) * th_deg(f) + 4.0 * K_BODY * STRUG(f) * u1(f - 1)
     u = min(1.0, (f - R) / float(TF))
-    return 9.0 * math.sin(math.pi * u) + 4.0 * STRUG(f) * u1(f - 1)       # xoay nhẹ khi rơi
+    return 9.0 * math.sin(math.pi * u) + 4.0 * K_BODY * STRUG(f) * u1(f - 1)       # xoay nhẹ khi rơi
 
 
-def build():
+def build(path=None):
+    global HANG_FILE
+    HANG_FILE = None; _hang_cache.clear()
+    if path and os.path.isfile(path):          # người dùng đã sửa key hang trên Spine Live? -> giữ nguyên + mèo bám theo
+        hf = (K.load(path).get("animations", {}).get("grab", {}).get("bones", {}) or {}).get("hang")
+        if hf and hf.get("rotate") and hf.get("translate"):
+            gr, gt = K.spine_curve(hf["rotate"], "value"), K.spine_curve(hf["translate"], "x")
+            dr = max(abs(gr(f) - THETA(f)) for f in range(N + 1)); dt = max(abs(gt(f) - D(f)) for f in range(N + 1))
+            if dr > 0.05 or dt > 0.5:
+                HANG_FILE = {"rotate": hf["rotate"], "translate": hf["translate"]}
+                print("hang đã được người dùng sửa (lệch xoay %.2f°, dời %.0f px so với script): GIỮ NGUYÊN, mèo bám theo key của file" % (dr, dt))
     B = {}
     def rot(b, fn, tol=0.15):
         B.setdefault(b, {})["rotate"] = reduce_keys([samples(fn)], ["value"], tol, False)
@@ -98,8 +131,12 @@ def build():
         B.setdefault(b, {})["translate"] = reduce_keys([samples(fx), samples(fy)], ["x", "y"], tol, False)
 
     # máy gắp: hang dời (D) + đu đưa; càng khép / mở
-    trn("hang", lambda f: D(f), lambda f: 0.0)                        # local tx = dy (world lên)
-    rot("hang", THETA, 0.05)
+    if HANG_FILE is None:
+        trn("hang", lambda f: D(f), lambda f: 0.0)                    # local tx = dy (world lên)
+        rot("hang", THETA, 0.05)
+    else:
+        import copy
+        B["hang"] = {"rotate": copy.deepcopy(HANG_FILE["rotate"]), "translate": copy.deepcopy(HANG_FILE["translate"])}
     rot("arm_R", lambda f: arm_R(f) + ripple(f, 0.0), 0.12)
     rot("arm_L", lambda f: -arm_R(f) - ripple(f, 3.5), 0.12)
     # mèo bám máy (cứng quanh đỉnh cán) + squash khi bị ép
@@ -107,12 +144,12 @@ def build():
     rot("cat", cat_rot, 0.05)
     scl("cat", squash, squash_h)
     # thở + ngẩng đầu + giãy
-    scl("spine", lambda f: 1 + 0.010 * breath(f) + 0.07 * LIFT(f) + 0.04 * STRUG(f) * sw(f, 7.0, -1.75),
-        lambda f: 1 - 0.035 * LIFT(f) - 0.025 * STRUG(f) * sw(f, 7.0, -1.75))
-    scl("hip", lambda f: 1 + 0.006 * breath(f) + 0.03 * LIFT(f), lambda f: 1 - 0.015 * LIFT(f))
-    rot("head", lambda f: look(f) + 11.0 * STRUG(f) * u1(f))
-    rot("spine", lambda f: -6.0 * STRUG(f) * u1(f - 2))
-    rot("hip", lambda f: 4.0 * STRUG(f) * u1(f - 4))
+    scl("spine", lambda f: 1 + 0.010 * breath(f) + 0.07 * K_STRETCH * LIFT(f) + 0.04 * K_STRETCH * STRUG(f) * sw(f, 7.0, -1.75),
+        lambda f: 1 - 0.035 * K_STRETCH * LIFT(f) - 0.025 * K_STRETCH * STRUG(f) * sw(f, 7.0, -1.75))
+    scl("hip", lambda f: 1 + 0.006 * breath(f) + 0.03 * K_STRETCH * LIFT(f), lambda f: 1 - 0.015 * K_STRETCH * LIFT(f))
+    rot("head", lambda f: look(f) + 11.0 * K_BODY * STRUG(f) * u1(f))
+    rot("spine", lambda f: -6.0 * K_BODY * STRUG(f) * u1(f - 2))
+    rot("hip", lambda f: 4.0 * K_BODY * STRUG(f) * u1(f - 4))
     # hai chân trước (foot_L, paw_F) quẫy NHẸ (2026-11-27: biên độ lớn làm lộ mesh cắt); cục nhô bên phải vẫn vẫy
     rot("foot_L", lambda f: 5 * STRUG(f) * sw(f, 6.0, 2.0))
     rot("paw_F", lambda f: 7 * STRUG(f) * sw(f, 6.0, 5.0))
@@ -148,7 +185,7 @@ def main():
     ed = K.user_edits(path, "grab")
     print("sổ sửa tay:", ed.get("keyposes"), "| người dùng sửa sau Claude:", ed.get("user_since_claude"))
     sk = K.load(path)
-    anim = build()
+    anim = build(path)
     K.write_anim(path, "grab", anim, "Claude gen grab (mèo bị gắp)", skel=sk)
     import urllib.request
     rel = os.path.relpath(os.path.abspath(path), ROOT).replace(os.sep, "/")

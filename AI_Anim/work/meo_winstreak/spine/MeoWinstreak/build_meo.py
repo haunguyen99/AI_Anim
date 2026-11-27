@@ -238,12 +238,15 @@ def build_all():
     ]
     SLOT_BONE = {"claw_arm_L": "arm_L", "claw_knob_L": "knob_L", "cat_foot_L": "foot_L", "cat_body": "hip", "cat_belly": "hip",
                  "mouth": "mouth", "eye_L": "eye_L", "eye_R": "eye_R", "cat_ear_R": "ear_R1", "claw_arm_R": "arm_R",
-                 "claw_knob_R": "knob_R", "claw_body": "claw"}
-    SLOT_ORDER = ["claw_arm_L", "claw_knob_L", "cat_foot_L", "cat_body", "cat_belly", "mouth", "eye_L", "eye_R", "cat_ear_R",
-                  "claw_arm_R", "claw_knob_R", "claw_body"]
+                 "claw_knob_R": "knob_R", "claw_body": "claw", "cat_head": "head"}
+    SLOT_ORDER = ["claw_arm_L", "claw_knob_L", "cat_foot_L", "cat_body", "claw_arm_R", "claw_knob_R", "claw_body",
+                  "cat_head", "cat_belly", "mouth", "eye_L", "eye_R", "cat_ear_R"]
     skin, info = {}, {}
     for nm, fn, kw in spec:
         att, nv, nt, ws = make_mesh(nm, fn, **kw); skin[nm] = {nm: att}; info[nm] = (nv, nt, ws)
+    import copy
+    skin["cat_head"] = {"cat_head": copy.deepcopy(skin["cat_body"]["cat_body"])}      # cùng lưới + weight với cat_body: hai mảnh biến dạng giống hệt
+    info["cat_head"] = info["cat_body"]
     for slot in ("mouth", "eye_L", "eye_R"):         # 2 biến thể (region, tâm ảnh -> toạ độ xương, đứng thẳng ở setup)
         skin[slot] = {}
         for var in ("keo", "nam"):

@@ -1,0 +1,23 @@
+[
+ {
+  "id": 1,
+  "t": "2026-11-27 15:11:48",
+  "who": "",
+  "what": "bản đầu (lúc mở)",
+  "from": null,
+  "hash": "b5a1664217222a2f7b8b2773d37dcf24e92aff4c",
+  "pub": false,
+  "group": null
+ },
+ {
+  "id": 2,
+  "t": "2026-11-27 15:12:25",
+  "who": "claude",
+  "what": "Claude gen rig_demo (RuongBattlePass)",
+  "from": null,
+  "hash": "86a9f26cda63ef6a5eab607af12d79eb14f2114d",
+  "pub": false,
+  "group": "1795765258276265484",
+  "merged": 3
+ }
+]

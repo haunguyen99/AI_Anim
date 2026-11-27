@@ -1,0 +1,722 @@
+[
+ {
+  "i": 0,
+  "path": "rương/Layer 6",
+  "kind": "smartobject",
+  "bbox": [
+   331,
+   163,
+   1073,
+   907
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "clipbase"
+  ],
+  "size": [
+   742,
+   744
+  ]
+ },
+ {
+  "i": 1,
+  "path": "rương/Layer 21",
+  "kind": "pixel",
+  "bbox": [
+   350,
+   530,
+   1050,
+   831
+  ],
+  "blend": "MULTIPLY",
+  "op": 0.5,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   700,
+   301
+  ]
+ },
+ {
+  "i": 2,
+  "path": "rương/Layer 9",
+  "kind": "pixel",
+  "bbox": [
+   352,
+   265,
+   770,
+   785
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "clipbase"
+  ],
+  "size": [
+   418,
+   520
+  ]
+ },
+ {
+  "i": 3,
+  "path": "rương/Layer 21 copy",
+  "kind": "pixel",
+  "bbox": [
+   350,
+   530,
+   1050,
+   831
+  ],
+  "blend": "MULTIPLY",
+  "op": 0.5,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   700,
+   301
+  ]
+ },
+ {
+  "i": 4,
+  "path": "rương/Layer 13 copy 5",
+  "kind": "smartobject",
+  "bbox": [
+   551,
+   345,
+   751,
+   680
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   335
+  ]
+ },
+ {
+  "i": 5,
+  "path": "rương/Layer 17",
+  "kind": "pixel",
+  "bbox": [
+   551,
+   354,
+   751,
+   596
+  ],
+  "blend": "MULTIPLY",
+  "op": 0.61,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   242
+  ]
+ },
+ {
+  "i": 6,
+  "path": "rương/Layer 13 copy 9",
+  "kind": "smartobject",
+  "bbox": [
+   689,
+   443,
+   889,
+   725
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   282
+  ]
+ },
+ {
+  "i": 7,
+  "path": "rương/Layer 16",
+  "kind": "pixel",
+  "bbox": [
+   689,
+   450,
+   800,
+   724
+  ],
+  "blend": "MULTIPLY",
+  "op": 0.63,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   111,
+   274
+  ]
+ },
+ {
+  "i": 8,
+  "path": "rương/Layer 13",
+  "kind": "smartobject",
+  "bbox": [
+   389,
+   573,
+   589,
+   696
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 9,
+  "path": "rương/Layer 13 copy",
+  "kind": "smartobject",
+  "bbox": [
+   389,
+   520,
+   589,
+   643
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 10,
+  "path": "rương/Layer 13 copy 2",
+  "kind": "smartobject",
+  "bbox": [
+   389,
+   468,
+   589,
+   591
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 11,
+  "path": "rương/Layer 13 copy 3",
+  "kind": "smartobject",
+  "bbox": [
+   389,
+   414,
+   589,
+   537
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 12,
+  "path": "rương/Layer 14",
+  "kind": "smartobject",
+  "bbox": [
+   380,
+   273,
+   567,
+   471
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   187,
+   198
+  ]
+ },
+ {
+  "i": 13,
+  "path": "rương/Layer 13 copy 8",
+  "kind": "smartobject",
+  "bbox": [
+   538,
+   505,
+   738,
+   733
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   200,
+   228
+  ]
+ },
+ {
+  "i": 14,
+  "path": "rương/Layer 15",
+  "kind": "pixel",
+  "bbox": [
+   352,
+   265,
+   769,
+   761
+  ],
+  "blend": "MULTIPLY",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   417,
+   496
+  ]
+ },
+ {
+  "i": 15,
+  "path": "rương/Layer 13 copy 10",
+  "kind": "smartobject",
+  "bbox": [
+   605,
+   697,
+   805,
+   925
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "clipbase"
+  ],
+  "size": [
+   200,
+   228
+  ]
+ },
+ {
+  "i": 16,
+  "path": "rương/Layer 18",
+  "kind": "pixel",
+  "bbox": [
+   599,
+   631,
+   999,
+   935
+  ],
+  "blend": "MULTIPLY",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   400,
+   304
+  ]
+ },
+ {
+  "i": 17,
+  "path": "rương/Layer 14 copy",
+  "kind": "smartobject",
+  "bbox": [
+   621,
+   547,
+   808,
+   746
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   187,
+   199
+  ]
+ },
+ {
+  "i": 18,
+  "path": "rương/Layer 13 copy 4",
+  "kind": "smartobject",
+  "bbox": [
+   309,
+   757,
+   509,
+   880
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "clipbase"
+  ],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 19,
+  "path": "rương/Layer 19",
+  "kind": "pixel",
+  "bbox": [
+   313,
+   725,
+   546,
+   837
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   233,
+   112
+  ]
+ },
+ {
+  "i": 20,
+  "path": "rương/Layer 13 copy 6",
+  "kind": "smartobject",
+  "bbox": [
+   338,
+   696,
+   538,
+   819
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 21,
+  "path": "rương/Layer 13 copy 7",
+  "kind": "smartobject",
+  "bbox": [
+   969,
+   725,
+   1169,
+   848
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "clipbase"
+  ],
+  "size": [
+   200,
+   123
+  ]
+ },
+ {
+  "i": 22,
+  "path": "rương/Layer 20",
+  "kind": "pixel",
+  "bbox": [
+   969,
+   681,
+   1153,
+   798
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [
+   "CLIP"
+  ],
+  "size": [
+   184,
+   117
+  ]
+ },
+ {
+  "i": 23,
+  "path": "rương/Layer 14 copy 3",
+  "kind": "smartobject",
+  "bbox": [
+   937,
+   582,
+   1123,
+   781
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   186,
+   199
+  ]
+ },
+ {
+  "i": 24,
+  "path": "rương/Layer 14 copy 2",
+  "kind": "smartobject",
+  "bbox": [
+   796,
+   726,
+   982,
+   925
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   186,
+   199
+  ]
+ },
+ {
+  "i": 25,
+  "path": "cửa mở hẳn/cửa mở hẳn",
+  "kind": "smartobject",
+  "bbox": [
+   134,
+   275,
+   380,
+   740
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   246,
+   465
+  ]
+ },
+ {
+  "i": 26,
+  "path": "cửa mở hẳn/Layer 22 copy 5",
+  "kind": "pixel",
+  "bbox": [
+   142,
+   385,
+   217,
+   464
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   75,
+   79
+  ]
+ },
+ {
+  "i": 27,
+  "path": "cửa mở hẳn/Layer 22 copy 4",
+  "kind": "pixel",
+  "bbox": [
+   142,
+   490,
+   217,
+   569
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   75,
+   79
+  ]
+ },
+ {
+  "i": 28,
+  "path": "cửa mở hẳn/Layer 22 copy 3",
+  "kind": "pixel",
+  "bbox": [
+   139,
+   588,
+   214,
+   667
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   75,
+   79
+  ]
+ },
+ {
+  "i": 29,
+  "path": "cửa đóng",
+  "kind": "smartobject",
+  "bbox": [
+   363,
+   267,
+   769,
+   760
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   406,
+   493
+  ]
+ },
+ {
+  "i": 30,
+  "path": "Layer 24",
+  "kind": "smartobject",
+  "bbox": [
+   557,
+   437,
+   710,
+   615
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   153,
+   178
+  ]
+ },
+ {
+  "i": 31,
+  "path": "cửa mở vừa/Layer 23",
+  "kind": "pixel",
+  "bbox": [
+   290,
+   272,
+   586,
+   721
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   296,
+   449
+  ]
+ },
+ {
+  "i": 32,
+  "path": "cửa mở vừa/Layer 22",
+  "kind": "pixel",
+  "bbox": [
+   493,
+   385,
+   568,
+   464
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   75,
+   79
+  ]
+ },
+ {
+  "i": 33,
+  "path": "cửa mở vừa/Layer 22 copy",
+  "kind": "pixel",
+  "bbox": [
+   493,
+   490,
+   568,
+   569
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   75,
+   79
+  ]
+ },
+ {
+  "i": 34,
+  "path": "cửa mở vừa/Layer 22 copy 2",
+  "kind": "pixel",
+  "bbox": [
+   496,
+   588,
+   571,
+   667
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   75,
+   79
+  ]
+ },
+ {
+  "i": 35,
+  "path": "vong tron",
+  "kind": "smartobject",
+  "bbox": [
+   511,
+   376,
+   786,
+   651
+  ],
+  "blend": "NORMAL",
+  "op": 1.0,
+  "vis": true,
+  "extra": [],
+  "size": [
+   275,
+   275
+  ]
+ }
+]

@@ -3,13 +3,6 @@
   "who": "user",
   "what": "Áp dụng lưới",
   "keyed": null,
-  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165624503016502.json",
-  "t": "2026-11-20 16:07:04"
- },
- {
-  "who": "user",
-  "what": "Áp dụng lưới",
-  "keyed": null,
   "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795165625776622824.json",
   "t": "2026-11-20 16:07:05"
  },
@@ -278,5 +271,12 @@
   "keyed": null,
   "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795746976621069650.json",
   "t": "2026-11-27 09:36:16"
+ },
+ {
+  "who": "user",
+  "what": "Về bản #7",
+  "keyed": null,
+  "name": "work__daily_reward__spine__FlagChar__flagchar.json__1795774960975365938.json",
+  "t": "2026-11-27 17:22:40"
  }
 ]

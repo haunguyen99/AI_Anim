@@ -50,8 +50,14 @@
   },
   "grab": {
    "desc": "LOOP: mèo idle -> máy gắp hạ xuống, khép càng, nhấc lên, mèo giãy, càng mở thả mèo rơi, máy bay lên cao (F cuối = F0)",
-   "loop": false,
-   "t": "2026-11-27 11:59:12"
+   "loop": true,
+   "t": "2026-11-27 16:23:05"
+  }
+ },
+ "work/battle_pass/spine/RuongBattlePass/ruong.json": {
+  "rig_demo": {
+   "loop": true,
+   "t": "2026-11-27 15:12:24"
   }
  }
 }

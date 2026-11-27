@@ -228,6 +228,21 @@
     1318,
     3743
    ]
+  },
+  "cat_head": {
+   "psd": "meo nam/Layer 0 trừ vùng thân máy che (cùng kích thước cat_body)",
+   "bbox": [
+    246,
+    3755,
+    1385,
+    4612
+   ],
+   "blend": "NORMAL",
+   "opacity": 1.0,
+   "size": [
+    1139,
+    857
+   ]
   }
  },
  "order_bottom_to_top": [

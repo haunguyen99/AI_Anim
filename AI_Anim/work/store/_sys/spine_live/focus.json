@@ -1,58 +1,6 @@
 {
- "seq": 66,
+ "seq": 79,
  "log": [
-  {
-   "t": "17:29:38",
-   "say": "Rig xong (20 xương). Demo rig: mỗi xương lần lượt lắc ±18° rồi về setup."
-  },
-  {
-   "t": "17:30:55",
-   "say": "Idle thở 90F: ngực nâng + nở, đầu và hai tay trễ nhịp, tóc bên physics, chớp mắt F58."
-  },
-  {
-   "t": "09:42:59",
-   "say": "Đã mở mascot mua hàng (xe đẩy): 43 layer từ PSD, chưa rig, còn gắn xương root. Layer ẩn bst4 (pixel) được bỏ qua."
-  },
-  {
-   "t": "09:46:13",
-   "say": "Rig xong. Demo rig: từng xương lần lượt lắc ±18° rồi về setup; ctrl_cart dời + phồng; cuối anim cả rig cùng lắc."
-  },
-  {
-   "t": "09:56:31",
-   "say": "Đã rig 2 tai + 2 tay mèo: mỗi cái 2 xương + mesh (gốc dính thân, uốn ở giữa). Bật Hiển thị > Lưới để xem."
-  },
-  {
-   "t": "10:03:40",
-   "say": "Idle xe chạy nhanh: xe + hàng rung, bánh lăn 3 vòng/loop, mèo rung trễ pha, tai + tay overlap theo thân."
-  },
-  {
-   "t": "10:04:42",
-   "say": "Đã tăng biên độ rung: xe ~5 px, mèo ~5 px, hàng ~3 px."
-  },
-  {
-   "t": "10:08:23",
-   "say": "Đã sửa: bánh xe không quay, nhún tại chỗ bằng scale; nhịp rung giảm còn 3 nhịp/loop, biên độ nhỏ hơn."
-  },
-  {
-   "t": "10:08:45",
-   "say": "Giảm thêm overlap tay + tai (±12° thay vì ±20°)."
-  },
-  {
-   "t": "10:10:40",
-   "say": "Miệng mèo scale lên/xuống theo nhịp; khói dưới xe đứng yên, chỉ co giãn trái/phải."
-  },
-  {
-   "t": "10:11:45",
-   "say": "Giảm lắc ngang / nghiêng của xe: nhịp 1 lần/loop, biên độ ~0,9 px + 0,3°."
-  },
-  {
-   "t": "10:21:04",
-   "say": "Idle mới 60F: xe + mèo nhấp nhẹ lên xuống, tai / tay / râu / miệng overlap trễ sau thân."
-  },
-  {
-   "t": "10:58:33",
-   "say": "Rig MeoWinstreak vừa dựng: 23 xương, 12 slot. Đang chạy rig_demo: mỗi xương lần lượt lắc ±15°."
-  },
   {
    "t": "11:07:03",
    "say": "Đã sửa lớp bóng bụng (bỏ multiply làm sáng bụng). Rig: 23 xương, 9 mesh + 3 slot mặt (region), rig_demo 288F."
@@ -120,6 +68,58 @@
   {
    "t": "11:56:28",
    "say": "Đã về bản #14 (grab loop, nảy 85 px, dẹt 0.74/1.24)."
+  },
+  {
+   "t": "14:15:39",
+   "say": "Đã thêm claw_back: thân máy gắp nguyên vẹn dưới mèo. Anim #14 giữ nguyên."
+  },
+  {
+   "t": "14:19:44",
+   "say": "Thân máy gắp nguyên vẹn dưới mèo: không còn móp, mép kẹp không cắt lẹm tai mèo."
+  },
+  {
+   "t": "14:20:50",
+   "say": "Thêm claw_front: thành kẹp che chốt phải như PSD; thân máy dưới mèo nên tai không bị lẹm."
+  },
+  {
+   "t": "14:26:13",
+   "say": "Mèo tách 2: cat_body (cả mèo) dưới thân máy, cat_head (đầu + tai trái) trên thân máy."
+  },
+  {
+   "t": "14:29:05",
+   "say": "cat_head: phần đầu + tai trái trên thân máy, mút phải mờ dần (hết gai nhọn)."
+  },
+  {
+   "t": "14:32:58",
+   "say": "cat_head dùng cùng lưới + weight với cat_body: hết rách tai / vết cắt."
+  },
+  {
+   "t": "14:33:37",
+   "say": "cat_head phủ cả nửa trái của mèo: viền trái luôn nằm trước chân trái máy gắp."
+  },
+  {
+   "t": "14:40:22",
+   "say": "Cắt lại mép thân mèo sắc theo mép kẹp + giảm biên độ lắc thân / đầu (K_BODY 0.4, K_STRETCH 0.5)."
+  },
+  {
+   "t": "14:40:59",
+   "say": "cat_head cắt theo càng / chốt phải: hết vệt cam trên chốt."
+  },
+  {
+   "t": "15:11:47",
+   "say": "Rig rương battle pass: 32 xương, 29 slot; rig_demo chạy lần lượt cửa đóng > mở vừa > mở hẳn > xu trong rương > xu ngoài > cả rig"
+  },
+  {
+   "t": "15:12:24",
+   "say": "Đã sửa lưới vòng tròn (trước đó lưới bỏ mất phần vòng mảnh)"
+  },
+  {
+   "t": "15:28:25",
+   "say": "Mèo bám theo đúng key hang bạn đã sửa: hết trôi trái phải."
+  },
+  {
+   "t": "16:23:53",
+   "say": "Nhịp lắc nhẹ hơn: K_BODY 0.2, K_STRETCH 0.15. Mèo không còn ăn vào cây gắp."
   }
  ],
  "json": "work/meo_winstreak/spine/MeoWinstreak/meo.json",
@@ -128,8 +128,8 @@
  "view": {
   "bones": true
  },
- "say": "Đã về bản #14 (grab loop, nảy 85 px, dẹt 0.74/1.24).",
+ "say": "Nhịp lắc nhẹ hơn: K_BODY 0.2, K_STRETCH 0.15. Mèo không còn ăn vào cây gắp.",
  "what": "show",
- "t": "11:56:28",
+ "t": "16:23:53",
  "theme": "dark"
 }
