@@ -136,3 +136,7 @@
 - [Skin check: full ROM + wireframe](skin-check-full-rom-wireframe.md) — sweep every joint over full angle range, judge by even wireframe stretch
 - [Pose: no CTL curves](pose-no-ctl-curves.md) — animate by picking joint dots; user removed FK/IK curve controls
 - [Rig step owns physics setup](rig-step-owns-physics-setup.md) — control joints, joint limits, colliders, mass belong in Rig, read by Pose
+- [Gói Spine AI_Anim/AI_Anim](reference-spine-package-ai-anim-subdir.md) — thư mục con chứa skill + memory Spine 2D, chưa có dữ liệu; venv Windows không chạy trên Linux
+- [Spine Live tự cập nhật (Paseo)](feedback-spinelive-auto-update-paseo.md) — ô "Tự cập nhật" mặc định bật; không bảo user reload sau khi ghi file
+- [Đối xứng tay bằng đường cong](feedback-mirror-arm-by-curves.md) — run/walk/idle: cùng đường cong + quỹ đạo thế giới, đọc FK/IK nguồn, lệnh mirror_limb
+- [Ref video cắt đoạn cụ thể](feedback-ref-video-cut-segment.md) — chỉ giữ đúng pha cần, ghi nguồn + mốc giờ, hợp concept

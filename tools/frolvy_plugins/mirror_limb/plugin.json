@@ -1,0 +1,8 @@
+{
+  "id": "mirror_limb",
+  "version": "0.1.0",
+  "entry": "mirror_limb.py",
+  "api_version": 1,
+  "name": "Mirror Limb",
+  "description": "Copy the animation of one arm to the other by CURVES (same curves, same world path), IK or FK, for run / walk / idle. Run from a script."
+}
