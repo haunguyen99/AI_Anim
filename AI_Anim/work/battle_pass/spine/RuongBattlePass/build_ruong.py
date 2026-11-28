@@ -35,6 +35,7 @@ def S(px, py): return (px - OX, OY - py)
 
 # ---------------------------------------------------------------- xương
 BONES, BW = [], {}
+COV = {}      # tên mesh -> tỉ lệ pixel đục được lưới phủ
 
 
 def bone(name, parent, cx, cy, ang=0.0, length=40, to=None, **kw):
@@ -144,7 +145,23 @@ def make_mesh(name, weight_fn, **kw):
     img = np.array(Image.open(os.path.join(HERE, "images", name + ".png")))
     h, w = img.shape[:2]; px0, py0 = LAY[name]["bbox"][:2]
     mask = img[..., 3] > 8
-    if kw.pop("quad", False):      # vật rỗng (vòng): lưới hình chữ nhật phủ cả ảnh, Delaunay theo viền sẽ bỏ mất cả vòng mảnh
+    if kw.pop("hollow", False):    # vật rỗng (vòng): viền ngoài = hull, MỌI lỗ (giữa vòng + các ô khuyết) lấy điểm dọc viền lỗ làm đỉnh trong,
+        # tam giác nằm trong lỗ bị tri_filter bỏ -> lưới (và lớp tô weight) đúng hình vòng, không phải hình chữ nhật
+        me = kw.get("max_edge", 30)
+        m0 = cv2.dilate(mask.astype(np.uint8), np.ones((5, 5), np.uint8))
+        cs, hi = cv2.findContours(m0, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+        def sub(c, eps=1.2):
+            ap = cv2.approxPolyDP(c, eps, True)[:, 0, :].astype(float); out = []
+            for i in range(len(ap)):
+                a, b = ap[i], ap[(i + 1) % len(ap)]; k = max(1, int(math.ceil(np.linalg.norm(b - a) / me)))
+                out += [a + (b - a) * j / k for j in range(k)]
+            return np.array(out)
+        outer = max([i for i in range(len(cs)) if hi[0][i][3] < 0], key=lambda i: cv2.contourArea(cs[i]))
+        hull = sub(cs[outer])
+        holes = [sub(cs[i]) for i in range(len(cs)) if hi[0][i][3] == outer and cv2.contourArea(cs[i]) > 20]
+        inner = np.vstack(holes) if holes else np.zeros((0, 2))
+        m = cv2.dilate(m0, np.ones((9, 9), np.uint8))
+    elif kw.pop("quad", False):      # lưới chữ nhật phủ cả ảnh (không dùng cho vòng nữa: lớp tô weight thành hình chữ nhật đỏ phủ cả núm)
         n = kw.get("n", 4); xs_, ys_ = np.linspace(0, w, n + 1), np.linspace(0, h, n + 1)
         hull = np.array([(x, 0) for x in xs_[:-1]] + [(w, y) for y in ys_[:-1]] + [(x, h) for x in xs_[:0:-1]] + [(0, y) for y in ys_[:0:-1]], float)
         inner = np.array([(x, y) for y in ys_[1:-1] for x in xs_[1:-1]], float).reshape(-1, 2)
@@ -157,6 +174,9 @@ def make_mesh(name, weight_fn, **kw):
     remap = {o: n for n, o in enumerate([i for i in range(len(hull)) if i in used] + [i for i in used if i >= len(hull)])}
     order = sorted(remap, key=lambda o: remap[o]); allp = allp[order]
     nh = sum(1 for o in order if o < len(hull)); tris = [[remap[i] for i in t] for t in tris]
+    cov_m = np.zeros(mask.shape, np.uint8)       # kiểm phủ: phần ảnh đục (alpha > 8) nằm trong tam giác lưới
+    for t in tris: cv2.fillPoly(cov_m, [np.round(allp[t]).astype(np.int32)], 1)
+    COV[name] = float((cov_m.astype(bool) & mask).sum() / max(1, mask.sum()))
     uvs, verts = [], []
     wsum = {}
     for (x, y) in allp:
@@ -234,7 +254,7 @@ def build_all():
         ("bolt_h1", one("bolt_h1"), dict(max_edge=30, step=45)),
         ("bolt_h2", one("bolt_h2"), dict(max_edge=30, step=45)),
         ("bolt_h3", one("bolt_h3"), dict(max_edge=30, step=45)),
-        ("ring", one("ring"), dict(quad=True, n=4)),
+        ("ring", one("ring"), dict(hollow=True, max_edge=30)),
     ]
     SLOT_BONE = {n: n for n, _, _ in spec}
     SLOT_BONE.update({"chest_body": "chest", "cavity": "chest", "cavity_clip": "chest", "door_c": "door_c", "door_h": "door_h", "door_o": "door_o"})
@@ -281,6 +301,8 @@ if __name__ == "__main__":
         except Exception as e:
             print("(không ghi được backup Spine Live:", e, ")")
     json.dump(sk, open(out, "w", encoding="utf8"), indent=1, ensure_ascii=False)
+    low = {k: round(v, 4) for k, v in COV.items() if v < 0.995}
+    print("Phủ lưới (pixel đục nằm trong tam giác): min %.4f | mesh < 99,5%%: %s" % (min(COV.values()), low or "không có"))
     print("Đã ghi", out, "|", len(sk["bones"]), "xương,", len(sk["slots"]), "slot")
     for k, (nv, nt, ws) in info.items():
         print(f"  {k:11s} {nv:3d} đỉnh / {nt:3d} tam giác | weight:", {b: round(v, 1) for b, v in sorted(ws.items(), key=lambda t: -t[1])})

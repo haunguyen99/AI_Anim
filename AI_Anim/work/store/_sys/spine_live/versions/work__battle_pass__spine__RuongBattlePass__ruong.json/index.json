@@ -19,5 +19,15 @@
   "pub": false,
   "group": "1795765258276265484",
   "merged": 3
+ },
+ {
+  "id": 3,
+  "t": "2026-11-28 13:56:31",
+  "who": "claude",
+  "what": "Claude dựng rig RuongBattlePass",
+  "from": null,
+  "hash": "be88de07af7b89e9f4f0296c705b76985a627670",
+  "pub": false,
+  "group": null
  }
 ]

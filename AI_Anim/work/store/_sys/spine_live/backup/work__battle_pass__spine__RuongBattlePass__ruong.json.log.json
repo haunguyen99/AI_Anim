@@ -12,7 +12,23 @@
   "what": "Claude dựng rig RuongBattlePass",
   "keyed": null,
   "group": "1795765258276265484",
-  "name": "work__battle_pass__spine__RuongBattlePass__ruong.json__1795767144074207851.json",
-  "t": "2026-11-27 15:12:24"
+  "name": "work__battle_pass__spine__RuongBattlePass__ruong.json__1795842096271146538.json",
+  "t": "2026-11-28 12:01:36"
+ },
+ {
+  "who": "claude",
+  "what": "Claude dựng rig RuongBattlePass",
+  "keyed": null,
+  "group": null,
+  "name": "work__battle_pass__spine__RuongBattlePass__ruong.json__1795848991133536583.json",
+  "t": "2026-11-28 13:56:31"
+ },
+ {
+  "who": "claude",
+  "what": "Claude gen rig_demo (RuongBattlePass)",
+  "keyed": null,
+  "group": null,
+  "name": "work__battle_pass__spine__RuongBattlePass__ruong.json__1795848991781550746.json",
+  "t": "2026-11-28 13:56:31"
  }
 ]

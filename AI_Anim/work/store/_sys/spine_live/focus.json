@@ -1,14 +1,6 @@
 {
- "seq": 79,
+ "seq": 81,
  "log": [
-  {
-   "t": "11:07:03",
-   "say": "Đã sửa lớp bóng bụng (bỏ multiply làm sáng bụng). Rig: 23 xương, 9 mesh + 3 slot mặt (region), rig_demo 288F."
-  },
-  {
-   "t": "11:10:19",
-   "say": "Cán chỉ còn 1 xương (hang), thân máy gắp là claw. 21 xương."
-  },
   {
    "t": "11:25:37",
    "say": "Anim grab 150F: mèo idle, máy gắp hạ xuống, khép càng, nhấc lên, mèo giãy."
@@ -120,16 +112,24 @@
   {
    "t": "16:23:53",
    "say": "Nhịp lắc nhẹ hơn: K_BODY 0.2, K_STRETCH 0.15. Mèo không còn ăn vào cây gắp."
+  },
+  {
+   "t": "13:51:54",
+   "say": "Đã tắt chế độ tô weight (xanh = 0, đỏ = 1) nên hết vùng đỏ"
+  },
+  {
+   "t": "13:56:31",
+   "say": "Lưới vòng tròn giờ theo đúng hình vòng (127 đỉnh), không còn là hình chữ nhật; lớp tô weight không còn phủ đỏ cả hình chữ nhật"
   }
  ],
- "json": "work/meo_winstreak/spine/MeoWinstreak/meo.json",
- "anim": "grab",
+ "json": "work/battle_pass/spine/RuongBattlePass/ruong.json",
+ "anim": "rig_demo",
  "frame": null,
  "view": {
-  "bones": true
+  "weight": ""
  },
- "say": "Nhịp lắc nhẹ hơn: K_BODY 0.2, K_STRETCH 0.15. Mèo không còn ăn vào cây gắp.",
+ "say": "Lưới vòng tròn giờ theo đúng hình vòng (127 đỉnh), không còn là hình chữ nhật; lớp tô weight không còn phủ đỏ cả hình chữ nhật",
  "what": "show",
- "t": "16:23:53",
+ "t": "13:56:31",
  "theme": "dark"
 }

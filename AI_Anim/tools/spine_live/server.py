@@ -17,6 +17,10 @@ PORT = int(os.environ.get("SPINE_PORT") or "8781")
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
 LOG = os.path.join(ROOT, "work", "store", "_sys", "spine_live", "server.log")
 STARTED = time.strftime("%Y-%m-%d %H:%M:%S")
+# Bản portable (make_portable_win.py): SPINELIVE_IDLE_EXIT=<giây> -> tự tắt khi không còn trang nào hỏi trong ngần ấy giây
+# (đóng cửa sổ Spine Live là server tự tắt, người dùng không phải tắt tay). Không đặt biến này = chạy mãi như cũ.
+IDLE_EXIT = float(os.environ.get("SPINELIVE_IDLE_EXIT") or 0)
+LAST_REQ = [time.time()]
 
 
 def log(msg):
@@ -78,6 +82,7 @@ class H(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        LAST_REQ[0] = time.time()
         try:
             self._get()
         except (ConnectionError, BrokenPipeError):
@@ -90,6 +95,7 @@ class H(BaseHTTPRequestHandler):
                 pass
 
     def do_POST(self):
+        LAST_REQ[0] = time.time()
         try:
             self._post()
         except (ConnectionError, BrokenPipeError):
@@ -140,6 +146,16 @@ if __name__ == "__main__":
     lan = "--lan" in sys.argv
     print(f"Spine Live: http://127.0.0.1:{PORT}/spine")
     log(f"bật server cổng {PORT}" + (" (LAN)" if lan else ""))
+    if IDLE_EXIT > 0:
+        import threading
+
+        def _idle_watch():
+            while True:
+                time.sleep(5)
+                if time.time() - LAST_REQ[0] > IDLE_EXIT:
+                    log(f"không có trang nào hỏi trong {IDLE_EXIT:.0f}s: tự tắt")
+                    os._exit(0)
+        threading.Thread(target=_idle_watch, daemon=True).start()
     try:
         ThreadingHTTPServer(("0.0.0.0" if lan else "127.0.0.1", PORT), H).serve_forever()
     except BaseException as e:
